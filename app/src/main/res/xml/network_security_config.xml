@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?><!--网络安全配置-->
+<network-security-config>     <!--  基础配置,文明上网是否允许-->
+    <base-config cleartextTrafficPermitted="true">      <!--  信赖下锚-->
+        <trust-anchors>            <!--证书系统-->
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>
