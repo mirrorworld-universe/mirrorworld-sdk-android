@@ -12,11 +12,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mirror.sdk.MirrorSDKJava;
+
 import org.w3c.dom.Text;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
-import yalantis.com.sidemenu.sample.MirrorSDK;
 import yalantis.com.sidemenu.sample.R;
 import yalantis.com.sidemenu.sample.fragment.placeholder.PlaceholderContent.PlaceholderItem;
 
@@ -71,26 +72,24 @@ public class APIItemRecyclerViewAdapter extends RecyclerView.Adapter<APIItemRecy
 
     private void handleClick(int apiId,ViewHolder holder){
         if(apiId == 1){
-            MirrorSDK.Companion.get().StartLogin(mContext);
+            MirrorSDKJava.getInstance().StartLogin();
         }else if(apiId == 2){
-            MirrorSDK.Companion.get().GetAccessToken(mContext, new Function1<String, Unit>() {
+            MirrorSDKJava.getInstance().GetAccessToken(mContext, new MirrorSDKJava.ICallBack() {
                 @Override
-                public Unit invoke(String s) {
-                    Toast.makeText(mContext,"Access TOken is:"+s,Toast.LENGTH_LONG);
-                    return null;
+                public void callback(String result) {
+                    Toast.makeText(mContext,"Access TOken is:"+result,Toast.LENGTH_LONG);
                 }
             });
         }else if(apiId == 3){
             String appId = String.valueOf(holder.mEditText.getText());
             Log.i("mirror","input appId is "+appId);
-            MirrorSDK.Companion.get().SetAppID(mContext,"WsPRi3GQz0FGfoSklYUYzDesdKjKvxdrmtQ");
+            MirrorSDKJava.getInstance().SetAppID(mContext,"WsPRi3GQz0FGfoSklYUYzDesdKjKvxdrmtQ");
         }else if(apiId == 11){
             String emailAddr = String.valueOf(holder.mEditText.getText());
-            MirrorSDK.Companion.get().APIQueryUser(emailAddr, new Function1<String, Unit>() {
+            MirrorSDKJava.getInstance().APIQueryUser(emailAddr, new MirrorSDKJava.ICallBack() {
                 @Override
-                public Unit invoke(String s) {
+                public void callback(String s) {
                     holder.mResultView.setText(s);
-                    return null;
                 }
             });
         }

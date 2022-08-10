@@ -16,12 +16,7 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.LinearLayout;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
+import com.mirror.sdk.MirrorSDKJava;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MirrorSDK.Companion.get().InitSDK(this);
+        MirrorSDKJava.getInstance().InitSDK(this);
         setContentView(R.layout.activity_main);
         ContentFragment contentFragment = ContentFragment.newInstance(R.drawable.content_music);
         getSupportFragmentManager().beginTransaction()

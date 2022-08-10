@@ -40,7 +40,7 @@ class MirrorSDK private constructor(){
     private var builder: AlertDialog? = null
     private lateinit var globalContext: Context
     private lateinit var activityContext: Activity
-    private val urlAuth = "https://auth.mirrorworld.fun/login"
+    private val urlAuth = "https://auth.mirrorworld.fun/"
     private var parentDialog: AlertDialog? = null
     private var webView: WebView? = null
     private var userAgent: String? = null
@@ -94,9 +94,15 @@ class MirrorSDK private constructor(){
     }
 
     //open login popup window
-    fun StartLogin(activityContext: Activity){
+    fun StartLogin(){
+        if(appId == ""){
+            appId = getSavedString(globalContext,localKeyAppId)
+        }
+        if(appId == ""){
+            logFlow("Must set app id first!")
+            return
+        }
         logFlow("Start login,sdk version is:"+version)
-        this.activityContext = activityContext
         val alert = AlertDialog.Builder(activityContext)
         var dialog = alert.create()
         parentDialog = dialog
@@ -129,7 +135,7 @@ class MirrorSDK private constructor(){
         val refreshToken = getRefreshToken(activityContext)
         logFlow("ready to get access token,now refreshToken is:"+refreshToken)
         if(refreshToken == ""){
-            StartLogin(activityContext)
+            StartLogin()
             return
         }
 
@@ -146,7 +152,7 @@ class MirrorSDK private constructor(){
                 var code = itJson.get("code")
                 if (code != 0){
                     logFlow("You have no authorization to visit api,now popup login window."+it)
-                    StartLogin(activityContext)
+                    StartLogin()
                 }else{
                     var accessToken:String = itJson.getJSONObject("data").getString("access_token")
                     var newRefreshToken:String = itJson.getJSONObject("data").getString("refresh_token")
@@ -617,7 +623,7 @@ class MirrorSDK private constructor(){
     private fun setWebView(context: Context,webView:WebView){
         this.webView = webView
         webView.setWebViewClient(WebViewClient())
-        webView.loadUrl(urlAuth)
+        webView.loadUrl(urlAuth+appId)
         val webSettings = webView.getSettings()
         webSettings.javaScriptEnabled = true
 
