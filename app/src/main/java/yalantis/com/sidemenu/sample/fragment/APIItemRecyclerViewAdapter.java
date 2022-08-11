@@ -1,7 +1,6 @@
 package yalantis.com.sidemenu.sample.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,12 +11,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mirror.sdk.MirrorCallback;
 import com.mirror.sdk.MirrorSDKJava;
 
-import org.w3c.dom.Text;
-
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
 import yalantis.com.sidemenu.sample.R;
 import yalantis.com.sidemenu.sample.fragment.placeholder.PlaceholderContent.PlaceholderItem;
 
@@ -74,7 +70,7 @@ public class APIItemRecyclerViewAdapter extends RecyclerView.Adapter<APIItemRecy
         if(apiId == 1){
             MirrorSDKJava.getInstance().StartLogin();
         }else if(apiId == 2){
-            MirrorSDKJava.getInstance().GetAccessToken(mContext, new MirrorSDKJava.ICallBack() {
+            MirrorSDKJava.getInstance().GetAccessToken(mContext, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     Toast.makeText(mContext,"Access TOken is:"+result,Toast.LENGTH_LONG);
@@ -83,10 +79,10 @@ public class APIItemRecyclerViewAdapter extends RecyclerView.Adapter<APIItemRecy
         }else if(apiId == 3){
             String appId = String.valueOf(holder.mEditText.getText());
             Log.i("mirror","input appId is "+appId);
-            MirrorSDKJava.getInstance().SetAppID(mContext,"WsPRi3GQz0FGfoSklYUYzDesdKjKvxdrmtQ");
+            MirrorSDKJava.getInstance().SetAppID("WsPRi3GQz0FGfoSklYUYzDesdKjKvxdrmtQ");
         }else if(apiId == 11){
             String emailAddr = String.valueOf(holder.mEditText.getText());
-            MirrorSDKJava.getInstance().APIQueryUser(emailAddr, new MirrorSDKJava.ICallBack() {
+            MirrorSDKJava.getInstance().APIQueryUser(emailAddr, new MirrorCallback() {
                 @Override
                 public void callback(String s) {
                     holder.mResultView.setText(s);

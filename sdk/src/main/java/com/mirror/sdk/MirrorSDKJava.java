@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
@@ -28,8 +27,6 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -39,13 +36,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class MirrorSDKJava {
     //user custom
@@ -63,7 +57,9 @@ public class MirrorSDKJava {
     private AlertDialog builder = null;
     private Context globalContext = null;
     private Activity activityContext = null;
-    private String urlAuth = "https://auth.mirrorworld.fun/";
+//    private String urlRoot = "https://auth.mirrorworld.fun/";
+    private String urlRoot = "https://auth-staging.mirrorworld.fun/";
+    private String urlAuth = urlRoot;
     private AlertDialog parentDialog = null;
     private WebView webView = null;
     private String userAgent = null;
@@ -74,25 +70,29 @@ public class MirrorSDKJava {
     private String localKeyAppId = "mirror_app_id";
     private String localKeyWalletAddress = "mirror_wallet_address";
 
+    private MirrorCallback cbLogin = null;
+
     //get url
-    private final String urlRefreshToken = "https://api-staging.mirrorworld.fun/v1/auth/refresh-token";
-    private final String urlQueryUser = "https://api-staging.mirrorworld.fun/v1/auth/user";
-    private final String urlQueryNFTDetail = "https://api-staging.mirrorworld.fun/v1/solana/nft/";
+    private final String urlRefreshToken = urlRoot + "v1/auth/refresh-token";
+    private final String urlQueryUser = urlRoot + "v1/auth/user";
+    private final String urlQueryNFTDetail = urlRoot + "v1/solana/nft/";
     //post url
-    private final String urlFetchMultiNFTsDataByMintAddress = "https://api-staging.mirrorworld.fun/v1/solana/nft/mints";
-    private final String urlFetchMultiNFTsDataByCreatorAddress = "https://api-staging.mirrorworld.fun/v1/solana/nft/creators";
-    private final String urlFetchMultiNFTsDataByUpdateAuthorityAddress = "https://api-staging.mirrorworld.fun/v1/solana/nft/update-authorities";
-    private final String urlMintNFTCollection = "https://api-staging.mirrorworld.fun/v1/solana/mint/nft";
-    private final String urlMintTopLevelCollection = "https://api-staging.mirrorworld.fun/v1/solana/mint/collection";
-    private final String urlMintLowerLevelCollection = "https://api-staging.mirrorworld.fun/v1/solana/mint/sub-collection";
+    private final String urlFetchMultiNFTsDataByMintAddress = urlRoot + "v1/solana/nft/mints";
+    private final String urlFetchMultiNFTsDataByCreatorAddress = urlRoot + "v1/solana/nft/creators";
+    private final String urlFetchMultiNFTsDataByUpdateAuthorityAddress = urlRoot + "v1/solana/nft/update-authorities";
+    private final String urlMintNFTCollection = urlRoot + "v1/solana/mint/nft";
+    private final String urlMintTopLevelCollection = urlRoot + "v1/solana/mint/collection";
+    private final String urlMintLowerLevelCollection = urlRoot + "v1/solana/mint/sub-collection";
 
     //about market
-    private final String urlListNFTOnTheMarketplace = "https://api-staging.mirrorworld.fun/v1/solana/marketplace/list";
-    private final String urlUpdateListingOfNFTOnTheMarketplace = "https://api-staging.mirrorworld.fun/v1/solana/marketplace/update";
-    private final String urlBuyNFTOnTheMarketplace = "https://api-staging.mirrorworld.fun/v1/solana/marketplace/buy";
-    private final String urlCancelListingOfNFTOnTheMarketplace = "https://api-staging.mirrorworld.fun/v1/solana/marketplace/cancel";
-    private final String urlTransferNFTToAnotherSolanaWallet = "https://api-staging.mirrorworld.fun/v1/solana/marketplace/transfer";
+    private final String urlListNFTOnTheMarketplace = urlRoot + "v1/solana/marketplace/list";
+    private final String urlUpdateListingOfNFTOnTheMarketplace = urlRoot + "v1/solana/marketplace/update";
+    private final String urlBuyNFTOnTheMarketplace = urlRoot + "v1/solana/marketplace/buy";
+    private final String urlCancelListingOfNFTOnTheMarketplace = urlRoot + "v1/solana/marketplace/cancel";
+    private final String urlTransferNFTToAnotherSolanaWallet = urlRoot + "v1/solana/marketplace/transfer";
 
+    //wallet api url
+    private final String urlMe = urlRoot + "v1/auth/me";
 
     private MirrorSDKJava(){
     }
@@ -135,20 +135,49 @@ public class MirrorSDKJava {
         dialog.setView(layout);
         dialog.show();
     }
+    public void StartLogin(MirrorCallback mirrorCallback){
+        StartLogin();
+        cbLogin = mirrorCallback;
+    }
 
     //set if use debug mode
     public void SetDebug(boolean debug){
         debugMode = debug;
     }
 
-    public void SetAppID(Context context,String id){
+    public void SetAppID(String id){
         appId = id;
         if(activityContext != null){
-            saveString(context,localKeyAppId,appId);
+            saveString(localKeyAppId,appId);
         }
     }
 
-    public void GetAccessToken(Activity activityContext, ICallBack iCallBack){
+    public void APIGetWalletAddress(MirrorCallback mirrorCallback){
+        if(activityContext == null){
+            logFlow("Must call InitSDK() first.");
+            mirrorCallback.callback("");
+            return;
+        }
+        if(mWalletAddress == ""){
+            mWalletAddress = getSavedString(activityContext,localKeyWalletAddress);
+        }
+        checkParamsAndGet(urlMe, null, new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                String address = "";
+                try {
+                    JSONObject obj = new JSONObject(result);
+                    address = obj.getJSONObject("data").getJSONObject("user").getJSONObject("wallet").getString("sol_address");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                mirrorCallback.callback(address);
+            }
+        });
+        return;
+    }
+
+    public void GetAccessToken(Activity activityContext, MirrorCallback mirrorCallback){
         String refreshToken = getRefreshToken(activityContext);
         logFlow("ready to get access token,now refreshToken is:"+refreshToken);
         if(refreshToken == ""){
@@ -163,10 +192,10 @@ public class MirrorSDKJava {
             logFlow("Must set app id first!");
             return;
         }
-        new Thread(httpGetRunnableWithRefreshToken(urlRefreshToken,refreshToken, new ICallBack() {
+        new Thread(httpGetRunnableWithRefreshToken(urlRefreshToken,refreshToken, new MirrorCallback() {
             @Override
             public void callback(String result) {
-                new Handler().post(new Runnable() {
+                activityContext.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         JSONObject itJson = null;
@@ -180,14 +209,14 @@ public class MirrorSDKJava {
                                 String accessToken = itJson.getJSONObject("data").getString("access_token");
                                 String newRefreshToken = itJson.getJSONObject("data").getString("refresh_token");
                                 String wallet = itJson.getJSONObject("data").getJSONObject("user").getString("sol_address");
-                                saveRefreshToken(activityContext,newRefreshToken);
-                                saveString(activityContext,localKeyWalletAddress,wallet);
+                                saveRefreshToken(newRefreshToken);
+                                saveString(localKeyWalletAddress,wallet);
                                 accessToken = accessToken;
                                 mWalletAddress = wallet;
                                 logFlow("Access token success!"+accessToken);
                                 logFlow("Wallet is:"+wallet);
-                                if(iCallBack != null){
-                                    iCallBack.callback(accessToken);
+                                if(mirrorCallback != null){
+                                    mirrorCallback.callback(accessToken);
                                 }
                             }
                         } catch (JSONException e) {
@@ -199,7 +228,7 @@ public class MirrorSDKJava {
         })).start();
     }
 
-    public void APIQueryUser(String userEmail,ICallBack iCallBack){
+    public void APIQueryUser(String userEmail, MirrorCallback mirrorCallback){
         if(appId == ""){
             if(activityContext == null){
                 logFlow("Must init sdk first!");
@@ -214,10 +243,10 @@ public class MirrorSDKJava {
 
         Map<String,String> map = new HashMap<>();
         map.put("email",userEmail);
-        doGet(urlQueryUser,map,iCallBack);
+        checkParamsAndGet(urlQueryUser,map, mirrorCallback);
     }
 
-    public void APIFetchSingleNFT(String mint_address,ICallBack iCallBack){
+    public void APIFetchSingleNFT(String mint_address, MirrorCallback mirrorCallback){
         if(appId == ""){
             if(activityContext == null){
                 logFlow("Must init sdk first!");
@@ -230,26 +259,26 @@ public class MirrorSDKJava {
             return;
         }
 
-        doGet(urlQueryNFTDetail+mint_address,null,iCallBack);
+        checkParamsAndGet(urlQueryNFTDetail+mint_address,null, mirrorCallback);
     }
 
-    public void doGet(String url,Map<String, String> params,ICallBack iCallBack){
+    public void doGet(String url, Map<String, String> params, MirrorCallback mirrorCallback){
         new Thread(new Runnable() {
             @Override
             public void run() {
                 String resultStr = httpGetW(url,params,"UTF-8");
-                new Handler().post(new Runnable() {
+                activityContext.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         logFlow("Get Result is:"+resultStr);
-                        iCallBack.callback(resultStr);
+                        mirrorCallback.callback(resultStr);
                     }
                 });
             }
         }).start();
     }
 
-    public void APIMintNewNFTOnCollection(String collection_mint,String name,String symbol,String url,ICallBack iCallBack){
+    public void APIMintNewNFTOnCollection(String collection_mint, String name, String symbol, String url, MirrorCallback mirrorCallback){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("collection_mint", collection_mint);
@@ -261,10 +290,10 @@ public class MirrorSDKJava {
         }
         String data = jsonObject.toString();
 
-        checkParamsAndPost(urlMintNFTCollection,data,getHandlerCallback(iCallBack));
+        checkParamsAndPost(urlMintNFTCollection,data,getHandlerCallback(mirrorCallback));
     }
 
-    public void APIMintNewTopLevelCollection(String name,String symbol,String url,ICallBack iCallBack){
+    public void APIMintNewTopLevelCollection(String name, String symbol, String url, MirrorCallback mirrorCallback){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("name", name);
@@ -275,10 +304,10 @@ public class MirrorSDKJava {
         }
         String data = jsonObject.toString();
 
-        checkParamsAndPost(urlMintTopLevelCollection,data,getHandlerCallback(iCallBack));
+        checkParamsAndPost(urlMintTopLevelCollection,data,getHandlerCallback(mirrorCallback));
     }
 
-    public void APIMintNewLowerLevelCollection(String collection_mint,String name,String symbol,String url,ICallBack iCallBack){
+    public void APIMintNewLowerLevelCollection(String collection_mint, String name, String symbol, String url, MirrorCallback mirrorCallback){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("name", name);
@@ -290,10 +319,10 @@ public class MirrorSDKJava {
         }
         String data = jsonObject.toString();
 
-        checkParamsAndPost(urlMintLowerLevelCollection,data,getHandlerCallback(iCallBack));
+        checkParamsAndPost(urlMintLowerLevelCollection,data,getHandlerCallback(mirrorCallback));
     }
 
-    public void APITransferNFTToAnotherSolanaWallet(String mint_address,String to_wallet_address,ICallBack iCallBack){
+    public void APITransferNFTToAnotherSolanaWallet(String mint_address, String to_wallet_address, MirrorCallback mirrorCallback){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("mint_address", mint_address);
@@ -303,10 +332,10 @@ public class MirrorSDKJava {
         }
         String data = jsonObject.toString();
 
-        checkParamsAndPost(urlTransferNFTToAnotherSolanaWallet,data,getHandlerCallback(iCallBack));
+        checkParamsAndPost(urlTransferNFTToAnotherSolanaWallet,data,getHandlerCallback(mirrorCallback));
     }
 
-    public void APICancelListingOfNFT(String mint_address,Double price,ICallBack iCallBack){
+    public void APICancelListingOfNFT(String mint_address, Double price, MirrorCallback mirrorCallback){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("mint_address", mint_address);
@@ -316,10 +345,10 @@ public class MirrorSDKJava {
         }
         String data = jsonObject.toString();
 
-        checkParamsAndPost(urlCancelListingOfNFTOnTheMarketplace,data,getHandlerCallback(iCallBack));
+        checkParamsAndPost(urlCancelListingOfNFTOnTheMarketplace,data,getHandlerCallback(mirrorCallback));
     }
 
-    public void APIBuyNFT(String mint_address,Double price,ICallBack iCallBack){
+    public void APIBuyNFT(String mint_address, Double price, MirrorCallback mirrorCallback){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("mint_address", mint_address);
@@ -329,10 +358,10 @@ public class MirrorSDKJava {
         }
         String data = jsonObject.toString();
 
-        checkParamsAndPost(urlBuyNFTOnTheMarketplace,data,getHandlerCallback(iCallBack));
+        checkParamsAndPost(urlBuyNFTOnTheMarketplace,data,getHandlerCallback(mirrorCallback));
     }
 
-    public void APIUpdateListingOfNFT(String mint_address,Double price,ICallBack iCallBack){
+    public void APIUpdateListingOfNFT(String mint_address, Double price, MirrorCallback mirrorCallback){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("mint_address", mint_address);
@@ -342,10 +371,10 @@ public class MirrorSDKJava {
         }
         String  data = jsonObject.toString();
 
-        checkParamsAndPost(urlUpdateListingOfNFTOnTheMarketplace,data,getHandlerCallback(iCallBack));
+        checkParamsAndPost(urlUpdateListingOfNFTOnTheMarketplace,data,getHandlerCallback(mirrorCallback));
     }
 
-    public void APIListNFTOnTheMarketplace(String mint_address,Double price,ICallBack iCallBack){
+    public void APIListNFTOnTheMarketplace(String mint_address, Double price, MirrorCallback mirrorCallback){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("mint_address", mint_address);
@@ -355,10 +384,10 @@ public class MirrorSDKJava {
         }
         String data = jsonObject.toString();
 
-        checkParamsAndPost(urlListNFTOnTheMarketplace,data,getHandlerCallback(iCallBack));
+        checkParamsAndPost(urlListNFTOnTheMarketplace,data,getHandlerCallback(mirrorCallback));
     }
 
-    private void post(String url,String data,ICallBack iCallBack) {
+    private void post(String url, String data, MirrorCallback mirrorCallback) {
         logFlow("post json:"+data);
         try {
             //HttpURLConnection
@@ -391,7 +420,7 @@ public class MirrorSDKJava {
                 }
             }else{
                 logFlow(String.valueOf(conn.getResponseCode()));
-                if(iCallBack != null) iCallBack.callback(String.valueOf(conn.getResponseCode()));
+                if(mirrorCallback != null) mirrorCallback.callback(String.valueOf(conn.getResponseCode()));
             }
             conn.disconnect();
         } catch (IOException e) {
@@ -399,7 +428,7 @@ public class MirrorSDKJava {
         }
     }
 
-    public void APIFetchNFTsByUpdateAuthorityAddress(List<String> update_authorities,Double limit,Double offset, ICallBack iCallBack){
+    public void APIFetchNFTsByUpdateAuthorityAddress(List<String> update_authorities,Double limit,Double offset, MirrorCallback mirrorCallback){
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         for (String tag : update_authorities) {
@@ -414,10 +443,10 @@ public class MirrorSDKJava {
         }
         String data = jsonObject.toString();
 
-        checkParamsAndPost(urlFetchMultiNFTsDataByUpdateAuthorityAddress,data,getHandlerCallback(iCallBack));
+        checkParamsAndPost(urlFetchMultiNFTsDataByUpdateAuthorityAddress,data,getHandlerCallback(mirrorCallback));
     }
 
-    public void APIFetchNFTsByCreatorAddress(List<String> creators,Double limit,Double offset, ICallBack iCallBack){
+    public void APIFetchNFTsByCreatorAddress(List<String> creators,Double limit,Double offset, MirrorCallback mirrorCallback){
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         for (String tag : creators) {
@@ -432,10 +461,10 @@ public class MirrorSDKJava {
         }
         String  data = jsonObject.toString();
 
-        checkParamsAndPost(urlFetchMultiNFTsDataByCreatorAddress,data,getHandlerCallback(iCallBack));
+        checkParamsAndPost(urlFetchMultiNFTsDataByCreatorAddress,data,getHandlerCallback(mirrorCallback));
     }
 
-    public void APIFetchNFTsByMintAddress(List<String> mint_addresses, ICallBack iCallBack){
+    public void APIFetchNFTsByMintAddress(List<String> mint_addresses, MirrorCallback mirrorCallback){
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         for (String tag : mint_addresses) {
@@ -448,24 +477,24 @@ public class MirrorSDKJava {
         }
         String data = jsonObject.toString();
 
-        checkParamsAndPost(urlFetchMultiNFTsDataByMintAddress, data, getHandlerCallback(iCallBack));
+        checkParamsAndPost(urlFetchMultiNFTsDataByMintAddress, data, getHandlerCallback(mirrorCallback));
     }
 
-    private ICallBack getHandlerCallback(ICallBack iCallBack){
-        return new ICallBack() {
+    private MirrorCallback getHandlerCallback(MirrorCallback mirrorCallback){
+        return new MirrorCallback() {
             @Override
             public void callback(String result) {
-                new Handler().post(new Runnable() {
+                activityContext.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if(iCallBack != null) iCallBack.callback(result);
+                        if(mirrorCallback != null) mirrorCallback.callback(result);
                     }
                 });
             }
         };
     }
 
-    private void checkParamsAndPost(String url,String data,ICallBack iCallBack){
+    private void checkParamsAndGet(String url,  Map<String, String> params, MirrorCallback mirrorCallback){
         if(appId == ""){
             if(activityContext == null){
                 logFlow("Must init sdk first!");
@@ -480,11 +509,11 @@ public class MirrorSDKJava {
 
         if(accessToken == ""){
             logFlow("No access token,start get flow");
-            GetAccessToken(activityContext, new ICallBack() {
+            GetAccessToken(activityContext, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     accessToken = result;
-                    doPost(url,data,iCallBack);
+                    doGet(url,params, mirrorCallback);
                 }
             });
         }else{
@@ -494,21 +523,54 @@ public class MirrorSDKJava {
                     logFlow("Must get mWalletAddress first!");
                 }
             }
-            doPost(url,data,iCallBack);
+            doGet(url,params, mirrorCallback);
         }
     }
 
-    private void doPost(String url,String data,ICallBack iCallBack){
+    private void checkParamsAndPost(String url, String data, MirrorCallback mirrorCallback){
+        if(appId == ""){
+            if(activityContext == null){
+                logFlow("Must init sdk first!");
+                return;
+            }
+            appId = getSavedString(activityContext,localKeyAppId);
+        }
+        if(appId == ""){
+            logFlow("Must set app id first!");
+            return;
+        }
+
+        if(accessToken == ""){
+            logFlow("No access token,start get flow");
+            GetAccessToken(activityContext, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    accessToken = result;
+                    doPost(url,data, mirrorCallback);
+                }
+            });
+        }else{
+            if(mWalletAddress == ""){
+                mWalletAddress = getSavedString(activityContext,localKeyWalletAddress);
+                if(mWalletAddress == ""){
+                    logFlow("Must get mWalletAddress first!");
+                }
+            }
+            doPost(url,data, mirrorCallback);
+        }
+    }
+
+    private void doPost(String url, String data, MirrorCallback mirrorCallback){
         new Thread(new Runnable() {
             @Override
             public void run() {
-                post(url, data,new ICallBack(){
+                post(url, data,new MirrorCallback(){
                     @Override
                     public void callback(String result) {
-                        new Handler().post(new Runnable() {
+                        activityContext.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if(iCallBack != null) iCallBack.callback(result);
+                                if(mirrorCallback != null) mirrorCallback.callback(result);
                             }
                         });
                     }
@@ -517,7 +579,7 @@ public class MirrorSDKJava {
         }).start();
     }
 
-    private Runnable httpGetRunnableWithRefreshToken(String urlRefreshToken,String accessToken,ICallBack iCallBack) {
+    private Runnable httpGetRunnableWithRefreshToken(String urlRefreshToken, String accessToken, MirrorCallback mirrorCallback) {
         return new Runnable() {
             @Override
             public void run() {
@@ -541,13 +603,13 @@ public class MirrorSDKJava {
                         }
                     }
                     urlConnection.disconnect();
-                    iCallBack.callback(textBuilder.toString());
+                    mirrorCallback.callback(textBuilder.toString());
                 } catch (MalformedURLException | ProtocolException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (Error err) {
-                    iCallBack.callback("Network Error");
+                    mirrorCallback.callback("Network Error");
                 }
             }
         };
@@ -562,6 +624,8 @@ public class MirrorSDKJava {
         }
 
         logFlow("http get:"+strUrlPath);
+        logFlow("http get(x-api-key):"+appId);
+        logFlow("http get Authorization:"+accessToken);
         try {
             URL url = new URL(strUrlPath);
             HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
@@ -569,6 +633,8 @@ public class MirrorSDKJava {
             urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             urlConn.setRequestProperty("Accept","application/json");
             urlConn.setRequestProperty("x-api-key",appId);
+            urlConn.setRequestProperty("Authorization","Bearer "+accessToken);
+            urlConn.setRequestMethod("GET");
 
             InputStreamReader in = new InputStreamReader(urlConn.getInputStream());
 
@@ -614,7 +680,9 @@ public class MirrorSDKJava {
     private void setWebView(Context context,WebView webView){
         this.webView = webView;
         webView.setWebViewClient(new WebViewClient());
-        webView.loadUrl(urlAuth+appId);
+        final String finalUrl = urlAuth+appId;
+        logFlow("open login page with url:"+finalUrl);
+        webView.loadUrl(finalUrl);
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
 
@@ -658,14 +726,34 @@ public class MirrorSDKJava {
     @JavascriptInterface
     public void setRefreshToken(String refreshToken) {
         Toast.makeText(globalContext, strLoginSuccess, Toast.LENGTH_SHORT).show();
-        saveRefreshToken(globalContext,refreshToken);
+        saveRefreshToken(refreshToken);
+        parentDialog.dismiss();
+        if(cbLogin != null) cbLogin.callback("login success");
+    }
+
+    @JavascriptInterface
+    public void setLoginResponse(String dataJsonStr) {
+        logFlow("receive login response:"+dataJsonStr);
+        try {
+            JSONObject jsonObject = new JSONObject(dataJsonStr);
+            String token = jsonObject.getString("refresh_token");
+            saveRefreshToken(token);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        parentDialog.dismiss();
+        if(cbLogin != null) cbLogin.callback(dataJsonStr);
+    }
+
+    @JavascriptInterface
+    public void closePage() {
         parentDialog.dismiss();
     }
 
-    private void saveRefreshToken(Context context,String refreshToken){
+    private void saveRefreshToken(String refreshToken){
         logFlow("save refresh token to local:"+refreshToken);
         //获得SharedPreferences的实例 sp_name是文件名
-        SharedPreferences sp = context.getSharedPreferences(localFileKey, Context.MODE_PRIVATE);
+        SharedPreferences sp = activityContext.getSharedPreferences(localFileKey, Context.MODE_PRIVATE);
         //获得Editor 实例
         SharedPreferences.Editor editor = sp.edit();
         //以key-value形式保存数据
@@ -676,9 +764,9 @@ public class MirrorSDKJava {
         editor.commit();
     }
 
-    private void saveString(Context context,String key,String value){
+    private void saveString(String key,String value){
         //获得SharedPreferences的实例 sp_name是文件名
-        SharedPreferences sp = context.getSharedPreferences(localFileKey, Context.MODE_PRIVATE);
+        SharedPreferences sp = activityContext.getSharedPreferences(localFileKey, Context.MODE_PRIVATE);
         //获得Editor 实例
         SharedPreferences.Editor editor = sp.edit();
         //以key-value形式保存数据
@@ -725,15 +813,12 @@ public class MirrorSDKJava {
         }
     }
 
-    public interface ICallBack {
-        void callback(String result);
-    }
-
     class MirrorChromeClient extends WebChromeClient {
         @Override
         public boolean onCreateWindow(WebView view, boolean isDialog,
                                       boolean isUserGesture, Message resultMsg) {
             webViewPopUp = new WebView(globalContext);
+            WebSettings webViewPopupSetting = webViewPopUp.getSettings();
             webViewPopUp.setVerticalScrollBarEnabled(false);
             webViewPopUp.setHorizontalScrollBarEnabled(false);
             webViewPopUp.setWebChromeClient(new MirrorChromeClient());
@@ -741,6 +826,15 @@ public class MirrorSDKJava {
             webViewPopUp.getSettings().setSaveFormData(true);
             webViewPopUp.getSettings().setEnableSmoothTransition(true);
             webViewPopUp.getSettings().setUserAgentString(userAgent + "yourAppName");
+
+            //To resolve the exceed on Android
+            if (Build.VERSION.SDK_INT >= 19) {
+                webViewPopUp.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            } else {
+                webViewPopUp.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+            }
+            webViewPopupSetting.setRenderPriority(WebSettings.RenderPriority.HIGH);
+            webViewPopupSetting.setCacheMode(WebSettings.LOAD_NO_CACHE);
 
             // pop the  webview with alert dialog
             builder = new AlertDialog.Builder(activityContext).create();

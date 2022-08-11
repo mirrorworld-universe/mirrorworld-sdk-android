@@ -3,7 +3,7 @@
 buildscript {
     ext.kotlin_version ='1.3.72'
     repositories {
-        jcenter()
+        mavenCentral()
         google()
     }
     dependencies {
@@ -23,8 +23,7 @@ allprojects {
     version = VERSION_NAME
     group = GROUP
     repositories {
-        jcenter()
+        mavenCentral()
         google()
     }
 }
-apply plugin: 'android-reporting'

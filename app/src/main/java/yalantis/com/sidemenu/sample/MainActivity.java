@@ -152,52 +152,29 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         }
     }
 
-    private ScreenShotable replaceToNFTAPIs(ScreenShotable screenShotable, int topPosition) {
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    String urlFetchMultiNFTsDataByMintAddress = "https://api-staging.mirrorworld.fun/v1/solana/nft/mints";
-//                    String urlRefreshToken = "https://api-staging.mirrorworld.fun/v1/auth/refresh-token";
-//                    URL url = new URL(urlFetchMultiNFTsDataByMintAddress);
-//
-//                    String aaa = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTUwMywic29sX2FkZHJlc3MiOiJIeU1TQzdKSjNza3JjWE5kbWNOQk40WHNWU1FITEs3emdiUGlaQUQ3ZmFLZCIsImVtYWlsIjoiMjU3MzA0MDU2MEBxcS5jb20iLCJpYXQiOjE2NTk3MTkzNTgsImV4cCI6MTY2MjMxMTM1OH0.Kj2QGbDzWjWf5DlR2IgolIjOyjjDDDQno2v2pe0Kzq8";
-//                    URLConnection conn = url.openConnection();
-//                    conn.addRequestProperty("x-auth-access-token",aaa);
-//                    conn.addRequestProperty("x-api-key","WsPRi3GQz0FGfoSklYUYzDesdKjKvxdrmtQ");
-////                    conn.setRequestMethod();
-//                    conn.setDoInput(true);
-//
-//                    conn.setDoOutput(true);
-//
-//                    InputStream inputStream = conn.getInputStream();
-//
-//                    InputStreamReader isReader = new InputStreamReader(inputStream, "GBK"); // 返回的编码格式
-//
-//                    BufferedReader bfReader = new BufferedReader(isReader);
-//
-//                    StringBuilder sb = new StringBuilder();
-//
-//                    for (String tmp=null; (tmp=bfReader.readLine())!=null; ) {
-//
-//                        sb.append(tmp);
-//
-//                    }
-//
-//                    Log.i("-------",sb.toString());
-//
-//                } catch (MalformedURLException e) {
-//
-//                    e.printStackTrace();
-//
-//                } catch (Throwable e) {
-//
-//                    e.printStackTrace();
-//
-//                }
-//            }
-//        }).start();
+    private ScreenShotable replaceToWalletAPIs(ScreenShotable screenShotable, int topPosition) {
+        this.res = this.res == R.drawable.content_music ? R.drawable.content_films : R.drawable.content_music;
+        View view = findViewById(R.id.content_frame);
+        int finalRadius = Math.max(view.getWidth(), view.getHeight());
+        Animator animator = ViewAnimationUtils.createCircularReveal(view, 0, topPosition, 0, finalRadius);
+        animator.setInterpolator(new AccelerateInterpolator());
+        animator.setDuration(ViewAnimator.CIRCULAR_REVEAL_ANIMATION_DURATION);
 
+        findViewById(R.id.content_overlay).setBackground(new BitmapDrawable(getResources(), screenShotable.getBitmap()));
+        animator.start();
+
+        List<MultiItemData.MultiItem> items = new ArrayList<>();
+        items.add(new MultiItemData.MultiItem(
+                101,"Get wallet address",
+                "Get user's wallet address on solana",
+                "GetWallet",
+                null,null,null,null,null,null));
+        MultiParaItemFragment contentFragment = MultiParaItemFragment.newInstance(this.res,items);
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, contentFragment).commit();
+        return contentFragment;
+    }
+    private ScreenShotable replaceToNFTAPIs(ScreenShotable screenShotable, int topPosition) {
         this.res = this.res == R.drawable.content_music ? R.drawable.content_films : R.drawable.content_music;
         View view = findViewById(R.id.content_frame);
         int finalRadius = Math.max(view.getWidth(), view.getHeight());
@@ -372,6 +349,8 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
                 return replaceToMarketAPIs(screenShotable,position);
             case ContentFragment.CASE:
                 return replaceToNFTAPIs(screenShotable,position);
+            case ContentFragment.SHOP:
+                return replaceToWalletAPIs(screenShotable,position);
                 default:
                 return replaceFragment(screenShotable, position);
         }

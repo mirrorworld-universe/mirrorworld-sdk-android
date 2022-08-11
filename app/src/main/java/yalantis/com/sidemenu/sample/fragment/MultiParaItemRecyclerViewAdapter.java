@@ -9,10 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.mirror.sdk.MirrorCallback;
 import com.mirror.sdk.MirrorSDKJava;
 
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
 import yalantis.com.sidemenu.sample.R;
 import yalantis.com.sidemenu.sample.fragment.placeholder.MultiItemData;
 import yalantis.com.sidemenu.sample.fragment.placeholder.PlaceholderContent.PlaceholderItem;
@@ -94,7 +93,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
     private void handleClick(int apiId, MultiParaItemRecyclerViewAdapter.ViewHolder holder){
         if(apiId == 12){
             String mint_address = String.valueOf(holder.mEt1.getText());
-            MirrorSDKJava.getInstance().APIFetchSingleNFT(mint_address, new MirrorSDKJava.ICallBack() {
+            MirrorSDKJava.getInstance().APIFetchSingleNFT(mint_address, new MirrorCallback() {
                 @Override
                 public void callback(String s) {
                     holder.mResultView.setText(s);
@@ -104,7 +103,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             String name = String.valueOf(holder.mEt1.getText());
             String symbol = String.valueOf(holder.mEt2.getText());
             String url = String.valueOf(holder.mEt3.getText());
-            MirrorSDKJava.getInstance().APIMintNewTopLevelCollection(name, symbol, url, new MirrorSDKJava.ICallBack() {
+            MirrorSDKJava.getInstance().APIMintNewTopLevelCollection(name, symbol, url, new MirrorCallback() {
                 @Override
                 public void callback(String s) {
                     holder.mResultView.setText(s);
@@ -115,7 +114,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             String name = String.valueOf(holder.mEt2.getText());
             String symbol = String.valueOf(holder.mEt3.getText());
             String url = String.valueOf(holder.mEt3.getText());
-            MirrorSDKJava.getInstance().APIMintNewNFTOnCollection(collection,name, symbol, url, new MirrorSDKJava.ICallBack() {
+            MirrorSDKJava.getInstance().APIMintNewNFTOnCollection(collection,name, symbol, url, new MirrorCallback() {
                 @Override
                 public void callback(String s) {
                     holder.mResultView.setText(s);
@@ -126,7 +125,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             String name = String.valueOf(holder.mEt2.getText());
             String symbol = String.valueOf(holder.mEt3.getText());
             String url = String.valueOf(holder.mEt4.getText());
-            MirrorSDKJava.getInstance().APIMintNewLowerLevelCollection(collection_mint,name, symbol, url, new MirrorSDKJava.ICallBack() {
+            MirrorSDKJava.getInstance().APIMintNewLowerLevelCollection(collection_mint,name, symbol, url, new MirrorCallback() {
                 @Override
                 public void callback(String s) {
                     holder.mResultView.setText(s);
@@ -138,7 +137,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             List<String> list = new ArrayList<>();
             list.add(ad1);
             list.add(ad2);
-            MirrorSDKJava.getInstance().APIFetchNFTsByMintAddress(list, new MirrorSDKJava.ICallBack() {
+            MirrorSDKJava.getInstance().APIFetchNFTsByMintAddress(list, new MirrorCallback() {
                 @Override
                 public void callback(String s) {
                     holder.mResultView.setText(s);
@@ -150,7 +149,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             Double offset = Double.valueOf(String.valueOf(holder.mEt3.getText()));
             List<String> list = new ArrayList<>();
             list.add(creator1);
-            MirrorSDKJava.getInstance().APIFetchNFTsByCreatorAddress(list,limit,offset, new MirrorSDKJava.ICallBack() {
+            MirrorSDKJava.getInstance().APIFetchNFTsByCreatorAddress(list,limit,offset, new MirrorCallback() {
                 @Override
                 public void callback(String s) {
                     holder.mResultView.setText(s);
@@ -162,7 +161,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             Double offset = Double.valueOf(String.valueOf(holder.mEt3.getText()));
             List<String> list = new ArrayList<>();
             list.add(update_authority1);
-            MirrorSDKJava.getInstance().APIFetchNFTsByUpdateAuthorityAddress(list,limit,offset, new MirrorSDKJava.ICallBack() {
+            MirrorSDKJava.getInstance().APIFetchNFTsByUpdateAuthorityAddress(list,limit,offset, new MirrorCallback() {
                 @Override
                 public void callback(String s) {
                     holder.mResultView.setText(s);
@@ -171,7 +170,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
         }else if(apiId == 37){
             String mint_address = String.valueOf(holder.mEt1.getText());
             Double price = Double.valueOf(String.valueOf(holder.mEt2.getText()));
-            MirrorSDKJava.getInstance().APIListNFTOnTheMarketplace(mint_address,price, new MirrorSDKJava.ICallBack() {
+            MirrorSDKJava.getInstance().APIListNFTOnTheMarketplace(mint_address,price, new MirrorCallback() {
                 @Override
                 public void callback(String s) {
                     holder.mResultView.setText(s);
@@ -180,7 +179,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
         }else if(apiId == 38){
             String mint_address = String.valueOf(holder.mEt1.getText());
             Double price = Double.valueOf(String.valueOf(holder.mEt2.getText()));
-            MirrorSDKJava.getInstance().APIUpdateListingOfNFT(mint_address,price, new MirrorSDKJava.ICallBack() {
+            MirrorSDKJava.getInstance().APIUpdateListingOfNFT(mint_address,price, new MirrorCallback() {
                 @Override
                 public void callback(String s) {
                     holder.mResultView.setText(s);
@@ -189,7 +188,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
         }else if(apiId == 39){
             String mint_address = String.valueOf(holder.mEt1.getText());
             Double price = Double.valueOf(String.valueOf(holder.mEt2.getText()));
-            MirrorSDKJava.getInstance().APIBuyNFT(mint_address,price, new MirrorSDKJava.ICallBack() {
+            MirrorSDKJava.getInstance().APIBuyNFT(mint_address,price, new MirrorCallback() {
                 @Override
                 public void callback(String s) {
                     holder.mResultView.setText(s);
@@ -198,7 +197,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
         }else if(apiId == 40){
             String mint_address = String.valueOf(holder.mEt1.getText());
             Double price = Double.valueOf(String.valueOf(holder.mEt2.getText()));
-            MirrorSDKJava.getInstance().APICancelListingOfNFT(mint_address,price, new MirrorSDKJava.ICallBack() {
+            MirrorSDKJava.getInstance().APICancelListingOfNFT(mint_address,price, new MirrorCallback() {
                 @Override
                 public void callback(String s) {
                     holder.mResultView.setText(s);
@@ -207,7 +206,14 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
         }else if(apiId == 41){
             String mint_address = String.valueOf(holder.mEt1.getText());
             String to_wallet_address = String.valueOf(holder.mEt2.getText());
-            MirrorSDKJava.getInstance().APITransferNFTToAnotherSolanaWallet(mint_address,to_wallet_address, new MirrorSDKJava.ICallBack() {
+            MirrorSDKJava.getInstance().APITransferNFTToAnotherSolanaWallet(mint_address,to_wallet_address, new MirrorCallback() {
+                @Override
+                public void callback(String s) {
+                    holder.mResultView.setText(s);
+                }
+            });
+        }else if(apiId == 101){
+            MirrorSDKJava.getInstance().APIGetWalletAddress(new MirrorCallback() {
                 @Override
                 public void callback(String s) {
                     holder.mResultView.setText(s);
