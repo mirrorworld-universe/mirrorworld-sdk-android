@@ -2,6 +2,7 @@ package yalantis.com.sidemenu.sample.fragment;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -219,7 +220,58 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(s);
                 }
             });
+        }else if(apiId == 102){
+
+            //  to_publickey","amount"
+
+            String to_publickey = String.valueOf(holder.mEt1.getText());
+            int amount = Integer.valueOf(holder.mEt2.getText().toString());
+
+            MirrorSDKJava.getInstance().APIPostTransferSQL(to_publickey, amount, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    holder.mResultView.setText(result);
+                }
+            });
+        }else if(apiId == 103){
+
+            // "to_publickey","amount",
+            //                        "token_mint","decimals",
+
+            String to_publickey = String.valueOf(holder.mEt1.getText());
+            int amount = Integer.valueOf(holder.mEt2.getText().toString());
+            String token_mint = String.valueOf(holder.mEt3.getText());
+            int decimals = Integer.valueOf(holder.mEt4.getText().toString());
+
+            MirrorSDKJava.getInstance().APIPostTransferToken(to_publickey, amount, token_mint, decimals, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    holder.mResultView.setText(result);
+                }
+            });
+
+        }else if(apiId == 104){
+
+            MirrorSDKJava.getInstance().APIGetWalletToken(new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    holder.mResultView.setText(result);
+                }
+            });
+        }else if(apiId == 105){
+            String limit = String.valueOf(holder.mEt1.getText());
+            String before = holder.mEt2.getText().toString();
+            MirrorSDKJava.getInstance().APIGetWalletTransactions(limit, before, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    holder.mResultView.setText(result);
+                }
+            });
+
         }
+
+        // TODO: get request params from user input
+
     }
     @Override
     public int getItemCount() {

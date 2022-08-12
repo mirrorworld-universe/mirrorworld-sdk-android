@@ -162,18 +162,42 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
 
         findViewById(R.id.content_overlay).setBackground(new BitmapDrawable(getResources(), screenShotable.getBitmap()));
         animator.start();
-
+        // todo add data to dataSource
         List<MultiItemData.MultiItem> items = new ArrayList<>();
         items.add(new MultiItemData.MultiItem(
                 101,"Get wallet address",
                 "Get user's wallet address on solana",
                 "GetWallet",
                 null,null,null,null,null,null));
-        MultiParaItemFragment contentFragment = MultiParaItemFragment.newInstance(this.res,items);
 
+
+        items.add(
+                new MultiItemData.MultiItem(102,"Transfer SOL","Transfer SOL",
+                        "Get","to_publickey","amount",
+                        null,null,null,null));
+
+        items.add(
+                new MultiItemData.MultiItem(103,"Transfer Token","Transfer Token",
+                        "Get","to_publickey","amount",
+                        "token_mint","decimals",null,null));
+
+        items.add(
+                new MultiItemData.MultiItem(104,"Get wallet tokens","Get a wallet's tokens",
+                        "Get",null,null,
+                        null,null,null,null));
+
+
+        items.add(
+                new MultiItemData.MultiItem(105,"Get Wallet Transactions","Get a wallet's transactions by filters",
+                        "Get","limit","before",
+                        null,null,null,null));
+
+        MultiParaItemFragment contentFragment = MultiParaItemFragment.newInstance(this.res,items);
         getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, contentFragment).commit();
         return contentFragment;
     }
+
+
     private ScreenShotable replaceToNFTAPIs(ScreenShotable screenShotable, int topPosition) {
         this.res = this.res == R.drawable.content_music ? R.drawable.content_films : R.drawable.content_music;
         View view = findViewById(R.id.content_frame);
@@ -321,6 +345,37 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         return contentFragment;
     }
 
+
+
+    private ScreenShotable replacedWalletAPI(ScreenShotable screenShotable, int topPosition){
+        this.res = this.res == R.drawable.content_music ? R.drawable.content_films : R.drawable.content_music;
+        View view = findViewById(R.id.content_frame);
+        int finalRadius = Math.max(view.getWidth(), view.getHeight());
+        Animator animator = ViewAnimationUtils.createCircularReveal(view, 0, topPosition, 0, finalRadius);
+        animator.setInterpolator(new AccelerateInterpolator());
+        animator.setDuration(ViewAnimator.CIRCULAR_REVEAL_ANIMATION_DURATION);
+
+        findViewById(R.id.content_overlay).setBackground(new BitmapDrawable(getResources(), screenShotable.getBitmap()));
+        animator.start();
+
+
+        // add info
+
+        List<PlaceholderContent.PlaceholderItem> items = new ArrayList<>();
+        items.add(new PlaceholderContent.PlaceholderItem(
+                90,"just test",
+                "just test some info",
+                "test","test"));
+        APIListFragment contentFragment = APIListFragment.newInstance(this.res,items);
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, contentFragment).commit();
+        return contentFragment;
+
+    }
+
+
+
+
     private ScreenShotable replaceFragment(ScreenShotable screenShotable, int topPosition) {
         this.res = this.res == R.drawable.content_music ? R.drawable.content_films : R.drawable.content_music;
         View view = findViewById(R.id.content_frame);
@@ -351,6 +406,8 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
                 return replaceToNFTAPIs(screenShotable,position);
             case ContentFragment.SHOP:
                 return replaceToWalletAPIs(screenShotable,position);
+            case ContentFragment.MOVIE:
+                return replacedWalletAPI(screenShotable,position);
                 default:
                 return replaceFragment(screenShotable, position);
         }
