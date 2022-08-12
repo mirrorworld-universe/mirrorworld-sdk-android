@@ -57,8 +57,8 @@ public class MirrorSDKJava {
     private AlertDialog builder = null;
     private Context globalContext = null;
     private Activity activityContext = null;
-//    private String urlRoot = "https://auth.mirrorworld.fun/";
-    private String urlRoot = "https://auth-staging.mirrorworld.fun/";
+    private String urlRoot = "https://auth.mirrorworld.fun/";
+    //    private String urlRoot = "https://auth-staging.mirrorworld.fun/";
     private String urlAuth = urlRoot;
     private AlertDialog parentDialog = null;
     private WebView webView = null;
@@ -129,6 +129,13 @@ public class MirrorSDKJava {
         dialog.setCanceledOnTouchOutside(false);
         WebView wv = new WebView(activityContext);
         setWebView(activityContext,wv);
+        dialog.setButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                wv.destroy();
+                dialog.dismiss();
+            }
+        });
 
         RelativeLayout layout = getPopupWindowLayout(activityContext);
         layout.addView(wv);
