@@ -41,3 +41,6 @@ Android SDK ( aar 格式) 大小约为 16 KB*
 
 ## Java导入Kotlin环境支持
 由于SDK为Kotlin编写，如果项目为Java编写，则需要对环境作出修改，使之支持Kotlin代码。
+
+# API列表
+### StartLogin  

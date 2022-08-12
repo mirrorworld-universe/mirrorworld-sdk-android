@@ -142,7 +142,7 @@ public class MirrorSDKJava {
         dialog.setView(layout);
         dialog.show();
     }
-    public void StartLogin(MirrorCallback mirrorCallback){
+    public void StartLoginWithCallback(MirrorCallback mirrorCallback){
         StartLogin();
         cbLogin = mirrorCallback;
     }
