@@ -287,6 +287,19 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
                 "Transfer NFT to another solana wallet.",
                 "TransferNFT",
                 "mint_address","to_wallet_address",null,null,null,null));
+
+
+        items.add(new MultiItemData.MultiItem(
+                42,"Fetch multiple NFTs","Fetch multiple NFTs data by owner addresses",
+                "Fetch NFTs","owner","limit","offset",null,null,null
+        ));
+
+        items.add(new MultiItemData.MultiItem(
+                43,"Fetch activity","Fetch activity of a single NFT",
+                "Fetch activity","mint_address",null,null,null,null,null
+        ));
+
+
         MultiParaItemFragment contentFragment = MultiParaItemFragment.newInstance(this.res,items);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, contentFragment).commit();

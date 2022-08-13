@@ -84,6 +84,16 @@ public class MirrorSDKJava {
     private final String urlMintTopLevelCollection = apiRoot + "v1/solana/mint/collection";
     private final String urlMintLowerLevelCollection = apiRoot + "v1/solana/mint/sub-collection";
 
+    // add
+    private final String urlFetchmultipleNFTs = apiRoot+"v1/solana/nft/owners";
+
+
+    // v1/solana/activity/:mint_address  path params
+    private final String urlFetchActivity = apiRoot+ "v1/solana/activity/";
+
+    //
+
+
     //about market
 
     private final String urlListNFTOnTheMarketplace = apiRoot + "v1/solana/marketplace/list";
@@ -432,6 +442,34 @@ public class MirrorSDKJava {
 
         checkParamsAndPost(urlTransferNFTToAnotherSolanaWallet,data,getHandlerCallback(mirrorCallback));
     }
+
+
+    // add
+    public void APIPostFetchMultiple(List<String> owners,int limit,int offset,MirrorCallback mirrorCallback){
+
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        for (String tag : owners) {
+            jsonArray.put(tag);
+        }
+        try {
+            jsonObject.put("owners", jsonArray);
+            jsonObject.put("limit", limit);
+            jsonObject.put("offset", offset);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+
+        checkParamsAndPost(urlFetchmultipleNFTs,data,getHandlerCallback(mirrorCallback));
+    }
+
+
+    public void APIGetFetchActivities(String mint_address,MirrorCallback mirrorCallback){
+
+        checkParamsAndGet(urlFetchActivity+mint_address,null, mirrorCallback);
+    }
+
 
     public void APICancelListingOfNFT(String mint_address, Double price, MirrorCallback mirrorCallback){
         JSONObject jsonObject = new JSONObject();

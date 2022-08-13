@@ -213,7 +213,32 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(s);
                 }
             });
-        }else if(apiId == 101){
+        }else if(apiId == 42){
+            String owners = String.valueOf(holder.mEt1.getText());
+            int limit = Integer.valueOf(String.valueOf(holder.mEt2.getText()));
+            int offset = Integer.valueOf(String.valueOf(holder.mEt3.getText()));
+            List<String> params = new ArrayList<>();
+            params.add(owners);
+
+            MirrorSDKJava.getInstance().APIPostFetchMultiple(params, limit, offset, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    holder.mResultView.setText(result);
+                }
+            });
+
+
+        }else if(apiId == 43){
+
+            String mint_address = String.valueOf(holder.mEt1.getText());
+            MirrorSDKJava.getInstance().APIGetFetchActivities(mint_address, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    holder.mResultView.setText(result);
+                }
+            });
+
+        } else if(apiId == 101){
             MirrorSDKJava.getInstance().APIGetWalletAddress(new MirrorCallback() {
                 @Override
                 public void callback(String s) {
@@ -237,11 +262,20 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
 
             // "to_publickey","amount",
             //                        "token_mint","decimals",
-
+            int amount = 0;
+            int decimals = 0;
             String to_publickey = String.valueOf(holder.mEt1.getText());
-            int amount = Integer.valueOf(holder.mEt2.getText().toString());
+
             String token_mint = String.valueOf(holder.mEt3.getText());
-            int decimals = Integer.valueOf(holder.mEt4.getText().toString());
+
+            try{
+                decimals = Integer.valueOf(holder.mEt4.getText().toString());
+                amount = Integer.valueOf(holder.mEt2.getText().toString());
+
+            }catch (Exception e){
+
+            }
+
 
             MirrorSDKJava.getInstance().APIPostTransferToken(to_publickey, amount, token_mint, decimals, new MirrorCallback() {
                 @Override
