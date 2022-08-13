@@ -2,6 +2,7 @@ package yalantis.com.sidemenu.sample.fragment;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -212,14 +213,99 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(s);
                 }
             });
-        }else if(apiId == 101){
+        }else if(apiId == 42){
+            String owners = String.valueOf(holder.mEt1.getText());
+            int limit = Integer.valueOf(String.valueOf(holder.mEt2.getText()));
+            int offset = Integer.valueOf(String.valueOf(holder.mEt3.getText()));
+            List<String> params = new ArrayList<>();
+            params.add(owners);
+
+            MirrorSDKJava.getInstance().APIPostFetchMultiple(params, limit, offset, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    holder.mResultView.setText(result);
+                }
+            });
+
+
+        }else if(apiId == 43){
+
+            String mint_address = String.valueOf(holder.mEt1.getText());
+            MirrorSDKJava.getInstance().APIGetFetchActivities(mint_address, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    holder.mResultView.setText(result);
+                }
+            });
+
+        } else if(apiId == 101){
             MirrorSDKJava.getInstance().APIGetWalletAddress(new MirrorCallback() {
                 @Override
                 public void callback(String s) {
                     holder.mResultView.setText(s);
                 }
             });
+        }else if(apiId == 102){
+
+            //  to_publickey","amount"
+
+            String to_publickey = String.valueOf(holder.mEt1.getText());
+            int amount = Integer.valueOf(holder.mEt2.getText().toString());
+
+            MirrorSDKJava.getInstance().APIPostTransferSQL(to_publickey, amount, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    holder.mResultView.setText(result);
+                }
+            });
+        }else if(apiId == 103){
+
+            // "to_publickey","amount",
+            //                        "token_mint","decimals",
+            int amount = 0;
+            int decimals = 0;
+            String to_publickey = String.valueOf(holder.mEt1.getText());
+
+            String token_mint = String.valueOf(holder.mEt3.getText());
+
+            try{
+                decimals = Integer.valueOf(holder.mEt4.getText().toString());
+                amount = Integer.valueOf(holder.mEt2.getText().toString());
+
+            }catch (Exception e){
+
+            }
+
+
+            MirrorSDKJava.getInstance().APIPostTransferToken(to_publickey, amount, token_mint, decimals, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    holder.mResultView.setText(result);
+                }
+            });
+
+        }else if(apiId == 104){
+
+            MirrorSDKJava.getInstance().APIGetWalletToken(new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    holder.mResultView.setText(result);
+                }
+            });
+        }else if(apiId == 105){
+            String limit = String.valueOf(holder.mEt1.getText());
+            String before = holder.mEt2.getText().toString();
+            MirrorSDKJava.getInstance().APIGetWalletTransactions(limit, before, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    holder.mResultView.setText(result);
+                }
+            });
+
         }
+
+        // TODO: get request params from user input
+
     }
     @Override
     public int getItemCount() {

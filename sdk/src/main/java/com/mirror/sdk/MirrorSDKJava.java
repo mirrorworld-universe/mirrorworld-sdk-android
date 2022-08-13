@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
@@ -57,9 +56,10 @@ public class MirrorSDKJava {
     private AlertDialog builder = null;
     private Context globalContext = null;
     private Activity activityContext = null;
-    private String urlRoot = "https://auth.mirrorworld.fun/";
-    //    private String urlRoot = "https://auth-staging.mirrorworld.fun/";
-    private String urlAuth = urlRoot;
+    private String urlAuth = "https://auth.mirrorworld.fun/";
+    //    private String urlAuth = "https://auth-staging.mirrorworld.fun/";
+    //private String apiRoot = "https://api.mirrorworld.fun/";
+    private String apiRoot = "https://api-staging.mirrorworld.fun/";
     private AlertDialog parentDialog = null;
     private WebView webView = null;
     private String userAgent = null;
@@ -73,26 +73,50 @@ public class MirrorSDKJava {
     private MirrorCallback cbLogin = null;
 
     //get url
-    private final String urlRefreshToken = urlRoot + "v1/auth/refresh-token";
-    private final String urlQueryUser = urlRoot + "v1/auth/user";
-    private final String urlQueryNFTDetail = urlRoot + "v1/solana/nft/";
+    private final String urlRefreshToken = apiRoot + "v1/auth/refresh-token";
+    private final String urlQueryUser = apiRoot + "v1/auth/user";
+    private final String urlQueryNFTDetail = apiRoot + "v1/solana/nft/";
     //post url
-    private final String urlFetchMultiNFTsDataByMintAddress = urlRoot + "v1/solana/nft/mints";
-    private final String urlFetchMultiNFTsDataByCreatorAddress = urlRoot + "v1/solana/nft/creators";
-    private final String urlFetchMultiNFTsDataByUpdateAuthorityAddress = urlRoot + "v1/solana/nft/update-authorities";
-    private final String urlMintNFTCollection = urlRoot + "v1/solana/mint/nft";
-    private final String urlMintTopLevelCollection = urlRoot + "v1/solana/mint/collection";
-    private final String urlMintLowerLevelCollection = urlRoot + "v1/solana/mint/sub-collection";
+    private final String urlFetchMultiNFTsDataByMintAddress = apiRoot + "v1/solana/nft/mints";
+    private final String urlFetchMultiNFTsDataByCreatorAddress = apiRoot + "v1/solana/nft/creators";
+    private final String urlFetchMultiNFTsDataByUpdateAuthorityAddress = apiRoot + "v1/solana/nft/update-authorities";
+    private final String urlMintNFTCollection = apiRoot + "v1/solana/mint/nft";
+    private final String urlMintTopLevelCollection = apiRoot + "v1/solana/mint/collection";
+    private final String urlMintLowerLevelCollection = apiRoot + "v1/solana/mint/sub-collection";
+
+    // add
+    private final String urlFetchmultipleNFTs = apiRoot+"v1/solana/nft/owners";
+
+
+    // v1/solana/activity/:mint_address  path params
+    private final String urlFetchActivity = apiRoot+ "v1/solana/activity/";
+
+    //
+
 
     //about market
-    private final String urlListNFTOnTheMarketplace = urlRoot + "v1/solana/marketplace/list";
-    private final String urlUpdateListingOfNFTOnTheMarketplace = urlRoot + "v1/solana/marketplace/update";
-    private final String urlBuyNFTOnTheMarketplace = urlRoot + "v1/solana/marketplace/buy";
-    private final String urlCancelListingOfNFTOnTheMarketplace = urlRoot + "v1/solana/marketplace/cancel";
-    private final String urlTransferNFTToAnotherSolanaWallet = urlRoot + "v1/solana/marketplace/transfer";
+
+    private final String urlListNFTOnTheMarketplace = apiRoot + "v1/solana/marketplace/list";
+    private final String urlUpdateListingOfNFTOnTheMarketplace = apiRoot + "v1/solana/marketplace/update";
+    private final String urlBuyNFTOnTheMarketplace = apiRoot + "v1/solana/marketplace/buy";
+    private final String urlCancelListingOfNFTOnTheMarketplace = apiRoot + "v1/solana/marketplace/cancel";
+    private final String urlTransferNFTToAnotherSolanaWallet = apiRoot + "v1/solana/marketplace/transfer";
 
     //wallet api url
-    private final String urlMe = urlRoot + "v1/auth/me";
+    private final String urlMe = apiRoot + "v1/auth/me";
+
+
+    private final String TransferSQL = apiRoot+"v1/wallet/transfer-sol";
+
+    private final String TransferToken = apiRoot+"v1/wallet/transfer-token";
+
+    private  final String GetWalletToken =apiRoot+"v1/wallet/tokens";
+
+    private final String GetWalletTransactions =apiRoot+"v1/wallet/transactions";
+
+
+
+
 
     private MirrorSDKJava(){
     }
@@ -159,6 +183,9 @@ public class MirrorSDKJava {
         }
     }
 
+
+
+    // wallet  ==========================================
     public void APIGetWalletAddress(MirrorCallback mirrorCallback){
         if(activityContext == null){
             logFlow("Must call InitSDK() first.");
@@ -183,6 +210,80 @@ public class MirrorSDKJava {
         });
         return;
     }
+
+    public void APIPostTransferSQL(String to_publickey,int amount,MirrorCallback mirrorCallback){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("to_publickey", to_publickey);
+            jsonObject.put("amount", amount);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+
+        checkParamsAndPost(TransferSQL,data,getHandlerCallback(mirrorCallback));
+
+    }
+
+
+
+    public void APIPostTransferToken(String to_publickey,int amount,String token_mint,int decimals,MirrorCallback mirrorCallback){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("to_publickey", to_publickey);
+            jsonObject.put("amount", amount);
+            jsonObject.put("token_mint", token_mint);
+            jsonObject.put("decimals", decimals);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+
+        checkParamsAndPost(TransferToken,data,getHandlerCallback(mirrorCallback));
+    }
+
+
+    public void APIGetWalletToken(MirrorCallback mirrorCallback){
+        if(appId == ""){
+            if(activityContext == null){
+                logFlow("Must init sdk first!");
+                return;
+            }
+            appId = getSavedString(activityContext,localKeyAppId);
+        }
+        if(appId == ""){
+            logFlow("Must set app id first!");
+            return;
+        }
+
+        checkParamsAndGet(GetWalletToken,null, mirrorCallback);
+    }
+
+    public void APIGetWalletTransactions(String limit,String before,MirrorCallback mirrorCallback){
+        if(appId == ""){
+            if(activityContext == null){
+                logFlow("Must init sdk first!");
+                return;
+            }
+            appId = getSavedString(activityContext,localKeyAppId);
+        }
+        if(appId == ""){
+            logFlow("Must set app id first!");
+            return;
+        }
+        HashMap<String,String> map = new HashMap<String,String>();
+
+        map.put("limit",limit);
+        map.put("before",before);
+        checkParamsAndGet(GetWalletTransactions,map, mirrorCallback);
+
+    }
+
+
+
+    // todo add request methods
+
+    //===========================================================
 
     public void GetAccessToken(Activity activityContext, MirrorCallback mirrorCallback){
         String refreshToken = getRefreshToken(activityContext);
@@ -341,6 +442,34 @@ public class MirrorSDKJava {
 
         checkParamsAndPost(urlTransferNFTToAnotherSolanaWallet,data,getHandlerCallback(mirrorCallback));
     }
+
+
+    // add
+    public void APIPostFetchMultiple(List<String> owners,int limit,int offset,MirrorCallback mirrorCallback){
+
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        for (String tag : owners) {
+            jsonArray.put(tag);
+        }
+        try {
+            jsonObject.put("owners", jsonArray);
+            jsonObject.put("limit", limit);
+            jsonObject.put("offset", offset);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+
+        checkParamsAndPost(urlFetchmultipleNFTs,data,getHandlerCallback(mirrorCallback));
+    }
+
+
+    public void APIGetFetchActivities(String mint_address,MirrorCallback mirrorCallback){
+
+        checkParamsAndGet(urlFetchActivity+mint_address,null, mirrorCallback);
+    }
+
 
     public void APICancelListingOfNFT(String mint_address, Double price, MirrorCallback mirrorCallback){
         JSONObject jsonObject = new JSONObject();
@@ -592,10 +721,12 @@ public class MirrorSDKJava {
             public void run() {
                 URL url = null;
                 try {
+
+                   logFlow("appId"+appId);
                     url = new URL(urlRefreshToken);
                     HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                     urlConnection.setRequestProperty("x-refresh-token",accessToken);
-                    urlConnection.setRequestProperty("X-API-Key",appId);
+                    urlConnection.setRequestProperty("x-api-key",appId);
                     urlConnection.setRequestMethod("GET");
                     urlConnection.connect();
                     int status = urlConnection.getResponseCode();
@@ -687,7 +818,7 @@ public class MirrorSDKJava {
     private void setWebView(Context context,WebView webView){
         this.webView = webView;
         webView.setWebViewClient(new WebViewClient());
-        final String finalUrl = urlAuth+appId;
+        final String finalUrl = urlAuth +appId;
         logFlow("open login page with url:"+finalUrl);
         webView.loadUrl(finalUrl);
         WebSettings webSettings = webView.getSettings();
