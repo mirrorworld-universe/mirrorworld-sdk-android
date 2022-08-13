@@ -555,8 +555,20 @@ public class MirrorSDKJava {
                     }
                 }
             }else{
+
+                InputStream inputStream = new BufferedInputStream(conn.getInputStream());
+
+                StringBuilder textBuilder = new StringBuilder();
+                try (Reader reader = new BufferedReader(new InputStreamReader
+                        (inputStream, Charset.forName("UTF-8")))) {
+                    int c = 0;
+                    while ((c = reader.read()) != -1) {
+                        textBuilder.append((char) c);
+                    }
+                }
+
                 logFlow(String.valueOf(conn.getResponseCode()));
-                if(mirrorCallback != null) mirrorCallback.callback(String.valueOf(conn.getResponseCode()));
+                if(mirrorCallback != null) mirrorCallback.callback(String.valueOf(textBuilder.toString()));
             }
             conn.disconnect();
         } catch (IOException e) {
