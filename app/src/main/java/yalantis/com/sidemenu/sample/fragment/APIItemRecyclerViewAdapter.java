@@ -68,7 +68,13 @@ public class APIItemRecyclerViewAdapter extends RecyclerView.Adapter<APIItemRecy
 
     private void handleClick(int apiId,ViewHolder holder){
         if(apiId == 1){
-            MirrorSDKJava.getInstance().StartLogin();
+//            MirrorSDKJava.getInstance().StartLogin();
+            MirrorSDKJava.getInstance().StartLoginWithCallback(new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    Log.i("MyApp","Login flow successed!");
+                }
+            });
         }else if(apiId == 2){
             MirrorSDKJava.getInstance().GetAccessToken(mContext, new MirrorCallback() {
                 @Override
