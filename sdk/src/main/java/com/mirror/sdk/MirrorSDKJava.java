@@ -56,10 +56,14 @@ public class MirrorSDKJava {
     private AlertDialog builder = null;
     private Context globalContext = null;
     private Activity activityContext = null;
+    //auth uri
     private String urlAuth = "https://auth.mirrorworld.fun/";
     //    private String urlAuth = "https://auth-staging.mirrorworld.fun/";
-    //private String apiRoot = "https://api.mirrorworld.fun/";
-    private String apiRoot = "https://api-staging.mirrorworld.fun/";
+    //user uri root
+    private String userRoot = "https://api-staging.mirrorworld.fun/v1/";
+    //market root
+    private String apiRoot = "https://api-staging.mirrorworld.fun/v1/mainnet/";
+    //    private String apiRoot = "https://api-staging.mirrorworld.fun/v1/devnet/";
     private AlertDialog parentDialog = null;
     private WebView webView = null;
     private String userAgent = null;
@@ -73,52 +77,35 @@ public class MirrorSDKJava {
     private MirrorCallback cbLogin = null;
 
     //get url
-    private final String urlRefreshToken = apiRoot + "v1/auth/refresh-token";
-    private final String urlQueryUser = apiRoot + "v1/auth/user";
-    private final String urlQueryNFTDetail = apiRoot + "v1/solana/nft/";
+    private final String urlRefreshToken = userRoot + "auth/refresh-token";
+    private final String urlQueryUser = userRoot + "auth/user";
+    private final String urlQueryNFTDetail = apiRoot + "/solana/nft/";
     //post url
-    private final String urlFetchMultiNFTsDataByMintAddress = apiRoot + "v1/solana/nft/mints";
-    private final String urlFetchMultiNFTsDataByCreatorAddress = apiRoot + "v1/solana/nft/creators";
-    private final String urlFetchMultiNFTsDataByUpdateAuthorityAddress = apiRoot + "v1/solana/nft/update-authorities";
-    private final String urlMintNFTCollection = apiRoot + "v1/solana/mint/nft";
-    private final String urlMintTopLevelCollection = apiRoot + "v1/solana/mint/collection";
-    private final String urlMintLowerLevelCollection = apiRoot + "v1/solana/mint/sub-collection";
-
-    // add
-    private final String urlFetchmultipleNFTs = apiRoot+"v1/solana/nft/owners";
-
-
-    // v1/solana/activity/:mint_address  path params
-    private final String urlFetchActivity = apiRoot+ "v1/solana/activity/";
-
-    //
-
-
+    private final String urlFetchMultiNFTsDataByMintAddress = apiRoot + "solana/nft/mints";
+    private final String urlFetchMultiNFTsDataByCreatorAddress = apiRoot + "solana/nft/creators";
+    private final String urlFetchMultiNFTsDataByUpdateAuthorityAddress = apiRoot + "solana/nft/update-authorities";
+    private final String urlMintNFTCollection = apiRoot + "solana/mint/nft";
+    private final String urlMintTopLevelCollection = apiRoot + "solana/mint/collection";
+    private final String urlMintLowerLevelCollection = apiRoot + "solana/mint/sub-collection";
+    private final String urlFetchmultipleNFTs = apiRoot+"solana/nft/owners";
+    private final String urlFetchActivity = apiRoot+ "solana/activity/";
     //about market
-
-    private final String urlListNFTOnTheMarketplace = apiRoot + "v1/solana/marketplace/list";
-    private final String urlUpdateListingOfNFTOnTheMarketplace = apiRoot + "v1/solana/marketplace/update";
-    private final String urlBuyNFTOnTheMarketplace = apiRoot + "v1/solana/marketplace/buy";
-    private final String urlCancelListingOfNFTOnTheMarketplace = apiRoot + "v1/solana/marketplace/cancel";
-    private final String urlTransferNFTToAnotherSolanaWallet = apiRoot + "v1/solana/marketplace/transfer";
+    private final String urlListNFTOnTheMarketplace = apiRoot + "solana/marketplace/list";
+    private final String urlUpdateListingOfNFTOnTheMarketplace = apiRoot + "solana/marketplace/update";
+    private final String urlBuyNFTOnTheMarketplace = apiRoot + "solana/marketplace/buy";
+    private final String urlCancelListingOfNFTOnTheMarketplace = apiRoot + "solana/marketplace/cancel";
+    private final String urlTransferNFTToAnotherSolanaWallet = apiRoot + "solana/marketplace/transfer";
 
     //wallet api url
-    private final String urlMe = apiRoot + "v1/auth/me";
-
-
-    private final String TransferSQL = apiRoot+"v1/wallet/transfer-sol";
-
-    private final String TransferToken = apiRoot+"v1/wallet/transfer-token";
-
-    private  final String GetWalletToken =apiRoot+"v1/wallet/tokens";
-
-    private final String GetWalletTransactions =apiRoot+"v1/wallet/transactions";
-
-
-
+    private final String urlMe = userRoot + "auth/me";
+    private final String TransferSQL = userRoot +"wallet/transfer-sol";
+    private final String TransferToken = userRoot +"wallet/transfer-token";
+    private  final String GetWalletToken = userRoot +"wallet/tokens";
+    private final String GetWalletTransactions = userRoot +"wallet/transactions";
 
 
     private MirrorSDKJava(){
+
     }
 
     private static volatile MirrorSDKJava instance;
