@@ -21,7 +21,7 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Unit Test
-      run: ./gradlew testDebugUnitTest
+      run: ./gradlew test
     - name: Android Test Report
       uses: asadmansr/android-test-report-action@v1.2.0
       if: ${{ always() }} # IMPORTANT: run Android Test Report regardless
