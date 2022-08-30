@@ -18,6 +18,7 @@ import android.view.animation.AccelerateInterpolator;
 import com.google.android.material.tabs.TabLayout;
 import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
 import com.mirror.mirrorworld_sdk_android.data.PlaceholderContent;
+import com.mirror.sdk.MirrorEnv;
 import com.mirror.sdk.MirrorSDKJava;
 
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         makeStatusBarTransparent(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        MirrorSDKJava.getInstance().InitSDK(this);
+        MirrorSDKJava.getInstance().InitSDK(this, MirrorEnv.Staging);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         initViewPager();
     }

@@ -57,12 +57,7 @@ public class MirrorSDKJava {
     private AlertDialog builder = null;
     private Context globalContext = null;
     private Activity activityContext = null;
-
-
-    // add newest url 8.19
-    private String newUrl = "https://api.mirrorworld.fun/v1/";
-
-
+    private MirrorEnv env = MirrorEnv.MainNet;
 
     //auth uri
    // private String urlAuth = "https://auth.mirrorworld.fun/";
@@ -95,7 +90,7 @@ public class MirrorSDKJava {
     private final String urlRefreshToken = userRoot + "auth/refresh-token";
     private final String urlQueryUser = userRoot + "auth/user";
     private final String isAuthenticated = userRoot+"auth/me";
-    private final String urlQueryNFTDetail = apiRoot + "/solana/nft/";
+    private final String urlQueryNFTDetail = apiRoot + "solana/nft/";
     //post url
     private final String urlFetchMultiNFTsDataByMintAddress = apiRoot + "solana/nft/mints";
     private final String urlFetchMultiNFTsDataByCreatorAddress = apiRoot + "solana/nft/creators";
@@ -139,10 +134,11 @@ public class MirrorSDKJava {
         return instance;
     }
 
-    public void InitSDK(Activity activityContext){
+    public void InitSDK(Activity activityContext,MirrorEnv env){
         logFlow("Mirror SDK inited!");
         this.activityContext = activityContext;
         this.refreshToken = getRefreshToken(this.activityContext);
+        this.env = env;
     }
 
 
@@ -206,6 +202,32 @@ public class MirrorSDKJava {
         appId = id;
         if(activityContext != null){
             saveString(localKeyAppId,appId);
+        }
+    }
+
+    private String GetSSORoot(){
+        if(env == MirrorEnv.Staging){
+            return "https://api-staging.mirrorworld.fun/v1/";
+        }else if(env == MirrorEnv.DevNet){
+            return "https://api.mirrorworld.fun/v1/";
+        }else if(env == MirrorEnv.MainNet){
+            return "https://api.mirrorworld.fun/v1/";
+        }else {
+            logFlow("Unknown env:"+env);
+            return "https://api-staging.mirrorworld.fun/v1/";
+        }
+    }
+
+    private String GetAPIRoot(){
+        if(env == MirrorEnv.Staging){
+            return "https://api-staging.mirrorworld.fun/v1/devnet/";
+        }else if(env == MirrorEnv.DevNet){
+            return "https://api.mirrorworld.fun/v1/devnet/";
+        }else if(env == MirrorEnv.MainNet){
+            return "https://api.mirrorworld.fun/v1/mainnet/";
+        }else {
+            logFlow("Unknown env:"+env);
+            return "https://api-staging.mirrorworld.fun/v1/devnet/";
         }
     }
 
