@@ -90,7 +90,7 @@ public class MirrorSDKJava {
     private final String urlRefreshToken = userRoot + "auth/refresh-token";
     private final String urlQueryUser = userRoot + "auth/user";
     private final String isAuthenticated = userRoot+"auth/me";
-    private final String urlQueryNFTDetail = apiRoot + "/solana/nft/";
+    private final String urlQueryNFTDetail = apiRoot + "solana/nft/";
     //post url
     private final String urlFetchMultiNFTsDataByMintAddress = apiRoot + "solana/nft/mints";
     private final String urlFetchMultiNFTsDataByCreatorAddress = apiRoot + "solana/nft/creators";
