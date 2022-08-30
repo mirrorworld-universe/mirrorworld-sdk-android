@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.mirror.sdk.MirrorCallback;
+import com.mirror.sdk.MirrorEnv;
 import com.mirror.sdk.MirrorSDKJava;
 
 import org.json.JSONException;
@@ -28,7 +29,7 @@ public class ResponseInfo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_response_info);
         InitView();
-        MirrorSDKJava.getInstance().InitSDK(this);
+        MirrorSDKJava.getInstance().InitSDK(this, MirrorEnv.Staging);
         MirrorSDKJava.getInstance().SetAppID("TWikEmOHJxb4xbSLEkFqsi9ddJ9u6RNdbe5");
 
 
