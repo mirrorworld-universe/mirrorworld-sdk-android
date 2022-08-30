@@ -4,88 +4,90 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/multiapi_item_number"
-            android:text="number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
-            android:textAppearance="?attr/textAppearanceListItem" />
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/multiapi_item_name"
-            android:text="name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
-            android:textAppearance="?attr/textAppearanceListItem" />
-    </LinearLayout>
+           <TextView
+               android:id="@+id/multiapi_item_number"
+               android:text="number"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_margin="16dp"
+               android:textAppearance="?attr/textAppearanceListItem" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+           <TextView
+               android:id="@+id/multiapi_item_name"
+               android:text="name"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_margin="16dp"
+               android:textAppearance="?attr/textAppearanceListItem" />
+       </LinearLayout>
 
-        <EditText
-            android:id="@+id/multiapi_item_paramet1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"/>
-        <EditText
-            android:id="@+id/multiapi_item_paramet2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName" />
-        <EditText
-            android:id="@+id/multiapi_item_paramet3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"/>
-        <EditText
-            android:id="@+id/multiapi_item_paramet4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"/>
-        <EditText
-            android:id="@+id/multiapi_item_paramet5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"/>
-        <EditText
-            android:id="@+id/multiapi_item_paramet6"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName" />
-    </LinearLayout>
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+           <EditText
+               android:id="@+id/multiapi_item_paramet1"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:ems="10"
+               android:inputType="textPersonName"/>
+           <EditText
+               android:id="@+id/multiapi_item_paramet2"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:ems="10"
+               android:inputType="textPersonName" />
+           <EditText
+               android:id="@+id/multiapi_item_paramet3"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:ems="10"
+               android:inputType="textPersonName"/>
+           <EditText
+               android:id="@+id/multiapi_item_paramet4"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:ems="10"
+               android:inputType="textPersonName"/>
+           <EditText
+               android:id="@+id/multiapi_item_paramet5"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:ems="10"
+               android:inputType="textPersonName"/>
+           <EditText
+               android:id="@+id/multiapi_item_paramet6"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:ems="10"
+               android:inputType="textPersonName" />
+       </LinearLayout>
 
-        <Button
-            android:id="@+id/multiapi_item_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Button" />
-    </LinearLayout>
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/multiapi_item_result"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+           <Button
+               android:id="@+id/multiapi_item_button"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_weight="1"
+               android:text="Button" />
+       </LinearLayout>
+
+       <TextView
+           android:id="@+id/multiapi_item_result"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:text="TextView" />
+
 
 </LinearLayout>

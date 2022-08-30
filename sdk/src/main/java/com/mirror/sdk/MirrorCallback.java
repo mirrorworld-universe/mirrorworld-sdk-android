@@ -1,5 +1,5 @@
 package com.mirror.sdk;
 
 public interface MirrorCallback {
-    void callback(String result);
+    void callback(String result) ;
 }
