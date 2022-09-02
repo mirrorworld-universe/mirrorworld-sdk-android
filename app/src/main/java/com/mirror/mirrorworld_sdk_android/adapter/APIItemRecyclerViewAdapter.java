@@ -18,6 +18,7 @@ import com.mirror.mirrorworld_sdk_android.R;
 import com.mirror.mirrorworld_sdk_android.data.PlaceholderContent;
 import com.mirror.sdk.MirrorCallback;
 import com.mirror.sdk.MirrorSDKJava;
+import com.mirror.sdk.listener.MirrorListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,10 +76,15 @@ public class APIItemRecyclerViewAdapter extends  RecyclerView.Adapter<APIItemRec
     private void handleClick(int apiId,ViewHolder holder){
         if(apiId == 1){
            // MirrorSDKJava.getInstance().StartLogin();
-            MirrorSDKJava.getInstance().StartLogin(new MirrorCallback() {
+            MirrorSDKJava.getInstance().StartLogin(new MirrorListener.LoginListener() {
                 @Override
-                public void callback(String result) {
-                    Log.i("MyApp","Login flow successed!");
+                public void onLoginSuccess() {
+                    Log.i("MirrorDemo","Login success!");
+                }
+
+                @Override
+                public void onLoginFail() {
+                    Log.i("MirrorDemo","Login failed!");
                 }
             });
         }else if(apiId == 2){
