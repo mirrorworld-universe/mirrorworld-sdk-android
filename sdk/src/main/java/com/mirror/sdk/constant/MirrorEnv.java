@@ -1,4 +1,4 @@
-package com.mirror.sdk;
+package com.mirror.sdk.constant;
 
 public enum MirrorEnv {
     Staging,

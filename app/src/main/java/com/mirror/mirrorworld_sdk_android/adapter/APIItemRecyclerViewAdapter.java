@@ -17,8 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mirror.mirrorworld_sdk_android.R;
 import com.mirror.mirrorworld_sdk_android.data.PlaceholderContent;
 import com.mirror.sdk.MirrorCallback;
-import com.mirror.sdk.MirrorSDKJava;
+import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.listener.MirrorListener;
+import com.mirror.sdk.response.auth.UserResponse;
+import com.mirror.sdk.utils.MirrorGsonUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +78,7 @@ public class APIItemRecyclerViewAdapter extends  RecyclerView.Adapter<APIItemRec
     private void handleClick(int apiId,ViewHolder holder){
         if(apiId == 1){
            // MirrorSDKJava.getInstance().StartLogin();
-            MirrorSDKJava.getInstance().StartLogin(new MirrorListener.LoginListener() {
+            MirrorSDK.getInstance().StartLogin(new MirrorListener.LoginListener() {
                 @Override
                 public void onLoginSuccess() {
                     Log.i("MirrorDemo","Login success!");
@@ -88,7 +90,7 @@ public class APIItemRecyclerViewAdapter extends  RecyclerView.Adapter<APIItemRec
                 }
             });
         }else if(apiId == 2){
-            MirrorSDKJava.getInstance().GetAccessToken(mContext, new MirrorCallback() {
+            MirrorSDK.getInstance().GetAccessToken(mContext, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     Toast.makeText(mContext,"Access TOken is:"+result,Toast.LENGTH_LONG);
@@ -97,13 +99,19 @@ public class APIItemRecyclerViewAdapter extends  RecyclerView.Adapter<APIItemRec
         }else if(apiId == 3){
             String appId = String.valueOf(holder.mEditText.getText());
             Log.i("mirror","input appId is "+appId);
-            MirrorSDKJava.getInstance().SetAppID("WsPRi3GQz0FGfoSklYUYzDesdKjKvxdrmtQ");
+            MirrorSDK.getInstance().SetAppID("WsPRi3GQz0FGfoSklYUYzDesdKjKvxdrmtQ");
         }else if(apiId == 11){
             String emailAddr = String.valueOf(holder.mEditText.getText());
-            MirrorSDKJava.getInstance().QueryUser(emailAddr, new MirrorCallback() {
+            MirrorSDK.getInstance().QueryUser(emailAddr, new MirrorListener.FetchUserListener() {
                 @Override
-                public void callback(String s) {
-                    holder.mResultView.setText(s);
+                public void onUserFetched(UserResponse userResponse) {
+                    String result = MirrorGsonUtils.getInstance().toJson(userResponse);
+                    holder.mResultView.setText(result);
+                }
+
+                @Override
+                public void onFetchFailed(long code, String message) {
+                    holder.mResultView.setText("error code:"+code+" "+message);
                 }
             });
         }

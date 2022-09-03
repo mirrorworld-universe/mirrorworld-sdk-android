@@ -18,8 +18,19 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.mirror.sdk.constant.MirrorEnv;
+import com.mirror.sdk.constant.MirrorResCode;
 import com.mirror.sdk.constant.MirrorUrl;
 import com.mirror.sdk.listener.MirrorListener;
+import com.mirror.sdk.response.CommonResponse;
+import com.mirror.sdk.response.auth.LoginResponse;
+import com.mirror.sdk.response.auth.UserResponse;
+import com.mirror.sdk.response.market.SingleNFTResponse;
+import com.mirror.sdk.utils.MirrorGsonUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,6 +43,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -41,7 +53,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MirrorSDKJava {
+public class MirrorSDK {
     //user custom
     private boolean debugMode = true;
     private String appId = "";
@@ -50,7 +62,6 @@ public class MirrorSDKJava {
     private String refreshToken = "";
     private String accessToken = "";
     private String mWalletAddress = "";
-    private final String version = "1.0.0";
 
     private String appName = "MirrorWorldMobileSDK";
     private String delegateName = "mwm";
@@ -71,16 +82,16 @@ public class MirrorSDKJava {
 
     private MirrorListener.LoginListener cbLogin = null;
 
-    private MirrorSDKJava(){
+    private MirrorSDK(){
 
     }
 
-    private static volatile MirrorSDKJava instance;
+    private static volatile MirrorSDK instance;
 
-    public static MirrorSDKJava getInstance(){
+    public static MirrorSDK getInstance(){
         if (instance == null){
-            synchronized(MirrorSDKJava.class){
-                instance = new MirrorSDKJava();
+            synchronized(MirrorSDK.class){
+                instance = new MirrorSDK();
             }
         }
         return instance;
@@ -89,7 +100,9 @@ public class MirrorSDKJava {
     public void InitSDK(Activity activityContext,MirrorEnv env){
         logFlow("Mirror SDK inited!");
         this.activityContext = activityContext;
-        this.refreshToken = getRefreshToken(this.activityContext);
+        if(this.activityContext != null){
+            this.refreshToken = getRefreshToken(this.activityContext);
+        }
         this.env = env;
     }
 
@@ -120,7 +133,7 @@ public class MirrorSDKJava {
             logFlow("Must set app id first!");
             return;
         }
-        logFlow("Start login,sdk version is:"+version);
+        logFlow("Start login");
         AlertDialog.Builder builder = new AlertDialog.Builder(activityContext);
         AlertDialog dialog = builder.create();
         parentDialog = dialog;
@@ -182,9 +195,8 @@ public class MirrorSDKJava {
             return "https://api-staging.mirrorworld.fun/v1/devnet/";
         }
     }
-    //all request methods ==========================================================================
 
-    // login with email
+    // login with email(for testing)
     public void LoginWithEmail(String userEmail,String password,MirrorCallback mirrorCallback){
         JSONObject jsonObject = new JSONObject();
         try {
@@ -199,26 +211,54 @@ public class MirrorSDKJava {
         LoginWithEmailPostRequest(url,data,mirrorCallback);
     }
 
-
-
-    public void FetchUser(MirrorCallback mirrorCallback){
+    public void FetchUser(MirrorListener.FetchUserListener fetchUserListener){
         Map<String,String> map = new HashMap<>();
 
         String url = GetSSORoot() + MirrorUrl.isAuthenticated;
-        checkParamsAndGet(url,map, mirrorCallback);
+        checkParamsAndGet(url, map, new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<UserResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<UserResponse>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    fetchUserListener.onUserFetched(response.data);
+                }else{
+                    fetchUserListener.onFetchFailed(response.code,response.message);
+                }
+            }
+        });
     }
 
-    public void QueryUser(String userEmail, MirrorCallback mirrorCallback){
+    public void QueryUser(String userEmail, MirrorListener.FetchUserListener fetchUserListener){
         Map<String,String> map = new HashMap<>();
         map.put("email",userEmail);
 
         String url = GetSSORoot() + MirrorUrl.urlQueryUser;
-        checkParamsAndGet(url,map, mirrorCallback);
+        checkParamsAndGet(url, map, new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<UserResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<UserResponse>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    fetchUserListener.onUserFetched(response.data);
+                }else{
+                    fetchUserListener.onFetchFailed(response.code,response.message);
+                }
+            }
+        });
     }
 
-    public void FetchSingleNFTDetails(String mint_address, MirrorCallback mirrorCallback){
+    public void FetchSingleNFTDetails(String mint_address, MirrorListener.FetchSingleNFT fetchSingleNFT){
         String url = GetAPIRoot() + MirrorUrl.urlQueryNFTDetail + mint_address;
-        checkParamsAndGet(url,null, mirrorCallback);
+        checkParamsAndGet(url, null, new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<SingleNFTResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<SingleNFTResponse>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    fetchSingleNFT.onNFTFetched(response.data.nft);
+                }else{
+                    fetchSingleNFT.onNFTFetchFailed(response.code,response.message);
+                }
+            }
+        });
     }
 
     public void MintNFT(String collection_mint, String name, String symbol, String detailUrl, MirrorCallback mirrorCallback){
@@ -961,17 +1001,12 @@ public class MirrorSDKJava {
     @JavascriptInterface
     public void setLoginResponse(String dataJsonStr) {
         logFlow("receive login response:"+dataJsonStr);
-        try {
-            JSONObject jsonObject = new JSONObject(dataJsonStr);
-            String token = jsonObject.getString("refresh_token");
-            saveRefreshToken(token);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            if(cbLogin != null) cbLogin.onLoginFail();
-            return;
-        }
+        LoginResponse loginResponse = new Gson().fromJson(dataJsonStr,LoginResponse.class);
+        String token = loginResponse.refresh_token;
+        saveRefreshToken(token);
 
         parentDialog.dismiss();
+
         if(cbLogin != null) cbLogin.onLoginSuccess();
     }
 
@@ -983,42 +1018,30 @@ public class MirrorSDKJava {
     private void saveRefreshToken(String refreshToken){
         logFlow("save refresh token to local:"+refreshToken);
         this.refreshToken = refreshToken;
-        //获得SharedPreferences的实例 sp_name是文件名
         SharedPreferences sp = activityContext.getSharedPreferences(localFileKey, Context.MODE_PRIVATE);
-        //获得Editor 实例
         SharedPreferences.Editor editor = sp.edit();
-        //以key-value形式保存数据
         editor.putString(localKeyRefreshToken, refreshToken);
-        //apply()是异步写入数据
-//        editor.apply()
-        //commit()是同步写入数据
+        //editor.apply()
         editor.commit();
     }
 
     private void saveString(String key,String value){
-        //获得SharedPreferences的实例 sp_name是文件名
         SharedPreferences sp = activityContext.getSharedPreferences(localFileKey, Context.MODE_PRIVATE);
-        //获得Editor 实例
         SharedPreferences.Editor editor = sp.edit();
-        //以key-value形式保存数据
         editor.putString(key, value);
-        //apply()是异步写入数据
-//        editor.apply()
-        //commit()是同步写入数据
+        //editor.apply()
         editor.commit();
     }
 
     private String getSavedString(Context context,String key){
         SharedPreferences sp = context.getSharedPreferences(localFileKey, Context.MODE_PRIVATE);
         String value = sp.getString(key,"");
-
         return value;
     }
 
     private String getRefreshToken(Context context){
         SharedPreferences sp = context.getSharedPreferences(localFileKey, Context.MODE_PRIVATE);
         String refreshToken = sp.getString(localKeyRefreshToken,"");
-
         return refreshToken;
     }
 

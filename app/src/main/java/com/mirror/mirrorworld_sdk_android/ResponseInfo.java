@@ -8,8 +8,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.mirror.sdk.MirrorCallback;
-import com.mirror.sdk.MirrorEnv;
-import com.mirror.sdk.MirrorSDKJava;
+import com.mirror.sdk.constant.MirrorEnv;
+import com.mirror.sdk.MirrorSDK;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,22 +23,14 @@ public class ResponseInfo extends AppCompatActivity {
     private TextView response;
     private TextView sendRequest;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_response_info);
         InitView();
-        MirrorSDKJava.getInstance().InitSDK(this, MirrorEnv.Staging);
-        MirrorSDKJava.getInstance().SetAppID("TWikEmOHJxb4xbSLEkFqsi9ddJ9u6RNdbe5");
-
-
-
+        MirrorSDK.getInstance().InitSDK(this, MirrorEnv.Staging);
+        MirrorSDK.getInstance().SetAppID("TWikEmOHJxb4xbSLEkFqsi9ddJ9u6RNdbe5");
     }
-
-
-
-
 
     private void InitView(){
         response = findViewById(R.id.response);
@@ -66,7 +58,7 @@ public class ResponseInfo extends AppCompatActivity {
 
     public void LoginWithEmail(){
 
-        MirrorSDKJava.getInstance().LoginWithEmail("suqiang@rct.studio", "yuebaobao", new MirrorCallback() {
+        MirrorSDK.getInstance().LoginWithEmail("suqiang@rct.studio", "yuebaobao", new MirrorCallback() {
             @Override
             public void callback(String result) {
 
@@ -85,38 +77,11 @@ public class ResponseInfo extends AppCompatActivity {
         });
     }
 
-
-
-
-    public void QueryUser(){
-        MirrorSDKJava.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
-            @Override
-            public void callback(String result) {
-                MirrorSDKJava.getInstance().QueryUser("2573040560@qq.com", new MirrorCallback() {
-                    @Override
-                    public void callback(String result) {
-
-                        try {
-                            JudgeState(result);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        Log.d("Test", "callback: "+result);
-
-                    }
-                });
-            }
-        });
-    }
-
-
-
-
     public void GetWalletToken(){
-        MirrorSDKJava.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
+        MirrorSDK.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
             @Override
             public void callback(String result) {
-                MirrorSDKJava.getInstance().GetWalletToken(new MirrorCallback() {
+                MirrorSDK.getInstance().GetWalletToken(new MirrorCallback() {
                     @Override
                     public void callback(String result) {
                         try {
@@ -137,10 +102,10 @@ public class ResponseInfo extends AppCompatActivity {
 
         // todo
 
-        MirrorSDKJava.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
+        MirrorSDK.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
             @Override
             public void callback(String result) {
-                MirrorSDKJava.getInstance().TransferNFTToAnotherSolanaWallet("mint_address", "to_wallet_address", new MirrorCallback() {
+                MirrorSDK.getInstance().TransferNFTToAnotherSolanaWallet("mint_address", "to_wallet_address", new MirrorCallback() {
                     @Override
                     public void callback(String result) {
                         try {
@@ -158,10 +123,10 @@ public class ResponseInfo extends AppCompatActivity {
 
 
     public void ListNFTOnTheMarketplace(){
-        MirrorSDKJava.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
+        MirrorSDK.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
             @Override
             public void callback(String result) {
-                MirrorSDKJava.getInstance().ListNFT("mint_address", 22.0, new MirrorCallback() {
+                MirrorSDK.getInstance().ListNFT("mint_address", 22.0, new MirrorCallback() {
                     @Override
                     public void callback(String result) {
                         try {
@@ -178,10 +143,10 @@ public class ResponseInfo extends AppCompatActivity {
 
 
     public void UpdateListingOfNFT(){
-        MirrorSDKJava.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
+        MirrorSDK.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
             @Override
             public void callback(String result) {
-                MirrorSDKJava.getInstance().UpdateNFTListing("mint_address", 22.0, new MirrorCallback() {
+                MirrorSDK.getInstance().UpdateNFTListing("mint_address", 22.0, new MirrorCallback() {
                     @Override
                     public void callback(String result) {
                         try {
@@ -198,10 +163,10 @@ public class ResponseInfo extends AppCompatActivity {
 
 
     public void BuyNFT(){
-        MirrorSDKJava.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
+        MirrorSDK.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
             @Override
             public void callback(String result) {
-                MirrorSDKJava.getInstance().BuyNFT("mint_address", 22.0, new MirrorCallback() {
+                MirrorSDK.getInstance().BuyNFT("mint_address", 22.0, new MirrorCallback() {
                     @Override
                     public void callback(String result) {
                         try {
@@ -218,12 +183,12 @@ public class ResponseInfo extends AppCompatActivity {
 
 
     public void CancelListingOfNFT(){
-        MirrorSDKJava.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
+        MirrorSDK.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
             @Override
             public void callback(String result) {
 
 
-                MirrorSDKJava.getInstance().CancelNFTListing("mint_address", 22.5, new MirrorCallback() {
+                MirrorSDK.getInstance().CancelNFTListing("mint_address", 22.5, new MirrorCallback() {
 
                     @Override
                     public void callback(String result) {
@@ -246,10 +211,10 @@ public class ResponseInfo extends AppCompatActivity {
 
         List<String> owners = new ArrayList<>();
 
-        MirrorSDKJava.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
+        MirrorSDK.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
             @Override
             public void callback(String result) {
-                MirrorSDKJava.getInstance().FetchNFTsByOwnerAddresses(owners, 2, 2, new MirrorCallback() {
+                MirrorSDK.getInstance().FetchNFTsByOwnerAddresses(owners, 2, 2, new MirrorCallback() {
                     @Override
                     public void callback(String result) {
                         Log.d("Test", "callback: "+result);
@@ -264,10 +229,10 @@ public class ResponseInfo extends AppCompatActivity {
 
         List<String> creators = new ArrayList<>();
 
-        MirrorSDKJava.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
+        MirrorSDK.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
             @Override
             public void callback(String result) {
-                MirrorSDKJava.getInstance().FetchNFTsByCreatorAddresses(creators, 1.0, 1.0, new MirrorCallback() {
+                MirrorSDK.getInstance().FetchNFTsByCreatorAddresses(creators, 1.0, 1.0, new MirrorCallback() {
                     @Override
                     public void callback(String result) {
                         Log.d("Test", "callback: "+result);
@@ -283,10 +248,10 @@ public class ResponseInfo extends AppCompatActivity {
 
         List<String> mint_address = new ArrayList<>();
 
-        MirrorSDKJava.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
+        MirrorSDK.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
             @Override
             public void callback(String result) {
-                MirrorSDKJava.getInstance().FetchNFTsByMintAddresses(mint_address, new MirrorCallback() {
+                MirrorSDK.getInstance().FetchNFTsByMintAddresses(mint_address, new MirrorCallback() {
                     @Override
                     public void callback(String result) {
                         Log.d("Test", "callback: "+result);
@@ -301,10 +266,10 @@ public class ResponseInfo extends AppCompatActivity {
 
 
 
-        MirrorSDKJava.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
+        MirrorSDK.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
             @Override
             public void callback(String result) {
-                MirrorSDKJava.getInstance().MintNFT("collection_mint", "name", "symbol", "https://mirrormetaplextest.s3.amazonaws.com/assets/15976.json", new MirrorCallback() {
+                MirrorSDK.getInstance().MintNFT("collection_mint", "name", "symbol", "https://mirrormetaplextest.s3.amazonaws.com/assets/15976.json", new MirrorCallback() {
                     @Override
                     public void callback(String result) {
                         Log.d("Test", "callback: "+result);
@@ -335,10 +300,10 @@ public class ResponseInfo extends AppCompatActivity {
 
     public void MintNewTopLevelCollection(){
 
-        MirrorSDKJava.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
+        MirrorSDK.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
             @Override
             public void callback(String result) {
-                MirrorSDKJava.getInstance().CreateVerifiedCollection("jhglfjkdkng", "jasdoif", "https://mirrormetaplextest.s3.amazonaws.com/assets/15976.json", new MirrorCallback() {
+                MirrorSDK.getInstance().CreateVerifiedCollection("jhglfjkdkng", "jasdoif", "https://mirrormetaplextest.s3.amazonaws.com/assets/15976.json", new MirrorCallback() {
                     @Override
                     public void callback(String result) {
                         Log.d("Test", "callback: "+result);
@@ -352,10 +317,10 @@ public class ResponseInfo extends AppCompatActivity {
 
     public void FetchMultipleByMintAddresses(){
         List<String> owners = new ArrayList<>();
-        MirrorSDKJava.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
+        MirrorSDK.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
             @Override
             public void callback(String result) {
-                MirrorSDKJava.getInstance().FetchNFTsByOwnerAddresses(owners, 1, 1, new MirrorCallback() {
+                MirrorSDK.getInstance().FetchNFTsByOwnerAddresses(owners, 1, 1, new MirrorCallback() {
                     @Override
                     public void callback(String result) {
                         Log.d("Test", "callback: "+result);
@@ -368,10 +333,10 @@ public class ResponseInfo extends AppCompatActivity {
 
 
     public void FetchActivitiesOfSingleNFT(){
-        MirrorSDKJava.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
+        MirrorSDK.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
             @Override
             public void callback(String result) {
-                MirrorSDKJava.getInstance().FetchNFTMarketplaceActivity("mint_address", new MirrorCallback() {
+                MirrorSDK.getInstance().FetchNFTMarketplaceActivity("mint_address", new MirrorCallback() {
                     @Override
                     public void callback(String result) {
                         Log.d("Test", "callback: "+result);
@@ -383,19 +348,19 @@ public class ResponseInfo extends AppCompatActivity {
 
 
 
-    public void FetchSingleNFTDetails(){
-        MirrorSDKJava.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
-            @Override
-            public void callback(String result) {
-                MirrorSDKJava.getInstance().FetchSingleNFTDetails("mint_address", new MirrorCallback() {
-                    @Override
-                    public void callback(String result) {
-                        Log.d("Test", "callback: "+result);
-                    }
-                });
-            }
-        });
-    }
+//    public void FetchSingleNFTDetails(){
+//        MirrorSDK.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
+//            @Override
+//            public void callback(String result) {
+//                MirrorSDK.getInstance().FetchSingleNFTDetails("mint_address", new MirrorCallback() {
+//                    @Override
+//                    public void callback(String result) {
+//                        Log.d("Test", "callback: "+result);
+//                    }
+//                });
+//            }
+//        });
+//    }
 
 
 
@@ -403,10 +368,10 @@ public class ResponseInfo extends AppCompatActivity {
 
 
     public void TransferSQL(){
-        MirrorSDKJava.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
+        MirrorSDK.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
             @Override
             public void callback(String result) {
-                MirrorSDKJava.getInstance().APIPostTransferSQL("to_public_key", 1, new MirrorCallback() {
+                MirrorSDK.getInstance().APIPostTransferSQL("to_public_key", 1, new MirrorCallback() {
                     @Override
                     public void callback(String result) {
                         Log.d("Test", "callback: "+result);
@@ -419,10 +384,10 @@ public class ResponseInfo extends AppCompatActivity {
 
 
     public void WalletTransactions(){
-        MirrorSDKJava.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
+        MirrorSDK.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
             @Override
             public void callback(String result) {
-                MirrorSDKJava.getInstance().Transactions("limit", "before", new MirrorCallback() {
+                MirrorSDK.getInstance().Transactions("limit", "before", new MirrorCallback() {
                     @Override
                     public void callback(String result) {
                         Log.d("Test", "callback: "+result);
@@ -435,10 +400,10 @@ public class ResponseInfo extends AppCompatActivity {
 
 
     public void WalletToken(){
-        MirrorSDKJava.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
+        MirrorSDK.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
             @Override
             public void callback(String result) {
-                MirrorSDKJava.getInstance().GetWalletToken(new MirrorCallback() {
+                MirrorSDK.getInstance().GetWalletToken(new MirrorCallback() {
                     @Override
                     public void callback(String result) {
                         Log.d("Test", "callback: "+result);
@@ -450,10 +415,10 @@ public class ResponseInfo extends AppCompatActivity {
 
 
     public void WalletAddress(){
-        MirrorSDKJava.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
+        MirrorSDK.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
             @Override
             public void callback(String result) {
-                MirrorSDKJava.getInstance().GetWallet(new MirrorCallback() {
+                MirrorSDK.getInstance().GetWallet(new MirrorCallback() {
                     @Override
                     public void callback(String result) {
                         Log.d("Test", "callback: "+result);
@@ -465,10 +430,10 @@ public class ResponseInfo extends AppCompatActivity {
 
 
     public void TransferToken(){
-        MirrorSDKJava.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
+        MirrorSDK.getInstance().LoginWithEmail("jonas@rct.ai", "jonas123", new MirrorCallback() {
             @Override
             public void callback(String result) {
-                MirrorSDKJava.getInstance().PostTransferToken("TO_PULICKEY", 1, "token_mint", 2, new MirrorCallback() {
+                MirrorSDK.getInstance().PostTransferToken("TO_PULICKEY", 1, "token_mint", 2, new MirrorCallback() {
                     @Override
                     public void callback(String result) {
                         Log.d("Test", "callback: "+result);
