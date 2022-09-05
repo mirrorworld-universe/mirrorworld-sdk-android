@@ -15,12 +15,6 @@
         android:theme="@style/Theme.Mirrorworldsdkandroid"
         tools:targetApi="31">
         <activity
-            android:name=".ResponseInfo"
-            android:exported="false">
-
-
-        </activity>
-        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

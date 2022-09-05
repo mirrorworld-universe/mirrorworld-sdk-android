@@ -43,7 +43,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
-import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -207,14 +206,14 @@ public class MirrorSDK {
         }
         String data = jsonObject.toString();
 
-        String url = GetSSORoot() + MirrorUrl.LoginWithEmail;
+        String url = GetSSORoot() + MirrorUrl.URL_LOGIN_WITH_EMAIL;
         LoginWithEmailPostRequest(url,data,mirrorCallback);
     }
 
     public void FetchUser(MirrorListener.FetchUserListener fetchUserListener){
         Map<String,String> map = new HashMap<>();
 
-        String url = GetSSORoot() + MirrorUrl.isAuthenticated;
+        String url = GetSSORoot() + MirrorUrl.URL_IS_AUTHENTICATED;
         checkParamsAndGet(url, map, new MirrorCallback() {
             @Override
             public void callback(String result) {
@@ -232,7 +231,7 @@ public class MirrorSDK {
         Map<String,String> map = new HashMap<>();
         map.put("email",userEmail);
 
-        String url = GetSSORoot() + MirrorUrl.urlQueryUser;
+        String url = GetSSORoot() + MirrorUrl.URL_QUERY_USER;
         checkParamsAndGet(url, map, new MirrorCallback() {
             @Override
             public void callback(String result) {
@@ -247,7 +246,7 @@ public class MirrorSDK {
     }
 
     public void FetchSingleNFTDetails(String mint_address, MirrorListener.FetchSingleNFT fetchSingleNFT){
-        String url = GetAPIRoot() + MirrorUrl.urlQueryNFTDetail + mint_address;
+        String url = GetAPIRoot() + MirrorUrl.URL_QUERY_NFT_DETAIL + mint_address;
         checkParamsAndGet(url, null, new MirrorCallback() {
             @Override
             public void callback(String result) {
@@ -273,7 +272,7 @@ public class MirrorSDK {
         }
         String data = jsonObject.toString();
 
-        String url = GetAPIRoot() + MirrorUrl.urlMintNFTCollection;
+        String url = GetAPIRoot() + MirrorUrl.URL_MINT_NFT_COLLECTION;
         checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
     }
 
@@ -288,7 +287,7 @@ public class MirrorSDK {
         }
         String data = jsonObject.toString();
 
-        String url = GetAPIRoot() + MirrorUrl.urlMintTopLevelCollection;
+        String url = GetAPIRoot() + MirrorUrl.URL_MINT_TOP_LEVEL_COLLECTION;
         checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
     }
 
@@ -304,7 +303,7 @@ public class MirrorSDK {
         }
         String data = jsonObject.toString();
 
-        String url = GetAPIRoot() + MirrorUrl.urlMintLowerLevelCollection;
+        String url = GetAPIRoot() + MirrorUrl.URL_MINT_LOWER_LEVEL_COLLECTION;
         checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
     }
 
@@ -318,7 +317,7 @@ public class MirrorSDK {
         }
         String data = jsonObject.toString();
 
-        String url = GetAPIRoot() + MirrorUrl.urlTransferNFTToAnotherSolanaWallet;
+        String url = GetAPIRoot() + MirrorUrl.URL_TRANSFER_NFT_TO_ANOTHER_SOLANA_WALLET;
         checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
     }
 
@@ -339,13 +338,13 @@ public class MirrorSDK {
         }
         String data = jsonObject.toString();
 
-        String url = GetAPIRoot() + MirrorUrl.urlFetchmultipleNFTs;
+        String url = GetAPIRoot() + MirrorUrl.URL_FETCH_MULTIPLE_NFT;
         checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
     }
 
 
     public void FetchNFTMarketplaceActivity(String mint_address, MirrorCallback mirrorCallback){
-        String url = GetAPIRoot() + MirrorUrl.urlFetchActivity + mint_address;
+        String url = GetAPIRoot() + MirrorUrl.URL_FETCH_ACTIVITY + mint_address;
         checkParamsAndGet(url,null, mirrorCallback);
     }
 
@@ -361,7 +360,7 @@ public class MirrorSDK {
         }
         String data = jsonObject.toString();
 
-        String url = GetAPIRoot() + MirrorUrl.urlCancelListingOfNFTOnTheMarketplace;
+        String url = GetAPIRoot() + MirrorUrl.URL_CANCEL_LISTING_OF_NFT_ON_THE_MARKETPLACE;
         checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
     }
 
@@ -375,7 +374,7 @@ public class MirrorSDK {
         }
         String data = jsonObject.toString();
 
-        String url = GetAPIRoot() + MirrorUrl.urlBuyNFTOnTheMarketplace;
+        String url = GetAPIRoot() + MirrorUrl.URL_BUY_NFT_ON_THE_MARKETPLACE;
         checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
     }
 
@@ -390,7 +389,7 @@ public class MirrorSDK {
         }
         String  data = jsonObject.toString();
 
-        String url = GetAPIRoot() + MirrorUrl.urlUpdateListingOfNFTOnTheMarketplace;
+        String url = GetAPIRoot() + MirrorUrl.URL_UPDATE_LISTING_OF_NFT_ON_THE_MARKETPLACE;
         checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
     }
 
@@ -405,7 +404,7 @@ public class MirrorSDK {
         }
         String data = jsonObject.toString();
 
-        String url = GetAPIRoot() + MirrorUrl.urlListNFTOnTheMarketplace;
+        String url = GetAPIRoot() + MirrorUrl.URL_LIST_NFT_ON_THE_MARKETPLACE;
         checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
     }
 
@@ -424,7 +423,7 @@ public class MirrorSDK {
         }
         String data = jsonObject.toString();
 
-        String url = GetAPIRoot() + MirrorUrl.urlFetchMultiNFTsDataByUpdateAuthorityAddress;
+        String url = GetAPIRoot() + MirrorUrl.URL_FETCH_MULTIPLE_NFTDATA_BY_UPDATE_AUTHORITY_ADDRESS;
         checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
     }
 
@@ -443,7 +442,7 @@ public class MirrorSDK {
         }
         String  data = jsonObject.toString();
 
-        String url = GetAPIRoot() + MirrorUrl.urlFetchMultiNFTsDataByCreatorAddress;
+        String url = GetAPIRoot() + MirrorUrl.URL_FETCH_MULTIPLE_NFTDATA_BY_CREATOR_ADDRESS;
         checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
     }
 
@@ -460,7 +459,7 @@ public class MirrorSDK {
         }
         String data = jsonObject.toString();
 
-        String url = GetAPIRoot() + MirrorUrl.urlFetchMultiNFTsDataByMintAddress;
+        String url = GetAPIRoot() + MirrorUrl.URL_FETCH_MULTIPLE_NFTDATA_BY_MINT_ADDRESS;
         checkParamsAndPost(url, data, getHandlerCallback(mirrorCallback));
     }
 
@@ -468,7 +467,7 @@ public class MirrorSDK {
         if(mWalletAddress == ""){
             mWalletAddress = getSavedString(activityContext,localKeyWalletAddress);
         }
-        String url = GetSSORoot() + MirrorUrl.urlMe;
+        String url = GetSSORoot() + MirrorUrl.URL_ME;
         checkParamsAndGet(url, null, new MirrorCallback() {
             @Override
             public void callback(String result) {
@@ -498,7 +497,7 @@ public class MirrorSDK {
         }
         String data = jsonObject.toString();
 
-        String url = GetAPIRoot() + MirrorUrl.TransferSQL;
+        String url = GetAPIRoot() + MirrorUrl.URL_TRANSFER_SQL;
         checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
 
     }
@@ -515,12 +514,12 @@ public class MirrorSDK {
         }
         String data = jsonObject.toString();
 
-        String url = GetAPIRoot() + MirrorUrl.TransferToken;
+        String url = GetAPIRoot() + MirrorUrl.URL_TRANSFER_TOKEN;
         checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
     }
 
     public void GetWalletToken(MirrorCallback mirrorCallback){
-        String url = GetAPIRoot() + MirrorUrl.GetWalletToken;
+        String url = GetAPIRoot() + MirrorUrl.URL_GET_WALLET_TOKEN;
         checkParamsAndGet(url,null, mirrorCallback);
     }
 
@@ -530,14 +529,14 @@ public class MirrorSDK {
         map.put("limit",limit);
         map.put("before",before);
 
-        String url = GetAPIRoot() + MirrorUrl.GetWalletTransactions;
+        String url = GetAPIRoot() + MirrorUrl.URL_GET_WALLET_TRANSACTIONS;
         checkParamsAndGet(url,map, mirrorCallback);
     }
 
 
     // Get wallet transaction by signature.
     public void GetTransactionBySignature(String signature,MirrorCallback mirrorCallback){
-        String url = GetAPIRoot() + MirrorUrl.GetWalletTransactions + "/"+signature;
+        String url = GetAPIRoot() + MirrorUrl.URL_GET_WALLET_TRANSACTIONS + "/"+signature;
         checkParamsAndGet(url,null, mirrorCallback);
     }
     //===========================================================================================================
@@ -584,7 +583,7 @@ public class MirrorSDK {
             return;
         }
 
-        String url = GetSSORoot() + MirrorUrl.urlRefreshToken;
+        String url = GetSSORoot() + MirrorUrl.URL_REFRESH_TOKEN;
         new Thread(httpGetRunnableWithRefreshToken(url,refreshToken, new MirrorCallback() {
             @Override
             public void callback(String result) {
@@ -947,7 +946,7 @@ public class MirrorSDK {
     private void setWebView(Context context,WebView webView){
         this.webView = webView;
         webView.setWebViewClient(new WebViewClient());
-        final String finalUrl = MirrorUrl.urlAuth +appId;
+        final String finalUrl = MirrorUrl.URL_AUTH +appId;
         logFlow("open login page with url:"+finalUrl);
         webView.loadUrl(finalUrl);
         WebSettings webSettings = webView.getSettings();
