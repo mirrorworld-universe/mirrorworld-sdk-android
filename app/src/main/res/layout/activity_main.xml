@@ -4,33 +4,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/cardview_dark_background"
 
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/cardview_dark_background">
+        >
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="50dp"
-            android:background="@color/cardview_dark_background"
             android:orientation="vertical">
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/appbar"
-                android:background="@color/cardview_dark_background"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+               >
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tabs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:tabIndicatorColor="#ADBE107E"
+                    app:tabIndicatorColor="#CCFF00"
                     app:tabMode="scrollable"
                     app:tabTextColor="@color/white"
-                    app:tabSelectedTextColor="#ADBE107E"
+                    app:tabSelectedTextColor="#CCFF00"
                     app:tabGravity="center"
+                    android:background="@color/cardview_dark_background"
+
                     />
 
             </com.google.android.material.appbar.AppBarLayout>
@@ -39,6 +40,7 @@
                 android:id="@+id/viewpager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+
                 />
         </LinearLayout>
 

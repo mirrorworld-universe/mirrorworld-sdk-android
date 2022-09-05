@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import com.google.android.material.tabs.TabLayout;
 import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
 import com.mirror.mirrorworld_sdk_android.data.PlaceholderContent;
+import com.mirror.sdk.constant.MirrorConstant;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.MirrorSDK;
 
@@ -81,30 +82,30 @@ public class MainActivity extends AppCompatActivity {
 
         List<MultiItemData.MultiItem> items = new ArrayList<>();
         items.add(new MultiItemData.MultiItem(
-                101,"Get wallet address",
+                MirrorConstant.API_POST_TRANSFER_SQL,"Get wallet address",
                 "Get user's wallet address on solana",
                 "GetWallet",
                 null,null,null,null,null,null));
 
 
         items.add(
-                new MultiItemData.MultiItem(102,"Transfer SOL","Transfer SOL",
+                new MultiItemData.MultiItem(MirrorConstant.API_POST_TRANSFER_SQL,"Transfer SOL","Transfer SOL",
                         "Get","to_publickey","amount",
                         null,null,null,null));
 
         items.add(
-                new MultiItemData.MultiItem(103,"Transfer Token","Transfer Token",
+                new MultiItemData.MultiItem(MirrorConstant.POST_TRANSFER_TOKEN,"Transfer Token","Transfer Token",
                         "Get","to_publickey","amount",
                         "token_mint","decimals",null,null));
 
         items.add(
-                new MultiItemData.MultiItem(104,"Get wallet tokens","Get a wallet's tokens",
+                new MultiItemData.MultiItem(MirrorConstant.GET_WALLET_TOKEN,"Get wallet tokens","Get a wallet's tokens",
                         "Get",null,null,
                         null,null,null,null));
 
 
         items.add(
-                new MultiItemData.MultiItem(105,"Get Wallet Transactions","Get a wallet's transactions by filters",
+                new MultiItemData.MultiItem(MirrorConstant.TRANSACTIONS,"Get Wallet Transactions","Get a wallet's transactions by filters",
                         "Get","limit","before",
                         null,null,null,null));
 
@@ -115,32 +116,32 @@ public class MainActivity extends AppCompatActivity {
 
         List<MultiItemData.MultiItem> items = new ArrayList<>();
         items.add(new MultiItemData.MultiItem(
-                31,"Mint New NFT",
+                MirrorConstant.MINT_NFT,"Mint New NFT",
                 "Mint New NFT on Collection",
                 "MintNFT",
                 "collection_mint","name","symbol","url",null,null));
         items.add(new MultiItemData.MultiItem(
-                32,"Mint New Top-level",
+                MirrorConstant.CREATE_VERIFIED_COLLECTION,"Mint New Top-level",
                 "Mint New Top-level Collection.",
                 "MintNFT",
                 "name","symbol","url",null,null,null));
         items.add(new MultiItemData.MultiItem(
-                33,"Mint New Lower-level",
+                MirrorConstant.CREATE_VERIFIED_SUB_COLLECTION,"Mint New Lower-level",
                 "Mint New Lower-level Collection.",
                 "MintNFT",
                 "collection_mint","name","symbol","url",null,null));
         items.add(new MultiItemData.MultiItem(
-                34,"Fetch multiple NFTs data",
+                MirrorConstant.FETCH_NFT_BY_MINT_ADDRESSES,"Fetch multiple NFTs data",
                 "Fetch multiple NFTs data by mint addresses.",
                 "FetchNFTs",
                 "mint_addresses1","mint_addresses2",null,null,null,null));
         items.add(new MultiItemData.MultiItem(
-                35,"Fetch multiple NFTs data",
+                MirrorConstant.FETCH_NFT_BY_CREATOR_ADDRESSES,"Fetch multiple NFTs data",
                 "Fetch multiple NFTs data by creator addresses.",
                 "FetchNFTs",
                 "creators1","limit","offset",null,null,null));
         items.add(new MultiItemData.MultiItem(
-                36,"Fetch multiple NFTs data",
+                MirrorConstant.FETCH_NFT_BY_UPDATE_AUTHORITIES,"Fetch multiple NFTs data",
                 "Fetch multiple NFTs data by update authority addresses.",
                 "FetchNFTs",
                 "update_authorities1","limit","offset",null,null,null));
@@ -155,43 +156,43 @@ public class MainActivity extends AppCompatActivity {
         List<MultiItemData.MultiItem> items = new ArrayList<>();
 
         items.add(new MultiItemData.MultiItem(
-                12,"Fetch single NFT's details",
+                MirrorConstant.FETCH_SINGLE_NFT_DETAILS,"Fetch single NFT's details",
                 "Fetch single NFT's details by mint address.",
                 "FetchNFT","mint address",null,null,null,null,null));
         items.add(new MultiItemData.MultiItem(
-                37,"List NFT on the marketplace",
+                MirrorConstant.LIST_NFT,"List NFT on the marketplace",
                 "Fetch multiple NFTs data by update authority addresses.",
                 "ListNFTs",
                 "mint_address","price",null,null,null,null));
         items.add(new MultiItemData.MultiItem(
-                38,"Update Listing of NFT",
+                MirrorConstant.UPDATE_NFT_LISTING,"Update Listing of NFT",
                 "Update Listing of NFT on the marketplace.",
                 "ListNFTs",
                 "mint_address","price",null,null,null,null));
         items.add(new MultiItemData.MultiItem(
-                39,"Buy NFT",
+                MirrorConstant.BUY_NFT,"Buy NFT",
                 "Buy NFT on the marketplace.",
                 "BuyNFT",
                 "mint_address","price",null,null,null,null));
         items.add(new MultiItemData.MultiItem(
-                40,"Cancel listing of NFT",
+                MirrorConstant.CANCEL_NFT_LISTING,"Cancel listing of NFT",
                 "Cancel listing of NFT on the marketplace.",
                 "CancelIt",
                 "mint_address","price",null,null,null,null));
         items.add(new MultiItemData.MultiItem(
-                41,"Transfer NFT",
+                MirrorConstant.TRANSFER_NFT_TO_ANOTHER_SOLANA_WALLET,"Transfer NFT",
                 "Transfer NFT to another solana wallet.",
                 "TransferNFT",
                 "mint_address","to_wallet_address",null,null,null,null));
 
 
         items.add(new MultiItemData.MultiItem(
-                42,"Fetch multiple NFTs","Fetch multiple NFTs data by owner addresses",
+                MirrorConstant.FETCH_NFT_BY_OWNER_ADDRESSES,"Fetch multiple NFTs","Fetch multiple NFTs data by owner addresses",
                 "Fetch NFTs","owner","limit","offset",null,null,null
         ));
 
         items.add(new MultiItemData.MultiItem(
-                43,"Fetch activity","Fetch activity of a single NFT",
+                MirrorConstant.FETCH_NFT_MARKETPLACE_ACTIVITY,"Fetch activity","Fetch activity of a single NFT",
                 "Fetch activity","mint_address",null,null,null,null,null
         ));
 
@@ -204,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
 
         List<PlaceholderContent.PlaceholderItem> items = new ArrayList<>();
         items.add(new PlaceholderContent.PlaceholderItem(
-                11,"Query user info",
+                MirrorConstant.Query_USER,"Query user info",
                 "Query user info by email address.",
                 "QueryUser","input your email"));
         return items;
@@ -214,15 +215,15 @@ public class MainActivity extends AppCompatActivity {
 
         List<PlaceholderContent.PlaceholderItem> items = new ArrayList<>();
         items.add(new PlaceholderContent.PlaceholderItem(
-                1,"Login",
+                MirrorConstant.START_LOGIN,"Login",
                 "Call login page so that user can get refresh token.",
                 "Login",null));
         items.add(new PlaceholderContent.PlaceholderItem(
-                2,"Refresh auth token",
+                MirrorConstant.GET_ACCESS_TOKEN,"Refresh auth token",
                 "Get an access token by refresh token so that you can visit APIs.",
                 "RefreshToken",null));
         items.add(new PlaceholderContent.PlaceholderItem(
-                3,"Set app id",
+                MirrorConstant.SET_APP_ID,"Set app id",
                 "Set app id of your project,you can get it on sdk's site.",
                 "Set","app-id"));
 

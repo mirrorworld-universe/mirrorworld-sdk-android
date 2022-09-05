@@ -15,6 +15,7 @@ import com.mirror.mirrorworld_sdk_android.R;
 import com.mirror.mirrorworld_sdk_android.data.PlaceholderContent;
 import com.mirror.sdk.MirrorCallback;
 import com.mirror.sdk.MirrorSDK;
+import com.mirror.sdk.constant.MirrorConstant;
 import com.mirror.sdk.listener.MirrorListener;
 import com.mirror.sdk.response.auth.UserResponse;
 import com.mirror.sdk.utils.MirrorGsonUtils;
@@ -67,7 +68,7 @@ public class APIItemRecyclerViewAdapter extends  RecyclerView.Adapter<APIItemRec
     }
 
     private void handleClick(int apiId,ViewHolder holder){
-        if(apiId == 1){
+        if(apiId == MirrorConstant.START_LOGIN) {
            // MirrorSDKJava.getInstance().StartLogin();
             MirrorSDK.getInstance().StartLogin(new MirrorListener.LoginListener() {
                 @Override
@@ -80,18 +81,18 @@ public class APIItemRecyclerViewAdapter extends  RecyclerView.Adapter<APIItemRec
                     Log.i("MirrorDemo","Login failed!");
                 }
             });
-        }else if(apiId == 2){
+        }else if(apiId == MirrorConstant.GET_ACCESS_TOKEN){
             MirrorSDK.getInstance().GetAccessToken(mContext, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     Toast.makeText(mContext,"Access TOken is:"+result,Toast.LENGTH_LONG);
                 }
             });
-        }else if(apiId == 3){
+        }else if(apiId == MirrorConstant.SET_APP_ID){
             String appId = String.valueOf(holder.mEditText.getText());
             Log.i("mirror","input appId is "+appId);
             MirrorSDK.getInstance().SetAppID("WsPRi3GQz0FGfoSklYUYzDesdKjKvxdrmtQ");
-        }else if(apiId == 11){
+        }else if(apiId == MirrorConstant.Query_USER){
             String emailAddr = String.valueOf(holder.mEditText.getText());
             MirrorSDK.getInstance().QueryUser(emailAddr, new MirrorListener.FetchUserListener() {
                 @Override
@@ -111,7 +112,6 @@ public class APIItemRecyclerViewAdapter extends  RecyclerView.Adapter<APIItemRec
     public void SetContext(Activity context){
         mContext = context;
     }
-
     @Override
     public int getItemCount() {
       return mValues.size();
@@ -138,10 +138,6 @@ public class APIItemRecyclerViewAdapter extends  RecyclerView.Adapter<APIItemRec
         public String toString() {
             return super.toString() + " '" + mContentView.getText() + "'";
         }
-
-
-
-
 
     }
 
