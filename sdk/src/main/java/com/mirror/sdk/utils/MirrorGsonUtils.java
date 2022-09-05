@@ -1,11 +1,11 @@
 package com.mirror.sdk.utils;
-
 import com.google.gson.Gson;
-import com.mirror.sdk.MirrorSDK;
 
 import java.lang.reflect.Type;
 
 public class MirrorGsonUtils {
+
+
     private static volatile MirrorGsonUtils instance;
     public static MirrorGsonUtils getInstance(){
         if (instance == null){
@@ -29,4 +29,6 @@ public class MirrorGsonUtils {
     public String toJson(Object object){
         return mGson.toJson(object);
     }
+
+
 }

@@ -19,8 +19,8 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.constant.MirrorResCode;

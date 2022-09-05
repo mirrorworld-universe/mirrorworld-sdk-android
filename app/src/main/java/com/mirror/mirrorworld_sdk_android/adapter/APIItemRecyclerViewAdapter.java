@@ -9,10 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.mirror.mirrorworld_sdk_android.R;
 import com.mirror.mirrorworld_sdk_android.data.PlaceholderContent;
 import com.mirror.sdk.MirrorCallback;
@@ -20,16 +18,10 @@ import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.listener.MirrorListener;
 import com.mirror.sdk.response.auth.UserResponse;
 import com.mirror.sdk.utils.MirrorGsonUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 
-/*** @author Pu
- * @createTime 2022/8/17 16:56
- * @projectName mirrorworld-sdk-android
- * @className APIItemRecyclerViewAdapter.java
- * @description TODO
- */
+
 public class APIItemRecyclerViewAdapter extends  RecyclerView.Adapter<APIItemRecyclerViewAdapter.ViewHolder>{
 
 
