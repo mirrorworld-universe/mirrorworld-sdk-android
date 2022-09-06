@@ -120,9 +120,9 @@ public class ExampleUnitTest {
     public void LoginWithEmail(){
 
         MirrorSDK.getInstance().InitSDK(null, MirrorEnv.Staging);
-
         final Object lock = new Object();
         MirrorSDK.getInstance().SetAppID(appid);
+
         MirrorSDK.getInstance().LoginWithEmail(userEmail,password, new MirrorCallback() {
             @Override
             public void callback(String result) {
