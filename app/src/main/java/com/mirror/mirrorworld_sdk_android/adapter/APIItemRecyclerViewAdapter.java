@@ -68,45 +68,45 @@ public class APIItemRecyclerViewAdapter extends  RecyclerView.Adapter<APIItemRec
     }
 
     private void handleClick(int apiId,ViewHolder holder){
-        if(apiId == MirrorConstant.START_LOGIN) {
-           // MirrorSDKJava.getInstance().StartLogin();
-            MirrorSDK.getInstance().StartLogin(new MirrorListener.LoginListener() {
-                @Override
-                public void onLoginSuccess() {
-                    Log.i("MirrorDemo","Login success!");
-                }
-
-                @Override
-                public void onLoginFail() {
-                    Log.i("MirrorDemo","Login failed!");
-                }
-            });
-        }else if(apiId == MirrorConstant.GET_ACCESS_TOKEN){
-            MirrorSDK.getInstance().GetAccessToken(mContext, new MirrorCallback() {
-                @Override
-                public void callback(String result) {
-                    Toast.makeText(mContext,"Access TOken is:"+result,Toast.LENGTH_LONG);
-                }
-            });
-        }else if(apiId == MirrorConstant.SET_APP_ID){
-            String appId = String.valueOf(holder.mEditText.getText());
-            Log.i("mirror","input appId is "+appId);
-            MirrorSDK.getInstance().SetAppID("WsPRi3GQz0FGfoSklYUYzDesdKjKvxdrmtQ");
-        }else if(apiId == MirrorConstant.Query_USER){
-            String emailAddr = String.valueOf(holder.mEditText.getText());
-            MirrorSDK.getInstance().QueryUser(emailAddr, new MirrorListener.FetchUserListener() {
-                @Override
-                public void onUserFetched(UserResponse userResponse) {
-                    String result = MirrorGsonUtils.getInstance().toJson(userResponse);
-                    holder.mResultView.setText(result);
-                }
-
-                @Override
-                public void onFetchFailed(long code, String message) {
-                    holder.mResultView.setText("error code:"+code+" "+message);
-                }
-            });
-        }
+//        if(apiId == MirrorConstant.START_LOGIN) {
+//           // MirrorSDKJava.getInstance().StartLogin();
+//            MirrorSDK.getInstance().StartLogin(new MirrorListener.LoginListener() {
+//                @Override
+//                public void onLoginSuccess() {
+//                    Log.i("MirrorDemo","Login success!");
+//                }
+//
+//                @Override
+//                public void onLoginFail() {
+//                    Log.i("MirrorDemo","Login failed!");
+//                }
+//            });
+//        }else if(apiId == MirrorConstant.GET_ACCESS_TOKEN){
+//            MirrorSDK.getInstance().GetAccessToken(mContext, new MirrorCallback() {
+//                @Override
+//                public void callback(String result) {
+//                    Toast.makeText(mContext,"Access TOken is:"+result,Toast.LENGTH_LONG);
+//                }
+//            });
+//        }else if(apiId == MirrorConstant.SET_APP_ID){
+//            String appId = String.valueOf(holder.mEditText.getText());
+//            Log.i("mirror","input appId is "+appId);
+//            MirrorSDK.getInstance().SetAppID("WsPRi3GQz0FGfoSklYUYzDesdKjKvxdrmtQ");
+//        }else if(apiId == MirrorConstant.Query_USER){
+//            String emailAddr = String.valueOf(holder.mEditText.getText());
+//            MirrorSDK.getInstance().QueryUser(emailAddr, new MirrorListener.FetchUserListener() {
+//                @Override
+//                public void onUserFetched(UserResponse userResponse) {
+//                    String result = MirrorGsonUtils.getInstance().toJson(userResponse);
+//                    holder.mResultView.setText(result);
+//                }
+//
+//                @Override
+//                public void onFetchFailed(long code, String message) {
+//                    holder.mResultView.setText("error code:"+code+" "+message);
+//                }
+//            });
+//        }
     }
 
     public void SetContext(Activity context){

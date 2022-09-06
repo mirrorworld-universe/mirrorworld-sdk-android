@@ -573,57 +573,6 @@ public class ExampleUnitTest {
     }
 
 
-
-
-    // response info is "not implement this method";
-//    @Test
-//    public void FetchNFTsByCreators(){
-//
-//        List<String> creators = new ArrayList<>();
-//        creators.add("GCeY1zY2QFz1iYekbsX1jQjtJnjyxWXtBhxAJPrvG3Bg");
-//
-//        final Object lock = new Object();
-//        MirrorSDKJava.getInstance().SetAppID(appid);
-//        MirrorSDKJava.getInstance().LoginWithEmail(userEmail, password, new MirrorCallback() {
-//            @Override
-//            public void callback(String result) {
-//
-//                MirrorSDKJava.getInstance().SetAccessToken(GetAccessTokenFromResponse(result));
-//                MirrorSDKJava.getInstance().SetRefreshToken(GetRefreshTokenFromResponse(result));
-//
-//                MirrorSDKJava.getInstance().FetchNFTsByCreatorAddresses( creators,1.0,1.0,new MirrorCallback() {
-//                    @Override
-//                    public void callback(String result) {
-//                        Status = GetStatus( result);
-//                        synchronized (lock) {
-//                            lock.notify();
-//                        }
-//
-//                    }
-//                });
-//            }
-//        });
-//
-//
-//        try {
-//            synchronized (lock) {
-//                lock.wait();
-//            }
-//
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//
-//       // assertEquals("success",Status);
-//
-//
-//    }
-
-
-
-
-
-
     @Test
     public void FetchNFTsByMintAddress(){
         MirrorSDK.getInstance().InitSDK(null, MirrorEnv.Staging);
