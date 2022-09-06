@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -101,7 +102,8 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
         holder.mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                handleClick(mValues.get(position).id,holder);
+
+                handleClick(mValues.get(position).id,holder,view);
             }
         });
 
@@ -111,10 +113,22 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
     public int getItemCount() {
         return mValues.size();
     }
-    private void handleClick(int apiId, MultiParaItemRecyclerViewAdapter.ViewHolder holder){
+    private void handleClick(int apiId, MultiParaItemRecyclerViewAdapter.ViewHolder holder,View view){
+
+
+
+
         if(apiId == MirrorConstant.FETCH_SINGLE_NFT_DETAILS){
+
             String mint_address = String.valueOf(holder.mEt1.getText());
+
+            // params check...
+
+
+
+
             MirrorSDK.getInstance().FetchSingleNFTDetails(mint_address, new MirrorListener.FetchSingleNFT() {
+
                 @Override
                 public void onNFTFetched(NFTObject nftObject) {
                     String s = MirrorGsonUtils.getInstance().toJson(nftObject);
@@ -130,6 +144,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             String name = String.valueOf(holder.mEt1.getText());
             String symbol = String.valueOf(holder.mEt2.getText());
             String url = String.valueOf(holder.mEt3.getText());
+
             MirrorSDK.getInstance().CreateVerifiedCollection(name, symbol, url, new MirrorCallback() {
                 @Override
                 public void callback(String s) {
@@ -179,12 +194,14 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             Double offset = Double.valueOf(String.valueOf(holder.mEt3.getText()));
             List<String> list = new ArrayList<>();
             list.add(creator1);
+
             MirrorSDK.getInstance().FetchNFTsByCreatorAddresses(list,limit,offset, new MirrorCallback() {
                 @Override
                 public void callback(String s) {
                     holder.mResultView.setText(s);
                 }
             });
+
         }else if(apiId == MirrorConstant.FETCH_NFT_BY_UPDATE_AUTHORITIES){
             String update_authority1 = String.valueOf(holder.mEt1.getText());
             Double limit = Double.valueOf(String.valueOf(holder.mEt2.getText()));
@@ -274,14 +291,14 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
 //                    holder.mResultView.setText(s);
 //                }
 //            });
-        }else if(apiId == MirrorConstant.API_POST_TRANSFER_SQL){
+        }else if(apiId == MirrorConstant.POST_TRANSFER_SQL){
 
             //  to_publickey","amount"
 
             String to_publickey = String.valueOf(holder.mEt1.getText());
             int amount = Integer.valueOf(holder.mEt2.getText().toString());
 
-            MirrorSDK.getInstance().APIPostTransferSQL(to_publickey, amount, new MirrorCallback() {
+            MirrorSDK.getInstance().PostTransferSQL(to_publickey, amount, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     holder.mResultView.setText(result);
@@ -289,8 +306,6 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             });
         }else if(apiId == MirrorConstant.POST_TRANSFER_TOKEN){
 
-            // "to_publickey","amount",
-            //                        "token_mint","decimals",
             int amount = 0;
             int decimals = 0;
             String to_publickey = String.valueOf(holder.mEt1.getText());

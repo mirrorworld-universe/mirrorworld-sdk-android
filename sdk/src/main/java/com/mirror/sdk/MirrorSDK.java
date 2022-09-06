@@ -487,7 +487,7 @@ public class MirrorSDK {
 
 
     // wallet
-    public void APIPostTransferSQL(String to_publickey,int amount,MirrorCallback mirrorCallback){
+    public void PostTransferSQL(String to_publickey, int amount, MirrorCallback mirrorCallback){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("to_publickey", to_publickey);

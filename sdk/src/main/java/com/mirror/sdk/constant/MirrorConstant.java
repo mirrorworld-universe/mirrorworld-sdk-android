@@ -40,7 +40,7 @@ public class MirrorConstant {
 
     public static final int FETCH_NFT_MARKETPLACE_ACTIVITY =43;
 
-    public static final int API_POST_TRANSFER_SQL = 102;
+    public static final int POST_TRANSFER_SQL = 102;
 
     public static final int POST_TRANSFER_TOKEN = 103;
 
