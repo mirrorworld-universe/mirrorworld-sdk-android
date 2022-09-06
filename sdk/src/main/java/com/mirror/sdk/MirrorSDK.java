@@ -285,8 +285,13 @@ public class MirrorSDK {
         checkParamsAndGet(url, map, new MirrorCallback() {
             @Override
             public void callback(String result) {
+
                 CommonResponse<UserResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<UserResponse>>(){}.getType());
+
+
+
                 if(response.code == MirrorResCode.SUCCESS){
+
                     fetchUserListener.onUserFetched(response.data);
                 }else{
                     fetchUserListener.onFetchFailed(response.code,response.message);
@@ -300,6 +305,7 @@ public class MirrorSDK {
         checkParamsAndGet(url, null, new MirrorCallback() {
             @Override
             public void callback(String result) {
+                String tmen = result;
                 CommonResponse<SingleNFTResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<SingleNFTResponse>>(){}.getType());
                 if(response.code == MirrorResCode.SUCCESS){
                     fetchSingleNFT.onNFTFetched(response.data.nft);
@@ -786,6 +792,7 @@ public class MirrorSDK {
 
     private void post(String url, String data, MirrorCallback mirrorCallback) {
         logFlow("post json:"+data);
+
         try {
             //HttpURLConnection
             //1.实例化一个URL对象
@@ -1168,7 +1175,7 @@ public class MirrorSDK {
 //                    .append(URLEncoder.encode(value, encode))
                         .append("&");
             }
-            stringBuffer.deleteCharAt(stringBuffer.length() - 1);    //删除最后的一个"&"
+             //删除最后的一个"&"
 
             if(params != null && params.size()!=0){
                 stringBuffer.deleteCharAt(stringBuffer.length()-1);

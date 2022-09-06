@@ -14,7 +14,31 @@ public class NFTObject {
     public List<NFTCreatorObj> creators;
     public NFTOwnerObj owner;
     public List<NFTAttributeObj> attributes;
-    public List<String> listings;
+    public List<Listing> listings;
+}
+
+
+
+
+
+class AuctionHouse{
+    public String address;
+    public String authority;
+    public String treasuryMint;
+    public int sellerFeeBasisPoints;
+}
+
+class Listing{
+    public String tradeState;
+    public String seller;
+    public String metadata;
+    public String purchaseId;
+    public double price;
+    public int tokenSize;
+    public String createdAt;
+    public String canceledAt;
+    public AuctionHouse auctionHouse;
+
 }
 
 class NFTCreatorObj {
