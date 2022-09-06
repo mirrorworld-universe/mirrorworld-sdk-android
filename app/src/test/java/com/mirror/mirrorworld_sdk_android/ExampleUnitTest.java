@@ -399,47 +399,47 @@ public class ExampleUnitTest {
 
 
 
-    @Test
-    public void MintNFT(){
-
-        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.Staging);
-        final Object lock = new Object();
-        MirrorSDK.getInstance().SetAppID(appid);
-        MirrorSDK.getInstance().LoginWithEmail(userEmail, password, new MirrorCallback() {
-            @Override
-            public void callback(String result) {
-
-                MirrorSDK.getInstance().SetAccessToken(GetAccessTokenFromResponse(result));
-                MirrorSDK.getInstance().SetRefreshToken(GetRefreshTokenFromResponse(result));
-
-                MirrorSDK.getInstance().MintNFT("9mkx2CDjRa64xEpUxyBJKbBC4NRAQhEJGDN8Ei8xHRWi", "name", "symbol", "https://market-assets.mirrorworld.fun/gen1/1.json", new MirrorCallback() {
-                    @Override
-                    public void callback(String result) {
-                        Status = GetStatus( result);
-                        synchronized (lock) {
-                            lock.notify();
-                        }
-
-                    }
-                });
-            }
-        });
-
-
-        try {
-            synchronized (lock) {
-                lock.wait();
-            }
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        assertEquals("success",Status);
-
-
-
-    }
+//    @Test
+//    public void MintNFT(){
+//
+//        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.Staging);
+//        final Object lock = new Object();
+//        MirrorSDK.getInstance().SetAppID(appid);
+//        MirrorSDK.getInstance().LoginWithEmail(userEmail, password, new MirrorCallback() {
+//            @Override
+//            public void callback(String result) {
+//
+//                MirrorSDK.getInstance().SetAccessToken(GetAccessTokenFromResponse(result));
+//                MirrorSDK.getInstance().SetRefreshToken(GetRefreshTokenFromResponse(result));
+//
+//                MirrorSDK.getInstance().MintNFT("9mkx2CDjRa64xEpUxyBJKbBC4NRAQhEJGDN8Ei8xHRWi", "name", "symbol", "https://market-assets.mirrorworld.fun/gen1/1.json", new MirrorCallback() {
+//                    @Override
+//                    public void callback(String result) {
+//                        Status = GetStatus( result);
+//                        synchronized (lock) {
+//                            lock.notify();
+//                        }
+//
+//                    }
+//                });
+//            }
+//        });
+//
+//
+//        try {
+//            synchronized (lock) {
+//                lock.wait();
+//            }
+//
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//
+//        assertEquals("success",Status);
+//
+//
+//
+//    }
 
 
     @Test

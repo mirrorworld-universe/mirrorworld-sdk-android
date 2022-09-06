@@ -34,40 +34,38 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         MirrorSDK.getInstance().InitSDK(this, MirrorEnv.Staging);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
-        initViewPager();
+        initViewPage();
     }
 
-    private void initViewPager() {
+
+
+
+
+    //新分类方式
+    private void initViewPage(){
         mTabLayout = (TabLayout) findViewById(R.id.tabs);
         List<String> titles = new ArrayList<>();
-        titles.add("UserAPIs");
-        titles.add("AuthAPIs");
-        titles.add("MarketAPIs");
-        titles.add("NFTAPIs");
-        titles.add("WalletAPIs");
-        titles.add("newApis");
+        titles.add("Auth");
+        titles.add("Market:Mint&List");
+        titles.add("Market:other");
+        titles.add("Wallet");
 
         for (int i = 0; i < titles.size(); i++) {
             mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(i)));
         }
 
+
         List<Fragment> fragments = new ArrayList<>();
 
-        APIFragment UserAPIs=new APIFragment("UserAPIs",replaceToUserAPIs());
-        APIFragment AuthAPIs=new APIFragment("AuthAPIs",replaceToAuthAPIs());
-        MultiParaItemFragment MarketAPIs = new MultiParaItemFragment(replaceToMarketAPIs());
-        MultiParaItemFragment NFTAPIs = new MultiParaItemFragment(replaceToNFTAPIs());
-        MultiParaItemFragment WalletAPIs = new MultiParaItemFragment(replaceToWalletAPIs());
+        MultiParaItemFragment Auth = new MultiParaItemFragment(replaceToMarketAPIs());
+        MultiParaItemFragment MarketMint = new MultiParaItemFragment(replaceToNFTAPIs());
+        MultiParaItemFragment MarketOther = new MultiParaItemFragment(replaceToWalletAPIs());
+        MultiParaItemFragment Wallet = new MultiParaItemFragment(newAPIs());
 
-        MultiParaItemFragment newAPIs = new MultiParaItemFragment(newAPIs());
-
-        fragments.add(UserAPIs);
-        fragments.add(AuthAPIs);
-        fragments.add(MarketAPIs);
-        fragments.add(NFTAPIs);
-        fragments.add(WalletAPIs);
-        fragments.add(newAPIs);
-
+        fragments.add(Auth);
+        fragments.add(MarketMint);
+        fragments.add(MarketOther);
+        fragments.add(Wallet);
 
 
         FragmentAdapter mFragmentAdapteradapter =
@@ -77,7 +75,195 @@ public class MainActivity extends AppCompatActivity {
 
         mTabLayout.setupWithViewPager(mViewPager);
 
+
     }
+
+    private List<MultiItemData.MultiItem> AuthApis() {
+
+        List<MultiItemData.MultiItem> items = new ArrayList<>();
+
+        items.add(new MultiItemData.MultiItem(
+                MirrorConstant.POST_TRANSFER_SQL,"Get wallet address",
+                "Get user's wallet address on solana",
+                "GetWallet",
+                null,null,null,null,null,null));
+
+
+        items.add(
+                new MultiItemData.MultiItem(MirrorConstant.POST_TRANSFER_SQL,"Transfer SOL","Transfer SOL",
+                        "PostTransferToken","to_publickey","amount",
+                        null,null,null,null));
+
+        items.add(
+                new MultiItemData.MultiItem(MirrorConstant.POST_TRANSFER_TOKEN,"Transfer Token","Transfer Token",
+                        "PostTransferToken","to_publickey","amount",
+                        "token_mint","decimals",null,null));
+
+        items.add(
+                new MultiItemData.MultiItem(MirrorConstant.GET_WALLET_TOKEN,"Get wallet tokens","Get a wallet's tokens",
+                        "GetWalletToken",null,null,
+                        null,null,null,null));
+
+
+        items.add(
+                new MultiItemData.MultiItem(MirrorConstant.TRANSACTIONS,"Get Wallet Transactions","Get a wallet's transactions by filters",
+                        "Transactions","limit","before",
+                        null,null,null,null));
+
+
+        return items;
+    }
+
+    private List<MultiItemData.MultiItem> MarketMintApis() {
+
+        List<MultiItemData.MultiItem> items = new ArrayList<>();
+        items.add(new MultiItemData.MultiItem(
+                MirrorConstant.POST_TRANSFER_SQL,"Get wallet address",
+                "Get user's wallet address on solana",
+                "GetWallet",
+                null,null,null,null,null,null));
+
+
+        items.add(
+                new MultiItemData.MultiItem(MirrorConstant.POST_TRANSFER_SQL,"Transfer SOL","Transfer SOL",
+                        "PostTransferToken","to_publickey","amount",
+                        null,null,null,null));
+
+        items.add(
+                new MultiItemData.MultiItem(MirrorConstant.POST_TRANSFER_TOKEN,"Transfer Token","Transfer Token",
+                        "PostTransferToken","to_publickey","amount",
+                        "token_mint","decimals",null,null));
+
+        items.add(
+                new MultiItemData.MultiItem(MirrorConstant.GET_WALLET_TOKEN,"Get wallet tokens","Get a wallet's tokens",
+                        "GetWalletToken",null,null,
+                        null,null,null,null));
+
+
+        items.add(
+                new MultiItemData.MultiItem(MirrorConstant.TRANSACTIONS,"Get Wallet Transactions","Get a wallet's transactions by filters",
+                        "Transactions","limit","before",
+                        null,null,null,null));
+
+
+        return items;
+    }
+
+    private List<MultiItemData.MultiItem> MarketOtherApis() {
+
+        List<MultiItemData.MultiItem> items = new ArrayList<>();
+        items.add(new MultiItemData.MultiItem(
+                MirrorConstant.POST_TRANSFER_SQL,"Get wallet address",
+                "Get user's wallet address on solana",
+                "GetWallet",
+                null,null,null,null,null,null));
+
+
+        items.add(
+                new MultiItemData.MultiItem(MirrorConstant.POST_TRANSFER_SQL,"Transfer SOL","Transfer SOL",
+                        "PostTransferToken","to_publickey","amount",
+                        null,null,null,null));
+
+        items.add(
+                new MultiItemData.MultiItem(MirrorConstant.POST_TRANSFER_TOKEN,"Transfer Token","Transfer Token",
+                        "PostTransferToken","to_publickey","amount",
+                        "token_mint","decimals",null,null));
+
+        items.add(
+                new MultiItemData.MultiItem(MirrorConstant.GET_WALLET_TOKEN,"Get wallet tokens","Get a wallet's tokens",
+                        "GetWalletToken",null,null,
+                        null,null,null,null));
+
+
+        items.add(
+                new MultiItemData.MultiItem(MirrorConstant.TRANSACTIONS,"Get Wallet Transactions","Get a wallet's transactions by filters",
+                        "Transactions","limit","before",
+                        null,null,null,null));
+
+
+        return items;
+    }
+
+    private List<MultiItemData.MultiItem> WalletApis() {
+
+        List<MultiItemData.MultiItem> items = new ArrayList<>();
+        items.add(new MultiItemData.MultiItem(
+                MirrorConstant.POST_TRANSFER_SQL,"Get wallet address",
+                "Get user's wallet address on solana",
+                "GetWallet",
+                null,null,null,null,null,null));
+
+
+        items.add(
+                new MultiItemData.MultiItem(MirrorConstant.POST_TRANSFER_SQL,"Transfer SOL","Transfer SOL",
+                        "PostTransferToken","to_publickey","amount",
+                        null,null,null,null));
+
+        items.add(
+                new MultiItemData.MultiItem(MirrorConstant.POST_TRANSFER_TOKEN,"Transfer Token","Transfer Token",
+                        "PostTransferToken","to_publickey","amount",
+                        "token_mint","decimals",null,null));
+
+        items.add(
+                new MultiItemData.MultiItem(MirrorConstant.GET_WALLET_TOKEN,"Get wallet tokens","Get a wallet's tokens",
+                        "GetWalletToken",null,null,
+                        null,null,null,null));
+
+
+        items.add(
+                new MultiItemData.MultiItem(MirrorConstant.TRANSACTIONS,"Get Wallet Transactions","Get a wallet's transactions by filters",
+                        "Transactions","limit","before",
+                        null,null,null,null));
+
+
+        return items;
+    }
+
+
+
+
+
+//    private void initViewPager() {
+//        mTabLayout = (TabLayout) findViewById(R.id.tabs);
+//        List<String> titles = new ArrayList<>();
+//        titles.add("UserAPIs");
+//        titles.add("AuthAPIs");
+//        titles.add("MarketAPIs");
+//        titles.add("NFTAPIs");
+//        titles.add("WalletAPIs");
+//        titles.add("newApis");
+//
+//        for (int i = 0; i < titles.size(); i++) {
+//            mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(i)));
+//        }
+//
+//        List<Fragment> fragments = new ArrayList<>();
+//
+//        APIFragment UserAPIs=new APIFragment("UserAPIs",replaceToUserAPIs());
+//        APIFragment AuthAPIs=new APIFragment("AuthAPIs",replaceToAuthAPIs());
+//        MultiParaItemFragment MarketAPIs = new MultiParaItemFragment(replaceToMarketAPIs());
+//        MultiParaItemFragment NFTAPIs = new MultiParaItemFragment(replaceToNFTAPIs());
+//        MultiParaItemFragment WalletAPIs = new MultiParaItemFragment(replaceToWalletAPIs());
+//
+//        MultiParaItemFragment newAPIs = new MultiParaItemFragment(newAPIs());
+//
+//        fragments.add(UserAPIs);
+//        fragments.add(AuthAPIs);
+//        fragments.add(MarketAPIs);
+//        fragments.add(NFTAPIs);
+//        fragments.add(WalletAPIs);
+//        fragments.add(newAPIs);
+//
+//
+//
+//        FragmentAdapter mFragmentAdapteradapter =
+//                new FragmentAdapter(getSupportFragmentManager(), fragments, titles);
+//
+//        mViewPager.setAdapter(mFragmentAdapteradapter);
+//
+//        mTabLayout.setupWithViewPager(mViewPager);
+//
+//    }
 
 
 
@@ -233,8 +419,6 @@ public class MainActivity extends AppCompatActivity {
 
         return items;
     }
-
-
     private  List<MultiItemData.MultiItem> newAPIs() {
 
 

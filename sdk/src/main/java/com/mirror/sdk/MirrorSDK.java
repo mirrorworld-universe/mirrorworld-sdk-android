@@ -260,6 +260,8 @@ public class MirrorSDK {
         LoginWithEmailPostRequest(url,data,mirrorCallback);
     }
 
+
+    // check
     public void FetchUser(MirrorListener.FetchUserListener fetchUserListener){
         Map<String,String> map = new HashMap<>();
 
@@ -277,6 +279,8 @@ public class MirrorSDK {
         });
     }
 
+
+    // query
     public void QueryUser(String userEmail, MirrorListener.FetchUserListener fetchUserListener){
         Map<String,String> map = new HashMap<>();
         map.put("email",userEmail);

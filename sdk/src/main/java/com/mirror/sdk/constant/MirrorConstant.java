@@ -4,6 +4,14 @@ public class MirrorConstant {
 
     // all api constant of api id
 
+    // Auth
+    public static final int START_LOGIN_With =1;
+
+    public static final int GET_ACCESS_TOKEN = 2;
+
+    public static final int SET_APP_ID =3;
+
+
     public static final int START_LOGIN =1;
 
     public static final int GET_ACCESS_TOKEN = 2;
