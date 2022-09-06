@@ -1169,6 +1169,11 @@ public class MirrorSDK {
                         .append("&");
             }
             stringBuffer.deleteCharAt(stringBuffer.length() - 1);    //删除最后的一个"&"
+
+            if(params != null && params.size()!=0){
+                stringBuffer.deleteCharAt(stringBuffer.length()-1);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

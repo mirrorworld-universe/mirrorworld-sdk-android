@@ -119,6 +119,8 @@ public class ExampleUnitTest {
     @Test
     public void LoginWithEmail(){
 
+        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.Staging);
+
         final Object lock = new Object();
         MirrorSDK.getInstance().SetAppID(appid);
         MirrorSDK.getInstance().LoginWithEmail(userEmail,password, new MirrorCallback() {
@@ -719,6 +721,8 @@ public class ExampleUnitTest {
 
 
     }
+
+
 
      // wallet
      @Test
