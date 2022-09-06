@@ -345,6 +345,55 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 }
             });
 
+        }else if(apiId == MirrorConstant.LOGIN_WITH_EMAIL){
+
+            String email = String.valueOf(holder.mEt1.getText());
+            String password = String.valueOf(holder.mEt2.getText());
+           MirrorSDK.getInstance().LoginWithEmail(email, password, new MirrorCallback() {
+               @Override
+               public void callback(String result) {
+                   holder.mResultView.setText(result);
+               }
+           });
+
+
+
+        }else if(apiId == MirrorConstant.CREATE_NEW_MARKET){
+
+
+            String treasury_withdrawal_destination = String.valueOf(holder.mEt1.getText());
+            String fee_withdrawal_destination = String.valueOf(holder.mEt2.getText());
+            String treasury_mint = String.valueOf(holder.mEt3.getText());
+            double seller_fee_basis_points = Double.valueOf(String.valueOf(holder.mEt4.getText()));
+
+            MirrorSDK.getInstance().CreateNewMarketPlace(treasury_withdrawal_destination, fee_withdrawal_destination,treasury_mint,seller_fee_basis_points, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    holder.mResultView.setText(result);
+                }
+            });
+
+
+
+        }else if(apiId == MirrorConstant.UPDATE_MARKET){
+
+            String new_authority = String.valueOf(holder.mEt1.getText());
+            String treasury_mint = String.valueOf(holder.mEt2.getText());
+            String treasury_withdrawal_destination = String.valueOf(holder.mEt3.getText());
+            String fee_withdrawal_destination = String.valueOf(holder.mEt4.getText());
+            double seller_fee_basis_points = Double.valueOf(String.valueOf(holder.mEt5.getText()));
+
+            MirrorSDK.getInstance().UpdateMarketPlace(new_authority, treasury_mint,treasury_withdrawal_destination,fee_withdrawal_destination,seller_fee_basis_points, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    holder.mResultView.setText(result);
+                }
+            });
+
+
+        }else if(apiId == MirrorConstant.Query_USER){
+
+
         }
 
 

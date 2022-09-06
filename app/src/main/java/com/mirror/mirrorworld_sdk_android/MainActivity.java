@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         titles.add("MarketAPIs");
         titles.add("NFTAPIs");
         titles.add("WalletAPIs");
+        titles.add("newApis");
 
         for (int i = 0; i < titles.size(); i++) {
             mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(i)));
@@ -58,11 +59,14 @@ public class MainActivity extends AppCompatActivity {
         MultiParaItemFragment NFTAPIs = new MultiParaItemFragment(replaceToNFTAPIs());
         MultiParaItemFragment WalletAPIs = new MultiParaItemFragment(replaceToWalletAPIs());
 
+        MultiParaItemFragment newAPIs = new MultiParaItemFragment(newAPIs());
+
         fragments.add(UserAPIs);
         fragments.add(AuthAPIs);
         fragments.add(MarketAPIs);
         fragments.add(NFTAPIs);
         fragments.add(WalletAPIs);
+        fragments.add(newAPIs);
 
 
 
@@ -229,6 +233,41 @@ public class MainActivity extends AppCompatActivity {
 
         return items;
     }
+
+
+    private  List<MultiItemData.MultiItem> newAPIs() {
+
+
+        List<MultiItemData.MultiItem> items = new ArrayList<>();
+
+        items.add(new MultiItemData.MultiItem(
+                MirrorConstant.LOGIN_WITH_EMAIL,"Login with email",
+                "Logs in a user with their email address and password",
+                "LoginWithEmail","email","password",null,null,null,null));
+        items.add(new MultiItemData.MultiItem(
+                MirrorConstant.CHECKS_WEATHER_AUTHENTICATED,"Checks authenticated",
+                "Checks whether is authenticated or not and returns the user object if true",
+                "Check",
+                null,null,null,null,null,null));
+        items.add(new MultiItemData.MultiItem(
+                MirrorConstant.CREATE_NEW_MARKET,"Create new Marketplace ",
+                "Create new Marketplace on Solana",
+                "Create Marketplace",
+                "treasury_withdrawal_destination","fee_withdrawal_destination","treasury_mint","seller_fee_basis_points",null,null));
+        items.add(new MultiItemData.MultiItem(
+                MirrorConstant.UPDATE_MARKET,"Updates existing Marketplace",
+                "Updates existing Marketplace on Solana",
+                "Updates existing Marketplace",
+                "new_authority","treasury_mint","treasury_withdrawal_destination","fee_withdrawal_destination","seller_fee_basis_points",null));
+        items.add(new MultiItemData.MultiItem(
+                MirrorConstant.QUERY_MARKET,"Query marketplaces",
+                "Query marketplaces on Solana",
+                "Query marketplaces",
+                "mint_address","price",null,null,null,null));
+        return items;
+    }
+
+
 
 
     public static void makeStatusBarTransparent(Activity activity) {

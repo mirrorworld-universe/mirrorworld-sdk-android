@@ -49,5 +49,20 @@ public class MirrorConstant {
     public static final int TRANSACTIONS = 105;
 
 
+    // new apis
+    public static final int LOGIN_WITH_EMAIL =90;
+
+    public static final int CHECKS_WEATHER_AUTHENTICATED  = 91;
+
+    public static final int CREATE_NEW_MARKET = 92;
+
+    public static final int UPDATE_MARKET = 93;
+
+    public static final int QUERY_MARKET =94;
+
+
+
+
+
 
 }

@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.mirror.sdk.constant.MirrorConstant;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.constant.MirrorResCode;
 import com.mirror.sdk.constant.MirrorUrl;
@@ -80,6 +81,55 @@ public class MirrorSDK {
     private String localKeyWalletAddress = "mirror_wallet_address";
 
     private MirrorListener.LoginListener cbLogin = null;
+
+
+
+    // get token from response
+    private String GetRefreshTokenFromResponse(String response){
+        String refreshToken = null;
+        try {
+
+            JSONObject jsonObject = new JSONObject(response);
+            refreshToken  = jsonObject.getJSONObject("data").getString("refresh_token");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        if(null == refreshToken ){
+            return "error";
+        }
+
+        return refreshToken;
+    }
+
+    private String GetAccessTokenFromResponse(String response){
+        String accessToken = null;
+        try {
+
+            JSONObject jsonObject = new JSONObject(response);
+            accessToken = jsonObject.getJSONObject("data").getString("access_token");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        if(null == accessToken){
+            return "error";
+        }
+
+        return accessToken;
+    }
+
+    //
+    public void SetToken(String loginResult){
+        MirrorSDK.getInstance().SetAccessToken(GetAccessTokenFromResponse(loginResult));
+        MirrorSDK.getInstance().SetRefreshToken(GetRefreshTokenFromResponse(loginResult));
+    }
+
+
+
+
 
     private MirrorSDK(){
 
@@ -542,6 +592,72 @@ public class MirrorSDK {
     //===========================================================================================================
 
 
+    // new apis
+
+    public void CreateNewMarketPlace(String treasury_withdrawal_destination, String fee_withdrawal_destination, String treasury_mint, double seller_fee_basis_points, MirrorCallback mirrorCallback){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("treasury_withdrawal_destination", treasury_withdrawal_destination);
+            jsonObject.put("fee_withdrawal_destination", fee_withdrawal_destination);
+            jsonObject.put("treasury_mint", treasury_mint);
+            jsonObject.put("seller_fee_basis_points", seller_fee_basis_points);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+
+        String url = GetAPIRoot() + MirrorUrl.URL_CREATE_NEW_MARKET_PLACE;
+        checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
+    }
+
+
+
+
+    public void UpdateMarketPlace(String new_authority, String treasury_mint, String treasury_withdrawal_destination, String fee_withdrawal_destination, double seller_fee_basis_points,MirrorCallback mirrorCallback){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("new_authority", new_authority);
+            jsonObject.put("treasury_mint",treasury_mint);
+            jsonObject.put("treasury_withdrawal_destination", treasury_withdrawal_destination);
+            jsonObject.put("fee_withdrawal_destination", fee_withdrawal_destination);
+            jsonObject.put("seller_fee_basis_points", seller_fee_basis_points);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+
+        String url = GetAPIRoot() + MirrorUrl.URL_UPDATE_MARKET_PLACE;
+        checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
+    }
+
+
+
+    public void QueryMarketPlace(String name, String client_id,
+                                 String authority,String treasury_mint,
+                                 String auction_house_fee_account,String auction_house_treasury,
+                                 String treasury_withdrawal_destination,String fee_withdrawal_destination,
+                                 String seller_fee_basis_points,String requires_sign_off,String can_change_sale_price,
+                                 MirrorCallback mirrorCallback){
+
+        HashMap<String,String> map = new HashMap<String,String>();
+        map.put("name",name);
+        map.put("client_id",client_id);
+        map.put("authority",authority);
+        map.put("treasury_mint",treasury_mint);
+        map.put("auction_house_fee_account",auction_house_fee_account);
+        map.put("auction_house_treasury",auction_house_treasury);
+        map.put("treasury_withdrawal_destination",treasury_withdrawal_destination);
+        map.put("fee_withdrawal_destination",fee_withdrawal_destination);
+        map.put("seller_fee_basis_points",seller_fee_basis_points);
+        map.put(" requires_sign_off", requires_sign_off);
+        map.put("can_change_sale_price",can_change_sale_price);
+
+        String url = GetAPIRoot() + MirrorUrl.URL_QUERY_MARKET_PLACE;
+        checkParamsAndGet(url,map, mirrorCallback);
+
+    }
+
+
 
 
     //==========================================================================================
@@ -784,6 +900,126 @@ public class MirrorSDK {
             doGet(url,params, mirrorCallback);
         }
     }
+
+
+
+
+    // get 请求重载方法组
+//    private void checkParamsAndGet(String url,  Map<String,Object> params, MirrorCallback mirrorCallback){
+//        if(appId == ""){
+//            if(activityContext == null){
+//                logFlow("Must init sdk first!");
+//                return;
+//            }
+//            appId = getSavedString(activityContext,localKeyAppId);
+//        }
+//        if(appId == ""){
+//            logFlow("Must set app id first!");
+//            return;
+//        }
+//
+//        if(accessToken == ""){
+//            logFlow("No access token,start get flow");
+//            GetAccessToken(activityContext, new MirrorCallback() {
+//                @Override
+//                public void callback(String result) {
+//                    accessToken = result;
+//                    doGet(url,params, mirrorCallback);
+//                }
+//            });
+//        }else{
+//            if(mWalletAddress == "" && null != activityContext){
+//                mWalletAddress = getSavedString(activityContext,localKeyWalletAddress);
+//                if(mWalletAddress == ""){
+//                    logFlow("Must get mWalletAddress first!");
+//                }
+//            }
+//            doGet(url,params, mirrorCallback);
+//        }
+//    }
+//
+//    public void doGet(String url, Map<String, Object> params, MirrorCallback mirrorCallback){
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                String resultStr = httpGetW(url,params,"UTF-8");
+//                if(activityContext == null){
+//                    mirrorCallback.callback(resultStr);
+//                }else{
+//                    activityContext.runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            logFlow("Get Result is:"+resultStr);
+//                            mirrorCallback.callback(resultStr);
+//                        }
+//                    });
+//                }
+//            }
+//        }).start();
+//    }
+//
+//    private String httpGetW(String strUrlPath,Map<String, Object> params,String encode) {
+//        String result = null;
+//        if(params != null){
+//            String append_url = getRequestData(params, encode).toString();
+//            strUrlPath = strUrlPath + "?" + append_url;
+//        }
+//
+//        logFlow("http get:"+strUrlPath);
+//        logFlow("http get(x-api-key):"+appId);
+//        logFlow("http get Authorization:"+accessToken);
+//        try {
+//            URL url = new URL(strUrlPath);
+//            HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+//            urlConn.setConnectTimeout(5000);
+//            urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+//            urlConn.setRequestProperty("Accept","application/json");
+//            urlConn.setRequestProperty("x-api-key",appId);
+//            urlConn.setRequestProperty("Authorization","Bearer "+accessToken);
+//            urlConn.setRequestMethod("GET");
+//
+//            InputStreamReader in = new InputStreamReader(urlConn.getInputStream());
+//
+//            BufferedReader buffer = new BufferedReader(in);
+//            String inputLine = null;
+//
+//            result = "";
+//
+//            while((inputLine = buffer.readLine())!=null){
+//                result += inputLine + "\n";
+//            }
+//
+//            in.close();
+//            urlConn.disconnect();
+//        }catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return result;
+//    }
+//
+//    private StringBuffer getRequestData(Map<String, Object> params,String encode) {
+//        StringBuffer stringBuffer = new StringBuffer();
+//        try {
+//            for (Map.Entry<String, Object> entry : params.entrySet()) {
+//                String key = entry.getKey();
+//                String value = entry.getValue();
+//                stringBuffer.append(key)
+//                        .append("=")
+//                        .append(value)
+////                    .append(URLEncoder.encode(value, encode))
+//                        .append("&");
+//            }
+//            stringBuffer.deleteCharAt(stringBuffer.length() - 1);    //删除最后的一个"&"
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        return stringBuffer;
+//    }
+//
+
+
 
     private void checkParamsAndPost(String url, String data, MirrorCallback mirrorCallback){
         if(appId == ""){
@@ -1031,6 +1267,7 @@ public class MirrorSDK {
         //editor.apply()
         editor.commit();
     }
+
 
     private String getSavedString(Context context,String key){
         SharedPreferences sp = context.getSharedPreferences(localFileKey, Context.MODE_PRIVATE);

@@ -30,4 +30,11 @@ public class MirrorUrl {
     public static final String URL_TRANSFER_TOKEN = "wallet/transfer-token";
     public static  final String URL_GET_WALLET_TOKEN = "wallet/tokens";
     public static final String URL_GET_WALLET_TRANSACTIONS = "wallet/transactions";
+
+
+    // new apis
+    public static final String URL_CREATE_NEW_MARKET_PLACE = "solana/marketplaces/create";
+    public static final String URL_UPDATE_MARKET_PLACE = "solana/marketplaces/update";
+    public static final String URL_QUERY_MARKET_PLACE = "solana/marketplaces";
+
 }

@@ -19,4 +19,6 @@ public class MirrorListener {
         void onNFTFetched(NFTObject nftObject);
         void onNFTFetchFailed(long code,String message);
     }
+
+
 }
