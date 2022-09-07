@@ -85,7 +85,7 @@ public class MirrorSDK {
 
 
     // get token from response
-    private String GetRefreshTokenFromResponse(String response){
+    public String GetRefreshTokenFromResponse(String response){
         String refreshToken = null;
         try {
 
@@ -103,7 +103,7 @@ public class MirrorSDK {
         return refreshToken;
     }
 
-    private String GetAccessTokenFromResponse(String response){
+    public String GetAccessTokenFromResponse(String response){
         String accessToken = null;
         try {
 
@@ -682,11 +682,22 @@ public class MirrorSDK {
         new Thread(new Runnable() {
             @Override
             public void run() {
+
                 post(url, data,new MirrorCallback(){
                     @Override
                     public void callback(String result) {
+                        if(activityContext == null){
+                            if(mirrorCallback != null) mirrorCallback.callback(result);
+                        }else{
+                            activityContext.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if(mirrorCallback != null) mirrorCallback.callback(result);
+                                }
+                            });
+                        }
 
-                        if(mirrorCallback != null) mirrorCallback.callback(result);
+
                     }
                 });
             }

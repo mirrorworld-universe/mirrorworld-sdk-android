@@ -58,12 +58,12 @@ public class MainActivity extends AppCompatActivity {
         List<Fragment> fragments = new ArrayList<>();
 
         MultiParaItemFragment Auth = new MultiParaItemFragment(authApis());
-//        MultiParaItemFragment MarketMint = new MultiParaItemFragment(replaceToNFTAPIs());
+        MultiParaItemFragment MarketMint = new MultiParaItemFragment(marketMintApis());
 //        MultiParaItemFragment MarketOther = new MultiParaItemFragment(replaceToWalletAPIs());
 //        MultiParaItemFragment Wallet = new MultiParaItemFragment(newAPIs());
 
         fragments.add(Auth);
-//        fragments.add(MarketMint);
+        fragments.add(MarketMint);
 //        fragments.add(MarketOther);
 //        fragments.add(Wallet);
 
@@ -108,41 +108,54 @@ public class MainActivity extends AppCompatActivity {
         return items;
     }
 
-//    private List<MultiItemData.MultiItem> marketMintApis() {
-//
-//        List<MultiItemData.MultiItem> items = new ArrayList<>();
-//        items.add(new MultiItemData.MultiItem(
-//                MirrorConstant.POST_TRANSFER_SQL,"Get wallet address",
-//                "Get user's wallet address on solana",
-//                "GetWallet",
-//                null,null,null,null,null,null));
-//
-//
-//        items.add(
-//                new MultiItemData.MultiItem(MirrorConstant.POST_TRANSFER_SQL,"Transfer SOL","Transfer SOL",
-//                        "PostTransferToken","to_publickey","amount",
-//                        null,null,null,null));
-//
-//        items.add(
-//                new MultiItemData.MultiItem(MirrorConstant.POST_TRANSFER_TOKEN,"Transfer Token","Transfer Token",
-//                        "PostTransferToken","to_publickey","amount",
-//                        "token_mint","decimals",null,null));
-//
-//        items.add(
-//                new MultiItemData.MultiItem(MirrorConstant.GET_WALLET_TOKEN,"Get wallet tokens","Get a wallet's tokens",
-//                        "GetWalletToken",null,null,
-//                        null,null,null,null));
-//
-//
-//        items.add(
-//                new MultiItemData.MultiItem(MirrorConstant.TRANSACTIONS,"Get Wallet Transactions","Get a wallet's transactions by filters",
-//                        "Transactions","limit","before",
-//                        null,null,null,null));
-//
-//
-//        return items;
-//    }
-//
+    private List<MultiItemData.MultiItem> marketMintApis() {
+
+        List<MultiItemData.MultiItem> items = new ArrayList<>();
+
+        items.add(new MultiItemData.MultiItem(
+                MirrorConstant.CREATE_VERIFIED_COLLECTION,"Mint New Top-level Collection",
+                "This request is using API Key from collectionMirror World Mobile SDK",
+                "TOP_COLLECTION",
+                "name","symbol","detailUrl",null,null,null));
+
+
+        items.add(
+
+                new MultiItemData.MultiItem(MirrorConstant.CREATE_VERIFIED_SUB_COLLECTION,"Mint New Lower-level Collection","This request is using API Key from collectionMirror World Mobile SDK",
+                        "LOW_COLLECTION","collection_mint","name",
+                        "symbol","detailUrl",null,null));
+
+        items.add(
+
+                new MultiItemData.MultiItem(MirrorConstant.MINT_NFT,"Mint New NFT on Collection","This request is using API Key from collectionMirror World Mobile SDK",
+                        "MINT_NFT","collection_mint","name",
+                        "symbol","detailUrl",null,null));
+
+        items.add(
+
+                new MultiItemData.MultiItem(MirrorConstant.LIST_NFT,"List NFT on the marketplace","List NFT on the marketplace by use mint address",
+                        "LIST_NFT","mint_address","price",
+                        null,null,null,null));
+
+
+        items.add(
+
+                new MultiItemData.MultiItem(MirrorConstant.UPDATE_NFT_LISTING,"Update Listing of NFT on the marketplace","Update Listing of NFT on the marketplace",
+                        "UPDATE_NFT_LISTING","mint_address","price",
+                        null,null,null,null));
+
+        items.add(
+
+                new MultiItemData.MultiItem(MirrorConstant.CANCEL_NFT_LISTING,"Cancel listing of NFT on the marketplace","Cancel listing of NFT on the marketplace",
+                        "CANCEL_NFT_LISTING","mint_address","price",
+                        null,null,null,null));
+        return items;
+    }
+
+
+
+
+
 //    private List<MultiItemData.MultiItem> marketOtherApis() {
 //
 //        List<MultiItemData.MultiItem> items = new ArrayList<>();
@@ -444,7 +457,7 @@ public class MainActivity extends AppCompatActivity {
 //                "mint_address","price",null,null,null,null));
 //        return items;
 //    }
-
+//
 
 
 
