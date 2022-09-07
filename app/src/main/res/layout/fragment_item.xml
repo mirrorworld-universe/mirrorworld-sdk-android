@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_margin="12dp">
 
 
         <LinearLayout
@@ -33,12 +35,26 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/apiitem_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Button" />
+
+
+           <androidx.cardview.widget.CardView
+               android:layout_width="200dp"
+               android:layout_height="38dp"
+               android:layout_marginLeft="20dp"
+               android:layout_marginRight="20dp"
+               app:cardCornerRadius="30dp"
+               android:background="#CCFF00"
+               >
+               <Button
+                   android:id="@+id/apiitem_button"
+                   android:layout_width="200dp"
+                   android:layout_height="38dp"
+                   android:layout_weight="1"
+                   android:text="Button"
+                   android:textColor="@color/black"
+                   android:background="#CCFF00"/>
+
+           </androidx.cardview.widget.CardView>
 
             <EditText
                 android:id="@+id/apiitem_edit"
@@ -46,6 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
+
                 android:inputType="textPersonName" />
 
         </LinearLayout>

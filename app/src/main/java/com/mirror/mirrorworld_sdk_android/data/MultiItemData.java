@@ -65,6 +65,7 @@ public class MultiItemData {
         public final String et5Hint;
         public final String et6Hint;
 
+
         public MultiItem(int id, String name, String details, String buttonText, String et1Hint
                 , String et2Hint, String et3Hint, String et4Hint, String et5Hint, String et6Hint) {
             this.id = id;
@@ -78,6 +79,8 @@ public class MultiItemData {
             this.et5Hint = et5Hint;
             this.et6Hint = et6Hint;
         }
+
+
 
         @Override
         public String toString() {

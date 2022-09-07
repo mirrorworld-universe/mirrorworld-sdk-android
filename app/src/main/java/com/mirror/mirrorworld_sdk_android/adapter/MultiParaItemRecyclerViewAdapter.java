@@ -1,5 +1,7 @@
 package com.mirror.mirrorworld_sdk_android.adapter;
 
+import static org.junit.Assert.assertEquals;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -15,7 +17,37 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mirror.mirrorworld_sdk_android.R;
 import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
 import com.mirror.sdk.MirrorCallback;
-import com.mirror.sdk.MirrorSDKJava;
+import com.mirror.sdk.MirrorSDK;
+import com.mirror.sdk.constant.MirrorConstant;
+import com.mirror.sdk.constant.MirrorEnv;
+import com.mirror.sdk.listener.MirrorListener;
+import com.mirror.sdk.listener.market.BuyNFTListener;
+import com.mirror.sdk.listener.market.CancelListListener;
+import com.mirror.sdk.listener.market.CreateSubCollectionListener;
+import com.mirror.sdk.listener.market.CreateTopCollectionListener;
+import com.mirror.sdk.listener.market.FetchByMintAddressListener;
+import com.mirror.sdk.listener.market.FetchByOwnerListener;
+import com.mirror.sdk.listener.market.FetchSingleNFTActivityListener;
+import com.mirror.sdk.listener.market.ListNFTListener;
+import com.mirror.sdk.listener.market.MintNFTListener;
+import com.mirror.sdk.listener.market.TransferNFTListener;
+import com.mirror.sdk.listener.market.UpdateListListener;
+import com.mirror.sdk.listener.wallet.GetWalletTokenListener;
+import com.mirror.sdk.listener.wallet.GetWalletTransactionBySigListener;
+import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
+import com.mirror.sdk.listener.wallet.TransactionsDTO;
+import com.mirror.sdk.listener.wallet.TransferSOLListener;
+import com.mirror.sdk.response.auth.UserResponse;
+import com.mirror.sdk.response.market.ActivityOfSingleNftResponse;
+import com.mirror.sdk.response.market.ListingResponse;
+import com.mirror.sdk.response.market.MintResponse;
+import com.mirror.sdk.response.market.MultipleNFTsResponse;
+import com.mirror.sdk.response.market.NFTObject;
+import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
+import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
+import com.mirror.sdk.response.wallet.TransferResponse;
+import com.mirror.sdk.response.wallet.WalletTransaction;
+import com.mirror.sdk.utils.MirrorStringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +60,8 @@ import java.util.List;
  */
 public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<MultiParaItemRecyclerViewAdapter.ViewHolder>{
 
-
-
     private  List<MultiItemData.MultiItem> mValues;
+
     private Activity mContext;
 
     public MultiParaItemRecyclerViewAdapter(List<MultiItemData.MultiItem> items) {
@@ -53,7 +84,6 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
         ViewHolder vh = new ViewHolder(v);
         return vh;
     }
-
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
@@ -97,7 +127,8 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
         holder.mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                handleClick(mValues.get(position).id,holder);
+
+                handleClick(mValues.get(position).id,holder,view);
             }
         });
 
@@ -107,225 +138,422 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
     public int getItemCount() {
         return mValues.size();
     }
-    private void handleClick(int apiId, MultiParaItemRecyclerViewAdapter.ViewHolder holder){
-        if(apiId == 12){
-            String mint_address = String.valueOf(holder.mEt1.getText());
-            MirrorSDKJava.getInstance().FetchSingleNFTDetails(mint_address, new MirrorCallback() {
+
+    private void handleClick(int apiId, MultiParaItemRecyclerViewAdapter.ViewHolder holder,View view){
+
+        if(apiId == MirrorConstant.SET_APP_ID){
+
+            MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Staging);
+            MirrorSDK.getInstance().SetAppID(String.valueOf(holder.mEt1.getText()));
+            holder.mResultView.setText(String.valueOf(holder.mEt1.getText()));
+
+        }else if(apiId == MirrorConstant.LOGIN_With_EMAIL){
+
+            String email = String.valueOf(holder.mEt1.getText());
+            String passWord = String.valueOf(holder.mEt2.getText());
+
+            MirrorSDK.getInstance().LoginWithEmail(email,passWord, new MirrorCallback() {
                 @Override
                 public void callback(String s) {
                     holder.mResultView.setText(s);
+                    MirrorSDK.getInstance().SetAccessToken(MirrorSDK.getInstance().GetAccessTokenFromResponse(s));
+                    MirrorSDK.getInstance().SetRefreshToken(MirrorSDK.getInstance().GetRefreshTokenFromResponse(s));
                 }
             });
-        }else if(apiId == 32){
+
+        }else if(apiId == MirrorConstant.FETCH_USER){
+
+            MirrorSDK.getInstance().FetchUser(new MirrorListener.FetchUserListener() {
+                @Override
+                public void onUserFetched(UserResponse userResponse) {
+                    holder.mResultView.setText(userResponse.email+userResponse.eth_address);
+                }
+
+                @Override
+                public void onFetchFailed(long code, String message) {
+                    holder.mResultView.setText(message);
+                }
+            });
+
+        }else if(apiId == MirrorConstant.QUERY_USER){
+
+            String email = String.valueOf(holder.mEt1.getText());
+            MirrorSDK.getInstance().QueryUser(email, new MirrorListener.FetchUserListener() {
+                @Override
+                public void onUserFetched(UserResponse userResponse) {
+                    holder.mResultView.setText(userResponse.email+userResponse.eth_address);
+
+                }
+
+                @Override
+                public void onFetchFailed(long code, String message) {
+                    holder.mResultView.setText(message);
+
+                }
+            });
+
+        }else if(apiId == MirrorConstant.CREATE_VERIFIED_COLLECTION){
+
+            MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Unknown);
+
             String name = String.valueOf(holder.mEt1.getText());
             String symbol = String.valueOf(holder.mEt2.getText());
-            String url = String.valueOf(holder.mEt3.getText());
-            MirrorSDKJava.getInstance().CreateVerifiedCollection(name, symbol, url, new MirrorCallback() {
+            String detailsUrl = String.valueOf(holder.mEt3.getText());
+
+            MirrorSDK.getInstance().CreateVerifiedCollection(name, symbol, detailsUrl, new CreateTopCollectionListener() {
                 @Override
-                public void callback(String s) {
-                    holder.mResultView.setText(s);
+                public void onCreateSuccess(MintResponse mintResponse) {
+                    holder.mResultView.setText(mintResponse.name+mintResponse.mint_address);
+                }
+
+                @Override
+                public void onCreateFailed(long code, String message) {
+                    holder.mResultView.setText(message);
                 }
             });
-        }else if(apiId == 31){
-            String collection = String.valueOf(holder.mEt1.getText());
-            String name = String.valueOf(holder.mEt2.getText());
-            String symbol = String.valueOf(holder.mEt3.getText());
-            String url = String.valueOf(holder.mEt3.getText());
-            MirrorSDKJava.getInstance().MintNFT(collection,name, symbol, url, new MirrorCallback() {
-                @Override
-                public void callback(String s) {
-                    holder.mResultView.setText(s);
-                }
-            });
-        }else if(apiId == 33){
+        }else if(apiId == MirrorConstant.CREATE_VERIFIED_SUB_COLLECTION){
+
+            MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Unknown);
+
             String collection_mint = String.valueOf(holder.mEt1.getText());
             String name = String.valueOf(holder.mEt2.getText());
             String symbol = String.valueOf(holder.mEt3.getText());
-            String url = String.valueOf(holder.mEt4.getText());
-            String confirmation = String.valueOf(holder.mEt5.getText());
-            MirrorSDKJava.getInstance().CreateVerifiedSubCollection(collection_mint,name, symbol, url, new MirrorCallback() {
-                @Override
-                public void callback(String s) {
-                    holder.mResultView.setText(s);
-                }
-            });
-        }else if(apiId == 34){
-            String ad1 = String.valueOf(holder.mEt1.getText());
-            String ad2 = String.valueOf(holder.mEt2.getText());
-            List<String> list = new ArrayList<>();
-            list.add(ad1);
-            list.add(ad2);
-            MirrorSDKJava.getInstance().FetchNFTsByMintAddresses(list, new MirrorCallback() {
-                @Override
-                public void callback(String s) {
-                    holder.mResultView.setText(s);
-                }
-            });
-        }else if(apiId == 35){
-            String creator1 = String.valueOf(holder.mEt1.getText());
-            Double limit = Double.valueOf(String.valueOf(holder.mEt2.getText()));
-            Double offset = Double.valueOf(String.valueOf(holder.mEt3.getText()));
-            List<String> list = new ArrayList<>();
-            list.add(creator1);
-            MirrorSDKJava.getInstance().FetchNFTsByCreatorAddresses(list,limit,offset, new MirrorCallback() {
-                @Override
-                public void callback(String s) {
-                    holder.mResultView.setText(s);
-                }
-            });
-        }else if(apiId == 36){
-            String update_authority1 = String.valueOf(holder.mEt1.getText());
-            Double limit = Double.valueOf(String.valueOf(holder.mEt2.getText()));
-            Double offset = Double.valueOf(String.valueOf(holder.mEt3.getText()));
-            List<String> list = new ArrayList<>();
-            list.add(update_authority1);
-            MirrorSDKJava.getInstance().FetchNFTsByUpdateAuthorities(list,limit,offset, new MirrorCallback() {
-                @Override
-                public void callback(String s) {
-                    holder.mResultView.setText(s);
-                }
-            });
-        }else if(apiId == 37){
-            String mint_address = String.valueOf(holder.mEt1.getText());
-            Double price = Double.valueOf(String.valueOf(holder.mEt2.getText()));
-            MirrorSDKJava.getInstance().ListNFT(mint_address,price, new MirrorCallback() {
-                @Override
-                public void callback(String s) {
-                    holder.mResultView.setText(s);
-                }
-            });
-        }else if(apiId == 38){
-            String mint_address = String.valueOf(holder.mEt1.getText());
-            Double price = Double.valueOf(String.valueOf(holder.mEt2.getText()));
-            MirrorSDKJava.getInstance().UpdateNFTListing(mint_address,price, new MirrorCallback() {
-                @Override
-                public void callback(String s) {
-                    holder.mResultView.setText(s);
-                }
-            });
-        }else if(apiId == 39){
-            String mint_address = String.valueOf(holder.mEt1.getText());
-            Double price = Double.valueOf(String.valueOf(holder.mEt2.getText()));
-            MirrorSDKJava.getInstance().BuyNFT(mint_address,price, new MirrorCallback() {
-                @Override
-                public void callback(String s) {
-                    holder.mResultView.setText(s);
-                }
-            });
-        }else if(apiId == 40){
-            String mint_address = String.valueOf(holder.mEt1.getText());
-            Double price = Double.valueOf(String.valueOf(holder.mEt2.getText()));
-            MirrorSDKJava.getInstance().CancelNFTListing(mint_address,price, new MirrorCallback() {
-                @Override
-                public void callback(String s) {
-                    holder.mResultView.setText(s);
-                }
-            });
-        }else if(apiId == 41){
-            String mint_address = String.valueOf(holder.mEt1.getText());
-            String to_wallet_address = String.valueOf(holder.mEt2.getText());
-            MirrorSDKJava.getInstance().TransferNFTToAnotherSolanaWallet(mint_address,to_wallet_address, new MirrorCallback() {
-                @Override
-                public void callback(String s) {
-                    holder.mResultView.setText(s);
-                }
-            });
-        }else if(apiId == 42){
-            String owners = String.valueOf(holder.mEt1.getText());
-            int limit = Integer.valueOf(String.valueOf(holder.mEt2.getText()));
-            int offset = Integer.valueOf(String.valueOf(holder.mEt3.getText()));
-            List<String> params = new ArrayList<>();
-            params.add(owners);
+            String detailUrl = String.valueOf(holder.mEt4.getText());
 
-            MirrorSDKJava.getInstance().FetchNFTsByOwnerAddresses(params, limit, offset, new MirrorCallback() {
+            MirrorSDK.getInstance().CreateVerifiedSubCollection(collection_mint, name, symbol, detailUrl, new CreateSubCollectionListener() {
                 @Override
-                public void callback(String result) {
-                    holder.mResultView.setText(result);
+                public void onCreateSuccess(MintResponse userResponse) {
+                    holder.mResultView.setText(userResponse.name+userResponse.mint_address);
+                }
+
+                @Override
+                public void onCreateFailed(long code, String message) {
+                    holder.mResultView.setText(message);
                 }
             });
+        }else if(apiId == MirrorConstant.MINT_NFT){
+
+            MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Unknown);
+
+            String collection_mint = String.valueOf(holder.mEt1.getText());
+            String name = String.valueOf(holder.mEt2.getText());
+            String symbol = String.valueOf(holder.mEt3.getText());
+            String detailUrl = String.valueOf(holder.mEt4.getText());
 
 
-        }else if(apiId == 43){
+            MirrorSDK.getInstance().MintNFT(collection_mint, name, symbol, detailUrl, new MintNFTListener() {
+                @Override
+                public void onMintSuccess(MintResponse userResponse) {
+                    holder.mResultView.setText(userResponse.name+userResponse.mint_address);
+                }
+
+                @Override
+                public void onMintFailed(long code, String message) {
+                    holder.mResultView.setText(message);
+                }
+            });
+        }else if(apiId == MirrorConstant.LIST_NFT){
+
+            MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Staging);
 
             String mint_address = String.valueOf(holder.mEt1.getText());
-            MirrorSDKJava.getInstance().FetchNFTMarketplaceActivity(mint_address, new MirrorCallback() {
-                @Override
-                public void callback(String result) {
-                    holder.mResultView.setText(result);
-                }
-            });
+            String priceStr = String.valueOf(holder.mEt2.getText());
 
-        } else if(apiId == 101){
-//            MirrorSDKJava.getInstance().APIGetWalletAddress(new MirrorCallback() {
-//                @Override
-//                public void callback(String s) {
-//                    holder.mResultView.setText(s);
-//                }
-//            });
-        }else if(apiId == 102){
-
-            //  to_publickey","amount"
-
-            String to_publickey = String.valueOf(holder.mEt1.getText());
-            int amount = Integer.valueOf(holder.mEt2.getText().toString());
-
-            MirrorSDKJava.getInstance().APIPostTransferSQL(to_publickey, amount, new MirrorCallback() {
-                @Override
-                public void callback(String result) {
-                    holder.mResultView.setText(result);
-                }
-            });
-        }else if(apiId == 103){
-
-            // "to_publickey","amount",
-            //                        "token_mint","decimals",
-            int amount = 0;
-            int decimals = 0;
-            String to_publickey = String.valueOf(holder.mEt1.getText());
-
-            String token_mint = String.valueOf(holder.mEt3.getText());
+            Double price = 0.0;
 
             try{
-                decimals = Integer.valueOf(holder.mEt4.getText().toString());
-                amount = Integer.valueOf(holder.mEt2.getText().toString());
+                 price = Double.valueOf(priceStr);
+            }catch (NumberFormatException e){
 
-            }catch (Exception e){
+            }
+            MirrorSDK.getInstance().ListNFT(mint_address, price, new ListNFTListener() {
+                @Override
+                public void onListSuccess(ListingResponse listingResponse) {
+                    holder.mResultView.setText("ListNFT success! price is:"+listingResponse.price);
+                }
+
+                @Override
+                public void onListFailed(long code, String message) {
+                    holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("ListNFT",code,message));
+                }
+            });
+        }else if(apiId == MirrorConstant.UPDATE_NFT_LISTING){
+
+            MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Staging);
+            String mint_address = String.valueOf(holder.mEt1.getText());
+            String priceStr = String.valueOf(holder.mEt2.getText());
+            Double price = 0.0;
+
+            try{
+                price = Double.valueOf(priceStr);
+            }catch (NumberFormatException e){
+
+            }
+            MirrorSDK.getInstance().UpdateNFTListing(mint_address, price, new UpdateListListener() {
+                @Override
+                public void onUpdateSuccess(ListingResponse listingResponse) {
+                    holder.mResultView.setText("UpdateNFTListing success! New price:"+listingResponse.price);
+                }
+
+                @Override
+                public void onUpdateFailed(long code, String message) {
+                    holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("UpdateNFTListing",code,message));
+                }
+            });
+
+
+        }else if(apiId == MirrorConstant.CANCEL_NFT_LISTING){
+
+            MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Staging);
+            String mint_address = String.valueOf(holder.mEt1.getText());
+            String priceStr = String.valueOf(holder.mEt2.getText());
+            Double price = 0.0;
+            try{
+                price = Double.valueOf(priceStr);
+            }catch (NumberFormatException e){
+
+            }
+            MirrorSDK.getInstance().CancelNFTListing(mint_address, price, new CancelListListener() {
+                @Override
+                public void onCancelSuccess(ListingResponse listingResponse) {
+                    holder.mResultView.setText("CancelNFTListing success! Mint address is "+listingResponse.mint_address);
+                }
+
+                @Override
+                public void onCancelFailed(long code, String message) {
+                    holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("CancelNFTListing",code,message));
+                }
+            });
+
+        }else if(apiId == MirrorConstant.FETCH_NFT_BY_OWNER_ADDRESSES){
+
+            MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Staging);
+            List<String>  owners = new ArrayList<>();
+            owners.add(String.valueOf(holder.mEt1.getText()));
+
+            int limit = 0;
+            int offset = 0;
+
+            try{
+                limit =  Integer.valueOf(String.valueOf(holder.mEt2.getText()));
+                offset = Integer.valueOf(String.valueOf(holder.mEt3.getText()));
+
+            }catch (NumberFormatException E){
 
             }
 
 
-            MirrorSDKJava.getInstance().PostTransferToken(to_publickey, amount, token_mint, decimals, new MirrorCallback() {
+            MirrorSDK.getInstance().FetchNFTsByOwnerAddresses(owners, limit, offset, new FetchByOwnerListener() {
+                @Override
+                public void onFetchSuccess(MultipleNFTsResponse multipleNFTsResponse) {
+                    holder.mResultView.setText(multipleNFTsResponse.nfts.size());
+                }
+
+                @Override
+                public void onFetchFailed(long code, String message) {
+                    holder.mResultView.setText(message);
+                }
+            });
+
+        }else if(apiId == MirrorConstant.FETCH_NFT_BY_MINT_ADDRESSES){
+
+            MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Staging);
+            List<String> mint_address = new ArrayList<>();
+            mint_address.add(String.valueOf(holder.mEt1.getText()));
+
+            MirrorSDK.getInstance().FetchNFTsByMintAddresses(mint_address, new FetchByMintAddressListener() {
+                @Override
+                public void onFetchSuccess(MultipleNFTsResponse multipleNFTsResponse) {
+                    holder.mResultView.setText(multipleNFTsResponse.nfts.size());
+                }
+
+                @Override
+                public void onFetchFailed(long code, String message) {
+                    holder.mResultView.setText(message);
+                }
+            });
+
+        }else if(apiId == MirrorConstant.FETCH_NFT_BY_UPDATE_AUTHORITIES){
+
+            MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Staging);
+            List<String> update_address = new ArrayList<>();
+            update_address.add(String.valueOf(holder.mEt1.getText()));
+
+            Double limit = 0.0;
+            Double offset = 0.0;
+
+            try{
+               limit =  Double.valueOf(String.valueOf(holder.mEt2.getText()));
+               offset = Double.valueOf(String.valueOf(holder.mEt3.getText()));
+
+            }catch (NumberFormatException E){
+
+            }
+
+            MirrorSDK.getInstance().FetchNFTsByUpdateAuthorities(update_address,limit,offset,new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     holder.mResultView.setText(result);
                 }
             });
 
-        }else if(apiId == 104){
+        }else if(apiId == MirrorConstant.FETCH_SINGLE_NFT_DETAILS){
+            MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Staging);
+            String mint_address =String.valueOf(holder.mEt1.getText());
 
-            MirrorSDKJava.getInstance().GetWalletToken(new MirrorCallback() {
+            MirrorSDK.getInstance().FetchSingleNFTDetails(mint_address, new MirrorListener.FetchSingleNFT() {
                 @Override
-                public void callback(String result) {
-                    holder.mResultView.setText(result);
+                public void onNFTFetched(NFTObject nftObject) {
+
+                    holder.mResultView.setText(nftObject.name+nftObject.description);
+                }
+
+                @Override
+                public void onNFTFetchFailed(long code, String message) {
+
                 }
             });
-        }else if(apiId == 105){
+
+        }else if(apiId == MirrorConstant.FETCH_NFT_MARKETPLACE_ACTIVITY){
+            MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Staging);
+            String mint_address =String.valueOf(holder.mEt1.getText());
+
+            MirrorSDK.getInstance().FetchNFTMarketplaceActivity(mint_address, new FetchSingleNFTActivityListener() {
+                @Override
+                public void onFetchSuccess(ActivityOfSingleNftResponse activityOfSingleNftResponse) {
+                    holder.mResultView.setText(activityOfSingleNftResponse.mintAddress);
+                }
+
+                @Override
+                public void onFetchFailed(long code, String message) {
+                    holder.mResultView.setText(message);
+                }
+            });
+
+        }else if(apiId == MirrorConstant.TRANSFER_NFT_TO_ANOTHER_SOLANA_WALLET){
+
+            String mint_address = String.valueOf(holder.mEt1.getText());
+            String to_wallet_address = String.valueOf(holder.mEt2.getText());
+
+            MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Staging);
+            MirrorSDK.getInstance().TransferNFTToAnotherSolanaWallet(mint_address, to_wallet_address, new TransferNFTListener() {
+                @Override
+                public void onTransferSuccess(ListingResponse listingResponse) {
+                    holder.mResultView.setText(listingResponse.mint_address);
+                }
+
+                @Override
+                public void onTransferFailed(long code, String message) {
+                   holder.mResultView.setText(message);
+                }
+            });
+        }else if(apiId == MirrorConstant.BUY_NFT){
+
+            String mint_address = String.valueOf(holder.mEt1.getText());
+            String priceStr = String.valueOf(holder.mEt2.getText());
+
+            Double price = 0.0;
+
+            try{
+                price =  Double.valueOf(String.valueOf(holder.mEt2.getText()));
+
+            }catch (NumberFormatException E){
+
+            }
+
+            MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Unknown);
+            MirrorSDK.getInstance().BuyNFT(mint_address, price, new BuyNFTListener() {
+                @Override
+                public void onBuySuccess(ListingResponse listingResponse) {
+                    holder.mResultView.setText(listingResponse.mint_address);
+                }
+
+                @Override
+                public void onBuyFailed(long code, String message) {
+                    holder.mResultView.setText(message);
+                }
+            });
+
+        }else if(apiId == MirrorConstant.GET_WALLET_TOKEN){
+
+            MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Staging);
+
+            MirrorSDK.getInstance().GetWalletTokens(new GetWalletTokenListener() {
+                @Override
+                public void onSuccess(GetWalletTokenResponse walletTokenResponse) {
+                    holder.mResultView.setText("Get wallet token success! Token count is:"+walletTokenResponse.tokens.size());
+                }
+
+                @Override
+                public void onFailed(long code, String message) {
+                    holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("GetWalletToken",code,message));
+                }
+            });
+
+
+        }else if(apiId == MirrorConstant.WALLET_TRANSACTIONS){
+
+            MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Staging);
             String limit = String.valueOf(holder.mEt1.getText());
-            String before = holder.mEt2.getText().toString();
-            MirrorSDKJava.getInstance().Transactions(limit, before, new MirrorCallback() {
+            String before = String.valueOf(holder.mEt2.getText());
+            MirrorSDK.getInstance().Transactions(limit, before, new GetWalletTransactionListener() {
                 @Override
-                public void callback(String result) {
-                    holder.mResultView.setText(result);
+                public void onSuccess(GetWalletTransactionsResponse walletTransactionsResponse) {
+                    holder.mResultView.setText("GetTransactions success! count is "+walletTransactionsResponse.count);
+                }
+
+                @Override
+                public void onFailed(long code, String message) {
+                    holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("Transactions",code,message));
                 }
             });
 
+
+        }else if(apiId == MirrorConstant.WALLET_TRANSACTIONS_BY_SIGNATURE){
+
+            MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Staging);
+            String sig = String.valueOf(holder.mEt1.getText());
+
+            MirrorSDK.getInstance().GetTransactionBySignature(sig, new GetWalletTransactionBySigListener() {
+                @Override
+                public void onSuccess(List<TransactionsDTO> walletTransactions) {
+                    holder.mResultView.setText("GetTransactionBySignature success! transaction count is " + walletTransactions.size());
+                }
+
+                @Override
+                public void onFailed(long code, String message) {
+                    holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("GetTransactionBySignature",code,message));
+                }
+            });
+
+
+        }else if(apiId == MirrorConstant.TRANSFER_SQL){
+
+
+            MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Staging);
+            String public_key = String.valueOf(holder.mEt1.getText());
+            String amountStr = String.valueOf(holder.mEt2.getText());
+            int amount = 0;
+            try{
+               amount = Integer.valueOf(amountStr);
+            }catch (NumberFormatException e){
+
+            }
+
+
+            MirrorSDK.getInstance().TransferSOL(public_key, amount, new TransferSOLListener() {
+                @Override
+                public void onTransferSuccess(TransferResponse transferResponse) {
+                    holder.mResultView.setText("transfer sol success!");
+                }
+
+                @Override
+                public void onTransferFailed(long code, String message) {
+                    holder.mResultView.setText("transfer sol failed!code:"+code+" message:"+message);
+                }
+            });
         }
-
-        // TODO: get request params from user input
-
     }
-
-
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final TextView mIdView;
@@ -353,7 +581,6 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             mEt5 = (EditText) view.findViewById(R.id.multiapi_item_paramet5);
             mEt6 = (EditText) view.findViewById(R.id.multiapi_item_paramet6);
         }
-
         @Override
         public String toString() {
             return super.toString() + " '" + mContentView.getText() + "'";
