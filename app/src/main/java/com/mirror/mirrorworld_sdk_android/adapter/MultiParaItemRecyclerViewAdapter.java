@@ -27,6 +27,7 @@ import com.mirror.sdk.listener.market.UpdateListListener;
 import com.mirror.sdk.listener.wallet.GetWalletTokenListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionBySigListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
+import com.mirror.sdk.listener.wallet.TransactionsDTO;
 import com.mirror.sdk.listener.wallet.TransferSOLListener;
 import com.mirror.sdk.response.auth.UserResponse;
 import com.mirror.sdk.response.market.ListingResponse;
@@ -451,7 +452,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
 
             MirrorSDK.getInstance().GetTransactionBySignature(sig, new GetWalletTransactionBySigListener() {
                 @Override
-                public void onSuccess(List<WalletTransaction> walletTransactions) {
+                public void onSuccess(List<TransactionsDTO> walletTransactions) {
                     holder.mResultView.setText("GetTransactionBySignature success! transaction count is " + walletTransactions.size());
                 }
 

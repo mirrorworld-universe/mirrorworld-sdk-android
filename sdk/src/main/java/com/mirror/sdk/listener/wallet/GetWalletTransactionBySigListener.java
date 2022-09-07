@@ -13,6 +13,6 @@ import java.util.List;
  * @description TODO
  */
 public interface GetWalletTransactionBySigListener {
-    void onSuccess(List<WalletTransaction> walletTransactions);
+    void onSuccess(List<TransactionsDTO> walletTransactions);
     void onFailed(long code,String message);
 }

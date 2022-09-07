@@ -1,8 +1,18 @@
 package com.mirror.sdk.response.wallet;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.Date;
+
 public class WalletTransaction {
-    public String blockTime;
+    public long blockTime;
+
+    @Expose(deserialize = false)
+    @SerializedName("meta")
     public String meta;
-    public int slot;
+    public long slot;
+    @Expose(deserialize = false)
+    @SerializedName("transaction")
     public String transaction;
 }

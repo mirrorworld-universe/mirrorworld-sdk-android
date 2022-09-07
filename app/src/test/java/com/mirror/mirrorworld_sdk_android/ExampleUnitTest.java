@@ -16,6 +16,7 @@ import com.mirror.sdk.listener.market.UpdateListListener;
 import com.mirror.sdk.listener.wallet.GetWalletTokenListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionBySigListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
+import com.mirror.sdk.listener.wallet.TransactionsDTO;
 import com.mirror.sdk.listener.wallet.TransferSOLListener;
 import com.mirror.sdk.response.auth.UserResponse;
 import com.mirror.sdk.response.market.ListingResponse;
@@ -686,7 +687,7 @@ public class ExampleUnitTest {
 
                 MirrorSDK.getInstance().GetTransactionBySignature("5pTshp58jboUBUqHEPSn6KZ6hCc6ZU7NL4BghjQU15J8vBitKSaHqc8ms5XCkbUByYnabEY8MS8H12RbzzAMUxBn", new GetWalletTransactionBySigListener() {
                     @Override
-                    public void onSuccess(List<WalletTransaction> walletTransactions) {
+                    public void onSuccess(List<TransactionsDTO> walletTransactions) {
                         Status = GetStatus( result);
                         synchronized (lock) {
                             lock.notify();
@@ -717,7 +718,7 @@ public class ExampleUnitTest {
     }
 
     @Test
-    public void TransferSQL(){
+    public void TransferSOL(){
         MirrorSDK.getInstance().InitSDK(null, MirrorEnv.Staging);
         final Object lock = new Object();
         MirrorSDK.getInstance().SetAppID(appid);
@@ -758,8 +759,5 @@ public class ExampleUnitTest {
         assertEquals("success",Status);
 
     }
-
-
-
 
 }
