@@ -4,12 +4,12 @@ import com.mirror.sdk.response.auth.UserResponse;
 import com.mirror.sdk.response.market.ListingResponse;
 
 /*** @author Pu
- * @createTime 2022/9/7 15:26
+ * @createTime 2022/9/7 16:58
  * @projectName mirrorworld-sdk-android
- * @className TransferNFTListener.java
+ * @className BuyNFTListener.java
  * @description TODO
  */
-public interface TransferNFTListener {
-    void onTransferSuccess(ListingResponse listingResponse);
-    void onTransferFailed(long code,String message);
+public interface BuyNFTListener {
+    void onBuySuccess(ListingResponse listingResponse);
+    void onBuyFailed(long code,String message);
 }
