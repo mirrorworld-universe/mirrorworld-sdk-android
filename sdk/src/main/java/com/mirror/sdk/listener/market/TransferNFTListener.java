@@ -1,6 +1,7 @@
 package com.mirror.sdk.listener.market;
 
 import com.mirror.sdk.response.auth.UserResponse;
+import com.mirror.sdk.response.market.ListingResponse;
 
 /*** @author Pu
  * @createTime 2022/9/7 15:26
@@ -9,6 +10,6 @@ import com.mirror.sdk.response.auth.UserResponse;
  * @description TODO
  */
 public interface TransferNFTListener {
-    void onTransferSuccess(UserResponse userResponse);
+    void onTransferSuccess(ListingResponse listingResponse);
     void onTransferFailed(long code,String message);
 }

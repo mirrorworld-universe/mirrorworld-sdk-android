@@ -1,6 +1,7 @@
 package com.mirror.sdk.listener.market;
 
 import com.mirror.sdk.response.auth.UserResponse;
+import com.mirror.sdk.response.market.MultipleNFTsResponse;
 
 /*** @author Pu
  * @createTime 2022/9/7 15:24
@@ -9,6 +10,6 @@ import com.mirror.sdk.response.auth.UserResponse;
  * @description TODO
  */
 public interface FetchByMintAddressListener {
-    void onFetchSuccess(UserResponse userResponse);
+    void onFetchSuccess(MultipleNFTsResponse multipleNFTsResponse);
     void onFetchFailed(long code,String message);
 }

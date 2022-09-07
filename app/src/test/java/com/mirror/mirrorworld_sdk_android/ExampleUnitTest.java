@@ -10,7 +10,18 @@ import com.mirror.sdk.MirrorCallback;
 import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.listener.MirrorListener;
+import com.mirror.sdk.listener.market.CreateSubCollectionListener;
+import com.mirror.sdk.listener.market.CreateTopCollectionListener;
+import com.mirror.sdk.listener.market.FetchByMintAddressListener;
+import com.mirror.sdk.listener.market.FetchByOwnerListener;
+import com.mirror.sdk.listener.market.FetchSingleNFTActivityListener;
+import com.mirror.sdk.listener.market.MintNFTListener;
+import com.mirror.sdk.listener.market.TransferNFTListener;
 import com.mirror.sdk.response.auth.UserResponse;
+import com.mirror.sdk.response.market.ActivityOfSingleNftResponse;
+import com.mirror.sdk.response.market.ListingResponse;
+import com.mirror.sdk.response.market.MintResponse;
+import com.mirror.sdk.response.market.MultipleNFTsResponse;
 import com.mirror.sdk.response.market.NFTObject;
 
 import java.util.ArrayList;
@@ -246,24 +257,38 @@ public class ExampleUnitTest {
                 MirrorSDK.getInstance().SetRefreshToken(GetRefreshTokenFromResponse(result));
 
                 MirrorSDK.getInstance().InitSDK(null, MirrorEnv.Unknown);
-                MirrorSDK.getInstance().CreateVerifiedCollection("confirm", "lll", "https://mirror-nft.s3.us-west-2.amazonaws.com/assets/111.json", new MirrorCallback() {
+                MirrorSDK.getInstance().CreateVerifiedCollection("confirm", "lll", "https://mirror-nft.s3.us-west-2.amazonaws.com/assets/111.json", new CreateTopCollectionListener() {
                     @Override
-                    public void callback(String result) {
-                        MirrorSDK.getInstance().CreateVerifiedSubCollection("FbDkjpV1YSsmY3zrGGkK5H33ed33APfdRXToQPg52PMr", "py19", "symbol13U", "https://mirror-nft.s3.us-west-2.amazonaws.com/assets/111.json", new MirrorCallback() {
+                    public void onCreateSuccess(MintResponse mintResponse) {
+                        MirrorSDK.getInstance().CreateVerifiedSubCollection("FbDkjpV1YSsmY3zrGGkK5H33ed33APfdRXToQPg52PMr", "py19", "symbol13U", "https://mirror-nft.s3.us-west-2.amazonaws.com/assets/111.json", new CreateSubCollectionListener() {
                             @Override
-                            public void callback(String result) {
-                                MirrorSDK.getInstance().MintNFT("9mkx2CDjRa64xEpUxyBJKbBC4NRAQhEJGDN8Ei8xHRWi", "nameL", "symbolK", "https://market-assets.mirrorworld.fun/gen1/1.json", new MirrorCallback() {
+                            public void onCreateSuccess(MintResponse userResponse) {
+                                MirrorSDK.getInstance().MintNFT("9mkx2CDjRa64xEpUxyBJKbBC4NRAQhEJGDN8Ei8xHRWi", "nameL", "symbolK", "https://market-assets.mirrorworld.fun/gen1/1.json", new MintNFTListener() {
                                     @Override
-                                    public void callback(String result) {
-                                        Status = GetStatus( result);
+                                    public void onMintSuccess(MintResponse userResponse) {
+                                        Status = "success";
                                         synchronized (lock) {
                                             lock.notify();
                                         }
+                                    }
+
+                                    @Override
+                                    public void onMintFailed(long code, String message) {
 
                                     }
                                 });
                             }
+
+                            @Override
+                            public void onCreateFailed(long code, String message) {
+
+                            }
                         });
+                    }
+
+                    @Override
+                    public void onCreateFailed(long code, String message) {
+
                     }
                 });
             }
@@ -295,14 +320,21 @@ public class ExampleUnitTest {
 
                 MirrorSDK.getInstance().SetAccessToken(GetAccessTokenFromResponse(result));
                 MirrorSDK.getInstance().SetRefreshToken(GetRefreshTokenFromResponse(result));
-                MirrorSDK.getInstance().TransferNFTToAnotherSolanaWallet("FvD7WTyBMfGbxsyhidBrGUw8Y4ojpQNim8jNyE3NTKHx", "B63XUAv3ureYH9iJnQFaHnz94FPPMEjoFK9Psvv4bMPs", new MirrorCallback() {
+                MirrorSDK.getInstance().TransferNFTToAnotherSolanaWallet("FvD7WTyBMfGbxsyhidBrGUw8Y4ojpQNim8jNyE3NTKHx", "B63XUAv3ureYH9iJnQFaHnz94FPPMEjoFK9Psvv4bMPs", new TransferNFTListener() {
                     @Override
-                    public void callback(String result) {
-                        Status = GetStatus( result);
+                    public void onTransferSuccess(ListingResponse listingResponse) {
+                        Status = "success";
                         synchronized (lock) {
                             lock.notify();
                         }
+                    }
 
+                    @Override
+                    public void onTransferFailed(long code, String message) {
+                        Status = "fail";
+                        synchronized (lock) {
+                            lock.notify();
+                        }
                     }
                 });
             }
@@ -383,7 +415,6 @@ public class ExampleUnitTest {
 
     }
 
-
     @Test
     public void FetchNFTsByOwnerAddresses(){
         MirrorSDK.getInstance().InitSDK(null, MirrorEnv.Staging);
@@ -399,10 +430,18 @@ public class ExampleUnitTest {
                 MirrorSDK.getInstance().SetAccessToken(GetAccessTokenFromResponse(result));
                 MirrorSDK.getInstance().SetRefreshToken(GetRefreshTokenFromResponse(result));
 
-                MirrorSDK.getInstance().FetchNFTsByOwnerAddresses( owners,1,1,new MirrorCallback() {
+                MirrorSDK.getInstance().FetchNFTsByOwnerAddresses(owners, 1, 1, new FetchByOwnerListener() {
                     @Override
-                    public void callback(String result) {
-                        Status = GetStatus( result);
+                    public void onFetchSuccess(MultipleNFTsResponse multipleNFTsResponse) {
+                        Status = "success";
+                        synchronized (lock) {
+                            lock.notify();
+                        }
+                    }
+
+                    @Override
+                    public void onFetchFailed(long code, String message) {
+                        Status = "fail";
                         synchronized (lock) {
                             lock.notify();
                         }
@@ -439,10 +478,18 @@ public class ExampleUnitTest {
                 MirrorSDK.getInstance().SetAccessToken(GetAccessTokenFromResponse(result));
                 MirrorSDK.getInstance().SetRefreshToken(GetRefreshTokenFromResponse(result));
 
-                MirrorSDK.getInstance().FetchNFTMarketplaceActivity("FvD7WTyBMfGbxsyhidBrGUw8Y4ojpQNim8jNyE3NTKHx",new MirrorCallback() {
+                MirrorSDK.getInstance().FetchNFTMarketplaceActivity("FvD7WTyBMfGbxsyhidBrGUw8Y4ojpQNim8jNyE3NTKHx", new FetchSingleNFTActivityListener() {
                     @Override
-                    public void callback(String result) {
-                        Status = GetStatus( result);
+                    public void onFetchSuccess(ActivityOfSingleNftResponse activityOfSingleNftResponse) {
+                        Status = "success";
+                        synchronized (lock) {
+                            lock.notify();
+                        }
+                    }
+
+                    @Override
+                    public void onFetchFailed(long code, String message) {
+                        Status = "fail";
                         synchronized (lock) {
                             lock.notify();
                         }
@@ -530,10 +577,18 @@ public class ExampleUnitTest {
                 MirrorSDK.getInstance().SetAccessToken(GetAccessTokenFromResponse(result));
                 MirrorSDK.getInstance().SetRefreshToken(GetRefreshTokenFromResponse(result));
 
-                MirrorSDK.getInstance().FetchNFTsByMintAddresses(mint_address, new MirrorCallback() {
+                MirrorSDK.getInstance().FetchNFTsByMintAddresses(mint_address, new FetchByMintAddressListener() {
                     @Override
-                    public void callback(String result) {
-                        Status = GetStatus( result);
+                    public void onFetchSuccess(MultipleNFTsResponse multipleNFTsResponse) {
+                        Status = "success";
+                        synchronized (lock) {
+                            lock.notify();
+                        }
+                    }
+
+                    @Override
+                    public void onFetchFailed(long code, String message) {
+                        Status = "fail";
                         synchronized (lock) {
                             lock.notify();
                         }
