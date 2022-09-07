@@ -96,7 +96,6 @@ public class MirrorListener {
     }
 
 
-
     public interface FetchSingleNFT{
         void onNFTFetched(NFTObject nftObject);
         void onNFTFetchFailed(long code,String message);
