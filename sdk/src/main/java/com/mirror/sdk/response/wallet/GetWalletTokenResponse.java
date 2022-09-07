@@ -7,7 +7,7 @@ public class GetWalletTokenResponse {
     public long sol;
 }
 
-class Token{
+class Token {
     public String ata;
     public String mint;
     public long amount;

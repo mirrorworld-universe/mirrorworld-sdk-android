@@ -1,6 +1,7 @@
 package com.mirror.sdk.listener.wallet;
 
 import com.mirror.sdk.response.auth.UserResponse;
+import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
 
 /*** @author Pu
  * @createTime 2022/9/7 15:20
@@ -9,6 +10,6 @@ import com.mirror.sdk.response.auth.UserResponse;
  * @description TODO
  */
 public interface GetWalletTokenListener {
-    void onSuccess(UserResponse userResponse);
+    void onSuccess(GetWalletTokenResponse walletTokenResponse);
     void onFailed(long code,String message);
 }

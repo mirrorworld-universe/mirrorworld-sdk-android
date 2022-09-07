@@ -10,8 +10,20 @@ import com.mirror.sdk.MirrorCallback;
 import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.listener.MirrorListener;
+import com.mirror.sdk.listener.market.CancelListListener;
+import com.mirror.sdk.listener.market.ListNFTListener;
+import com.mirror.sdk.listener.market.UpdateListListener;
+import com.mirror.sdk.listener.wallet.GetWalletTokenListener;
+import com.mirror.sdk.listener.wallet.GetWalletTransactionBySigListener;
+import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
+import com.mirror.sdk.listener.wallet.TransferSOLListener;
 import com.mirror.sdk.response.auth.UserResponse;
+import com.mirror.sdk.response.market.ListingResponse;
 import com.mirror.sdk.response.market.NFTObject;
+import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
+import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
+import com.mirror.sdk.response.wallet.TransferResponse;
+import com.mirror.sdk.response.wallet.WalletTransaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -332,25 +344,25 @@ public class ExampleUnitTest {
             public void callback(String result) {
                 MirrorSDK.getInstance().SetAccessToken(GetAccessTokenFromResponse(result));
                 MirrorSDK.getInstance().SetRefreshToken(GetRefreshTokenFromResponse(result));
-                MirrorSDK.getInstance().ListNFT( "DxL8GuDoqWLqMLkeLQmaDVh4jR25zbhZQeYh3nbaqw1D",1.2,new MirrorCallback() {
+                MirrorSDK.getInstance().ListNFT("DxL8GuDoqWLqMLkeLQmaDVh4jR25zbhZQeYh3nbaqw1D", 1.2, new ListNFTListener() {
                     @Override
-                    public void callback(String result) {
+                    public void onListSuccess(ListingResponse listingResponse) {
                         try {
                             Thread.sleep(3000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        MirrorSDK.getInstance().UpdateNFTListing( "DxL8GuDoqWLqMLkeLQmaDVh4jR25zbhZQeYh3nbaqw1D",1.3,new MirrorCallback() {
+                        MirrorSDK.getInstance().UpdateNFTListing("DxL8GuDoqWLqMLkeLQmaDVh4jR25zbhZQeYh3nbaqw1D", 1.3, new UpdateListListener() {
                             @Override
-                            public void callback(String result) {
+                            public void onUpdateSuccess(ListingResponse listingResponse) {
                                 try {
                                     Thread.sleep(3000);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
-                                MirrorSDK.getInstance().CancelNFTListing("DxL8GuDoqWLqMLkeLQmaDVh4jR25zbhZQeYh3nbaqw1D",1.3,new MirrorCallback() {
+                                MirrorSDK.getInstance().CancelNFTListing("DxL8GuDoqWLqMLkeLQmaDVh4jR25zbhZQeYh3nbaqw1D", 1.3, new CancelListListener() {
                                     @Override
-                                    public void callback(String result) {
+                                    public void onCancelSuccess(ListingResponse listingResponse) {
                                         try {
                                             Thread.sleep(3000);
                                         } catch (InterruptedException e) {
@@ -361,9 +373,24 @@ public class ExampleUnitTest {
                                             lock.notify();
                                         }
                                     }
+
+                                    @Override
+                                    public void onCancelFailed(long code, String message) {
+
+                                    }
                                 });
                             }
+
+                            @Override
+                            public void onUpdateFailed(long code, String message) {
+
+                            }
                         });
+                    }
+
+                    @Override
+                    public void onListFailed(long code, String message) {
+
                     }
                 });
             }
@@ -569,13 +596,17 @@ public class ExampleUnitTest {
                  MirrorSDK.getInstance().SetAccessToken(GetAccessTokenFromResponse(result));
                  MirrorSDK.getInstance().SetRefreshToken(GetRefreshTokenFromResponse(result));
 
-                 MirrorSDK.getInstance().GetWalletToken(new MirrorCallback() {
+                 MirrorSDK.getInstance().GetWalletTokens(new GetWalletTokenListener() {
                      @Override
-                     public void callback(String result) {
+                     public void onSuccess(GetWalletTokenResponse walletTokenResponse) {
                          Status = GetStatus( result);
                          synchronized (lock) {
                              lock.notify();
                          }
+                     }
+
+                     @Override
+                     public void onFailed(long code, String message) {
 
                      }
                  });
@@ -609,13 +640,17 @@ public class ExampleUnitTest {
                  MirrorSDK.getInstance().SetAccessToken(GetAccessTokenFromResponse(result));
                  MirrorSDK.getInstance().SetRefreshToken(GetRefreshTokenFromResponse(result));
 
-                 MirrorSDK.getInstance().Transactions("1", "5pTshp58jboUBUqHEPSn6KZ6hCc6ZU7NL4BghjQU15J8vBitKSaHqc8ms5XCkbUByYnabEY8MS8H12RbzzAMUxBn", new MirrorCallback()  {
+                 MirrorSDK.getInstance().Transactions("1", "5pTshp58jboUBUqHEPSn6KZ6hCc6ZU7NL4BghjQU15J8vBitKSaHqc8ms5XCkbUByYnabEY8MS8H12RbzzAMUxBn", new GetWalletTransactionListener() {
                      @Override
-                     public void callback(String result) {
+                     public void onSuccess(GetWalletTransactionsResponse walletTransactionsResponse) {
                          Status = GetStatus( result);
                          synchronized (lock) {
                              lock.notify();
                          }
+                     }
+
+                     @Override
+                     public void onFailed(long code, String message) {
 
                      }
                  });
@@ -649,13 +684,17 @@ public class ExampleUnitTest {
                 MirrorSDK.getInstance().SetAccessToken(GetAccessTokenFromResponse(result));
                 MirrorSDK.getInstance().SetRefreshToken(GetRefreshTokenFromResponse(result));
 
-                MirrorSDK.getInstance().GetTransactionBySignature( "5pTshp58jboUBUqHEPSn6KZ6hCc6ZU7NL4BghjQU15J8vBitKSaHqc8ms5XCkbUByYnabEY8MS8H12RbzzAMUxBn", new MirrorCallback()  {
+                MirrorSDK.getInstance().GetTransactionBySignature("5pTshp58jboUBUqHEPSn6KZ6hCc6ZU7NL4BghjQU15J8vBitKSaHqc8ms5XCkbUByYnabEY8MS8H12RbzzAMUxBn", new GetWalletTransactionBySigListener() {
                     @Override
-                    public void callback(String result) {
+                    public void onSuccess(List<WalletTransaction> walletTransactions) {
                         Status = GetStatus( result);
                         synchronized (lock) {
                             lock.notify();
                         }
+                    }
+
+                    @Override
+                    public void onFailed(long code, String message) {
 
                     }
                 });
@@ -689,13 +728,17 @@ public class ExampleUnitTest {
                 MirrorSDK.getInstance().SetAccessToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTg2MCwiZXRoX2FkZHJlc3MiOiJCNjNYVUF2M3VyZVlIOWlKblFGYUhuejk0RlBQTUVqb0ZLOVBzdnY0Yk1QcyIsInNvbF9hZGRyZXNzIjoiQjYzWFVBdjN1cmVZSDlpSm5RRmFIbno5NEZQUE1Fam9GSzlQc3Z2NGJNUHMiLCJlbWFpbCI6InNxdWFsbDE5ODcxOTg3QDE2My5jb20iLCJ3YWxsZXQiOnsiZXRoX2FkZHJlc3MiOiIweDYyODRmNTk2MTNCN2MxMDliNWQ1NjA3NmMxRjcxMDY2OGExRkUyQWUiLCJzb2xfYWRkcmVzcyI6IkI2M1hVQXYzdXJlWUg5aUpuUUZhSG56OTRGUFBNRWpvRks5UHN2djRiTVBzIn0sImNsaWVudF9pZCI6bnVsbCwiaWF0IjoxNjYxMjUxNDQyLCJleHAiOjE2NjM4NDM0NDIsImp0aSI6ImF1dGg6NTg2MCJ9.efc0hlWvNRrV9XOQ309j-W95hT_deP8__M5pz8w380A");
                 MirrorSDK.getInstance().SetRefreshToken(GetRefreshTokenFromResponse(result));
 
-                MirrorSDK.getInstance().PostTransferSQL("HkGWQxFspfcaHQbbnnwwGrUDGyKFTYmFgSrB6p238Tqz", 10, new MirrorCallback()  {
+                MirrorSDK.getInstance().TransferSOL("HkGWQxFspfcaHQbbnnwwGrUDGyKFTYmFgSrB6p238Tqz", 10, new TransferSOLListener() {
                     @Override
-                    public void callback(String result) {
+                    public void onTransferSuccess(TransferResponse transferResponse) {
                         Status = GetStatus( result);
                         synchronized (lock) {
                             lock.notify();
                         }
+                    }
+
+                    @Override
+                    public void onTransferFailed(long code, String message) {
 
                     }
                 });

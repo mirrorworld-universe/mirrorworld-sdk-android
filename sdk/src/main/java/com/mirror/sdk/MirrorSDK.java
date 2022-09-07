@@ -22,15 +22,25 @@ import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.mirror.sdk.constant.MirrorConstant;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.constant.MirrorResCode;
 import com.mirror.sdk.constant.MirrorUrl;
 import com.mirror.sdk.listener.MirrorListener;
+import com.mirror.sdk.listener.market.CancelListListener;
+import com.mirror.sdk.listener.market.ListNFTListener;
+import com.mirror.sdk.listener.market.UpdateListListener;
+import com.mirror.sdk.listener.wallet.GetWalletTokenListener;
+import com.mirror.sdk.listener.wallet.GetWalletTransactionBySigListener;
+import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
+import com.mirror.sdk.listener.wallet.TransferSOLListener;
 import com.mirror.sdk.response.CommonResponse;
 import com.mirror.sdk.response.auth.LoginResponse;
 import com.mirror.sdk.response.auth.UserResponse;
+import com.mirror.sdk.response.market.ListingResponse;
 import com.mirror.sdk.response.market.SingleNFTResponse;
+import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
+import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
+import com.mirror.sdk.response.wallet.TransferResponse;
 import com.mirror.sdk.utils.MirrorGsonUtils;
 
 import org.json.JSONArray;
@@ -388,7 +398,7 @@ public class MirrorSDK {
         checkParamsAndGet(url,null, mirrorCallback);
     }
 
-    public void CancelNFTListing(String mint_address, Double price, MirrorCallback mirrorCallback){
+    public void CancelNFTListing(String mint_address, Double price, CancelListListener listener){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("mint_address", mint_address);
@@ -400,10 +410,20 @@ public class MirrorSDK {
         String data = jsonObject.toString();
 
         String url = GetAPIRoot() + MirrorUrl.URL_CANCEL_LISTING_OF_NFT_ON_THE_MARKETPLACE;
-        checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
+        checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<ListingResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<ListingResponse>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    listener.onCancelSuccess(response.data);
+                }else{
+                    listener.onCancelFailed(response.code,response.message);
+                }
+            }
+        }));
     }
 
-    public void UpdateNFTListing(String mint_address, Double price, MirrorCallback mirrorCallback){
+    public void UpdateNFTListing(String mint_address, Double price, UpdateListListener listener){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("mint_address", mint_address);
@@ -415,10 +435,20 @@ public class MirrorSDK {
         String  data = jsonObject.toString();
 
         String url = GetAPIRoot() + MirrorUrl.URL_UPDATE_LISTING_OF_NFT_ON_THE_MARKETPLACE;
-        checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
+        checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<ListingResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<ListingResponse>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    listener.onUpdateSuccess(response.data);
+                }else{
+                    listener.onUpdateFailed(response.code,response.message);
+                }
+            }
+        }));
     }
 
-    public void ListNFT(String mint_address, Double price,MirrorCallback mirrorCallback){
+    public void ListNFT(String mint_address, Double price, ListNFTListener listener){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("mint_address", mint_address);
@@ -430,7 +460,17 @@ public class MirrorSDK {
         String data = jsonObject.toString();
 
         String url = GetAPIRoot() + MirrorUrl.URL_LIST_NFT_ON_THE_MARKETPLACE;
-        checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
+        checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<ListingResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<ListingResponse>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    listener.onListSuccess(response.data);
+                }else{
+                    listener.onListFailed(response.code,response.message);
+                }
+            }
+        }));
     }
 
     public void FetchNFTsByMintAddresses(List<String> mint_addresses, MirrorCallback mirrorCallback){
@@ -471,10 +511,10 @@ public class MirrorSDK {
         return;
     }
 
-    public void PostTransferSQL(String to_publickey, int amount, MirrorCallback mirrorCallback){
+    public void TransferSOL(String toPublickey, int amount, TransferSOLListener transferSOLListener){
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("to_publickey", to_publickey);
+            jsonObject.put("to_publickey", toPublickey);
             jsonObject.put("amount", amount);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -482,34 +522,67 @@ public class MirrorSDK {
         String data = jsonObject.toString();
 
         String url = GetAPIRoot() + MirrorUrl.URL_TRANSFER_SQL;
-        checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
-
+        checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<TransferResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<TransferResponse>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    transferSOLListener.onTransferSuccess(response.data);
+                }else{
+                    transferSOLListener.onTransferFailed(response.code,response.message);
+                }
+            }
+        }));
     }
 
-    public void GetWalletToken(MirrorCallback mirrorCallback){
+    public void GetWalletTokens(GetWalletTokenListener walletTokenListener){
         String url = GetAPIRoot() + MirrorUrl.URL_GET_WALLET_TOKEN;
-        checkParamsAndGet(url,null, mirrorCallback);
+        checkParamsAndGet(url, null, new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<GetWalletTokenResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<GetWalletTokenResponse>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    walletTokenListener.onSuccess(response.data);
+                }else{
+                    walletTokenListener.onFailed(response.code,response.message);
+                }
+            }
+        });
     }
 
-    public void Transactions(String limit, String before, MirrorCallback mirrorCallback){
+    public void Transactions(String limit, String before, GetWalletTransactionListener walletTransactionListener){
         HashMap<String,String> map = new HashMap<String,String>();
         map.put("limit",limit);
         map.put("before",before);
 
         String url = GetAPIRoot() + MirrorUrl.URL_GET_WALLET_TRANSACTIONS;
-        checkParamsAndGet(url,map, mirrorCallback);
+        checkParamsAndGet(url, map, new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<GetWalletTransactionsResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<GetWalletTransactionsResponse>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    walletTransactionListener.onSuccess(response.data);
+                }else{
+                    walletTransactionListener.onFailed(response.code,response.message);
+                }
+            }
+        });
     }
 
-    public void GetTransactionBySignature(String signature,MirrorCallback mirrorCallback){
+    public void GetTransactionBySignature(String signature, GetWalletTransactionBySigListener listener){
         String url = GetAPIRoot() + MirrorUrl.URL_GET_WALLET_TRANSACTIONS + "/"+signature;
-        checkParamsAndGet(url,null, mirrorCallback);
+        checkParamsAndGet(url, null, new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<GetWalletTransactionsResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<GetWalletTransactionsResponse>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    listener.onSuccess(response.data.transactions);
+                }else{
+                    listener.onFailed(response.code,response.message);
+                }
+            }
+        });
     }
-
-
-
-
-
-
 
 
     // not implement method(server)
@@ -565,12 +638,10 @@ public class MirrorSDK {
         checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
     }
 
-
-    // new apis
-    private void PostTransferToken(String to_publickey, int amount, String token_mint, int decimals, MirrorCallback mirrorCallback){
+    private void TransferToken(String toPublickey, int amount, String token_mint, int decimals, MirrorCallback mirrorCallback){
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("to_publickey", to_publickey);
+            jsonObject.put("to_publickey", toPublickey);
             jsonObject.put("amount", amount);
             jsonObject.put("token_mint", token_mint);
             jsonObject.put("decimals", decimals);

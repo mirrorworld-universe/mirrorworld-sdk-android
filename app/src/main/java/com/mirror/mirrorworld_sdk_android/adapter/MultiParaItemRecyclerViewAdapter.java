@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,9 +21,21 @@ import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.constant.MirrorConstant;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.listener.MirrorListener;
+import com.mirror.sdk.listener.market.CancelListListener;
+import com.mirror.sdk.listener.market.ListNFTListener;
+import com.mirror.sdk.listener.market.UpdateListListener;
+import com.mirror.sdk.listener.wallet.GetWalletTokenListener;
+import com.mirror.sdk.listener.wallet.GetWalletTransactionBySigListener;
+import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
+import com.mirror.sdk.listener.wallet.TransferSOLListener;
 import com.mirror.sdk.response.auth.UserResponse;
+import com.mirror.sdk.response.market.ListingResponse;
 import com.mirror.sdk.response.market.NFTObject;
-import com.mirror.sdk.utils.MirrorGsonUtils;
+import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
+import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
+import com.mirror.sdk.response.wallet.TransferResponse;
+import com.mirror.sdk.response.wallet.WalletTransaction;
+import com.mirror.sdk.utils.MirrorStringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -237,10 +248,15 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             }catch (NumberFormatException e){
 
             }
-            MirrorSDK.getInstance().ListNFT(mint_address, price, new MirrorCallback() {
+            MirrorSDK.getInstance().ListNFT(mint_address, price, new ListNFTListener() {
                 @Override
-                public void callback(String result) {
-                    holder.mResultView.setText(result);
+                public void onListSuccess(ListingResponse listingResponse) {
+                    holder.mResultView.setText("ListNFT success! price is:"+listingResponse.price);
+                }
+
+                @Override
+                public void onListFailed(long code, String message) {
+                    holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("ListNFT",code,message));
                 }
             });
         }else if(apiId == MirrorConstant.UPDATE_NFT_LISTING){
@@ -255,10 +271,15 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             }catch (NumberFormatException e){
 
             }
-            MirrorSDK.getInstance().UpdateNFTListing(mint_address, price, new MirrorCallback() {
+            MirrorSDK.getInstance().UpdateNFTListing(mint_address, price, new UpdateListListener() {
                 @Override
-                public void callback(String result) {
-                    holder.mResultView.setText(result);
+                public void onUpdateSuccess(ListingResponse listingResponse) {
+                    holder.mResultView.setText("UpdateNFTListing success! New price:"+listingResponse.price);
+                }
+
+                @Override
+                public void onUpdateFailed(long code, String message) {
+                    holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("UpdateNFTListing",code,message));
                 }
             });
 
@@ -274,10 +295,15 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             }catch (NumberFormatException e){
 
             }
-            MirrorSDK.getInstance().CancelNFTListing(mint_address, price, new MirrorCallback() {
+            MirrorSDK.getInstance().CancelNFTListing(mint_address, price, new CancelListListener() {
                 @Override
-                public void callback(String result) {
-                    holder.mResultView.setText(result);
+                public void onCancelSuccess(ListingResponse listingResponse) {
+                    holder.mResultView.setText("CancelNFTListing success! Mint address is "+listingResponse.mint_address);
+                }
+
+                @Override
+                public void onCancelFailed(long code, String message) {
+                    holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("CancelNFTListing",code,message));
                 }
             });
 
@@ -387,12 +413,15 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
 
             MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Staging);
 
-            MirrorSDK.getInstance().GetWalletToken(new MirrorCallback() {
+            MirrorSDK.getInstance().GetWalletTokens(new GetWalletTokenListener() {
                 @Override
-                public void callback(String result) {
+                public void onSuccess(GetWalletTokenResponse walletTokenResponse) {
+                    holder.mResultView.setText("Get wallet token success! Token count is:"+walletTokenResponse.tokens.size());
+                }
 
-                    holder.mResultView.setText(result);
-
+                @Override
+                public void onFailed(long code, String message) {
+                    holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("GetWalletToken",code,message));
                 }
             });
 
@@ -402,10 +431,15 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Staging);
             String limit = String.valueOf(holder.mEt1.getText());
             String before = String.valueOf(holder.mEt2.getText());
-            MirrorSDK.getInstance().Transactions(limit, before, new MirrorCallback() {
+            MirrorSDK.getInstance().Transactions(limit, before, new GetWalletTransactionListener() {
                 @Override
-                public void callback(String result) {
-                    holder.mResultView.setText(result);
+                public void onSuccess(GetWalletTransactionsResponse walletTransactionsResponse) {
+                    holder.mResultView.setText("GetTransactions success! count is "+walletTransactionsResponse.count);
+                }
+
+                @Override
+                public void onFailed(long code, String message) {
+                    holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("Transactions",code,message));
                 }
             });
 
@@ -415,10 +449,15 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Staging);
             String sig = String.valueOf(holder.mEt1.getText());
 
-            MirrorSDK.getInstance().GetTransactionBySignature(sig, new MirrorCallback() {
+            MirrorSDK.getInstance().GetTransactionBySignature(sig, new GetWalletTransactionBySigListener() {
                 @Override
-                public void callback(String result) {
-                    holder.mResultView.setText(result);
+                public void onSuccess(List<WalletTransaction> walletTransactions) {
+                    holder.mResultView.setText("GetTransactionBySignature success! transaction count is " + walletTransactions.size());
+                }
+
+                @Override
+                public void onFailed(long code, String message) {
+                    holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("GetTransactionBySignature",code,message));
                 }
             });
 
@@ -437,19 +476,18 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             }
 
 
-            MirrorSDK.getInstance().PostTransferSQL(public_key, amount, new MirrorCallback() {
+            MirrorSDK.getInstance().TransferSOL(public_key, amount, new TransferSOLListener() {
                 @Override
-                public void callback(String result) {
-
-                    holder.mResultView.setText(result);
+                public void onTransferSuccess(TransferResponse transferResponse) {
+                    holder.mResultView.setText("transfer sol success!");
                 }
 
+                @Override
+                public void onTransferFailed(long code, String message) {
+                    holder.mResultView.setText("transfer sol failed!code:"+code+" message:"+message);
+                }
             });
-
-
         }
-
-
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
