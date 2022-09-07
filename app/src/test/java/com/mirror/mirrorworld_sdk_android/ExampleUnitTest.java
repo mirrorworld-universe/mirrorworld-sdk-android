@@ -199,7 +199,6 @@ public class ExampleUnitTest {
 
     }
 
-
     @Test
     public void QueryUser(){
         MirrorSDK.getInstance().InitSDK(null, MirrorEnv.Staging);
@@ -465,7 +464,6 @@ public class ExampleUnitTest {
 
     }
 
-
     @Test
     public void FetchActivitiesOfSingleNFT(){
         MirrorSDK.getInstance().InitSDK(null, MirrorEnv.Staging);
@@ -512,7 +510,6 @@ public class ExampleUnitTest {
         assertEquals("success",Status);
 
     }
-
 
     @Test
     public void FetchSingleNFTDetails(){
