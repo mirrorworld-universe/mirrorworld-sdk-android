@@ -186,6 +186,11 @@ public class MainActivity extends AppCompatActivity {
                 new MultiItemData.MultiItem(MirrorConstant.TRANSFER_NFT_TO_ANOTHER_SOLANA_WALLET,"Transfer NFT to another solana wallet","Transfer NFT to another solana wallet",
                         "TRANSFER_NFT","mint_address","to_wallet_address",
                         null,null,null,null));
+        items.add(
+
+                new MultiItemData.MultiItem(MirrorConstant.BUY_NFT,"Buy NFT on the marketplace","Buy NFT on the marketplace",
+                        "Buy_NFT","mint_address","price",
+                        null,null,null,null));
 
 
         return items;
