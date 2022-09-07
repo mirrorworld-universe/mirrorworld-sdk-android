@@ -785,7 +785,7 @@ public class ExampleUnitTest {
     public void TransferSQL(){
         MirrorSDK.getInstance().InitSDK(null, MirrorEnv.Staging);
         final Object lock = new Object();
-        MirrorSDK.getInstance().SetAppID("WsPRi3GQz0FGfoSklYUYzDesdKjKvxdrmtQ");
+        MirrorSDK.getInstance().SetAppID(appid);
         MirrorSDK.getInstance().LoginWithEmail(userEmail, password, new MirrorCallback() {
             @Override
             public void callback(String result) {

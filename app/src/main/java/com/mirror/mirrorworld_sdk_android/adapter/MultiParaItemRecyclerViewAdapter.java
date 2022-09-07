@@ -282,6 +282,171 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 }
             });
 
+        }else if(apiId == MirrorConstant.FETCH_NFT_BY_OWNER_ADDRESSES){
+
+            MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Staging);
+            List<String>  owners = new ArrayList<>();
+            owners.add(String.valueOf(holder.mEt1.getText()));
+
+            int limit = 0;
+            int offset = 0;
+
+            try{
+                limit =  Integer.valueOf(String.valueOf(holder.mEt2.getText()));
+                offset = Integer.valueOf(String.valueOf(holder.mEt3.getText()));
+
+            }catch (NumberFormatException E){
+
+            }
+
+
+            MirrorSDK.getInstance().FetchNFTsByOwnerAddresses(owners,limit,offset,new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    holder.mResultView.setText(result);
+                }
+            });
+
+        }else if(apiId == MirrorConstant.FETCH_NFT_BY_MINT_ADDRESSES){
+
+            MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Staging);
+            List<String> mint_address = new ArrayList<>();
+            mint_address.add(String.valueOf(holder.mEt1.getText()));
+
+            MirrorSDK.getInstance().FetchNFTsByMintAddresses(mint_address, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    holder.mResultView.setText(result);
+                }
+            });
+
+        }else if(apiId == MirrorConstant.FETCH_NFT_BY_UPDATE_AUTHORITIES){
+
+            MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Staging);
+            List<String> update_address = new ArrayList<>();
+            update_address.add(String.valueOf(holder.mEt1.getText()));
+
+            Double limit = 0.0;
+            Double offset = 0.0;
+
+            try{
+               limit =  Double.valueOf(String.valueOf(holder.mEt2.getText()));
+               offset = Double.valueOf(String.valueOf(holder.mEt3.getText()));
+
+            }catch (NumberFormatException E){
+
+            }
+
+            MirrorSDK.getInstance().FetchNFTsByUpdateAuthorities(update_address,limit,offset,new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    holder.mResultView.setText(result);
+                }
+            });
+
+        }else if(apiId == MirrorConstant.FETCH_SINGLE_NFT_DETAILS){
+            MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Staging);
+            String mint_address =String.valueOf(holder.mEt1.getText());
+
+            MirrorSDK.getInstance().FetchSingleNFTDetails(mint_address, new MirrorListener.FetchSingleNFT() {
+                @Override
+                public void onNFTFetched(NFTObject nftObject) {
+
+                    holder.mResultView.setText(nftObject.name+nftObject.description);
+                }
+
+                @Override
+                public void onNFTFetchFailed(long code, String message) {
+
+                }
+            });
+
+        }else if(apiId == MirrorConstant.FETCH_NFT_MARKETPLACE_ACTIVITY){
+            MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Staging);
+            String mint_address =String.valueOf(holder.mEt1.getText());
+
+            MirrorSDK.getInstance().FetchNFTMarketplaceActivity(mint_address, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    holder.mResultView.setText(result);
+                }
+            });
+
+        }else if(apiId == MirrorConstant.TRANSFER_NFT_TO_ANOTHER_SOLANA_WALLET){
+
+            String mint_address = String.valueOf(holder.mEt1.getText());
+            String to_wallet_address = String.valueOf(holder.mEt2.getText());
+
+            MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Staging);
+            MirrorSDK.getInstance().TransferNFTToAnotherSolanaWallet(mint_address, to_wallet_address, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    holder.mResultView.setText(result);
+                }
+            });
+        }else if(apiId == MirrorConstant.GET_WALLET_TOKEN){
+
+            MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Staging);
+
+            MirrorSDK.getInstance().GetWalletToken(new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+
+                    holder.mResultView.setText(result);
+
+                }
+            });
+
+
+        }else if(apiId == MirrorConstant.WALLET_TRANSACTIONS){
+
+            MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Staging);
+            String limit = String.valueOf(holder.mEt1.getText());
+            String before = String.valueOf(holder.mEt2.getText());
+            MirrorSDK.getInstance().Transactions(limit, before, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    holder.mResultView.setText(result);
+                }
+            });
+
+
+        }else if(apiId == MirrorConstant.WALLET_TRANSACTIONS_BY_SIGNATURE){
+
+            MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Staging);
+            String sig = String.valueOf(holder.mEt1.getText());
+
+            MirrorSDK.getInstance().GetTransactionBySignature(sig, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    holder.mResultView.setText(result);
+                }
+            });
+
+
+        }else if(apiId == MirrorConstant.TRANSFER_SQL){
+
+
+            MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Staging);
+            String public_key = String.valueOf(holder.mEt1.getText());
+            String amountStr = String.valueOf(holder.mEt2.getText());
+            int amount = 0;
+            try{
+               amount = Integer.valueOf(amountStr);
+            }catch (NumberFormatException e){
+
+            }
+
+
+            MirrorSDK.getInstance().PostTransferSQL(public_key, amount, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+
+                    holder.mResultView.setText(result);
+                }
+
+            });
+
 
         }
 

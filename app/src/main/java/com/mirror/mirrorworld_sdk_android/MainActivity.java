@@ -59,13 +59,13 @@ public class MainActivity extends AppCompatActivity {
 
         MultiParaItemFragment Auth = new MultiParaItemFragment(authApis());
         MultiParaItemFragment MarketMint = new MultiParaItemFragment(marketMintApis());
-//        MultiParaItemFragment MarketOther = new MultiParaItemFragment(replaceToWalletAPIs());
-//        MultiParaItemFragment Wallet = new MultiParaItemFragment(newAPIs());
+        MultiParaItemFragment MarketOther = new MultiParaItemFragment(marketOtherApis());
+        MultiParaItemFragment Wallet = new MultiParaItemFragment(walletApis());
 
         fragments.add(Auth);
         fragments.add(MarketMint);
-//        fragments.add(MarketOther);
-//        fragments.add(Wallet);
+        fragments.add(MarketOther);
+        fragments.add(Wallet);
 
 
         FragmentAdapter mFragmentAdapteradapter =
@@ -152,79 +152,79 @@ public class MainActivity extends AppCompatActivity {
         return items;
     }
 
+    private List<MultiItemData.MultiItem> marketOtherApis() {
+
+        List<MultiItemData.MultiItem> items = new ArrayList<>();
+
+        items.add(new MultiItemData.MultiItem(
+
+                MirrorConstant.FETCH_NFT_BY_OWNER_ADDRESSES,"Fetch multiple NFTs data by owner addresses",
+                "Fetch multiple NFTs data by owner addresses",
+                "FETCH_BY_OWNER",
+                "owner_address","limit","offset",null,null,null));
 
 
+        items.add(
+                new MultiItemData.MultiItem(MirrorConstant.FETCH_NFT_BY_MINT_ADDRESSES,"Fetch multiple NFTs data by mint addresses","Fetch multiple NFTs data by mint addresses",
+                        "FETCH_BY_MINT","mint_address",null,
+                        null,null,null,null));
+
+        items.add(
+
+                new MultiItemData.MultiItem(MirrorConstant.FETCH_NFT_BY_UPDATE_AUTHORITIES,"Fetch multiple NFTs data by update authority addresses","Fetch multiple NFTs data by update authority addresses",
+                        "FETCH_BY_AUTHORITIES","update_authorities","limit",
+                        "offset",null,null,null));
+
+        items.add(
+                new MultiItemData.MultiItem(MirrorConstant.FETCH_SINGLE_NFT_DETAILS,"Fetch single NFT details","Fetch single NFT details",
+                        "FETCH_SINGLE_NFT","mint_address",null,
+                        null,null,null,null));
 
 
-//    private List<MultiItemData.MultiItem> marketOtherApis() {
-//
-//        List<MultiItemData.MultiItem> items = new ArrayList<>();
-//        items.add(new MultiItemData.MultiItem(
-//                MirrorConstant.POST_TRANSFER_SQL,"Get wallet address",
-//                "Get user's wallet address on solana",
-//                "GetWallet",
-//                null,null,null,null,null,null));
-//
-//
-//        items.add(
-//                new MultiItemData.MultiItem(MirrorConstant.POST_TRANSFER_SQL,"Transfer SOL","Transfer SOL",
-//                        "PostTransferToken","to_publickey","amount",
-//                        null,null,null,null));
-//
-//        items.add(
-//                new MultiItemData.MultiItem(MirrorConstant.POST_TRANSFER_TOKEN,"Transfer Token","Transfer Token",
-//                        "PostTransferToken","to_publickey","amount",
-//                        "token_mint","decimals",null,null));
-//
-//        items.add(
-//                new MultiItemData.MultiItem(MirrorConstant.GET_WALLET_TOKEN,"Get wallet tokens","Get a wallet's tokens",
-//                        "GetWalletToken",null,null,
-//                        null,null,null,null));
-//
-//
-//        items.add(
-//                new MultiItemData.MultiItem(MirrorConstant.TRANSACTIONS,"Get Wallet Transactions","Get a wallet's transactions by filters",
-//                        "Transactions","limit","before",
-//                        null,null,null,null));
-//
-//
-//        return items;
-//    }
-//
-//    private List<MultiItemData.MultiItem> walletApis() {
-//
-//        List<MultiItemData.MultiItem> items = new ArrayList<>();
-//        items.add(new MultiItemData.MultiItem(
-//                MirrorConstant.POST_TRANSFER_SQL,"Get wallet address",
-//                "Get user's wallet address on solana",
-//                "GetWallet",
-//                null,null,null,null,null,null));
-//
-//
-//        items.add(
-//                new MultiItemData.MultiItem(MirrorConstant.POST_TRANSFER_SQL,"Transfer SOL","Transfer SOL",
-//                        "PostTransferToken","to_publickey","amount",
-//                        null,null,null,null));
-//
-//        items.add(
-//                new MultiItemData.MultiItem(MirrorConstant.POST_TRANSFER_TOKEN,"Transfer Token","Transfer Token",
-//                        "PostTransferToken","to_publickey","amount",
-//                        "token_mint","decimals",null,null));
-//
-//        items.add(
-//                new MultiItemData.MultiItem(MirrorConstant.GET_WALLET_TOKEN,"Get wallet tokens","Get a wallet's tokens",
-//                        "GetWalletToken",null,null,
-//                        null,null,null,null));
-//
-//
-//        items.add(
-//                new MultiItemData.MultiItem(MirrorConstant.TRANSACTIONS,"Get Wallet Transactions","Get a wallet's transactions by filters",
-//                        "Transactions","limit","before",
-//                        null,null,null,null));
-//
-//
-//        return items;
-//    }
+        items.add(
+
+                new MultiItemData.MultiItem(MirrorConstant.FETCH_NFT_MARKETPLACE_ACTIVITY,"Fetch activity of a single NFT","Fetch activity of a single NFT",
+                        "FETCH_NFT_ACTIVITY","mint_address",null,
+                        null,null,null,null));
+        items.add(
+
+                new MultiItemData.MultiItem(MirrorConstant.TRANSFER_NFT_TO_ANOTHER_SOLANA_WALLET,"Transfer NFT to another solana wallet","Transfer NFT to another solana wallet",
+                        "TRANSFER_NFT","mint_address","to_wallet_address",
+                        null,null,null,null));
+
+
+        return items;
+    }
+
+    private List<MultiItemData.MultiItem> walletApis() {
+
+        List<MultiItemData.MultiItem> items = new ArrayList<>();
+        items.add(new MultiItemData.MultiItem(
+                MirrorConstant.GET_WALLET_TOKEN,"Get wallet tokens.","Get wallet tokens.",
+                "Get_Wallet_Token",
+                null,null,null,null,null,null));
+
+
+        items.add(
+
+                new MultiItemData.MultiItem(MirrorConstant.WALLET_TRANSACTIONS,"Get wallet transactions.","Get wallet transactions.",
+                        "WALLET_TRANSACTIONS","limit","before",
+                        null,null,null,null));
+
+        items.add(
+                new MultiItemData.MultiItem(MirrorConstant.WALLET_TRANSACTIONS_BY_SIGNATURE,"Get wallet transaction by signature","Get wallet transaction by signature",
+                        "TRANSACTIONS_SIG","signature",null,
+                        null,null,null,null));
+
+        items.add(
+
+                new MultiItemData.MultiItem(MirrorConstant.TRANSFER_SQL,"Transfer SOL to another address","Transfer SOL to another address",
+                        "TRANSFER_SQL","to_publickey","amount",
+                        null,null,null,null));
+
+
+        return items;
+    }
 
 
 
@@ -457,7 +457,7 @@ public class MainActivity extends AppCompatActivity {
 //                "mint_address","price",null,null,null,null));
 //        return items;
 //    }
-//
+
 
 
 
