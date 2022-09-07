@@ -27,6 +27,7 @@ import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.constant.MirrorResCode;
 import com.mirror.sdk.constant.MirrorUrl;
 import com.mirror.sdk.listener.MirrorListener;
+import com.mirror.sdk.listener.market.BuyNFTListener;
 import com.mirror.sdk.listener.market.CreateSubCollectionListener;
 import com.mirror.sdk.listener.market.CreateTopCollectionListener;
 import com.mirror.sdk.listener.market.FetchByMintAddressListener;
@@ -541,6 +542,32 @@ public class MirrorSDK {
         }));
     }
 
+    public void BuyNFT(String mint_address, Double price, BuyNFTListener buyNFTListener){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("mint_address", mint_address);
+            jsonObject.put("price", price);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+
+        String url = GetAPIRoot() + MirrorUrl.URL_BUY_NFT_ON_THE_MARKETPLACE;
+        checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+
+                CommonResponse<ListingResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<ListingResponse>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    buyNFTListener.onBuySuccess(response.data);
+                }else{
+                    buyNFTListener.onBuyFailed(response.code,response.message);
+                }
+
+            }
+        }));
+    }
+
     public void GetWallet(MirrorCallback mirrorCallback){
         if(mWalletAddress == ""){
             mWalletAddress = getSavedString(activityContext,localKeyWalletAddress);
@@ -642,20 +669,6 @@ public class MirrorSDK {
         checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
     }
 
-    private void BuyNFT(String mint_address, Double price, MirrorCallback mirrorCallback){
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("mint_address", mint_address);
-            jsonObject.put("price", price);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        String data = jsonObject.toString();
-
-        String url = GetAPIRoot() + MirrorUrl.URL_BUY_NFT_ON_THE_MARKETPLACE;
-        checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
-    }
-
 
     // new apis
     private void PostTransferToken(String to_publickey, int amount, String token_mint, int decimals, MirrorCallback mirrorCallback){
@@ -731,11 +744,6 @@ public class MirrorSDK {
         checkParamsAndGet(url,map, mirrorCallback);
 
     }
-
-
-
-
-
 
     private void LoginWithEmailPostRequest(String url, String data, MirrorCallback mirrorCallback){
         doPostRequest(url,data, mirrorCallback);
