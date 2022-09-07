@@ -26,6 +26,7 @@ import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.constant.MirrorResCode;
 import com.mirror.sdk.constant.MirrorUrl;
 import com.mirror.sdk.listener.MirrorListener;
+import com.mirror.sdk.listener.auth.LoginListener;
 import com.mirror.sdk.listener.market.BuyNFTListener;
 import com.mirror.sdk.listener.market.CancelListListener;
 import com.mirror.sdk.listener.market.CreateSubCollectionListener;
@@ -101,7 +102,8 @@ public class MirrorSDK {
     private String localKeyAppId = "mirror_app_id";
     private String localKeyWalletAddress = "mirror_wallet_address";
 
-    private MirrorListener.LoginListener cbLogin = null;
+    private LoginListener cbLogin = null;
+    private MirrorCallback cbStringLogin = null;
 
 
     private MirrorSDK(){
@@ -211,9 +213,14 @@ public class MirrorSDK {
         dialog.show();
     }
 
-    public void StartLogin(MirrorListener.LoginListener loginListener){
+    public void StartLogin(LoginListener loginListener){
         StartLogin();
         cbLogin = loginListener;
+    }
+
+    public void StartLogin(MirrorCallback listener){
+        StartLogin();
+        cbStringLogin = listener;
     }
 
     public void SetDebug(boolean debug){
@@ -1302,6 +1309,7 @@ public class MirrorSDK {
         parentDialog.dismiss();
 
         if(cbLogin != null) cbLogin.onLoginSuccess();
+        if(cbStringLogin != null) cbStringLogin.callback(dataJsonStr);
     }
 
     @JavascriptInterface
