@@ -9,13 +9,14 @@ import static org.junit.Assert.*;
 import com.mirror.sdk.MirrorCallback;
 import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.constant.MirrorEnv;
-import com.mirror.sdk.listener.MirrorListener;
+import com.mirror.sdk.listener.auth.FetchUserListener;
 import com.mirror.sdk.listener.market.CancelListListener;
 import com.mirror.sdk.listener.market.CreateSubCollectionListener;
 import com.mirror.sdk.listener.market.CreateTopCollectionListener;
 import com.mirror.sdk.listener.market.FetchByMintAddressListener;
 import com.mirror.sdk.listener.market.FetchByOwnerListener;
 import com.mirror.sdk.listener.market.FetchSingleNFTActivityListener;
+import com.mirror.sdk.listener.market.FetchSingleNFTListener;
 import com.mirror.sdk.listener.market.ListNFTListener;
 import com.mirror.sdk.listener.market.MintNFTListener;
 import com.mirror.sdk.listener.market.TransferNFTListener;
@@ -30,11 +31,10 @@ import com.mirror.sdk.response.market.ActivityOfSingleNftResponse;
 import com.mirror.sdk.response.market.ListingResponse;
 import com.mirror.sdk.response.market.MintResponse;
 import com.mirror.sdk.response.market.MultipleNFTsResponse;
-import com.mirror.sdk.response.market.NFTObject;
+import com.mirror.sdk.response.market.SingleNFTResponse;
 import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
 import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
 import com.mirror.sdk.response.wallet.TransferResponse;
-import com.mirror.sdk.response.wallet.WalletTransaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -150,7 +150,6 @@ public class ExampleUnitTest {
                 synchronized (lock) {
                     lock.notify();
                 }
-
             }
         });
 
@@ -164,7 +163,6 @@ public class ExampleUnitTest {
         }
 
         assertEquals("success",Status);
-
     }
 
     @Test
@@ -180,7 +178,7 @@ public class ExampleUnitTest {
                 MirrorSDK.getInstance().SetAccessToken(GetAccessTokenFromResponse(result));
                 MirrorSDK.getInstance().SetRefreshToken(GetRefreshTokenFromResponse(result));
 
-                MirrorSDK.getInstance().FetchUser(new MirrorListener.FetchUserListener() {
+                MirrorSDK.getInstance().FetchUser(new FetchUserListener() {
                     @Override
                     public void onUserFetched(UserResponse userResponse) {
                         Status = "success";
@@ -191,12 +189,14 @@ public class ExampleUnitTest {
 
                     @Override
                     public void onFetchFailed(long code, String message) {
-                        Status = "failed";
+                        Status = "Failed";
+                        synchronized (lock) {
+                            lock.notify();
+                        }
                     }
                 });
             }
         });
-
 
         try {
             synchronized (lock) {
@@ -223,7 +223,7 @@ public class ExampleUnitTest {
                 MirrorSDK.getInstance().SetAccessToken(GetAccessTokenFromResponse(result));
                 MirrorSDK.getInstance().SetRefreshToken(GetRefreshTokenFromResponse(result));
 
-                MirrorSDK.getInstance().QueryUser(userEmail, new MirrorListener.FetchUserListener() {
+                MirrorSDK.getInstance().QueryUser(userEmail, new FetchUserListener() {
                     @Override
                     public void onUserFetched(UserResponse userResponse) {
                         Status = "success";
@@ -285,26 +285,34 @@ public class ExampleUnitTest {
 
                                     @Override
                                     public void onMintFailed(long code, String message) {
-
+                                        Status = "Failed";
+                                        synchronized (lock) {
+                                            lock.notify();
+                                        }
                                     }
                                 });
                             }
 
                             @Override
                             public void onCreateFailed(long code, String message) {
-
+                                Status = "Failed";
+                                synchronized (lock) {
+                                    lock.notify();
+                                }
                             }
                         });
                     }
 
                     @Override
                     public void onCreateFailed(long code, String message) {
-
+                        Status = "Failed";
+                        synchronized (lock) {
+                            lock.notify();
+                        }
                     }
                 });
             }
         });
-
 
         try {
             synchronized (lock) {
@@ -316,7 +324,6 @@ public class ExampleUnitTest {
         }
 
         assertEquals("success",Status);
-
     }
 
     @Test
@@ -405,26 +412,34 @@ public class ExampleUnitTest {
 
                                     @Override
                                     public void onCancelFailed(long code, String message) {
-
+                                        Status = "Failed";
+                                        synchronized (lock) {
+                                            lock.notify();
+                                        }
                                     }
                                 });
                             }
 
                             @Override
                             public void onUpdateFailed(long code, String message) {
-
+                                Status = "Failed";
+                                synchronized (lock) {
+                                    lock.notify();
+                                }
                             }
                         });
                     }
 
                     @Override
                     public void onListFailed(long code, String message) {
-
+                        Status = "Failed";
+                        synchronized (lock) {
+                            lock.notify();
+                        }
                     }
                 });
             }
         });
-
 
         try {
             synchronized (lock) {
@@ -436,7 +451,6 @@ public class ExampleUnitTest {
         }
 
         assertEquals("success",Status);
-
     }
 
     @Test
@@ -548,10 +562,10 @@ public class ExampleUnitTest {
                 MirrorSDK.getInstance().SetAccessToken(GetAccessTokenFromResponse(result));
                 MirrorSDK.getInstance().SetRefreshToken(GetRefreshTokenFromResponse(result));
 
+                MirrorSDK.getInstance().GetNFTDetails("FvD7WTyBMfGbxsyhidBrGUw8Y4ojpQNim8jNyE3NTKHx", new FetchSingleNFTListener() {
 
-                MirrorSDK.getInstance().FetchSingleNFTDetails("FvD7WTyBMfGbxsyhidBrGUw8Y4ojpQNim8jNyE3NTKHx", new MirrorListener.FetchSingleNFT() {
                     @Override
-                    public void onNFTFetched(NFTObject nftObject) {
+                    public void onFetchSuccess(SingleNFTResponse nftResponse) {
                         Status = "success";
                         synchronized (lock) {
                             lock.notify();
@@ -559,8 +573,8 @@ public class ExampleUnitTest {
                     }
 
                     @Override
-                    public void onNFTFetchFailed(long code, String message) {
-                        Status = "failed";
+                    public void onFetchFailed(long code, String message) {
+                        Status = "Failed";
                         synchronized (lock) {
                             lock.notify();
                         }
@@ -568,7 +582,6 @@ public class ExampleUnitTest {
                 });
             }
         });
-
 
         try {
             synchronized (lock) {
@@ -580,9 +593,7 @@ public class ExampleUnitTest {
         }
 
         assertEquals("success",Status);
-
     }
-
 
     @Test
     public void FetchNFTsByMintAddress(){
@@ -657,7 +668,10 @@ public class ExampleUnitTest {
 
                      @Override
                      public void onFailed(long code, String message) {
-
+                         Status = "Failed";
+                         synchronized (lock) {
+                             lock.notify();
+                         }
                      }
                  });
              }
@@ -701,7 +715,10 @@ public class ExampleUnitTest {
 
                      @Override
                      public void onFailed(long code, String message) {
-
+                         Status = "Failed";
+                         synchronized (lock) {
+                             lock.notify();
+                         }
                      }
                  });
              }
@@ -718,8 +735,6 @@ public class ExampleUnitTest {
          }
 
          assertEquals("success",Status);
-
-
     }
 
     @Test
@@ -745,7 +760,10 @@ public class ExampleUnitTest {
 
                     @Override
                     public void onFailed(long code, String message) {
-
+                        Status = "Failed";
+                        synchronized (lock) {
+                            lock.notify();
+                        }
                     }
                 });
             }
@@ -762,8 +780,6 @@ public class ExampleUnitTest {
         }
 
         assertEquals("success",Status);
-
-
     }
 
     @Test
@@ -789,12 +805,14 @@ public class ExampleUnitTest {
 
                     @Override
                     public void onTransferFailed(long code, String message) {
-
+                        Status = "Failed";
+                        synchronized (lock) {
+                            lock.notify();
+                        }
                     }
                 });
             }
         });
-
 
         try {
             synchronized (lock) {
@@ -806,7 +824,5 @@ public class ExampleUnitTest {
         }
 
         assertEquals("success",Status);
-
     }
-
 }

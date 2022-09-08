@@ -25,7 +25,7 @@ import com.google.gson.reflect.TypeToken;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.constant.MirrorResCode;
 import com.mirror.sdk.constant.MirrorUrl;
-import com.mirror.sdk.listener.MirrorListener;
+import com.mirror.sdk.listener.auth.FetchUserListener;
 import com.mirror.sdk.listener.auth.LoginListener;
 import com.mirror.sdk.listener.market.BuyNFTListener;
 import com.mirror.sdk.listener.market.CancelListListener;
@@ -34,10 +34,12 @@ import com.mirror.sdk.listener.market.CreateTopCollectionListener;
 import com.mirror.sdk.listener.market.FetchByMintAddressListener;
 import com.mirror.sdk.listener.market.FetchByOwnerListener;
 import com.mirror.sdk.listener.market.FetchSingleNFTActivityListener;
+import com.mirror.sdk.listener.market.FetchSingleNFTListener;
 import com.mirror.sdk.listener.market.ListNFTListener;
 import com.mirror.sdk.listener.market.MintNFTListener;
 import com.mirror.sdk.listener.market.TransferNFTListener;
 import com.mirror.sdk.listener.market.UpdateListListener;
+import com.mirror.sdk.listener.universal.BoolListener;
 import com.mirror.sdk.listener.wallet.GetWalletTokenListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionBySigListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
@@ -166,11 +168,6 @@ public class MirrorSDK {
         return accessToken;
     }
 
-    public void SetToken(String loginResult){
-        MirrorSDK.getInstance().SetAccessToken(GetAccessTokenFromResponse(loginResult));
-        MirrorSDK.getInstance().SetRefreshToken(GetRefreshTokenFromResponse(loginResult));
-    }
-
     public void SetRefreshToken(String refreshToken){
         this.refreshToken = refreshToken;
     }
@@ -178,10 +175,6 @@ public class MirrorSDK {
     public void SetAccessToken(String accessToken){
         this.accessToken = accessToken;
 
-    }
-
-    public void SetWalletAddress(String address){
-        this.mWalletAddress = address;
     }
 
     public void StartLogin(){
@@ -260,6 +253,20 @@ public class MirrorSDK {
         }
     }
 
+    public void CheckAuthenticated(BoolListener listener){
+        FetchUser(new FetchUserListener() {
+            @Override
+            public void onUserFetched(UserResponse userResponse) {
+                listener.onBool(true);
+            }
+
+            @Override
+            public void onFetchFailed(long code, String message) {
+                listener.onBool(false);
+            }
+        });
+    }
+
     public void LoginWithEmail(String userEmail,String password,MirrorCallback mirrorCallback){
         JSONObject jsonObject = new JSONObject();
         try {
@@ -274,7 +281,7 @@ public class MirrorSDK {
         LoginWithEmailPostRequest(url,data,mirrorCallback);
     }
 
-    public void FetchUser(MirrorListener.FetchUserListener fetchUserListener){
+    public void FetchUser(FetchUserListener fetchUserListener){
         Map<String,String> map = new HashMap<>();
 
         String url = GetSSORoot() + MirrorUrl.URL_IS_AUTHENTICATED;
@@ -291,7 +298,7 @@ public class MirrorSDK {
         });
     }
 
-    public void QueryUser(String userEmail, MirrorListener.FetchUserListener fetchUserListener){
+    public void QueryUser(String userEmail, FetchUserListener fetchUserListener){
         Map<String,String> map = new HashMap<>();
         map.put("email",userEmail);
 
@@ -312,7 +319,7 @@ public class MirrorSDK {
         });
     }
 
-    public void FetchSingleNFTDetails(String mint_address, MirrorListener.FetchSingleNFT fetchSingleNFT){
+    public void GetNFTDetails(String mint_address, FetchSingleNFTListener fetchSingleNFT){
         String url = GetAPIRoot() + MirrorUrl.URL_QUERY_NFT_DETAIL + mint_address;
         checkParamsAndGet(url, null, new MirrorCallback() {
             @Override
@@ -320,9 +327,9 @@ public class MirrorSDK {
                 String tmen = result;
                 CommonResponse<SingleNFTResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<SingleNFTResponse>>(){}.getType());
                 if(response.code == MirrorResCode.SUCCESS){
-                    fetchSingleNFT.onNFTFetched(response.data.nft);
+                    fetchSingleNFT.onFetchSuccess(response.data);
                 }else{
-                    fetchSingleNFT.onNFTFetchFailed(response.code,response.message);
+                    fetchSingleNFT.onFetchFailed(response.code,response.message);
                 }
             }
         });
@@ -729,7 +736,7 @@ public class MirrorSDK {
         checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
     }
 
-    private void FetchNFTsByCreatorAddresses(List<String> creators, Double limit, Double offset, MirrorCallback mirrorCallback){
+    public void FetchNFTsByCreatorAddresses(List<String> creators, Double limit, Double offset, MirrorCallback mirrorCallback){
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         for (String tag : creators) {

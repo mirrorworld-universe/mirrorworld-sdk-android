@@ -20,7 +20,7 @@ import com.mirror.sdk.MirrorCallback;
 import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.constant.MirrorConstant;
 import com.mirror.sdk.constant.MirrorEnv;
-import com.mirror.sdk.listener.MirrorListener;
+import com.mirror.sdk.listener.auth.FetchUserListener;
 import com.mirror.sdk.listener.market.BuyNFTListener;
 import com.mirror.sdk.listener.market.CancelListListener;
 import com.mirror.sdk.listener.market.CreateSubCollectionListener;
@@ -28,6 +28,7 @@ import com.mirror.sdk.listener.market.CreateTopCollectionListener;
 import com.mirror.sdk.listener.market.FetchByMintAddressListener;
 import com.mirror.sdk.listener.market.FetchByOwnerListener;
 import com.mirror.sdk.listener.market.FetchSingleNFTActivityListener;
+import com.mirror.sdk.listener.market.FetchSingleNFTListener;
 import com.mirror.sdk.listener.market.ListNFTListener;
 import com.mirror.sdk.listener.market.MintNFTListener;
 import com.mirror.sdk.listener.market.TransferNFTListener;
@@ -42,11 +43,10 @@ import com.mirror.sdk.response.market.ActivityOfSingleNftResponse;
 import com.mirror.sdk.response.market.ListingResponse;
 import com.mirror.sdk.response.market.MintResponse;
 import com.mirror.sdk.response.market.MultipleNFTsResponse;
-import com.mirror.sdk.response.market.NFTObject;
+import com.mirror.sdk.response.market.SingleNFTResponse;
 import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
 import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
 import com.mirror.sdk.response.wallet.TransferResponse;
-import com.mirror.sdk.response.wallet.WalletTransaction;
 import com.mirror.sdk.utils.MirrorStringUtils;
 
 import java.util.ArrayList;
@@ -163,7 +163,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
 
         }else if(apiId == MirrorConstant.FETCH_USER){
 
-            MirrorSDK.getInstance().FetchUser(new MirrorListener.FetchUserListener() {
+            MirrorSDK.getInstance().FetchUser(new FetchUserListener() {
                 @Override
                 public void onUserFetched(UserResponse userResponse) {
                     holder.mResultView.setText(userResponse.email+userResponse.eth_address);
@@ -178,11 +178,10 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
         }else if(apiId == MirrorConstant.QUERY_USER){
 
             String email = String.valueOf(holder.mEt1.getText());
-            MirrorSDK.getInstance().QueryUser(email, new MirrorListener.FetchUserListener() {
+            MirrorSDK.getInstance().QueryUser(email, new FetchUserListener() {
                 @Override
                 public void onUserFetched(UserResponse userResponse) {
                     holder.mResultView.setText(userResponse.email+userResponse.eth_address);
-
                 }
 
                 @Override
@@ -401,15 +400,14 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             MirrorSDK.getInstance().InitSDK(mContext, MirrorEnv.Staging);
             String mint_address =String.valueOf(holder.mEt1.getText());
 
-            MirrorSDK.getInstance().FetchSingleNFTDetails(mint_address, new MirrorListener.FetchSingleNFT() {
+            MirrorSDK.getInstance().GetNFTDetails(mint_address, new FetchSingleNFTListener() {
                 @Override
-                public void onNFTFetched(NFTObject nftObject) {
-
-                    holder.mResultView.setText(nftObject.name+nftObject.description);
+                public void onFetchSuccess(SingleNFTResponse nftObject) {
+                    holder.mResultView.setText(nftObject.nft.name+nftObject.nft.description);
                 }
 
                 @Override
-                public void onNFTFetchFailed(long code, String message) {
+                public void onFetchFailed(long code, String message) {
 
                 }
             });

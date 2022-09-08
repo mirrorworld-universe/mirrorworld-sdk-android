@@ -1,6 +1,7 @@
 package com.mirror.sdk.listener.market;
 
 import com.mirror.sdk.response.auth.UserResponse;
+import com.mirror.sdk.response.market.SingleNFTResponse;
 
 /*** @author Pu
  * @createTime 2022/9/7 15:25
@@ -9,6 +10,6 @@ import com.mirror.sdk.response.auth.UserResponse;
  * @description TODO
  */
 public interface FetchSingleNFTListener {
-    void onFetchSuccess(UserResponse userResponse);
+    void onFetchSuccess(SingleNFTResponse nftResponse);
     void onFetchFailed(long code,String message);
 }
