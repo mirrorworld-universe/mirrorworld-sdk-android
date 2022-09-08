@@ -26,6 +26,7 @@ import com.mirror.sdk.listener.wallet.GetWalletTransactionBySigListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
 import com.mirror.sdk.listener.wallet.TransactionsDTO;
 import com.mirror.sdk.listener.wallet.TransferSOLListener;
+import com.mirror.sdk.response.auth.LoginResponse;
 import com.mirror.sdk.response.auth.UserResponse;
 import com.mirror.sdk.response.market.ActivityOfSingleNftResponse;
 import com.mirror.sdk.response.market.ListingResponse;
@@ -35,6 +36,7 @@ import com.mirror.sdk.response.market.SingleNFTResponse;
 import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
 import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
 import com.mirror.sdk.response.wallet.TransferResponse;
+import com.mirror.sdk.utils.MirrorGsonUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -380,7 +382,7 @@ public class ExampleUnitTest {
             public void callback(String result) {
                 MirrorSDK.getInstance().SetAccessToken(GetAccessTokenFromResponse(result));
                 MirrorSDK.getInstance().SetRefreshToken(GetRefreshTokenFromResponse(result));
-                MirrorSDK.getInstance().ListNFT("DxL8GuDoqWLqMLkeLQmaDVh4jR25zbhZQeYh3nbaqw1D", 1.2, new ListNFTListener() {
+                MirrorSDK.getInstance().ListNFT("DxL8GuDoqWLqMLkeLQmaDVh4jR25zbhZQeYh3nbaqw1D", 1.0, new ListNFTListener() {
                     @Override
                     public void onListSuccess(ListingResponse listingResponse) {
                         try {

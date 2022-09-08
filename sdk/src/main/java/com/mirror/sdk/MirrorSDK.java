@@ -1309,9 +1309,16 @@ public class MirrorSDK {
     @JavascriptInterface
     public void setLoginResponse(String dataJsonStr) {
         logFlow("receive login response:"+dataJsonStr);
-        LoginResponse loginResponse = new Gson().fromJson(dataJsonStr,LoginResponse.class);
-        String token = loginResponse.refresh_token;
-        saveRefreshToken(token);
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(dataJsonStr);
+            accessToken = jsonObject.getString("access_token");
+            String token = jsonObject.getString("refresh_token");
+            saveRefreshToken(token);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+//        LoginResponse loginResponse = MirrorGsonUtils.getInstance().fromJson(dataJsonStr,LoginResponse.class);
 
         parentDialog.dismiss();
 
