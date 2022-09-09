@@ -191,13 +191,74 @@ public class ExampleUnitTest {
 
         assertEquals("success",Status);
     }
+    @Test
+    public void FetchNFTsByMintAddress(){
+        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.Staging);
+        String nftAddress = "FvD7WTyBMfGbxsyhidBrGUw8Y4ojpQNim8jNyE3NTKHx";
+        List<String> mint_address = new ArrayList<>();
+        mint_address.add(nftAddress);
+
+        final Object lock1 = new Object();
+
+        MirrorSDK.getInstance().SetApiKey(appid);
+        MirrorSDK.getInstance().LoginWithEmail(userEmail, password, new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+
+                MirrorSDK.getInstance().SetAccessToken(GetAccessTokenFromResponse(result));
+                MirrorSDK.getInstance().SetRefreshToken(GetRefreshTokenFromResponse(result));
+
+                MirrorSDK.getInstance().GetNFTDetails(nftAddress, new FetchSingleNFTListener() {
+
+                    @Override
+                    public void onFetchSuccess(SingleNFTResponse nftResponse) {
+                        MirrorSDK.getInstance().FetchNFTsByMintAddresses(mint_address, new FetchNFTsListener() {
+                            @Override
+                            public void onFetchSuccess(MultipleNFTsResponse multipleNFTsResponse) {
+                                Status = "success";
+                                synchronized (lock1) {
+                                    lock1.notify();
+                                }
+                            }
+
+                            @Override
+                            public void onFetchFailed(long code, String message) {
+                                Status = "fail";
+                                synchronized (lock1) {
+                                    lock1.notify();
+                                }
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFetchFailed(long code, String message) {
+                        Status = "Failed";
+                        synchronized (lock1) {
+                            lock1.notify();
+                        }
+                    }
+                });
+            }
+        });
+
+
+        try {
+            synchronized (lock1) {
+                lock1.wait();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        assertEquals("success",Status);
+    }
 
     @Test
     public void MintNFTFlow(){
         MirrorSDK.getInstance().InitSDK(null, MirrorEnv.Staging);
         final Object lockFetchByCreator = new Object();
         final Object lockFetchByAuth = new Object();
-        final Object lockFetchByMint = new Object();
         final Object lockMintSuccess = new Object();
         MirrorSDK.getInstance().SetApiKey(appid);
         MirrorSDK.getInstance().LoginWithEmail(userEmail, password, new MirrorCallback() {
@@ -219,26 +280,6 @@ public class ExampleUnitTest {
                                         synchronized (lockMintSuccess) {
                                             lockMintSuccess.notify();
                                         }
-
-//                                        String nftAddress = userResponse.mint_address;
-//                                        MirrorSDK.getInstance().GetNFTDetails(nftAddress, new FetchSingleNFTListener() {
-//
-//                                            @Override
-//                                            public void onFetchSuccess(SingleNFTResponse nftResponse) {
-//                                                Status = "success";
-//                                                synchronized (lockFetchByMint) {
-//                                                    lockFetchByMint.notify();
-//                                                }
-//                                            }
-//
-//                                            @Override
-//                                            public void onFetchFailed(long code, String message) {
-//                                                Status = "Failed";
-//                                                synchronized (lockFetchByMint) {
-//                                                    lockFetchByMint.notify();
-//                                                }
-//                                            }
-//                                        });
 
                                         List<String> creators = new ArrayList<>();
                                         creators.add(userResponse.creator_address);
@@ -314,6 +355,10 @@ public class ExampleUnitTest {
         });
 
         try {
+//            synchronized (lockFetchNFTsByMint) {
+//                lockFetchNFTsByMint.wait();
+//            }
+
             synchronized (lockMintSuccess) {
                 lockMintSuccess.wait();
             }
@@ -325,10 +370,6 @@ public class ExampleUnitTest {
             synchronized (lockFetchByAuth) {
                 lockFetchByAuth.wait();
             }
-
-//            synchronized (lockFetchByMint) {
-//                lockFetchByMint.wait();
-//            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -528,56 +569,6 @@ public class ExampleUnitTest {
                 MirrorSDK.getInstance().FetchNFTMarketplaceActivity("FvD7WTyBMfGbxsyhidBrGUw8Y4ojpQNim8jNyE3NTKHx", new FetchSingleNFTActivityListener() {
                     @Override
                     public void onFetchSuccess(ActivityOfSingleNftResponse activityOfSingleNftResponse) {
-                        Status = "success";
-                        synchronized (lock) {
-                            lock.notify();
-                        }
-                    }
-
-                    @Override
-                    public void onFetchFailed(long code, String message) {
-                        Status = "fail";
-                        synchronized (lock) {
-                            lock.notify();
-                        }
-
-                    }
-                });
-            }
-        });
-
-
-        try {
-            synchronized (lock) {
-                lock.wait();
-            }
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        assertEquals("success",Status);
-
-    }
-
-    @Test
-    public void FetchNFTsByMintAddress(){
-        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.Staging);
-        List<String> mint_address = new ArrayList<>();
-        mint_address.add("FvD7WTyBMfGbxsyhidBrGUw8Y4ojpQNim8jNyE3NTKHx");
-
-        final Object lock = new Object();
-        MirrorSDK.getInstance().SetApiKey(appid);
-        MirrorSDK.getInstance().LoginWithEmail(userEmail, password, new MirrorCallback() {
-            @Override
-            public void callback(String result) {
-
-                MirrorSDK.getInstance().SetAccessToken(GetAccessTokenFromResponse(result));
-                MirrorSDK.getInstance().SetRefreshToken(GetRefreshTokenFromResponse(result));
-
-                MirrorSDK.getInstance().FetchNFTsByMintAddresses(mint_address, new FetchNFTsListener() {
-                    @Override
-                    public void onFetchSuccess(MultipleNFTsResponse multipleNFTsResponse) {
                         Status = "success";
                         synchronized (lock) {
                             lock.notify();

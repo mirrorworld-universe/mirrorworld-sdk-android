@@ -8,7 +8,9 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Message;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
@@ -94,7 +96,7 @@ public class MirrorSDK {
     private MirrorEnv env = MirrorEnv.MainNet;
 
     private AlertDialog parentDialog = null;
-    private WebView webView = null;
+    private WebView mLoginWebView = null;
     private String userAgent = null;
 
     private String localFileKey = "mirror_local_storage";
@@ -176,6 +178,18 @@ public class MirrorSDK {
     }
 
     public void StartLogin(){
+//        if(apiKey == ""){
+//            apiKey = getSavedString(activityContext,localKeyAppId);
+//            logFlow("No apiKey use locally api key:"+ apiKey);
+//        }
+//        if(apiKey == ""){
+//            logFlow("Must set app id first!");
+//            return;
+//        }
+//        logFlow("Start login called.");
+//        SDKFragmentDialog ddd = new SDKFragmentDialog();
+//        ddd.SetParams(apiKey,activityContext,appName,activityContext.getApplicationContext());
+//        ddd.show(activityContext.getFragmentManager(),"Tag");
         if(apiKey == ""){
             apiKey = getSavedString(activityContext,localKeyAppId);
             logFlow("No apiKey use locally api key:"+ apiKey);
@@ -1271,7 +1285,7 @@ public class MirrorSDK {
     }
 
     private void setWebView(Context context,WebView webView){
-        this.webView = webView;
+        this.mLoginWebView = webView;
         webView.setWebViewClient(new WebViewClient());
         final String finalUrl = MirrorUrl.URL_AUTH + apiKey;
         logFlow("open login page with url:"+finalUrl);
@@ -1314,15 +1328,6 @@ public class MirrorSDK {
 
         webView.addJavascriptInterface(this, delegateName);
     }
-
-
-//    @JavascriptInterface
-//    public void setRefreshToken(String refreshToken) {
-//        Toast.makeText(globalContext, strLoginSuccess, Toast.LENGTH_SHORT).show();
-//        saveRefreshToken(refreshToken);
-//        parentDialog.dismiss();
-//        if(cbLogin != null) cbLogin.onLoginSuccess();
-//    }
 
     @JavascriptInterface
     public void setLoginResponse(String dataJsonStr) {
@@ -1436,6 +1441,12 @@ public class MirrorSDK {
             builder.setTitle("");
             builder.setView(webViewPopUp);
 
+//            ViewGroup.LayoutParams params = webViewPopUp.getRootView().getLayoutParams();
+//            Display display = activityContext.getWindowManager().getDefaultDisplay(); // 为获取屏幕宽、高
+//            params.height = (int) (display.getHeight() * 0.9);
+//            params.width = (int) (display.getWidth() * 0.9);
+//            webViewPopUp.getRootView().setLayoutParams(params);
+
             builder.setButton("Close", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
@@ -1451,7 +1462,7 @@ public class MirrorSDK {
             cookieManager.setAcceptCookie(true);
             if(Build.VERSION.SDK_INT >= 21) {
                 cookieManager.setAcceptThirdPartyCookies(webViewPopUp, true);
-                cookieManager.setAcceptThirdPartyCookies(webView, true);
+                cookieManager.setAcceptThirdPartyCookies(mLoginWebView, true);
             }
 
             WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;

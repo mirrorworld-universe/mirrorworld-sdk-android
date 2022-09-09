@@ -14,7 +14,6 @@ import android.view.WindowManager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
-import com.mirror.mirrorworld_sdk_android.data.PlaceholderContent;
 import com.mirror.sdk.constant.MirrorConstant;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.MirrorSDK;
