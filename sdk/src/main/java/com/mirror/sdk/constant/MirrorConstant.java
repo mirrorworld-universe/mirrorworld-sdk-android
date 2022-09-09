@@ -4,6 +4,8 @@ public class MirrorConstant {
 
     public static final int SET_APP_ID = 0;
 
+    public static final int START_LOGIN = 101;
+
     public static final int LOGIN_With_EMAIL = 1;
 
     public static final int FETCH_USER = 2;

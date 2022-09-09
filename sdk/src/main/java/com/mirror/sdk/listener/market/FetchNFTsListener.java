@@ -9,7 +9,7 @@ import com.mirror.sdk.response.market.MultipleNFTsResponse;
  * @className FetchByMintAddressListener.java
  * @description TODO
  */
-public interface FetchByMintAddressListener {
+public interface FetchNFTsListener {
     void onFetchSuccess(MultipleNFTsResponse multipleNFTsResponse);
     void onFetchFailed(long code,String message);
 }

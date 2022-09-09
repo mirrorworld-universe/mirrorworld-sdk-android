@@ -84,6 +84,12 @@ public class MainActivity extends AppCompatActivity {
                 "appid",null,null,null,null,null));
 
         items.add(new MultiItemData.MultiItem(
+                MirrorConstant.START_LOGIN,"Start login",
+                "Open the login page",
+                "Login",
+                null,null,null,null,null,null));
+
+        items.add(new MultiItemData.MultiItem(
                 MirrorConstant.LOGIN_With_EMAIL,"Login with email",
                 "Logs in a user with their email address and password",
                 "LoginWithEmail",
