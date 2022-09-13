@@ -471,6 +471,7 @@ public class ExampleUnitTest {
 
     @Test
     public void ListNFT(){
+        String testNFT = "DxL8GuDoqWLqMLkeLQmaDVh4jR25zbhZQeYh3nbaqw1D";
         final Double originPrice = 1.1;
         final Double updatePrice = 1.4;
         MirrorSDK.getInstance().InitSDK(null, MirrorEnv.Staging);
@@ -481,7 +482,7 @@ public class ExampleUnitTest {
             public void callback(String result) {
                 MirrorSDK.getInstance().SetAccessToken(GetAccessTokenFromResponse(result));
                 MirrorSDK.getInstance().SetRefreshToken(GetRefreshTokenFromResponse(result));
-                MirrorSDK.getInstance().ListNFT("DxL8GuDoqWLqMLkeLQmaDVh4jR25zbhZQeYh3nbaqw1D", originPrice,MirrorConfirmation.Finalized,  new ListNFTListener() {
+                MirrorSDK.getInstance().ListNFT(testNFT, originPrice, MirrorConfirmation.Finalized,  new ListNFTListener() {
                     @Override
                     public void onListSuccess(ListingResponse listingResponse) {
                         try {
@@ -489,7 +490,7 @@ public class ExampleUnitTest {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        MirrorSDK.getInstance().UpdateNFTListing("DxL8GuDoqWLqMLkeLQmaDVh4jR25zbhZQeYh3nbaqw1D", updatePrice,MirrorConfirmation.Finalized, new UpdateListListener() {
+                        MirrorSDK.getInstance().UpdateNFTListing(testNFT, updatePrice,MirrorConfirmation.Finalized, new UpdateListListener() {
                             @Override
                             public void onUpdateSuccess(ListingResponse listingResponse) {
                                 try {
@@ -497,15 +498,10 @@ public class ExampleUnitTest {
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
-                                MirrorSDK.getInstance().CancelNFTListing("DxL8GuDoqWLqMLkeLQmaDVh4jR25zbhZQeYh3nbaqw1D", updatePrice, new CancelListListener() {
+                                MirrorSDK.getInstance().CancelNFTListing(testNFT, updatePrice,MirrorConfirmation.Finalized, new CancelListListener() {
                                     @Override
                                     public void onCancelSuccess(ListingResponse listingResponse) {
-                                        try {
-                                            Thread.sleep(3000);
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        }
-                                        Status = GetStatus( result);
+                                        Status = "success";
                                         synchronized (lock) {
                                             lock.notify();
                                         }
@@ -533,10 +529,10 @@ public class ExampleUnitTest {
 
                     @Override
                     public void onListFailed(long code, String message) {
-                        MirrorSDK.getInstance().CancelNFTListing("DxL8GuDoqWLqMLkeLQmaDVh4jR25zbhZQeYh3nbaqw1D", originPrice, new CancelListListener() {
+                        MirrorSDK.getInstance().CancelNFTListing(testNFT, originPrice, new CancelListListener() {
                             @Override
                             public void onCancelSuccess(ListingResponse listingResponse) {
-                                Status = GetStatus( result);
+                                Status = "success";
                                 synchronized (lock) {
                                     lock.notify();
                                 }

@@ -532,12 +532,12 @@ public class MirrorSDK {
         });
     }
 
-    public void CancelNFTListing(String mint_address, Double price, CancelListListener listener){
+    public void CancelNFTListing(String mint_address, Double price,String confirmation, CancelListListener listener){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("mint_address", mint_address);
             jsonObject.put("price", price);
-            jsonObject.put("confirmation","finalized");
+            jsonObject.put("confirmation",confirmation);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -555,6 +555,10 @@ public class MirrorSDK {
                 }
             }
         }));
+    }
+
+    public void CancelNFTListing(String mint_address, Double price, CancelListListener listener){
+        CancelNFTListing(mint_address, price,MirrorConfirmation.Default, listener);
     }
 
     public void UpdateNFTListing(String mint_address, Double price,String confirmation, UpdateListListener listener){
