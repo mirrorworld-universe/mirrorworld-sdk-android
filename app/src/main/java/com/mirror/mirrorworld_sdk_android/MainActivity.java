@@ -14,8 +14,6 @@ import android.view.WindowManager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
-import com.mirror.mirrorworld_sdk_android.data.PlaceholderContent;
-import com.mirror.sdk.constant.MirrorConstant;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.MirrorSDK;
 
@@ -78,25 +76,36 @@ public class MainActivity extends AppCompatActivity {
         List<MultiItemData.MultiItem> items = new ArrayList<>();
 
         items.add(new MultiItemData.MultiItem(
-                MirrorConstant.SET_APP_ID,"Set App ID",
+                DemoAPIID.SET_APP_ID,"Set App ID",
                 "Set app id before user all apis",
                 "SetAppID",
                 "appid",null,null,null,null,null));
 
         items.add(new MultiItemData.MultiItem(
-                MirrorConstant.LOGIN_With_EMAIL,"Login with email",
+                DemoAPIID.START_LOGIN,"Start login",
+                "Open the login page",
+                "Login",
+                null,null,null,null,null,null));
+
+        items.add(new MultiItemData.MultiItem(
+                DemoAPIID.LOGIN_With_EMAIL,"Login with email",
                 "Logs in a user with their email address and password",
                 "LoginWithEmail",
                 "email","passWord",null,null,null,null));
+        items.add(new MultiItemData.MultiItem(
+                DemoAPIID.OPEN_WALLET,"Open wallet",
+                "Open user's wallet after login.",
+                "OpenWallet",
+                null,null,null,null,null,null));
 
 
         items.add(
-                new MultiItemData.MultiItem(MirrorConstant.FETCH_USER,"FetchUser","Checks whether is authenticated or not and returns the user object if true",
+                new MultiItemData.MultiItem(DemoAPIID.FETCH_USER,"FetchUser","Checks whether is authenticated or not and returns the user object if true",
                         "FetchUser",null,null,
                         null,null,null,null));
 
         items.add(
-                new MultiItemData.MultiItem(MirrorConstant.QUERY_USER,"QueryUser","this request is using API Key from collectionMirror World Mobile SDK",
+                new MultiItemData.MultiItem(DemoAPIID.QUERY_USER,"QueryUser","this request is using API Key from collectionMirror World Mobile SDK",
                         "QueryUser","email",null,
                         null,null,null,null));
 
@@ -108,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
         List<MultiItemData.MultiItem> items = new ArrayList<>();
 
         items.add(new MultiItemData.MultiItem(
-                MirrorConstant.CREATE_VERIFIED_COLLECTION,"Mint New Top-level Collection",
+                DemoAPIID.CREATE_VERIFIED_COLLECTION,"Mint New Top-level Collection",
                 "This request is using API Key from collectionMirror World Mobile SDK",
                 "TOP_COLLECTION",
                 "name","symbol","detailUrl",null,null,null));
@@ -116,32 +125,32 @@ public class MainActivity extends AppCompatActivity {
 
         items.add(
 
-                new MultiItemData.MultiItem(MirrorConstant.CREATE_VERIFIED_SUB_COLLECTION,"Mint New Lower-level Collection","This request is using API Key from collectionMirror World Mobile SDK",
+                new MultiItemData.MultiItem(DemoAPIID.CREATE_VERIFIED_SUB_COLLECTION,"Mint New Lower-level Collection","This request is using API Key from collectionMirror World Mobile SDK",
                         "LOW_COLLECTION","collection_mint","name",
                         "symbol","detailUrl",null,null));
 
         items.add(
 
-                new MultiItemData.MultiItem(MirrorConstant.MINT_NFT,"Mint New NFT on Collection","This request is using API Key from collectionMirror World Mobile SDK",
+                new MultiItemData.MultiItem(DemoAPIID.MINT_NFT,"Mint New NFT on Collection","This request is using API Key from collectionMirror World Mobile SDK",
                         "MINT_NFT","collection_mint","name",
                         "symbol","detailUrl",null,null));
 
         items.add(
 
-                new MultiItemData.MultiItem(MirrorConstant.LIST_NFT,"List NFT on the marketplace","List NFT on the marketplace by use mint address",
+                new MultiItemData.MultiItem(DemoAPIID.LIST_NFT,"List NFT on the marketplace","List NFT on the marketplace by use mint address",
                         "LIST_NFT","mint_address","price",
                         null,null,null,null));
 
 
         items.add(
 
-                new MultiItemData.MultiItem(MirrorConstant.UPDATE_NFT_LISTING,"Update Listing of NFT on the marketplace","Update Listing of NFT on the marketplace",
+                new MultiItemData.MultiItem(DemoAPIID.UPDATE_NFT_LISTING,"Update Listing of NFT on the marketplace","Update Listing of NFT on the marketplace",
                         "UPDATE_NFT_LISTING","mint_address","price",
                         null,null,null,null));
 
         items.add(
 
-                new MultiItemData.MultiItem(MirrorConstant.CANCEL_NFT_LISTING,"Cancel listing of NFT on the marketplace","Cancel listing of NFT on the marketplace",
+                new MultiItemData.MultiItem(DemoAPIID.CANCEL_NFT_LISTING,"Cancel listing of NFT on the marketplace","Cancel listing of NFT on the marketplace",
                         "CANCEL_NFT_LISTING","mint_address","price",
                         null,null,null,null));
         return items;
@@ -153,42 +162,42 @@ public class MainActivity extends AppCompatActivity {
 
         items.add(new MultiItemData.MultiItem(
 
-                MirrorConstant.FETCH_NFT_BY_OWNER_ADDRESSES,"Fetch multiple NFTs data by owner addresses",
+                DemoAPIID.FETCH_NFT_BY_OWNER_ADDRESSES,"Fetch multiple NFTs data by owner addresses",
                 "Fetch multiple NFTs data by owner addresses",
                 "FETCH_BY_OWNER",
                 "owner_address","limit","offset",null,null,null));
 
 
         items.add(
-                new MultiItemData.MultiItem(MirrorConstant.FETCH_NFT_BY_MINT_ADDRESSES,"Fetch multiple NFTs data by mint addresses","Fetch multiple NFTs data by mint addresses",
+                new MultiItemData.MultiItem(DemoAPIID.FETCH_NFT_BY_MINT_ADDRESSES,"Fetch multiple NFTs data by mint addresses","Fetch multiple NFTs data by mint addresses",
                         "FETCH_BY_MINT","mint_address",null,
                         null,null,null,null));
 
         items.add(
 
-                new MultiItemData.MultiItem(MirrorConstant.FETCH_NFT_BY_UPDATE_AUTHORITIES,"Fetch multiple NFTs data by update authority addresses","Fetch multiple NFTs data by update authority addresses",
+                new MultiItemData.MultiItem(DemoAPIID.FETCH_NFT_BY_UPDATE_AUTHORITIES,"Fetch multiple NFTs data by update authority addresses","Fetch multiple NFTs data by update authority addresses",
                         "FETCH_BY_AUTHORITIES","update_authorities","limit",
                         "offset",null,null,null));
 
         items.add(
-                new MultiItemData.MultiItem(MirrorConstant.FETCH_SINGLE_NFT_DETAILS,"Fetch single NFT details","Fetch single NFT details",
+                new MultiItemData.MultiItem(DemoAPIID.FETCH_SINGLE_NFT_DETAILS,"Fetch single NFT details","Fetch single NFT details",
                         "FETCH_SINGLE_NFT","mint_address",null,
                         null,null,null,null));
 
 
         items.add(
 
-                new MultiItemData.MultiItem(MirrorConstant.FETCH_NFT_MARKETPLACE_ACTIVITY,"Fetch activity of a single NFT","Fetch activity of a single NFT",
+                new MultiItemData.MultiItem(DemoAPIID.FETCH_NFT_MARKETPLACE_ACTIVITY,"Fetch activity of a single NFT","Fetch activity of a single NFT",
                         "FETCH_NFT_ACTIVITY","mint_address",null,
                         null,null,null,null));
         items.add(
 
-                new MultiItemData.MultiItem(MirrorConstant.TRANSFER_NFT_TO_ANOTHER_SOLANA_WALLET,"Transfer NFT to another solana wallet","Transfer NFT to another solana wallet",
+                new MultiItemData.MultiItem(DemoAPIID.TRANSFER_NFT_TO_ANOTHER_SOLANA_WALLET,"Transfer NFT to another solana wallet","Transfer NFT to another solana wallet",
                         "TRANSFER_NFT","mint_address","to_wallet_address",
                         null,null,null,null));
         items.add(
 
-                new MultiItemData.MultiItem(MirrorConstant.BUY_NFT,"Buy NFT on the marketplace","Buy NFT on the marketplace",
+                new MultiItemData.MultiItem(DemoAPIID.BUY_NFT,"Buy NFT on the marketplace","Buy NFT on the marketplace",
                         "Buy_NFT","mint_address","price",
                         null,null,null,null));
 
@@ -200,25 +209,25 @@ public class MainActivity extends AppCompatActivity {
 
         List<MultiItemData.MultiItem> items = new ArrayList<>();
         items.add(new MultiItemData.MultiItem(
-                MirrorConstant.GET_WALLET_TOKEN,"Get wallet tokens.","Get wallet tokens.",
+                DemoAPIID.GET_WALLET_TOKEN,"Get wallet tokens.","Get wallet tokens.",
                 "Get_Wallet_Token",
                 null,null,null,null,null,null));
 
 
         items.add(
 
-                new MultiItemData.MultiItem(MirrorConstant.WALLET_TRANSACTIONS,"Get wallet transactions.","Get wallet transactions.",
+                new MultiItemData.MultiItem(DemoAPIID.WALLET_TRANSACTIONS,"Get wallet transactions.","Get wallet transactions.",
                         "WALLET_TRANSACTIONS","limit","before",
                         null,null,null,null));
 
         items.add(
-                new MultiItemData.MultiItem(MirrorConstant.WALLET_TRANSACTIONS_BY_SIGNATURE,"Get wallet transaction by signature","Get wallet transaction by signature",
+                new MultiItemData.MultiItem(DemoAPIID.WALLET_TRANSACTIONS_BY_SIGNATURE,"Get wallet transaction by signature","Get wallet transaction by signature",
                         "TRANSACTIONS_SIG","signature",null,
                         null,null,null,null));
 
         items.add(
 
-                new MultiItemData.MultiItem(MirrorConstant.TRANSFER_SQL,"Transfer SOL to another address","Transfer SOL to another address",
+                new MultiItemData.MultiItem(DemoAPIID.TRANSFER_SQL,"Transfer SOL to another address","Transfer SOL to another address",
                         "TRANSFER_SQL","to_publickey","amount",
                         null,null,null,null));
 
