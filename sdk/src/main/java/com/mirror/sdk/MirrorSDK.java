@@ -663,11 +663,30 @@ public class MirrorSDK {
             return;
         }
 
-        if(accessToken == "" || refreshToken == ""){
+        if(refreshToken == ""){
+            this.refreshToken = getRefreshToken(this.mActivity);
+        }
+
+        if(refreshToken == ""){
             logFlow("Please login first!");
             return;
         }
 
+        if(accessToken == ""){
+            logFlow("No access token,start get flow");
+            GetAccessToken(mActivity, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    accessToken = result;
+                    doOpenWallet();
+                }
+            });
+        }else {
+            doOpenWallet();
+        }
+    }
+
+    private void doOpenWallet(){
         String url = MirrorUrl.URL_AUTH + apiKey;
         WebViewDialog dialog = new WebViewDialog(mActivity,url);
         dialog.SetParams(mActivity);
