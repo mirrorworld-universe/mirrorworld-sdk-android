@@ -25,6 +25,7 @@ import android.widget.RelativeLayout;
 
 
 import com.google.gson.reflect.TypeToken;
+import com.mirror.sdk.constant.MirrorConfirmation;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.constant.MirrorLoginPageMode;
 import com.mirror.sdk.constant.MirrorResCode;
@@ -362,14 +363,14 @@ public class MirrorSDK {
             }
         });
     }
-
-    public void MintNFT(String collection_mint, String name, String symbol, String detailUrl, MintNFTListener mintNFTListener){
+    public void MintNFT(String collection_mint, String name, String symbol, String detailUrl,String confirmation, MintNFTListener mintNFTListener){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("collection_mint", collection_mint);
             jsonObject.put("name", name);
             jsonObject.put("symbol", symbol);
             jsonObject.put("url", detailUrl);
+            jsonObject.put("confirmation", confirmation);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -391,12 +392,17 @@ public class MirrorSDK {
         }));
     }
 
-    public void CreateVerifiedCollection(String name, String symbol, String detailUrl, CreateTopCollectionListener createTopCollectionListener){
+    public void MintNFT(String collection_mint, String name, String symbol, String detailUrl, MintNFTListener mintNFTListener){
+        MintNFT(collection_mint,name,symbol,detailUrl,MirrorConfirmation.Default,mintNFTListener);
+    }
+
+    public void CreateVerifiedCollection(String name, String symbol, String detailUrl,String confirmation, CreateTopCollectionListener createTopCollectionListener){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("name", name);
             jsonObject.put("symbol", symbol);
             jsonObject.put("url", detailUrl);
+            jsonObject.put("confirmation", confirmation);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -408,21 +414,25 @@ public class MirrorSDK {
             public void callback(String result) {
                 CommonResponse<MintResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<MintResponse>>(){}.getType());
                 if(response.code == MirrorResCode.SUCCESS){
-                   createTopCollectionListener.onCreateSuccess(response.data);
+                    createTopCollectionListener.onCreateSuccess(response.data);
                 }else{
-                   createTopCollectionListener.onCreateFailed(response.code,response.message);
+                    createTopCollectionListener.onCreateFailed(response.code,response.message);
                 }
             }
         }));
     }
+    public void CreateVerifiedCollection(String name, String symbol, String detailUrl, CreateTopCollectionListener createTopCollectionListener){
+        CreateVerifiedCollection(name,symbol,detailUrl,MirrorConfirmation.Default,createTopCollectionListener);
+    }
 
-    public void CreateVerifiedSubCollection(String collection_mint, String name, String symbol, String detailUrl, CreateSubCollectionListener createSubCollectionListener){
+    public void CreateVerifiedSubCollection(String collection_mint, String name, String symbol, String detailUrl,String confirmation, CreateSubCollectionListener createSubCollectionListener){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("name", name);
             jsonObject.put("collection_mint", collection_mint);
             jsonObject.put("symbol", symbol);
             jsonObject.put("url", detailUrl);
+            jsonObject.put("confirmation", confirmation);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -444,7 +454,9 @@ public class MirrorSDK {
         }));
 
     }
-
+    public void CreateVerifiedSubCollection(String collection_mint, String name, String symbol, String detailUrl, CreateSubCollectionListener createSubCollectionListener){
+        CreateVerifiedSubCollection(collection_mint,name,symbol,detailUrl, MirrorConfirmation.Default,createSubCollectionListener);
+    }
     public void TransferNFTToAnotherSolanaWallet(String mint_address, String to_wallet_address, TransferNFTListener transferNFTListener){
         JSONObject jsonObject = new JSONObject();
         try {
@@ -545,12 +557,13 @@ public class MirrorSDK {
         }));
     }
 
-    public void UpdateNFTListing(String mint_address, Double price, UpdateListListener listener){
+    public void UpdateNFTListing(String mint_address, Double price,String confirmation, UpdateListListener listener){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("mint_address", mint_address);
             jsonObject.put("price", price);
             jsonObject.put("confirmation","finalized");
+            jsonObject.put("confirmation",confirmation);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -568,6 +581,10 @@ public class MirrorSDK {
                 }
             }
         }));
+    }
+
+    public void UpdateNFTListing(String mint_address, Double price, UpdateListListener listener){
+        UpdateNFTListing(mint_address, price,MirrorConfirmation.Default, listener);
     }
 
     public void ListNFT(String mint_address, Double price, String confirmation, ListNFTListener listener){
@@ -593,6 +610,10 @@ public class MirrorSDK {
                 }
             }
         }));
+    }
+
+    public void ListNFT(String mint_address, Double price, ListNFTListener listener){
+        ListNFT(mint_address, price,MirrorConfirmation.Default, listener);
     }
 
     public void FetchNFTsByMintAddresses(List<String> mint_addresses, FetchNFTsListener fetchByMintAddressListener){
