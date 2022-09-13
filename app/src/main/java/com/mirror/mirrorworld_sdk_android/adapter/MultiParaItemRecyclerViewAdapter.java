@@ -19,7 +19,7 @@ import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
 import com.mirror.sdk.MirrorCallback;
 import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.constant.MirrorConfirmation;
-import com.mirror.sdk.constant.MirrorConstant;
+import com.mirror.mirrorworld_sdk_android.DemoAPIID;
 import com.mirror.sdk.listener.auth.FetchUserListener;
 import com.mirror.sdk.listener.auth.LoginListener;
 import com.mirror.sdk.listener.market.BuyNFTListener;
@@ -142,11 +142,11 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
 
     private void handleClick(int apiId, MultiParaItemRecyclerViewAdapter.ViewHolder holder,View view){
 
-        if(apiId == MirrorConstant.SET_APP_ID){
+        if(apiId == DemoAPIID.SET_APP_ID){
             MirrorSDK.getInstance().SetApiKey(String.valueOf(holder.mEt1.getText()));
             holder.mResultView.setText(String.valueOf(holder.mEt1.getText()));
 
-        }else if(apiId == MirrorConstant.START_LOGIN){
+        }else if(apiId == DemoAPIID.START_LOGIN){
             MirrorSDK.getInstance().StartLogin(new LoginListener() {
                 @Override
                 public void onLoginSuccess() {
@@ -158,7 +158,9 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText("Login failed!");
                 }
             });
-        }else if(apiId == MirrorConstant.LOGIN_With_EMAIL){
+        }else if(apiId == DemoAPIID.OPEN_WALLET){
+            MirrorSDK.getInstance().OpenWallet();
+        }else if(apiId == DemoAPIID.LOGIN_With_EMAIL){
 
             String email = String.valueOf(holder.mEt1.getText());
             String passWord = String.valueOf(holder.mEt2.getText());
@@ -172,7 +174,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 }
             });
 
-        }else if(apiId == MirrorConstant.FETCH_USER){
+        }else if(apiId == DemoAPIID.FETCH_USER){
 
             MirrorSDK.getInstance().FetchUser(new FetchUserListener() {
                 @Override
@@ -186,7 +188,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 }
             });
 
-        }else if(apiId == MirrorConstant.QUERY_USER){
+        }else if(apiId == DemoAPIID.QUERY_USER){
 
             String email = String.valueOf(holder.mEt1.getText());
             MirrorSDK.getInstance().QueryUser(email, new FetchUserListener() {
@@ -202,7 +204,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 }
             });
 
-        }else if(apiId == MirrorConstant.CREATE_VERIFIED_COLLECTION){
+        }else if(apiId == DemoAPIID.CREATE_VERIFIED_COLLECTION){
             String name = String.valueOf(holder.mEt1.getText());
             String symbol = String.valueOf(holder.mEt2.getText());
             String detailsUrl = String.valueOf(holder.mEt3.getText());
@@ -218,7 +220,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(message);
                 }
             });
-        }else if(apiId == MirrorConstant.CREATE_VERIFIED_SUB_COLLECTION){
+        }else if(apiId == DemoAPIID.CREATE_VERIFIED_SUB_COLLECTION){
             String collection_mint = String.valueOf(holder.mEt1.getText());
             String name = String.valueOf(holder.mEt2.getText());
             String symbol = String.valueOf(holder.mEt3.getText());
@@ -235,7 +237,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(message);
                 }
             });
-        }else if(apiId == MirrorConstant.MINT_NFT){
+        }else if(apiId == DemoAPIID.MINT_NFT){
             String collection_mint = String.valueOf(holder.mEt1.getText());
             String name = String.valueOf(holder.mEt2.getText());
             String symbol = String.valueOf(holder.mEt3.getText());
@@ -253,7 +255,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(message);
                 }
             });
-        }else if(apiId == MirrorConstant.LIST_NFT){
+        }else if(apiId == DemoAPIID.LIST_NFT){
             String mint_address = String.valueOf(holder.mEt1.getText());
             String priceStr = String.valueOf(holder.mEt2.getText());
 
@@ -275,7 +277,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("ListNFT",code,message));
                 }
             });
-        }else if(apiId == MirrorConstant.UPDATE_NFT_LISTING){
+        }else if(apiId == DemoAPIID.UPDATE_NFT_LISTING){
             String mint_address = String.valueOf(holder.mEt1.getText());
             String priceStr = String.valueOf(holder.mEt2.getText());
             Double price = 0.0;
@@ -298,7 +300,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             });
 
 
-        }else if(apiId == MirrorConstant.CANCEL_NFT_LISTING){
+        }else if(apiId == DemoAPIID.CANCEL_NFT_LISTING){
             String mint_address = String.valueOf(holder.mEt1.getText());
             String priceStr = String.valueOf(holder.mEt2.getText());
             Double price = 0.0;
@@ -319,7 +321,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 }
             });
 
-        }else if(apiId == MirrorConstant.FETCH_NFT_BY_OWNER_ADDRESSES){
+        }else if(apiId == DemoAPIID.FETCH_NFT_BY_OWNER_ADDRESSES){
             List<String>  owners = new ArrayList<>();
             owners.add(String.valueOf(holder.mEt1.getText()));
 
@@ -347,7 +349,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 }
             });
 
-        }else if(apiId == MirrorConstant.FETCH_NFT_BY_MINT_ADDRESSES){
+        }else if(apiId == DemoAPIID.FETCH_NFT_BY_MINT_ADDRESSES){
             List<String> mint_address = new ArrayList<>();
             mint_address.add(String.valueOf(holder.mEt1.getText()));
 
@@ -363,7 +365,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 }
             });
 
-        }else if(apiId == MirrorConstant.FETCH_NFT_BY_UPDATE_AUTHORITIES){
+        }else if(apiId == DemoAPIID.FETCH_NFT_BY_UPDATE_AUTHORITIES){
             List<String> update_address = new ArrayList<>();
             update_address.add(String.valueOf(holder.mEt1.getText()));
 
@@ -390,7 +392,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 }
             });
 
-        }else if(apiId == MirrorConstant.FETCH_SINGLE_NFT_DETAILS){
+        }else if(apiId == DemoAPIID.FETCH_SINGLE_NFT_DETAILS){
             String mint_address =String.valueOf(holder.mEt1.getText());
 
             MirrorSDK.getInstance().GetNFTDetails(mint_address, new FetchSingleNFTListener() {
@@ -405,7 +407,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 }
             });
 
-        }else if(apiId == MirrorConstant.FETCH_NFT_MARKETPLACE_ACTIVITY){
+        }else if(apiId == DemoAPIID.FETCH_NFT_MARKETPLACE_ACTIVITY){
             String mint_address =String.valueOf(holder.mEt1.getText());
 
             MirrorSDK.getInstance().FetchNFTMarketplaceActivity(mint_address, new FetchSingleNFTActivityListener() {
@@ -420,7 +422,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 }
             });
 
-        }else if(apiId == MirrorConstant.TRANSFER_NFT_TO_ANOTHER_SOLANA_WALLET){
+        }else if(apiId == DemoAPIID.TRANSFER_NFT_TO_ANOTHER_SOLANA_WALLET){
 
             String mint_address = String.valueOf(holder.mEt1.getText());
             String to_wallet_address = String.valueOf(holder.mEt2.getText());
@@ -436,7 +438,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                    holder.mResultView.setText(message);
                 }
             });
-        }else if(apiId == MirrorConstant.BUY_NFT){
+        }else if(apiId == DemoAPIID.BUY_NFT){
 
             String mint_address = String.valueOf(holder.mEt1.getText());
 
@@ -461,7 +463,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 }
             });
 
-        }else if(apiId == MirrorConstant.GET_WALLET_TOKEN){
+        }else if(apiId == DemoAPIID.GET_WALLET_TOKEN){
             MirrorSDK.getInstance().GetWalletTokens(new GetWalletTokenListener() {
                 @Override
                 public void onSuccess(GetWalletTokenResponse walletTokenResponse) {
@@ -475,7 +477,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             });
 
 
-        }else if(apiId == MirrorConstant.WALLET_TRANSACTIONS){
+        }else if(apiId == DemoAPIID.WALLET_TRANSACTIONS){
             String limit = String.valueOf(holder.mEt1.getText());
             String before = String.valueOf(holder.mEt2.getText());
             MirrorSDK.getInstance().Transactions(limit, before, new GetWalletTransactionListener() {
@@ -491,7 +493,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             });
 
 
-        }else if(apiId == MirrorConstant.WALLET_TRANSACTIONS_BY_SIGNATURE){
+        }else if(apiId == DemoAPIID.WALLET_TRANSACTIONS_BY_SIGNATURE){
             String sig = String.valueOf(holder.mEt1.getText());
 
             MirrorSDK.getInstance().GetTransactionBySignature(sig, new GetWalletTransactionBySigListener() {
@@ -507,7 +509,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             });
 
 
-        }else if(apiId == MirrorConstant.TRANSFER_SQL){
+        }else if(apiId == DemoAPIID.TRANSFER_SQL){
             String public_key = String.valueOf(holder.mEt1.getText());
             String amountStr = String.valueOf(holder.mEt2.getText());
             int amount = 0;

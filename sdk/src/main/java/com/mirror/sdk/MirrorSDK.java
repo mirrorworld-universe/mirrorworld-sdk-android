@@ -5,8 +5,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -24,6 +26,7 @@ import android.widget.RelativeLayout;
 
 import com.google.gson.reflect.TypeToken;
 import com.mirror.sdk.constant.MirrorEnv;
+import com.mirror.sdk.constant.MirrorLoginPageMode;
 import com.mirror.sdk.constant.MirrorResCode;
 import com.mirror.sdk.constant.MirrorUrl;
 import com.mirror.sdk.listener.auth.FetchUserListener;
@@ -55,6 +58,9 @@ import com.mirror.sdk.response.market.SingleNFTResponse;
 import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
 import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
 import com.mirror.sdk.response.wallet.TransferResponse;
+import com.mirror.sdk.ui.LoginDialog;
+import com.mirror.sdk.ui.SDKFragmentDialog;
+import com.mirror.sdk.ui.WebViewDialog;
 import com.mirror.sdk.utils.MirrorGsonUtils;
 
 import org.json.JSONArray;
@@ -92,7 +98,7 @@ public class MirrorSDK {
     private WebView webViewPopUp = null;
     private AlertDialog builder = null;
     private Context globalContext = null;
-    private Activity activityContext = null;
+    private Activity mActivity = null;
     private MirrorEnv env = MirrorEnv.MainNet;
 
     private AlertDialog parentDialog = null;
@@ -104,6 +110,8 @@ public class MirrorSDK {
     private String localKeyAppId = "mirror_app_id";
     private String localKeyWalletAddress = "mirror_wallet_address";
 
+    //logic
+    private MirrorLoginPageMode loginPageMode = MirrorLoginPageMode.CloseIfLoginDone;
     private LoginListener cbLogin = null;
     private MirrorCallback cbStringLogin = null;
 
@@ -125,9 +133,9 @@ public class MirrorSDK {
 
     public void InitSDK(Activity activityContext,MirrorEnv env){
         logFlow("Mirror SDK inited!");
-        this.activityContext = activityContext;
-        if(this.activityContext != null){
-            this.refreshToken = getRefreshToken(this.activityContext);
+        this.mActivity = activityContext;
+        if(this.mActivity != null){
+            this.refreshToken = getRefreshToken(this.mActivity);
         }
         this.env = env;
     }
@@ -179,7 +187,7 @@ public class MirrorSDK {
 
     public void StartLogin(){
 //        if(apiKey == ""){
-//            apiKey = getSavedString(activityContext,localKeyAppId);
+//            apiKey = getSavedString(mActivity,localKeyAppId);
 //            logFlow("No apiKey use locally api key:"+ apiKey);
 //        }
 //        if(apiKey == ""){
@@ -188,10 +196,11 @@ public class MirrorSDK {
 //        }
 //        logFlow("Start login called.");
 //        SDKFragmentDialog ddd = new SDKFragmentDialog();
-//        ddd.SetParams(apiKey,activityContext,appName,activityContext.getApplicationContext());
-//        ddd.show(activityContext.getFragmentManager(),"Tag");
+//        ddd.SetParams(apiKey, mActivity,appName, mActivity.getApplicationContext());
+//        ddd.show(mActivity.getFragmentManager(),"Tag");
+
         if(apiKey == ""){
-            apiKey = getSavedString(activityContext,localKeyAppId);
+            apiKey = getSavedString(mActivity,localKeyAppId);
             logFlow("No apiKey use locally api key:"+ apiKey);
         }
         if(apiKey == ""){
@@ -199,12 +208,13 @@ public class MirrorSDK {
             return;
         }
         logFlow("Start login called.");
-        AlertDialog.Builder builder = new AlertDialog.Builder(activityContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         AlertDialog dialog = builder.create();
+
         parentDialog = dialog;
         dialog.setCanceledOnTouchOutside(false);
-        WebView wv = new WebView(activityContext);
-        setWebView(activityContext,wv);
+        WebView wv = new WebView(mActivity);
+        setWebView(mActivity,wv);
         dialog.setButton("Close", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
@@ -213,10 +223,16 @@ public class MirrorSDK {
             }
         });
 
-        RelativeLayout layout = getPopupWindowLayout(activityContext);
+        RelativeLayout layout = getPopupWindowLayout(mActivity);
         layout.addView(wv);
         dialog.setView(layout);
+
         dialog.show();
+        loginPageMode = MirrorLoginPageMode.CloseIfLoginDone;
+//        final String finalUrl = MirrorUrl.URL_AUTH + apiKey;
+//        LoginDialog dialog = new LoginDialog(mActivity, finalUrl);
+//        dialog.SetParams(mActivity);
+//        dialog.show();
     }
 
     public void StartLogin(LoginListener loginListener){
@@ -235,7 +251,7 @@ public class MirrorSDK {
 
     public void SetApiKey(String id){
         apiKey = id;
-        if(activityContext != null){
+        if(mActivity != null){
             saveString(localKeyAppId, apiKey);
         }
     }
@@ -633,9 +649,36 @@ public class MirrorSDK {
         }));
     }
 
+    //Wallet
+    public void OpenWallet(){
+        if(apiKey == ""){
+            if(mActivity == null){
+                logFlow("Must init sdk first!");
+                return;
+            }
+            apiKey = getSavedString(mActivity,localKeyAppId);
+        }
+        if(apiKey == ""){
+            logFlow("Must set app id first!");
+            return;
+        }
+
+        if(accessToken == "" || refreshToken == ""){
+            logFlow("Please login first!");
+            return;
+        }
+
+        String url = MirrorUrl.URL_AUTH + apiKey;
+        WebViewDialog dialog = new WebViewDialog(mActivity,url);
+        dialog.SetParams(mActivity);
+        dialog.show();
+
+        loginPageMode = MirrorLoginPageMode.KeepIfLoginDone;
+    }
+
     public void GetWallet(MirrorCallback mirrorCallback){
         if(mWalletAddress == ""){
-            mWalletAddress = getSavedString(activityContext,localKeyWalletAddress);
+            mWalletAddress = getSavedString(mActivity,localKeyWalletAddress);
         }
         String url = GetSSORoot() + MirrorUrl.URL_ME;
         checkParamsAndGet(url, null, new MirrorCallback() {
@@ -888,10 +931,10 @@ public class MirrorSDK {
                 post(url, data,new MirrorCallback(){
                     @Override
                     public void callback(String result) {
-                        if(activityContext == null){
+                        if(mActivity == null){
                             if(mirrorCallback != null) mirrorCallback.callback(result);
                         }else{
-                            activityContext.runOnUiThread(new Runnable() {
+                            mActivity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     if(mirrorCallback != null) mirrorCallback.callback(result);
@@ -992,10 +1035,10 @@ public class MirrorSDK {
             @Override
             public void run() {
                 String resultStr = httpGetW(url,params,"UTF-8");
-                if(activityContext == null){
+                if(mActivity == null){
                     mirrorCallback.callback(resultStr);
                 }else{
-                    activityContext.runOnUiThread(new Runnable() {
+                    mActivity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             logFlow("Get Result is:"+resultStr);
@@ -1078,10 +1121,10 @@ public class MirrorSDK {
             @Override
             public void callback(String result) {
                 
-                if(activityContext == null){
+                if(mActivity == null){
                     if(mirrorCallback != null) mirrorCallback.callback(result);
                 }else{
-                    activityContext.runOnUiThread(new Runnable() {
+                    mActivity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             if(mirrorCallback != null) mirrorCallback.callback(result);
@@ -1094,11 +1137,11 @@ public class MirrorSDK {
 
     private void checkParamsAndGet(String url,  Map<String,String> params, MirrorCallback mirrorCallback){
         if(apiKey == ""){
-            if(activityContext == null){
+            if(mActivity == null){
                 logFlow("Must init sdk first!");
                 return;
             }
-            apiKey = getSavedString(activityContext,localKeyAppId);
+            apiKey = getSavedString(mActivity,localKeyAppId);
         }
         if(apiKey == ""){
             logFlow("Must set app id first!");
@@ -1107,7 +1150,7 @@ public class MirrorSDK {
 
         if(accessToken == ""){
             logFlow("No access token,start get flow");
-            GetAccessToken(activityContext, new MirrorCallback() {
+            GetAccessToken(mActivity, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     accessToken = result;
@@ -1115,8 +1158,8 @@ public class MirrorSDK {
                 }
             });
         }else{
-            if(mWalletAddress == "" && null != activityContext){
-                mWalletAddress = getSavedString(activityContext,localKeyWalletAddress);
+            if(mWalletAddress == "" && null != mActivity){
+                mWalletAddress = getSavedString(mActivity,localKeyWalletAddress);
                 if(mWalletAddress == ""){
                     logFlow("Must get mWalletAddress first!");
                 }
@@ -1127,11 +1170,11 @@ public class MirrorSDK {
 
     private void checkParamsAndPost(String url, String data, MirrorCallback mirrorCallback){
         if(apiKey == ""){
-            if(activityContext == null){
+            if(mActivity == null){
                 logFlow("Must init sdk first!");
                 return;
             }
-            apiKey = getSavedString(activityContext,localKeyAppId);
+            apiKey = getSavedString(mActivity,localKeyAppId);
         }
         if(apiKey == ""){
             logFlow("Must set app id first!");
@@ -1140,7 +1183,7 @@ public class MirrorSDK {
 
         if(accessToken == ""){
             logFlow("No access token,start get flow");
-            GetAccessToken(activityContext, new MirrorCallback() {
+            GetAccessToken(mActivity, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     accessToken = result;
@@ -1148,8 +1191,8 @@ public class MirrorSDK {
                 }
             });
         }else{
-            if(mWalletAddress == ""&& null != activityContext){
-                mWalletAddress = getSavedString(activityContext,localKeyWalletAddress);
+            if(mWalletAddress == ""&& null != mActivity){
+                mWalletAddress = getSavedString(mActivity,localKeyWalletAddress);
                 if(mWalletAddress == ""){
                     logFlow("Must get mWalletAddress first!");
                 }
@@ -1165,10 +1208,10 @@ public class MirrorSDK {
                 post(url, data,new MirrorCallback(){
                     @Override
                     public void callback(String result) {
-                        if(activityContext == null){
+                        if(mActivity == null){
                             if(mirrorCallback != null) mirrorCallback.callback(result);
                         }else{
-                            activityContext.runOnUiThread(new Runnable() {
+                            mActivity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     if(mirrorCallback != null) mirrorCallback.callback(result);
@@ -1343,7 +1386,13 @@ public class MirrorSDK {
         }
 //        LoginResponse loginResponse = MirrorGsonUtils.getInstance().fromJson(dataJsonStr,LoginResponse.class);
 
-        parentDialog.dismiss();
+        if(loginPageMode == MirrorLoginPageMode.CloseIfLoginDone){
+            parentDialog.dismiss();
+        }else if(loginPageMode == MirrorLoginPageMode.KeepIfLoginDone){
+            //do nothing
+        }else {
+            logFlow("Unknown login page mode:"+loginPageMode);
+        }
 
         if(cbLogin != null){
             logFlow("login success and LoginListener callback called.");
@@ -1363,7 +1412,7 @@ public class MirrorSDK {
     private void saveRefreshToken(String refreshToken){
         logFlow("save refresh token to local:"+refreshToken);
         this.refreshToken = refreshToken;
-        SharedPreferences sp = activityContext.getSharedPreferences(localFileKey, Context.MODE_PRIVATE);
+        SharedPreferences sp = mActivity.getSharedPreferences(localFileKey, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString(localKeyRefreshToken, refreshToken);
         //editor.apply()
@@ -1371,7 +1420,7 @@ public class MirrorSDK {
     }
 
     private void saveString(String key,String value){
-        SharedPreferences sp = activityContext.getSharedPreferences(localFileKey, Context.MODE_PRIVATE);
+        SharedPreferences sp = mActivity.getSharedPreferences(localFileKey, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString(key, value);
         //editor.apply()
@@ -1437,15 +1486,16 @@ public class MirrorSDK {
             webViewPopupSetting.setCacheMode(WebSettings.LOAD_NO_CACHE);
 
             // pop the  webview with alert dialog
-            builder = new AlertDialog.Builder(activityContext).create();
+            builder = new AlertDialog.Builder(mActivity).create();
             builder.setTitle("");
-            builder.setView(webViewPopUp);
 
-//            ViewGroup.LayoutParams params = webViewPopUp.getRootView().getLayoutParams();
-//            Display display = activityContext.getWindowManager().getDefaultDisplay(); // 为获取屏幕宽、高
-//            params.height = (int) (display.getHeight() * 0.9);
-//            params.width = (int) (display.getWidth() * 0.9);
-//            webViewPopUp.getRootView().setLayoutParams(params);
+//            Display display = mActivity.getWindowManager().getDefaultDisplay(); // 为获取屏幕宽、高
+//            webViewPopUp.setLayoutParams(new ViewGroup.LayoutParams((int) (display.getHeight() * 0.8),(int) (display.getHeight() * 0.8)));
+
+//            RelativeLayout layout = getPopupWindowLayout(mActivity);
+//            layout.addView(webViewPopUp);
+
+            builder.setView(webViewPopUp);
 
             builder.setButton("Close", new DialogInterface.OnClickListener() {
                 @Override

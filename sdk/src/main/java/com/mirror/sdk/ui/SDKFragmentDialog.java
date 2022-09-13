@@ -176,7 +176,18 @@ class MirrorChromeClient extends WebChromeClient {
         // pop the  webview with alert dialog
         builder = new AlertDialog.Builder(mActivity).create();
         builder.setTitle("");
-        builder.setView(webViewPopUp);
+
+        RelativeLayout layout = getPopupWindowLayout(mActivity);
+
+        Display display = mActivity.getWindowManager().getDefaultDisplay(); // 为获取屏幕宽、高
+//        params.height = (int) (display.getHeight() * 0.9);
+//        params.width = (int) (display.getWidth() * 0.9);
+//        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int) (display.getHeight() * 0.9),(int) (display.getHeight() * 0.9));
+//        layout.setLayoutParams(params);
+        webViewPopUp.setLayoutParams(new ViewGroup.LayoutParams((int) (display.getHeight() * 0.8),(int) (display.getHeight() * 0.8)));
+        layout.addView(webViewPopUp);
+        builder.setView(layout);
+
 
         builder.setButton("Close", new DialogInterface.OnClickListener() {
             @Override
@@ -218,5 +229,11 @@ class MirrorChromeClient extends WebChromeClient {
             Log.d("Dismissed with Error: ", e.getStackTrace().toString());
         }
 
+    }
+
+    private RelativeLayout getPopupWindowLayout(Context context) {
+        RelativeLayout relative = new RelativeLayout(context);
+//        addProgressBar(context,relative);
+        return relative;
     }
 }
