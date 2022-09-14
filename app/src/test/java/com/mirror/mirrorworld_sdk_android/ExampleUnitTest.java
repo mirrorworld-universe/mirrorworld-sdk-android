@@ -123,7 +123,7 @@ public class ExampleUnitTest {
 
     @Test
     public void QueryAndFetchUser(){
-        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.Staging);
+        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.StagingDevNet);
         final Object lock1 = new Object();
         final Object lock2 = new Object();
         MirrorSDK.getInstance().SetApiKey(appid);
@@ -188,7 +188,7 @@ public class ExampleUnitTest {
 
     @Test
     public void FetchNFTsByMintAddressDirectoly(){
-        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.Staging);
+        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.StagingDevNet);
         String nftAddress = "FvD7WTyBMfGbxsyhidBrGUw8Y4ojpQNim8jNyE3NTKHx";
         List<String> mint_address = new ArrayList<>();
         mint_address.add(nftAddress);
@@ -251,7 +251,7 @@ public class ExampleUnitTest {
 
     @Test
     public void FetchNFTsByCreatorAddresses(){
-        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.Staging);
+        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.StagingDevNet);
         final Object lockMintSuccess = new Object();
         MirrorSDK.getInstance().SetApiKey(appid);
         MirrorSDK.getInstance().LoginWithEmail(userEmail, password, new MirrorCallback() {
@@ -313,7 +313,7 @@ public class ExampleUnitTest {
 
     @Test
     public void FetchNFTsByUpdateAuthorities(){
-        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.Staging);
+        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.StagingDevNet);
         final Object lockMintSuccess = new Object();
         MirrorSDK.getInstance().SetApiKey(appid);
         MirrorSDK.getInstance().LoginWithEmail(userEmail, password, new MirrorCallback() {
@@ -414,7 +414,7 @@ public class ExampleUnitTest {
 
     @Test
     public void TransferNFTToAnotherSolanaWallet(){
-        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.Staging);
+        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.StagingDevNet);
         final Object lockMintSuccess = new Object();
         MirrorSDK.getInstance().SetApiKey(appid);
         MirrorSDK.getInstance().LoginWithEmail(userEmail, password, new MirrorCallback() {
@@ -474,7 +474,7 @@ public class ExampleUnitTest {
         String testNFT = "DxL8GuDoqWLqMLkeLQmaDVh4jR25zbhZQeYh3nbaqw1D";
         final Double originPrice = 1.1;
         final Double updatePrice = 1.4;
-        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.Staging);
+        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.StagingDevNet);
         final Object lock = new Object();
         MirrorSDK.getInstance().SetApiKey(appid);
         MirrorSDK.getInstance().LoginWithEmail(userEmail, password, new MirrorCallback() {
@@ -565,7 +565,7 @@ public class ExampleUnitTest {
 
     @Test
     public void FetchNFTsByOwnerAddresses(){
-        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.Staging);
+        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.StagingDevNet);
         List<String> owners = new ArrayList<>();
         owners.add("FvD7WTyBMfGbxsyhidBrGUw8Y4ojpQNim8jNyE3NTKHx");
 
@@ -615,7 +615,7 @@ public class ExampleUnitTest {
 
     @Test
     public void FetchActivitiesOfSingleNFT(){
-        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.Staging);
+        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.StagingDevNet);
         final Object lock = new Object();
         MirrorSDK.getInstance().SetApiKey(appid);
         MirrorSDK.getInstance().LoginWithEmail(userEmail, password, new MirrorCallback() {
@@ -662,7 +662,7 @@ public class ExampleUnitTest {
 
      @Test
      public void GetWalletToken(){
-         MirrorSDK.getInstance().InitSDK(null, MirrorEnv.Staging);
+         MirrorSDK.getInstance().InitSDK(null, MirrorEnv.StagingDevNet);
          final Object lock = new Object();
          MirrorSDK.getInstance().SetApiKey(appid);
          MirrorSDK.getInstance().LoginWithEmail(userEmail, password, new MirrorCallback() {
@@ -709,7 +709,7 @@ public class ExampleUnitTest {
 
      @Test
      public void WalletTransactions(){
-         MirrorSDK.getInstance().InitSDK(null, MirrorEnv.Staging);
+         MirrorSDK.getInstance().InitSDK(null, MirrorEnv.StagingDevNet);
          final Object lock = new Object();
          MirrorSDK.getInstance().SetApiKey(appid);
          MirrorSDK.getInstance().LoginWithEmail(userEmail, password, new MirrorCallback() {
@@ -754,7 +754,7 @@ public class ExampleUnitTest {
 
     @Test
     public void WalletTransactionsBySignature(){
-        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.Staging);
+        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.StagingDevNet);
         final Object lock = new Object();
         MirrorSDK.getInstance().SetApiKey(appid);
         MirrorSDK.getInstance().LoginWithEmail(userEmail, password, new MirrorCallback() {
@@ -799,7 +799,7 @@ public class ExampleUnitTest {
 
     @Test
     public void TransferSOL(){
-        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.Staging);
+        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.StagingDevNet);
         final Object lock = new Object();
         MirrorSDK.getInstance().SetApiKey(appid);
         MirrorSDK.getInstance().LoginWithEmail(userEmail, password, new MirrorCallback() {

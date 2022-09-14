@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         makeStatusBarTransparent(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        MirrorSDK.getInstance().InitSDK(this, MirrorEnv.Staging);
+        MirrorSDK.getInstance().InitSDK(this, MirrorEnv.StagingDevNet);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         initViewPage();
     }

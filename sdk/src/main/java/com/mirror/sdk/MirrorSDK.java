@@ -5,14 +5,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Message;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
@@ -59,9 +55,8 @@ import com.mirror.sdk.response.market.SingleNFTResponse;
 import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
 import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
 import com.mirror.sdk.response.wallet.TransferResponse;
-import com.mirror.sdk.ui.LoginDialog;
-import com.mirror.sdk.ui.SDKFragmentDialog;
 import com.mirror.sdk.ui.WebViewDialog;
+import com.mirror.sdk.ui.market.MirrorMarketDialog;
 import com.mirror.sdk.utils.MirrorGsonUtils;
 
 import org.json.JSONArray;
@@ -258,7 +253,9 @@ public class MirrorSDK {
     }
 
     private String GetSSORoot(){
-        if(env == MirrorEnv.Staging){
+        if(env == MirrorEnv.StagingMainNet){
+            return "https://api-staging.mirrorworld.fun/v1/";
+        }else if(env == MirrorEnv.StagingDevNet){
             return "https://api-staging.mirrorworld.fun/v1/";
         }else if(env == MirrorEnv.DevNet){
             return "https://api.mirrorworld.fun/v1/";
@@ -271,7 +268,9 @@ public class MirrorSDK {
     }
 
     private String GetAPIRoot(){
-        if(env == MirrorEnv.Staging){
+        if(env == MirrorEnv.StagingMainNet){
+            return "https://api-staging.mirrorworld.fun/v1/mainnet/";
+        }else if(env == MirrorEnv.StagingDevNet){
             return "https://api-staging.mirrorworld.fun/v1/devnet/";
         }else if(env == MirrorEnv.DevNet){
             return "https://api.mirrorworld.fun/v1/devnet/";
@@ -718,6 +717,11 @@ public class MirrorSDK {
         dialog.show();
 
         loginPageMode = MirrorLoginPageMode.KeepIfLoginDone;
+    }
+
+    public void OpenMarket(){
+        MirrorMarketDialog dialogAddGroup = new MirrorMarketDialog();
+//        dialogAddGroup.show(mActivity.getSupportFragmentManager(), "Add group dialog");
     }
 
     public void GetWallet(MirrorCallback mirrorCallback){
