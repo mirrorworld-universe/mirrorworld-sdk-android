@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="market_nftdetail_content_lrmargin">20dp</dimen>
+    <dimen name="market_nftconfirm_content_height">400dp</dimen>
+</resources>

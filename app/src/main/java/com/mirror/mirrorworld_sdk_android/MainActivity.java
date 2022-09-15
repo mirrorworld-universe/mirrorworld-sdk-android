@@ -97,6 +97,11 @@ public class MainActivity extends AppCompatActivity {
                 "Open user's wallet after login.",
                 "OpenWallet",
                 null,null,null,null,null,null));
+        items.add(new MultiItemData.MultiItem(
+                DemoAPIID.OPEN_MARKET,"Open market",
+                "Open market after login.",
+                "OpenMarket",
+                null,null,null,null,null,null));
 
 
         items.add(

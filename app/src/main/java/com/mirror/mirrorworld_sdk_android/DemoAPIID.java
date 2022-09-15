@@ -10,6 +10,8 @@ public class DemoAPIID {
 
     public static final int OPEN_WALLET = 102;
 
+    public static final int OPEN_MARKET = 103;
+
     public static final int FETCH_USER = 2;
 
     public static final int QUERY_USER =3;

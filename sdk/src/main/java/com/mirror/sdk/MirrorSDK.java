@@ -721,7 +721,8 @@ public class MirrorSDK {
 
     public void OpenMarket(){
         MirrorMarketDialog dialogAddGroup = new MirrorMarketDialog();
-//        dialogAddGroup.show(mActivity.getSupportFragmentManager(), "Add group dialog");
+        dialogAddGroup.Init(mActivity);
+        dialogAddGroup.show(mActivity.getFragmentManager(), "Add group dialog");
     }
 
     public void GetWallet(MirrorCallback mirrorCallback){
