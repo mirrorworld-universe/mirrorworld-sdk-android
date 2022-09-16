@@ -3,6 +3,8 @@ package com.mirror.sdk.ui.market;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -47,6 +49,7 @@ public class MirrorMarketNFTDetailDialog extends DialogFragment {
                 int width = ViewGroup.LayoutParams.MATCH_PARENT;
                 int height = ViewGroup.LayoutParams.MATCH_PARENT;
                 window.setLayout(width, height);
+                if(MirrorMarketConfig.FULL_SCREEN_MODE) window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             }
         }
     }

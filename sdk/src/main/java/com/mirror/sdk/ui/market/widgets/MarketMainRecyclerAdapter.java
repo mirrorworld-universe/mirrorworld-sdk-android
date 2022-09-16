@@ -1,6 +1,10 @@
 package com.mirror.sdk.ui.market.widgets;
 
-import android.graphics.Color;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -11,8 +15,14 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mirror.sdk.R;
+import com.mirror.sdk.ui.market.MarketUtils;
+import com.mirror.sdk.ui.market.MirrorMarketConfig;
 import com.mirror.sdk.ui.market.model.NFTDetailData;
 
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,36 +65,89 @@ public class MarketMainRecyclerAdapter  extends RecyclerView.Adapter<MarketMainR
     }
 
     public interface OnNFTItemClickListener{
-        public void onClicked(View view, NFTDetailData data);
+        void onClicked(View view, NFTDetailData data);
     }
-    //设置数据
+
     public class InnerHolder extends RecyclerView.ViewHolder{
         CardView cardView;
-        TextView textViewtitle,textViewEnglish;
+        TextView mTvPrice, mTvNumber;
         ImageView imageView;
         NFTDetailData mData = null;
 
         public InnerHolder(@NonNull View itemView) {
             super(itemView);
-            cardView=itemView.findViewById(R.id.market_main_nft_item);
+            cardView = itemView.findViewById(R.id.market_main_nft_item);
             if(mCardViewClickListener != null) cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mCardViewClickListener.onClicked(v,mData);
                 }
             });
-//            textViewtitle=itemView.findViewById(R.id.item_text1);
-//            textViewEnglish=itemView.findViewById(R.id.item_text2);
-//            imageView=itemView.findViewById(R.id.icon);
+            mTvPrice = itemView.findViewById(R.id.main_nft_price);
+            mTvNumber =itemView.findViewById(R.id.main_nft_number);
+            imageView = itemView.findViewById(R.id.main_nft_image);
+        }
 
+        public void setData(NFTDetailData data) {
+            mData = data;
+            startLoadImage(data.image,imageView);
+            mTvNumber.setText(data.name);
+
+            BigDecimal bg = new BigDecimal(data.price);
+            double f1 = bg.setScale(MirrorMarketConfig.NFT_PRICE_MAX_DECIMAL_PLACE, BigDecimal.ROUND_HALF_UP).doubleValue();
+            mTvPrice.setText(String.valueOf(f1));
         }
-        //给每个控件赋值
-        public void setData(NFTDetailData iconbean) {
-            mData = iconbean;
-//            textViewtitle.setText(iconbean.getTitle());
-//            textViewEnglish.setText(iconbean.getEngtitle());
-//            imageView.setImageResource(iconbean.getImageicon());
-//            cardView.setCardBackgroundColor(Color.parseColor(iconbean.color));
+
+        public Bitmap getURLimage(String url) {
+            Bitmap bmp = null;
+            try {
+                URL myurl = new URL(url);
+                HttpURLConnection conn = (HttpURLConnection) myurl.openConnection();
+                conn.setConnectTimeout(6000);//设置超时
+                conn.setDoInput(true);
+                conn.setUseCaches(false);//不缓存
+                conn.connect();
+                InputStream is = conn.getInputStream();//获得图片的数据流
+                bmp = BitmapFactory.decodeStream(is);//读取图像数据
+                is.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return bmp;
         }
+
+        class IvUrl{
+            public ImageView imageView;
+            public Bitmap bitmap;
+        }
+        public void startLoadImage(String url,ImageView imageView){
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Bitmap bmp = getURLimage(url);
+                    Message msg = new Message();
+                    msg.what = 0;
+                    IvUrl ivUrl = new IvUrl();
+                    ivUrl.imageView = imageView;
+                    ivUrl.bitmap = bmp;
+                    msg.obj = ivUrl;
+                    System.out.println("000");
+                    handle.sendMessage(msg);
+                }
+            }).start();
+        }
+
+        private Handler handle = new Handler() {
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case 0:
+                        System.out.println("111");
+                        IvUrl ivUrl=(IvUrl)msg.obj;
+                        ivUrl.imageView.setImageBitmap(ivUrl.bitmap);
+                        break;
+                }
+            };
+        };
     }
 }

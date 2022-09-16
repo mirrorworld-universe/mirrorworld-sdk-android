@@ -4,5 +4,6 @@
     <color name="mirror_orange">#EE6911</color>
     <color name="mirror_green">#B8DD22</color>
     <color name="mirror_white">#FFFFCC</color>
-    <color name="mirror_bg">#FFFFFF</color>
+    <color name="mirror_pure_white">#FFFFFF</color>
+    <color name="mirror_background">#F6F6F6</color>
 </resources>

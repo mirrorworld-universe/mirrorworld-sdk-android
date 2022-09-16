@@ -11,14 +11,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/mirror_bg"
+        android:background="@color/mirror_pure_white"
         app:cardCornerRadius="20dp"
         >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/mirror_bg">
+            android:background="@color/mirror_pure_white">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/confirm_title"

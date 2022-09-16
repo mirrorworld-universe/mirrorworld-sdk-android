@@ -3,4 +3,5 @@
 
     <dimen name="market_nftdetail_content_lrmargin">20dp</dimen>
     <dimen name="market_nftconfirm_content_height">400dp</dimen>
+    <dimen name="market_collectiontab_item_width">120dp</dimen>
 </resources>
