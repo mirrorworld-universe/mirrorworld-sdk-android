@@ -1,4 +1,4 @@
-package com.mirror.sdk.ui.market;
+package com.mirror.sdk.ui.market.dialogs;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 import com.mirror.sdk.R;
+import com.mirror.sdk.ui.market.enums.MirrorMarketConfig;
 import com.mirror.sdk.ui.market.model.NFTDetailData;
 
 public class MirrorMarketNFTDetailDialog extends DialogFragment {

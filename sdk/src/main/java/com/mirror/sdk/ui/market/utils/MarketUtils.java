@@ -1,4 +1,4 @@
-package com.mirror.sdk.ui.market;
+package com.mirror.sdk.ui.market.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

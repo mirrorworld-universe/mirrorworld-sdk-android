@@ -1,4 +1,4 @@
-package com.mirror.sdk.ui.market;
+package com.mirror.sdk.ui.market.enums;
 
 public class MarketFilterTypes {
     public static String ENUM = "enum";

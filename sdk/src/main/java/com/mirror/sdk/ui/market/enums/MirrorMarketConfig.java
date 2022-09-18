@@ -1,4 +1,4 @@
-package com.mirror.sdk.ui.market;
+package com.mirror.sdk.ui.market.enums;
 
 public class MirrorMarketConfig {
     public static boolean FULL_SCREEN_MODE = true;

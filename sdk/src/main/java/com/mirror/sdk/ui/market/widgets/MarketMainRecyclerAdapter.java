@@ -2,7 +2,6 @@ package com.mirror.sdk.ui.market.widgets;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
@@ -15,8 +14,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mirror.sdk.R;
-import com.mirror.sdk.ui.market.MarketUtils;
-import com.mirror.sdk.ui.market.MirrorMarketConfig;
+import com.mirror.sdk.ui.market.enums.MirrorMarketConfig;
 import com.mirror.sdk.ui.market.model.NFTDetailData;
 
 import java.io.InputStream;
@@ -72,6 +70,7 @@ public class MarketMainRecyclerAdapter  extends RecyclerView.Adapter<MarketMainR
         CardView cardView;
         TextView mTvPrice, mTvNumber;
         ImageView imageView;
+        View imageProgress;
         NFTDetailData mData = null;
 
         public InnerHolder(@NonNull View itemView) {
@@ -86,11 +85,12 @@ public class MarketMainRecyclerAdapter  extends RecyclerView.Adapter<MarketMainR
             mTvPrice = itemView.findViewById(R.id.main_nft_price);
             mTvNumber =itemView.findViewById(R.id.main_nft_number);
             imageView = itemView.findViewById(R.id.main_nft_image);
+            imageProgress = itemView.findViewById(R.id.main_nft_progress);
         }
 
         public void setData(NFTDetailData data) {
             mData = data;
-            startLoadImage(data.image,imageView);
+            startLoadImage(data.image,imageProgress,imageView);
             mTvNumber.setText(data.name);
 
             BigDecimal bg = new BigDecimal(data.price);
@@ -119,9 +119,13 @@ public class MarketMainRecyclerAdapter  extends RecyclerView.Adapter<MarketMainR
 
         class IvUrl{
             public ImageView imageView;
+            public View imageProgress;
             public Bitmap bitmap;
         }
-        public void startLoadImage(String url,ImageView imageView){
+
+        public void startLoadImage(String url,View imageProgress,ImageView imageView){
+            imageProgress.setVisibility(View.VISIBLE);
+            imageView.setVisibility(View.GONE);
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -130,9 +134,9 @@ public class MarketMainRecyclerAdapter  extends RecyclerView.Adapter<MarketMainR
                     msg.what = 0;
                     IvUrl ivUrl = new IvUrl();
                     ivUrl.imageView = imageView;
+                    ivUrl.imageProgress = imageProgress;
                     ivUrl.bitmap = bmp;
                     msg.obj = ivUrl;
-                    System.out.println("000");
                     handle.sendMessage(msg);
                 }
             }).start();
@@ -142,9 +146,11 @@ public class MarketMainRecyclerAdapter  extends RecyclerView.Adapter<MarketMainR
             public void handleMessage(Message msg) {
                 switch (msg.what) {
                     case 0:
-                        System.out.println("111");
                         IvUrl ivUrl=(IvUrl)msg.obj;
                         ivUrl.imageView.setImageBitmap(ivUrl.bitmap);
+
+                        imageProgress.setVisibility(View.GONE);
+                        imageView.setVisibility(View.VISIBLE);
                         break;
                 }
             };

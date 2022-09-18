@@ -1,7 +1,6 @@
 package com.mirror.sdk.ui.market.apis;
 
-import com.mirror.sdk.MirrorSDK;
-import com.mirror.sdk.ui.market.MarketFilterTypes;
+import com.mirror.sdk.ui.market.enums.MarketFilterTypes;
 import com.mirror.sdk.ui.market.apis.listeners.GetCollectionListener;
 import com.mirror.sdk.ui.market.apis.listeners.GetFilterListener;
 import com.mirror.sdk.ui.market.apis.listeners.GetNFTsListener;

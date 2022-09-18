@@ -1,4 +1,4 @@
-package com.mirror.sdk.ui.market;
+package com.mirror.sdk.ui.market.dialogs;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -20,6 +20,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mirror.sdk.R;
+import com.mirror.sdk.ui.market.MarketUIController;
+import com.mirror.sdk.ui.market.enums.MirrorMarketConfig;
 import com.mirror.sdk.ui.market.apis.MirrorMarketUIAPI;
 import com.mirror.sdk.ui.market.apis.listeners.GetCollectionListener;
 import com.mirror.sdk.ui.market.apis.listeners.GetNFTsListener;
@@ -117,8 +119,12 @@ public class MirrorMarketDialog extends DialogFragment {
             @Override
             public void onSuccess(GetCollectionsResponse response) {
                 if(response.collections.size() == 0){
-                    //todo gone
+                    View collectionParent = view.findViewById(R.id.market_main_type_parent);
+                    collectionParent.setVisibility(View.GONE);
                 }else if(response.collections.size() == 1){
+                    View collectionParent = view.findViewById(R.id.market_main_type_parent);
+                    collectionParent.setVisibility(View.GONE);
+
                     CollectionInfo collection = response.collections.get(0);
                     MarketUIController.getInstance().selectCollection(collection);
                     setFilterBar(mFilterParent,collection);

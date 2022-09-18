@@ -56,7 +56,7 @@ import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
 import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
 import com.mirror.sdk.response.wallet.TransferResponse;
 import com.mirror.sdk.ui.WebViewDialog;
-import com.mirror.sdk.ui.market.MirrorMarketDialog;
+import com.mirror.sdk.ui.market.dialogs.MirrorMarketDialog;
 import com.mirror.sdk.utils.MirrorGsonUtils;
 
 import org.json.JSONArray;
@@ -456,6 +456,7 @@ public class MirrorSDK {
     public void CreateVerifiedSubCollection(String collection_mint, String name, String symbol, String detailUrl, CreateSubCollectionListener createSubCollectionListener){
         CreateVerifiedSubCollection(collection_mint,name,symbol,detailUrl, MirrorConfirmation.Default,createSubCollectionListener);
     }
+
     public void TransferNFTToAnotherSolanaWallet(String mint_address, String to_wallet_address, TransferNFTListener transferNFTListener){
         JSONObject jsonObject = new JSONObject();
         try {
