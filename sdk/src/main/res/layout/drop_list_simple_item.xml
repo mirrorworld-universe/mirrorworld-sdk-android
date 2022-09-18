@@ -15,10 +15,11 @@
         app:srcCompat="@android:drawable/checkbox_on_background" />
 
     <TextView
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="10dp"
         android:id="@+id/drop_list_simple_item_tv"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
+        android:gravity="center"
         android:text="TextView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

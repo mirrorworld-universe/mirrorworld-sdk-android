@@ -20,6 +20,7 @@ public class MirrorExpandedButton extends ConstraintLayout {
     private ImageView mArrowImageDown;
 
     private boolean mIsOpen = false;
+    private OnExpandedButtonClick expandListener;
 
     public MirrorExpandedButton(@NonNull Context context) {
         super(context);
@@ -44,28 +45,31 @@ public class MirrorExpandedButton extends ConstraintLayout {
 
         mArrowImageUp.setVisibility(View.VISIBLE);
         mArrowImageDown.setVisibility(View.GONE);
-    }
 
-    public void setText(String text){
-        mTextView.setText(text);
-    }
-
-    @Override
-    public void setOnClickListener(@Nullable OnClickListener l) {
-        super.setOnClickListener(new OnClickListener() {
+        this.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(mIsOpen == true){
                     mIsOpen = false;
                     mArrowImageUp.setVisibility(View.GONE);
                     mArrowImageDown.setVisibility(View.VISIBLE);
+                    if(expandListener != null) expandListener.OnFold();
                 }else if(mIsOpen == false){
                     mIsOpen = true;
                     mArrowImageUp.setVisibility(View.VISIBLE);
                     mArrowImageDown.setVisibility(View.GONE);
+                    if(expandListener != null) expandListener.OnExpand();
                 }
-                l.onClick(v);
             }
         });
     }
+
+    public void setText(String text){
+        mTextView.setText(text);
+    }
+
+    public void SetExpandListener(OnExpandedButtonClick listener){
+        expandListener = listener;
+    }
 }
+

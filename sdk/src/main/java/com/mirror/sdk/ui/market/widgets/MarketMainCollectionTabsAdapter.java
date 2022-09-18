@@ -22,7 +22,6 @@ import java.util.List;
 
 public class MarketMainCollectionTabsAdapter extends RecyclerView.Adapter<MarketMainCollectionTabsAdapter.ViewHolder> {
     private List<CollectionInfo> mDataList;
-    private Context mContext;
 
     public MarketMainCollectionTabsAdapter(List<CollectionInfo> list){
         mDataList = list;

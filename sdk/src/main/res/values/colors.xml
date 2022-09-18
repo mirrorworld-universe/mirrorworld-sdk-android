@@ -6,4 +6,8 @@
     <color name="mirror_white">#FFFFCC</color>
     <color name="mirror_pure_white">#FFFFFF</color>
     <color name="mirror_background">#F6F6F6</color>
+
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="dDVTransparentGray">#99000000</color>
+    <color name="dDVColorPrimary">@color/colorPrimary</color>
 </resources>

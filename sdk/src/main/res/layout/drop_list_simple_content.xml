@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/drop_list_simple_empty"
+        android:id="@+id/drop_list_simple_content_empty"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -15,20 +15,11 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/drop_list_simple_cardview"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/drop_list_simple_content_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/drop_list_simple_recyclerview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/mirror_pure_white"
-            android:minHeight="10dp"/>
-    </androidx.cardview.widget.CardView>
-
+        app:layout_constraintTop_toBottomOf="@id/drop_list_simple_content_empty"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
