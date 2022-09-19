@@ -1,5 +1,7 @@
 package com.mirror.sdk.ui.market.droplist;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,30 +19,27 @@ import java.util.List;
 
 public class DropListSimpleAdapter extends RecyclerView.Adapter<DropListSimpleAdapter.InnerHolder> {
 
+    Context mContext;
     List<CollectionOrder> mData;
+    CollectionOrder mNowOrder;
     DropListSimpleAdapter.OnOrderItemClickListener mCardViewClickListener = null;
 
-    public DropListSimpleAdapter(List<CollectionOrder> data){
-        this.mData = data;
+    public DropListSimpleAdapter(List<CollectionOrder> data,CollectionOrder order){
+        mData = data;
+        mNowOrder = order;
     }
 
     @NonNull
     @Override
-    public DropListSimpleAdapter.InnerHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.drop_list_simple_item, parent, false);
-        v.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-        DropListSimpleAdapter.InnerHolder vh = new DropListSimpleAdapter.InnerHolder(v);
+    public InnerHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        mContext = parent.getContext();
+        View v = LayoutInflater.from(mContext).inflate(R.layout.drop_list_simple_item, parent, false);
+        InnerHolder vh = new InnerHolder(v);
         return vh;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull DropListSimpleAdapter.InnerHolder holder, int position) {
+    public void onBindViewHolder(@NonNull InnerHolder holder, int position) {
         holder.setData(mData.get(position));
     }
 
@@ -64,10 +63,12 @@ public class DropListSimpleAdapter extends RecyclerView.Adapter<DropListSimpleAd
     public class InnerHolder extends RecyclerView.ViewHolder {
         CollectionOrder mOrder;
         TextView mTextView;
+        ImageView mCheckIcon;
 
         public InnerHolder(@NonNull View itemView) {
             super(itemView);
             mTextView = itemView.findViewById(R.id.drop_list_simple_item_tv);
+            mCheckIcon = itemView.findViewById(R.id.drop_list_simple_item_iv);
             if (mCardViewClickListener != null)
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -80,6 +81,14 @@ public class DropListSimpleAdapter extends RecyclerView.Adapter<DropListSimpleAd
         public void setData(CollectionOrder data) {
             mOrder = data;
             mTextView.setText(data.order_desc);
+
+            if(data == mNowOrder){
+                mCheckIcon.setVisibility(View.VISIBLE);
+                mTextView.setTextColor(mContext.getResources().getColor(R.color.mirror_font_blue));
+            }else {
+                mCheckIcon.setVisibility(View.GONE);
+                mTextView.setTextColor(mContext.getResources().getColor(R.color.mirror_black));
+            }
         }
     }
 }

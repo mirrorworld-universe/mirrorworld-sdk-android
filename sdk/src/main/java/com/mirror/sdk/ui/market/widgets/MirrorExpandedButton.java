@@ -1,5 +1,6 @@
 package com.mirror.sdk.ui.market.widgets;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -50,18 +51,28 @@ public class MirrorExpandedButton extends ConstraintLayout {
             @Override
             public void onClick(View v) {
                 if(mIsOpen == true){
-                    mIsOpen = false;
-                    mArrowImageUp.setVisibility(View.GONE);
-                    mArrowImageDown.setVisibility(View.VISIBLE);
-                    if(expandListener != null) expandListener.OnFold();
+                    foldView();
                 }else if(mIsOpen == false){
-                    mIsOpen = true;
-                    mArrowImageUp.setVisibility(View.VISIBLE);
-                    mArrowImageDown.setVisibility(View.GONE);
-                    if(expandListener != null) expandListener.OnExpand();
+                    expandView();
                 }
             }
         });
+    }
+
+    public void expandView(){
+        ObjectAnimator.ofFloat(mArrowImageUp, View.ROTATION.getName(), 180).start();
+        mIsOpen = true;
+//        mArrowImageUp.setVisibility(View.GONE);
+//        mArrowImageDown.setVisibility(View.VISIBLE);
+        if(expandListener != null) expandListener.OnExpand();
+    }
+
+    public void foldView(){
+        ObjectAnimator.ofFloat(mArrowImageUp, View.ROTATION.getName(), -180, 0).start();
+        mIsOpen = false;
+//        mArrowImageUp.setVisibility(View.VISIBLE);
+//        mArrowImageDown.setVisibility(View.GONE);
+        if(expandListener != null) expandListener.OnFold();
     }
 
     public void setText(String text){

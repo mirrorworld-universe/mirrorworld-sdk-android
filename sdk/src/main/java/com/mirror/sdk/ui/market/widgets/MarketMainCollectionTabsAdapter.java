@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mirror.sdk.R;
 import com.mirror.sdk.ui.market.MarketUIController;
 import com.mirror.sdk.ui.market.apis.responses.CollectionInfo;
-import com.mirror.sdk.ui.market.model.MarketMainCollectionTabsItemData;
 
 import java.util.List;
 

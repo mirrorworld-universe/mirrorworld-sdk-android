@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="48dp">
 
     <ImageView
         android:id="@+id/drop_list_simple_item_iv"
@@ -18,7 +18,7 @@
         android:layout_marginStart="10dp"
         android:id="@+id/drop_list_simple_item_tv"
         android:layout_width="wrap_content"
-        android:layout_height="48dp"
+        android:layout_height="match_parent"
         android:gravity="center"
         android:text="TextView"
         app:layout_constraintBottom_toBottomOf="parent"

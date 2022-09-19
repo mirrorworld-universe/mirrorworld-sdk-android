@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mirror.sdk.R;
+import com.mirror.sdk.ui.market.MarketDataController;
 import com.mirror.sdk.ui.market.MarketUIController;
 import com.mirror.sdk.ui.market.apis.responses.CollectionOrder;
 import com.mirror.sdk.ui.market.droplist.DropListSimpleAdapter;
@@ -50,6 +51,8 @@ public class MirrorMarketDialog extends DialogFragment {
     ConstraintLayout mFilterParent;
     ConstraintLayout mDropListParent;
     ConstraintLayout mDropListContent;
+    MirrorExpandedButton mOrderButton;
+    MirrorExpandedButton mFilterButton;
 
     public void Init(Activity activity){
         if(mInited){
@@ -72,6 +75,8 @@ public class MirrorMarketDialog extends DialogFragment {
         mFilterParent = totalView.findViewById(R.id.market_main_filter_parent);
         mNFTRecyclerView = totalView.findViewById(R.id.market_main_nft_list);
         mDropListParent = totalView.findViewById(R.id.market_main_filter_expand_parent);
+        mOrderButton = totalView.findViewById(R.id.market_main_filter_order_button);
+        mFilterButton = totalView.findViewById(R.id.market_main_filter_button);
 
         RecyclerView collectionTabView = totalView.findViewById(R.id.market_main_type_parent);
         MarketUIController.getInstance().setMainParent(collectionTabView);
@@ -103,21 +108,6 @@ public class MirrorMarketDialog extends DialogFragment {
                 if(MirrorMarketConfig.FULL_SCREEN_MODE) window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             }
         }
-    }
-
-    private List<NFTDetailData> getdata() {
-        List<NFTDetailData> iconbeans = new ArrayList<>();
-        String title[] = new String[]{"语文","数学","英语","物理","化学","生物"};
-        String Engtitle[] = new String[]{"Chinese","Math","English","Physics","Chemistry","Biology"};
-//        int iconid[] = new int[]{R.mipmap.yuwen,R.mipmap.shuxue,R.mipmap.yingyu,R.mipmap.wuli,R.mipmap.huaxue,R.mipmap.shengwu};
-        String Color[] = new String[]{"#255bb5","#fcd1be","#4fb279","#ffcf6d","#cdd8ee","#cb8dff"};
-        for(int i=0; i<title.length; i++){
-            NFTDetailData bean = new NFTDetailData();
-            bean.name = title[i];
-//            bean.color = Color[i];
-            iconbeans.add(bean);
-        }
-        return iconbeans;
     }
 
     private void startRequestCollections(RecyclerView view){
@@ -181,9 +171,8 @@ public class MirrorMarketDialog extends DialogFragment {
     }
 
     private void setFilterBar(View view,CollectionInfo collectionInfo){
-        MirrorExpandedButton orderButton = view.findViewById(R.id.market_main_filter_order_button);
-        orderButton.setText(collectionInfo.collection_orders.get(0).order_desc);
-        orderButton.SetExpandListener(new OnExpandedButtonClick() {
+        mOrderButton.setText(collectionInfo.collection_orders.get(0).order_desc);
+        mOrderButton.SetExpandListener(new OnExpandedButtonClick() {
             @Override
             public void OnExpand() {
                 mDropListParent.setVisibility(View.VISIBLE);
@@ -215,11 +204,15 @@ public class MirrorMarketDialog extends DialogFragment {
         mDropListContent = (ConstraintLayout) LayoutInflater.from(mDropListParent.getContext()).inflate(R.layout.drop_list_simple, mDropListParent);
         RecyclerView recyclerView = mDropListContent.findViewById(R.id.drop_list_simple_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
-        DropListSimpleAdapter adapter = new DropListSimpleAdapter(orders);
+        DropListSimpleAdapter adapter = new DropListSimpleAdapter(orders,MarketDataController.getInstance().getOrder());
         adapter.setOrderSelectListener(new DropListSimpleAdapter.OnOrderItemClickListener() {
             @Override
             public void onClicked(CollectionOrder data) {
-                Log.i("MirrorMarket:","select");
+                MarketDataController.getInstance().setOrder(data);
+                mOrderButton.setText(data.order_desc);
+                mOrderButton.foldView();
+                mDropListParent.setVisibility(View.GONE);
+                removeOrderExpandView();
             }
         });
         recyclerView.setAdapter(adapter);

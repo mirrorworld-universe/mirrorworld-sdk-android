@@ -28,14 +28,7 @@ public class MirrorMarketUIAPI {
         CollectionInfo info = new CollectionInfo();
         info.collection = "fake_address";
         info.collection_name = "collection1";
-        info.collection_orders = new ArrayList<>();
-
-        CollectionOrder order = new CollectionOrder();
-        order.order_desc = "Price: Low to high";
-        order.order_field = "Price";
-        order.desc = CollectionOrderDesc.POSITIVE_SEQUENCE;
-
-        info.collection_orders.add(order);
+        info.collection_orders = getTextCollectionOrders();
 
         response.collections.add(info);
 
