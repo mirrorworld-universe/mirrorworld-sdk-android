@@ -13,7 +13,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:overScrollMode="never"
+        android:overScrollMode="always"
         android:scrollbars="none">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -97,10 +97,10 @@
                 </com.mirror.sdk.ui.market.widgets.MirrorExpandedButton>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
+            <com.mirror.sdk.ui.market.widgets.NFTRecyclerView
                 android:id="@+id/market_main_nft_list"
                 android:layout_width="match_parent"
-                android:layout_height="900dp"
+                android:layout_height="800dp"
                 android:background="@color/mirror_background"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

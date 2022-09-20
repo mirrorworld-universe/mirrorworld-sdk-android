@@ -7,10 +7,13 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,10 +38,12 @@ import com.mirror.sdk.ui.market.apis.listeners.GetNFTsListener;
 import com.mirror.sdk.ui.market.apis.responses.CollectionInfo;
 import com.mirror.sdk.ui.market.apis.responses.GetCollectionsResponse;
 import com.mirror.sdk.ui.market.model.NFTDetailData;
+import com.mirror.sdk.ui.market.utils.MarketUtils;
 import com.mirror.sdk.ui.market.widgets.FilterDetailDropListAdapter;
 import com.mirror.sdk.ui.market.widgets.MarketMainCollectionTabsAdapter;
 import com.mirror.sdk.ui.market.widgets.MarketMainFilterDetailRecyclerViewAdapter;
 import com.mirror.sdk.ui.market.widgets.MarketMainRecyclerAdapter;
+import com.mirror.sdk.ui.market.widgets.MarketMainScrollView;
 import com.mirror.sdk.ui.market.widgets.MirrorExpandedButton;
 import com.mirror.sdk.ui.market.widgets.OnExpandedButtonClick;
 
@@ -51,6 +56,7 @@ public class MirrorMarketDialog extends DialogFragment {
 
     //widgets
     ConstraintLayout mContentView;
+    MarketMainScrollView mTotalScrollView;
     ConstraintSet mTotalConstraintSet;
     RecyclerView mNFTRecyclerView;
     ConstraintLayout mDropListParent;
@@ -85,7 +91,17 @@ public class MirrorMarketDialog extends DialogFragment {
         mTotalConstraintSet = new ConstraintSet();
         mContentView = contentView;
 
+//        MarketMainScrollView scrollView = totalView.findViewById(R.id.market_main_content_scrollview);
+        contentView.getParent().requestDisallowInterceptTouchEvent(true);
+
         mNFTRecyclerView = totalView.findViewById(R.id.market_main_nft_list);
+
+        ViewGroup.LayoutParams params = mNFTRecyclerView.getLayoutParams();
+        Display display = mActivity.getWindowManager().getDefaultDisplay(); // 为获取屏幕宽、高
+        params.height = (int) (display.getHeight() - MarketUtils.dpToPx(mActivity,42));
+//        params.width = (int) (display.getWidth() * 0.9);
+
+//        mNFTRecyclerView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,));
         mDropListParent = totalView.findViewById(R.id.market_main_filter_expand_parent);
         mStaticButtonParent = totalView.findViewById(R.id.market_main_filter_buttons_parent);
         mOrderButton = totalView.findViewById(R.id.market_main_filter_order_button);

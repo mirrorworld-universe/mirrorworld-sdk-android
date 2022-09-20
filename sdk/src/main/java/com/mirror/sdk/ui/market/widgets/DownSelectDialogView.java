@@ -279,7 +279,8 @@ public class DownSelectDialogView extends FrameLayout {
     }
 
     private int dpToPx(int dp) {
-        float density = getContext().getResources().getDisplayMetrics().density; return (int) (dp * density + 0.5f * (dp >= 0 ? 1 : -1)); }
+        float density = getContext().getResources().getDisplayMetrics().density; return (int) (dp * density + 0.5f * (dp >= 0 ? 1 : -1));
+    }
 }
 
 

@@ -41,4 +41,7 @@ public class MarketUIController {
     public MarketMainFilterDetailRecyclerViewAdapter.ViewHolder getCurTab(){
         return mCurTab;
     }
+
+    //Main page event handle
+    public boolean isOut = true;
 }
