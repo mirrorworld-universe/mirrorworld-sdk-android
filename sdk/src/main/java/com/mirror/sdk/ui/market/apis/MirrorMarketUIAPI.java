@@ -66,7 +66,7 @@ public class MirrorMarketUIAPI {
         response.filter_info.add(filter2);
 
         CollectionFilter filter3 = new CollectionFilter();
-        filter3.filter_name = "Rare";
+        filter3.filter_name = "Role";
         filter3.filter_type = MarketFilterTypes.ENUM;
         filter3.filter_value = new ArrayList<>();
         filter3.filter_value.add("Samuraimon");

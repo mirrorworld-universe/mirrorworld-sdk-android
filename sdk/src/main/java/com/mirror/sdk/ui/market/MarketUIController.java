@@ -3,6 +3,7 @@ package com.mirror.sdk.ui.market;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mirror.sdk.ui.market.apis.responses.CollectionInfo;
+import com.mirror.sdk.ui.market.widgets.MarketMainFilterDetailRecyclerViewAdapter;
 import com.mirror.sdk.utils.MirrorGsonUtils;
 
 public class MarketUIController {
@@ -30,5 +31,14 @@ public class MarketUIController {
     private CollectionInfo mCurCollection;
     public void selectCollection(CollectionInfo collectionInfo){
         mCurCollection = collectionInfo;
+    }
+
+    //current expand filter
+    private MarketMainFilterDetailRecyclerViewAdapter.ViewHolder mCurTab;
+    public void setCurTab(MarketMainFilterDetailRecyclerViewAdapter.ViewHolder curTab){
+        mCurTab = curTab;
+    }
+    public MarketMainFilterDetailRecyclerViewAdapter.ViewHolder getCurTab(){
+        return mCurTab;
     }
 }

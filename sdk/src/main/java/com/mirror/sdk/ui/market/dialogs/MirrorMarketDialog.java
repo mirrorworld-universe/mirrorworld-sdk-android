@@ -35,6 +35,7 @@ import com.mirror.sdk.ui.market.apis.listeners.GetNFTsListener;
 import com.mirror.sdk.ui.market.apis.responses.CollectionInfo;
 import com.mirror.sdk.ui.market.apis.responses.GetCollectionsResponse;
 import com.mirror.sdk.ui.market.model.NFTDetailData;
+import com.mirror.sdk.ui.market.widgets.FilterDetailDropListAdapter;
 import com.mirror.sdk.ui.market.widgets.MarketMainCollectionTabsAdapter;
 import com.mirror.sdk.ui.market.widgets.MarketMainFilterDetailRecyclerViewAdapter;
 import com.mirror.sdk.ui.market.widgets.MarketMainRecyclerAdapter;
@@ -53,12 +54,14 @@ public class MirrorMarketDialog extends DialogFragment {
     ConstraintSet mTotalConstraintSet;
     RecyclerView mNFTRecyclerView;
     ConstraintLayout mDropListParent;
-    ConstraintLayout mDropListContent;
     ConstraintLayout mStaticButtonParent;
     MirrorExpandedButton mOrderButton;
     MirrorExpandedButton mFilterButton;
     ConstraintLayout mFilterDetailParent;
     RecyclerView mFilterDetailRecyclerView;
+    //dynamic
+    ConstraintLayout mDropListContent;
+//    ConstraintLayout mDynamicFilterDetail;
 
     public void Init(Activity activity){
         if(mInited){
@@ -186,7 +189,24 @@ public class MirrorMarketDialog extends DialogFragment {
         MirrorMarketUIAPI.GetFilters(collectionInfo, new GetFilterListener() {
             @Override
             public void onSuccess(List<CollectionFilter> filters) {
+                //add tabs
                 MarketMainFilterDetailRecyclerViewAdapter adapter = new MarketMainFilterDetailRecyclerViewAdapter(filters);
+                adapter.setOnExpandedListener(new MarketMainFilterDetailRecyclerViewAdapter.OnFilterTabClicked() {
+                    @Override
+                    public void OnExpand(MarketMainFilterDetailRecyclerViewAdapter.ViewHolder tabLayout, CollectionFilter filter) {
+                        //Show and add items
+                        MarketUIController.getInstance().setCurTab(tabLayout);
+                        mDropListParent.setVisibility(View.VISIBLE);
+                        setExpandViewTop(mFilterDetailParent);
+                        addFilterExpandView(filter);
+                    }
+
+                    @Override
+                    public void OnFold(MarketMainFilterDetailRecyclerViewAdapter.ViewHolder tabLayout) {
+                        mDropListParent.setVisibility(View.GONE);
+                        removeOrderExpandView();
+                    }
+                });
                 mFilterDetailRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity, RecyclerView.HORIZONTAL, false));
                 mFilterDetailRecyclerView.setAdapter(adapter);
             }
@@ -268,6 +288,29 @@ public class MirrorMarketDialog extends DialogFragment {
         recyclerView.setAdapter(adapter);
     }
 
+    private void addFilterExpandView(CollectionFilter filter){
+        ConstraintLayout mDynamicFilterDetail = (ConstraintLayout) LayoutInflater.from(mDropListParent.getContext()).inflate(R.layout.drop_list_simple, mDropListParent);
+
+        RecyclerView recyclerView = mDynamicFilterDetail.findViewById(R.id.drop_list_simple_recyclerview);
+        recyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
+
+        FilterDetailDropListAdapter adapter = new FilterDetailDropListAdapter(filter);
+        //After 'red' clicked
+        adapter.setOrderSelectListener(new FilterDetailDropListAdapter.OnOrderItemClickListener() {
+            @Override
+            public void onClicked(String data) {
+                removeOrderExpandView();
+                mDropListParent.setVisibility(View.GONE);
+
+                MarketMainFilterDetailRecyclerViewAdapter.ViewHolder tabView = MarketUIController.getInstance().getCurTab();
+                tabView.mIsOpen = false;
+                tabView.mImageFilterView.setRotation(0);
+                tabView.mTextView.setText(data);
+            }
+        });
+        recyclerView.setAdapter(adapter);
+    }
+
     private void removeOrderExpandView(){
         mDropListParent.removeAllViews();
     }
@@ -276,6 +319,10 @@ public class MirrorMarketDialog extends DialogFragment {
         mTotalConstraintSet.clone(mContentView);
         mTotalConstraintSet.connect(mDropListParent.getId(),ConstraintSet.TOP,targetView.getId(),ConstraintSet.BOTTOM);
         mTotalConstraintSet.applyTo(mContentView);
+    }
+
+    private void foldAllExpand(){
+        removeOrderExpandView();
     }
 
     private void logMarket(String content){
