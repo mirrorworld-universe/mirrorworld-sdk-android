@@ -95,7 +95,7 @@ public class MirrorSDK {
     private AlertDialog builder = null;
     private Context globalContext = null;
     private Activity mActivity = null;
-    private MirrorEnv env = MirrorEnv.MainNet;
+    public MirrorEnv env = MirrorEnv.MainNet;
 
     private AlertDialog parentDialog = null;
     private WebView mLoginWebView = null;
@@ -591,12 +591,16 @@ public class MirrorSDK {
         UpdateNFTListing(mint_address, price,MirrorConfirmation.Default, listener);
     }
 
-    public void ListNFT(String mint_address, Double price, String confirmation, ListNFTListener listener){
+    public void ListNFT(String mint_address, Double price, String confirmation,ListNFTListener listener){
+        ListNFT(mint_address, price, confirmation,"", listener);
+    }
+    public void ListNFT(String mint_address, Double price, String confirmation,String auction_house, ListNFTListener listener){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("mint_address", mint_address);
             jsonObject.put("price", price);
             jsonObject.put("confirmation",confirmation);
+            if(auction_house != null && auction_house != "") jsonObject.put("auction_house",auction_house);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -973,7 +977,7 @@ public class MirrorSDK {
     }
 
 
-    private void doPostRequest(String url, String data, MirrorCallback mirrorCallback){
+    public void doPostRequest(String url, String data, MirrorCallback mirrorCallback){
         new Thread(new Runnable() {
             @Override
             public void run() {

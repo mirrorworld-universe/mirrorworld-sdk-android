@@ -79,7 +79,7 @@ public class MirrorExpandedButton extends ConstraintLayout {
         mTextView.setText(text);
     }
 
-    public void SetExpandListener(OnExpandedButtonClick listener){
+    public void setExpandListener(OnExpandedButtonClick listener){
         expandListener = listener;
     }
 }

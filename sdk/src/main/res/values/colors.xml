@@ -5,8 +5,10 @@
     <color name="mirror_green">#B8DD22</color>
     <color name="mirror_white">#FFFFCC</color>
     <color name="mirror_pure_white">#FFFFFF</color>
-    <color name="mirror_background">#F6F6F6</color>
+    <color name="mirror_background">#FFFFFF</color>
     <color name="mirror_font_blue">#386EEC</color>
+    <color name="mirror_filter_button_blue">#F0F8FF</color>
+    <color name="mirror_filter_button_gray">#DCDCDC</color>
 
     <color name="colorPrimary">#3F51B5</color>
     <color name="dDVTransparentGray">#99000000</color>

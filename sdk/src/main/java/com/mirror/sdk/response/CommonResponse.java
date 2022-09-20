@@ -1,7 +1,7 @@
 package com.mirror.sdk.response;
 
 public class CommonResponse<E> {
-    public long code;
+    public long code = 1;
     public E data;
     public String error;
     public String status;

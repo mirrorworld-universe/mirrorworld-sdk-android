@@ -39,7 +39,7 @@ public class MirrorMarketUIAPI {
      * Get filters for market UI
      * @param listener
      */
-    public static void GetFilters(GetFilterListener listener){
+    public static void GetFilters(CollectionInfo collectionInfo,GetFilterListener listener){
         GetFiltersResponse response = new GetFiltersResponse();
         response.collection = "collection's address";
         response.filter_info = new ArrayList<>();
@@ -48,12 +48,34 @@ public class MirrorMarketUIAPI {
         filter1.filter_name = "Color";
         filter1.filter_type = MarketFilterTypes.ENUM;
         filter1.filter_value = new ArrayList<>();
-
         filter1.filter_value.add("Red");
         filter1.filter_value.add("Blue");
         filter1.filter_value.add("White");
 
         response.filter_info.add(filter1);
+
+        CollectionFilter filter2 = new CollectionFilter();
+        filter2.filter_name = "Rare";
+        filter2.filter_type = MarketFilterTypes.ENUM;
+        filter2.filter_value = new ArrayList<>();
+        filter2.filter_value.add("Common");
+        filter2.filter_value.add("Rare");
+        filter2.filter_value.add("Elite");
+        filter2.filter_value.add("Ledengary");
+        filter2.filter_value.add("Mythical");
+        response.filter_info.add(filter2);
+
+        CollectionFilter filter3 = new CollectionFilter();
+        filter3.filter_name = "Rare";
+        filter3.filter_type = MarketFilterTypes.ENUM;
+        filter3.filter_value = new ArrayList<>();
+        filter3.filter_value.add("Samuraimon");
+        filter3.filter_value.add("Zombie");
+        filter3.filter_value.add("Cat Maid");
+        filter3.filter_value.add("Pirate Captain");
+        filter3.filter_value.add("Astronautcal");
+        response.filter_info.add(filter3);
+
 
         listener.onSuccess(response.filter_info);
     }

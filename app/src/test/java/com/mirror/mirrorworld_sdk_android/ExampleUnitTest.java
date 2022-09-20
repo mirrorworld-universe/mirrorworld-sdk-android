@@ -6,10 +6,13 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+import android.util.Log;
+
 import com.mirror.sdk.MirrorCallback;
 import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.constant.MirrorConfirmation;
 import com.mirror.sdk.constant.MirrorEnv;
+import com.mirror.sdk.constant.MirrorUrl;
 import com.mirror.sdk.listener.auth.FetchUserListener;
 import com.mirror.sdk.listener.market.CancelListListener;
 import com.mirror.sdk.listener.market.CreateSubCollectionListener;
@@ -840,4 +843,5 @@ public class ExampleUnitTest {
 
         assertEquals("success",Status);
     }
+
 }
