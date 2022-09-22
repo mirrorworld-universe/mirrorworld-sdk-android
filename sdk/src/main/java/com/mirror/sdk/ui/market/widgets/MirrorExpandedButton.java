@@ -10,17 +10,15 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.mirror.sdk.R;
 
-public class MirrorExpandedButton extends ConstraintLayout {
+public class MirrorExpandedButton extends ExpandButtonBase {
 
     private TextView mTextView;
     private ImageView mArrowImageUp;
     private ImageView mArrowImageDown;
 
-    private boolean mIsOpen = false;
     private OnExpandedButtonClick expandListener;
 
     public MirrorExpandedButton(@NonNull Context context) {
@@ -50,26 +48,28 @@ public class MirrorExpandedButton extends ConstraintLayout {
         this.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mIsOpen == true){
-                    foldView();
-                }else if(mIsOpen == false){
-                    expandView();
+                if(mIsExpanded == true){
+                    fold();
+                }else{
+                    expand();
                 }
             }
         });
     }
 
-    public void expandView(){
+    @Override
+    public void expand(){
         ObjectAnimator.ofFloat(mArrowImageUp, View.ROTATION.getName(), 180).start();
-        mIsOpen = true;
+        mIsExpanded = true;
 //        mArrowImageUp.setVisibility(View.GONE);
 //        mArrowImageDown.setVisibility(View.VISIBLE);
         if(expandListener != null) expandListener.OnExpand();
     }
 
-    public void foldView(){
+    @Override
+    public void fold(){
         ObjectAnimator.ofFloat(mArrowImageUp, View.ROTATION.getName(), -180, 0).start();
-        mIsOpen = false;
+        mIsExpanded = false;
 //        mArrowImageUp.setVisibility(View.VISIBLE);
 //        mArrowImageDown.setVisibility(View.GONE);
         if(expandListener != null) expandListener.OnFold();

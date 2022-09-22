@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ListView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -211,7 +210,7 @@ public class MarketDialog extends DialogFragment {
             public void onClicked(CollectionOrder data) {
                 MarketDataController.getInstance().setOrder(data);
                 mOrderButton.setText(data.order_desc);
-                mOrderButton.foldView();
+                mOrderButton.fold();
                 view.setVisibility(View.GONE);
                 mPopupFilterParent.removeAllViews();
             }

@@ -75,7 +75,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/main_content_line2" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.mirror.sdk.ui.market.widgets.MainFilterDetailLayout
         android:id="@+id/market_main_filter_expand_parent"
         android:layout_width="match_parent"
         android:layout_height="900dp"
@@ -87,5 +87,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/main_content_line2">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.mirror.sdk.ui.market.widgets.MainFilterDetailLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,5 @@
 package com.mirror.sdk.ui.market.widgets;
 
-import android.app.Instrumentation;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -23,16 +22,6 @@ public class MarketMainScrollView extends NestedScrollView{
         this.setVerticalScrollBarEnabled(false);
         mContext = context;
     }
-
-//    @Override
-//    public boolean onInterceptTouchEvent(MotionEvent e) {
-//        if(MarketUIController.getInstance().isOut) {
-//            super.onInterceptTouchEvent(e);
-//            return true;
-//        }else {
-//            return false;
-//        }
-//    }
 
     @Override
     public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes) {
@@ -87,6 +76,10 @@ public class MarketMainScrollView extends NestedScrollView{
     private float mVelocityY = 0;
     @Override
     public boolean onTouchEvent(MotionEvent e) {
+        if(MarketUIController.getInstance().IsFilterDetailExpanded){
+            MarketUIController.getInstance().foldFilterDetail(true);
+            return true;
+        }
         if (e.getAction() == MotionEvent.ACTION_DOWN) {
             mLastY = e.getY();
             mNestedYOffsets = 0;

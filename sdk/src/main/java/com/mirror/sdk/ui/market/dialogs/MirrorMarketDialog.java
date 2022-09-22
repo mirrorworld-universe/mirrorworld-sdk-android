@@ -29,6 +29,7 @@ import com.mirror.sdk.ui.market.apis.listeners.GetFilterListener;
 import com.mirror.sdk.ui.market.apis.responses.CollectionFilter;
 import com.mirror.sdk.ui.market.apis.responses.CollectionOrder;
 import com.mirror.sdk.ui.market.droplist.DropListSimpleAdapter;
+import com.mirror.sdk.ui.market.enums.MarketFilterTypes;
 import com.mirror.sdk.ui.market.enums.MirrorMarketConfig;
 import com.mirror.sdk.ui.market.apis.MirrorMarketUIAPI;
 import com.mirror.sdk.ui.market.apis.listeners.GetCollectionListener;
@@ -96,8 +97,7 @@ public class MirrorMarketDialog extends DialogFragment {
 
         ViewGroup.LayoutParams params = mNFTRecyclerView.getLayoutParams();
         Display display = mActivity.getWindowManager().getDefaultDisplay(); // 为获取屏幕宽、高
-        params.height = (int) (display.getHeight() - MarketUtils.dpToPx(mActivity,42));
-//        params.width = (int) (display.getWidth() * 0.9);
+        params.height = (display.getHeight() - MarketUtils.dpToPx(mActivity,42));
 
 //        mNFTRecyclerView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,));
         mDropListParent = totalView.findViewById(R.id.market_main_filter_expand_parent);
@@ -108,7 +108,7 @@ public class MirrorMarketDialog extends DialogFragment {
 
         mFilterDetailRecyclerView = mFilterDetailParent.findViewById(R.id.market_main_filter_detail_recyclerview);
 
-//        mFilterDetailParent.setVisibility(View.GONE);
+        MarketUIController.getInstance().FilterDetailLayout = mDropListParent;
 
         RecyclerView collectionTabView = totalView.findViewById(R.id.main_content_line1rv);
         MarketUIController.getInstance().setMainParent(collectionTabView);
@@ -146,10 +146,12 @@ public class MirrorMarketDialog extends DialogFragment {
     }
 
     private void setFilter(){
+        mFilterButton.setText("Filter");
         mFilterButton.setExpandListener(new OnExpandedButtonClick() {
             @Override
             public void OnExpand() {
-                mFilterDetailParent.setVisibility(View.VISIBLE);
+                openLine3();
+
                 mTotalConstraintSet.clone(mContentView);
                 mTotalConstraintSet.connect(mNFTRecyclerView.getId(),ConstraintSet.TOP,mFilterDetailParent.getId(),ConstraintSet.BOTTOM);
                 mTotalConstraintSet.applyTo(mContentView);
@@ -157,7 +159,7 @@ public class MirrorMarketDialog extends DialogFragment {
 
             @Override
             public void OnFold() {
-                mFilterDetailParent.setVisibility(View.GONE);
+                closeLine3();
             }
         });
     }
@@ -209,16 +211,16 @@ public class MirrorMarketDialog extends DialogFragment {
                     @Override
                     public void OnExpand(MarketMainFilterDetailRecyclerViewAdapter.ViewHolder tabLayout, CollectionFilter filter) {
                         //Show and add items
-                        MarketUIController.getInstance().setCurTab(tabLayout);
-                        mDropListParent.setVisibility(View.VISIBLE);
+                        MarketUIController.getInstance().setCurTab(tabLayout.TabExpandButton);
                         setExpandViewTop(mFilterDetailParent);
                         addFilterExpandView(filter);
+                        MarketUIController.getInstance().expandFilterDetail(tabLayout.TabExpandButton);
                     }
 
                     @Override
                     public void OnFold(MarketMainFilterDetailRecyclerViewAdapter.ViewHolder tabLayout) {
-                        mDropListParent.setVisibility(View.GONE);
                         removeOrderExpandView();
+                        MarketUIController.getInstance().foldFilterDetail(false);
                     }
                 });
                 mFilterDetailRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity, RecyclerView.HORIZONTAL, false));
@@ -270,13 +272,13 @@ public class MirrorMarketDialog extends DialogFragment {
         mOrderButton.setExpandListener(new OnExpandedButtonClick() {
             @Override
             public void OnExpand() {
-                mDropListParent.setVisibility(View.VISIBLE);
+                MarketUIController.getInstance().expandFilterDetail(mOrderButton);
                 addOrderExpandView(collectionInfo.collection_orders);
             }
 
             @Override
             public void OnFold() {
-                mDropListParent.setVisibility(View.GONE);
+                MarketUIController.getInstance().foldFilterDetail(false);
                 removeOrderExpandView();
             }
         });
@@ -294,7 +296,7 @@ public class MirrorMarketDialog extends DialogFragment {
             public void onClicked(CollectionOrder data) {
                 MarketDataController.getInstance().setOrder(data);
                 mOrderButton.setText(data.order_desc);
-                mOrderButton.foldView();
+                mOrderButton.fold();
                 mDropListParent.setVisibility(View.GONE);
                 removeOrderExpandView();
             }
@@ -316,13 +318,31 @@ public class MirrorMarketDialog extends DialogFragment {
                 removeOrderExpandView();
                 mDropListParent.setVisibility(View.GONE);
 
-                MarketMainFilterDetailRecyclerViewAdapter.ViewHolder tabView = MarketUIController.getInstance().getCurTab();
-                tabView.mIsOpen = false;
-                tabView.mImageFilterView.setRotation(0);
-                tabView.mTextView.setText(data);
+                MarketUIController.getInstance().getCurTab().setText(data);
+                MarketUIController.getInstance().getCurTab().fold();
+                if(filter.filter_type == MarketFilterTypes.ENUM){
+                    MarketDataController.getInstance().addRequestEnumFilter(data);
+                }else {
+                    Log.e("MirrorMarket","not support");
+                }
+
             }
         });
         recyclerView.setAdapter(adapter);
+    }
+
+    private void openLine3(){
+        mFilterDetailParent.setVisibility(View.VISIBLE);
+        ViewGroup.LayoutParams params = mNFTRecyclerView.getLayoutParams();
+        Display display = mActivity.getWindowManager().getDefaultDisplay(); // 为获取屏幕宽、高
+        params.height = (display.getHeight() - MarketUtils.dpToPx(mActivity,42+40));
+    }
+
+    private void closeLine3(){
+        mFilterDetailParent.setVisibility(View.GONE);
+        ViewGroup.LayoutParams params = mNFTRecyclerView.getLayoutParams();
+        Display display = mActivity.getWindowManager().getDefaultDisplay(); // 为获取屏幕宽、高
+        params.height = (display.getHeight() - MarketUtils.dpToPx(mActivity,42));
     }
 
     private void removeOrderExpandView(){
@@ -333,10 +353,6 @@ public class MirrorMarketDialog extends DialogFragment {
         mTotalConstraintSet.clone(mContentView);
         mTotalConstraintSet.connect(mDropListParent.getId(),ConstraintSet.TOP,targetView.getId(),ConstraintSet.BOTTOM);
         mTotalConstraintSet.applyTo(mContentView);
-    }
-
-    private void foldAllExpand(){
-        removeOrderExpandView();
     }
 
     private void logMarket(String content){
