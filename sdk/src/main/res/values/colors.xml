@@ -13,4 +13,7 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="dDVTransparentGray">#99000000</color>
     <color name="dDVColorPrimary">@color/colorPrimary</color>
+    <color name="transparentGray">#99000000</color>
+    <color name="dropDownContainerColor">#d32f2f</color>
+    <color name="dropDownSelectedColor">#b71c1c</color>
 </resources>

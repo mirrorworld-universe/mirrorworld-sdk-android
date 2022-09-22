@@ -24,28 +24,26 @@ public class NFTRecyclerView extends RecyclerView {
         super(context, attrs, defStyleAttr);
     }
 
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent e) {
-        if(MarketUIController.getInstance().isOut){
-            Log.i("Recycler intercept:","Out ");
-            return false;
-        }else {
-            Log.i("Recycler intercept:","Inner ");
-            super.onInterceptTouchEvent(e);
-            return true;
-        }
-    }
+//    @Override
+//    public boolean onInterceptTouchEvent(MotionEvent e) {
+//        if(MarketUIController.getInstance().isOut){
+//            return false;
+//        }else {
+//            super.onInterceptTouchEvent(e);
+//            return true;
+//        }
+//    }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent e) {
-        Log.i("Recycler TOUCH:","--- ");
-        if(MarketUIController.getInstance().isOut){
-            Log.i("Recycler TOUCH:","OUT ");
-            return false;
-        }else {
-            Log.i("Recycler TOUCH:","Inner ");
-            super.onTouchEvent(e);
-            return true;
-        }
-    }
+//    @Override
+//    public boolean onTouchEvent(MotionEvent e) {
+//        Log.i("Recycler TOUCH:","--- ");
+//        if(MarketUIController.getInstance().isOut){
+//            Log.i("Recycler TOUCH:","OUT ");
+//            return false;
+//        }else {
+//            Log.i("Recycler TOUCH:","Inner ");
+//            super.onTouchEvent(e);
+//            return true;
+//        }
+//    }
 }

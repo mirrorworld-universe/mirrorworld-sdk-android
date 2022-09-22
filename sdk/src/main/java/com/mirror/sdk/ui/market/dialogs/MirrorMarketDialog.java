@@ -9,11 +9,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -91,7 +89,7 @@ public class MirrorMarketDialog extends DialogFragment {
         mTotalConstraintSet = new ConstraintSet();
         mContentView = contentView;
 
-//        MarketMainScrollView scrollView = totalView.findViewById(R.id.market_main_content_scrollview);
+        mTotalScrollView = totalView.findViewById(R.id.market_main_content_scrollview);
         contentView.getParent().requestDisallowInterceptTouchEvent(true);
 
         mNFTRecyclerView = totalView.findViewById(R.id.market_main_nft_list);
@@ -103,16 +101,16 @@ public class MirrorMarketDialog extends DialogFragment {
 
 //        mNFTRecyclerView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,));
         mDropListParent = totalView.findViewById(R.id.market_main_filter_expand_parent);
-        mStaticButtonParent = totalView.findViewById(R.id.market_main_filter_buttons_parent);
+        mStaticButtonParent = totalView.findViewById(R.id.main_content_line2);
         mOrderButton = totalView.findViewById(R.id.market_main_filter_order_button);
         mFilterButton = totalView.findViewById(R.id.market_main_filter_button);
-        mFilterDetailParent = totalView.findViewById(R.id.market_main_filter_detail_parent);
+        mFilterDetailParent = totalView.findViewById(R.id.main_content_line3);
 
         mFilterDetailRecyclerView = mFilterDetailParent.findViewById(R.id.market_main_filter_detail_recyclerview);
 
 //        mFilterDetailParent.setVisibility(View.GONE);
 
-        RecyclerView collectionTabView = totalView.findViewById(R.id.market_main_type_parent);
+        RecyclerView collectionTabView = totalView.findViewById(R.id.main_content_line1rv);
         MarketUIController.getInstance().setMainParent(collectionTabView);
         collectionTabView.setLayoutManager(new LinearLayoutManager(mActivity, RecyclerView.HORIZONTAL, false));
 
@@ -169,10 +167,10 @@ public class MirrorMarketDialog extends DialogFragment {
             @Override
             public void onSuccess(GetCollectionsResponse response) {
                 if(response.collections.size() == 0){
-                    View collectionParent = view.findViewById(R.id.market_main_type_parent);
+                    View collectionParent = view.findViewById(R.id.main_content_line1rv);
                     collectionParent.setVisibility(View.GONE);
                 }else if(response.collections.size() == 1){
-                    View collectionParent = view.findViewById(R.id.market_main_type_parent);
+                    View collectionParent = view.findViewById(R.id.main_content_line1rv);
                     collectionParent.setVisibility(View.GONE);
 
                     CollectionInfo collection = response.collections.get(0);
@@ -181,7 +179,7 @@ public class MirrorMarketDialog extends DialogFragment {
                     startRequestNFT();
                     startRequestFilters(collection);
                 }else {
-                    View collectionParent = view.findViewById(R.id.market_main_type_parent);
+                    View collectionParent = view.findViewById(R.id.main_content_line1rv);
                     collectionParent.setVisibility(View.VISIBLE);
 
                     CollectionInfo collection = response.collections.get(0);

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:theme="@style/Platform.MaterialComponents.Light"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:theme="@style/Platform.MaterialComponents.Light">
+    android:layout_height="match_parent">
 
     <com.mirror.sdk.ui.market.widgets.MarketMainScrollView
         android:id="@+id/market_main_content_scrollview"
@@ -34,7 +35,7 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:visibility="gone"
-                android:id="@+id/market_main_type_parent"
+                android:id="@+id/main_content_line1rv"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -46,13 +47,13 @@
             </androidx.recyclerview.widget.RecyclerView>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/market_main_filter_detail_parent"
+                android:id="@+id/main_content_line3"
 
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/market_main_filter_buttons_parent">
+                app:layout_constraintTop_toBottomOf="@id/main_content_line2">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/market_main_filter_detail_recyclerview"
@@ -66,7 +67,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/market_main_filter_buttons_parent"
+                android:id="@+id/main_content_line2"
                 android:background="@color/mirror_background"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -104,7 +105,7 @@
                 android:background="@color/mirror_background"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/market_main_filter_buttons_parent" />
+                app:layout_constraintTop_toBottomOf="@+id/main_content_line2" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/market_main_filter_expand_parent"
@@ -116,7 +117,7 @@
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/market_main_filter_buttons_parent">
+                app:layout_constraintTop_toBottomOf="@+id/main_content_line2">
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -30,6 +30,7 @@ public class MarketDataController {
     public void setNFTs(List<NFTDetailData> nfts){
         mNFTs = nfts;
     }
+    public List<NFTDetailData> getNFTs(){ return mNFTs; }
 
     public void setOrder(CollectionOrder order){
         mNowOrder = order;

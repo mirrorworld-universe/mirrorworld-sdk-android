@@ -32,6 +32,9 @@ public class MarketUIController {
     public void selectCollection(CollectionInfo collectionInfo){
         mCurCollection = collectionInfo;
     }
+    public CollectionInfo getCurCollection(){
+        return mCurCollection;
+    }
 
     //current expand filter
     private MarketMainFilterDetailRecyclerViewAdapter.ViewHolder mCurTab;
@@ -43,5 +46,6 @@ public class MarketUIController {
     }
 
     //Main page event handle
-    public boolean isOut = true;
+    public RecyclerView mMainInnerRecycler;
+
 }
