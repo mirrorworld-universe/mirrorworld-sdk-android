@@ -1,5 +1,8 @@
 package com.mirror.sdk.ui.market.apis;
 
+import android.app.Activity;
+
+import com.mirror.sdk.MirrorCallback;
 import com.mirror.sdk.ui.market.enums.MarketFilterTypes;
 import com.mirror.sdk.ui.market.apis.listeners.GetCollectionListener;
 import com.mirror.sdk.ui.market.apis.listeners.GetFilterListener;
@@ -80,19 +83,34 @@ public class MirrorMarketUIAPI {
         listener.onSuccess(response.filter_info);
     }
 
-    public static void GetNFTs(GetNFTsListener listener){
-        List<NFTDetailData> infos = new ArrayList<>();
-        for(int i=0;i<10;i++){
-            NFTDetailData info = new NFTDetailData();
-            info.name = "Mirror Jump #1";
-            info.image = "https://storage.mirrorworld.fun/nft/6.png";
-            info.mint_address = "fake_address";
-            info.price = 0.2139 + i * 0.01;
+    public static void GetNFTs(Activity activity,int page, GetNFTsListener listener){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        List<NFTDetailData> infos = new ArrayList<>();
+                        for(int i=0;i<10;i++){
+                            NFTDetailData info = new NFTDetailData();
+                            info.name = "Mirror Jump #"+page;
+                            info.image = "https://storage.mirrorworld.fun/nft/6.png";
+                            info.mint_address = "fake_address";
+                            info.price = 0.2139 + i * 0.01;
 
-            infos.add(info);
-        }
+                            infos.add(info);
+                        }
 
-        listener.onSuccess(infos);
+                        listener.onSuccess(infos);
+                    }
+                });
+            }
+        }).start();
     }
 
     private static void GetRandomPNG(){

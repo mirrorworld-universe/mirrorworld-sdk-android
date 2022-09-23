@@ -29,7 +29,7 @@
     </androidx.recyclerview.widget.RecyclerView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/main_content_line3"
+        android:id="@+id/main_line3"
 
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -38,7 +38,7 @@
         app:layout_constraintTop_toBottomOf="@id/main_content_line2">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/market_main_filter_detail_recyclerview"
+            android:id="@+id/main_line3_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/mirror_background"
@@ -81,7 +81,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.mirror.sdk.ui.market.widgets.NFTRecyclerView
-        android:id="@+id/market_main_nft_list"
+        android:id="@+id/main_bottom_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="800dp"
         android:background="@color/mirror_background"

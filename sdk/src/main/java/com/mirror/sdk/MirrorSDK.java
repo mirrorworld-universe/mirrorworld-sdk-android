@@ -56,7 +56,6 @@ import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
 import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
 import com.mirror.sdk.response.wallet.TransferResponse;
 import com.mirror.sdk.ui.WebViewDialog;
-import com.mirror.sdk.ui.market.dialogs.MarketDialog;
 import com.mirror.sdk.ui.market.dialogs.MirrorMarketDialog;
 import com.mirror.sdk.utils.MirrorGsonUtils;
 

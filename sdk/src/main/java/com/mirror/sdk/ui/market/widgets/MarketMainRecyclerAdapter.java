@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MarketMainRecyclerAdapter  extends RecyclerView.Adapter<MarketMainRecyclerAdapter.InnerHolder>{
-    //构造方法 得到activity那边传递过来的数据
     List<NFTDetailData> iconbeans = new ArrayList<NFTDetailData>();
     OnNFTItemClickListener mCardViewClickListener = null;
 
@@ -35,14 +34,11 @@ public class MarketMainRecyclerAdapter  extends RecyclerView.Adapter<MarketMainR
 
     @NonNull
     @Override
-    //设置view
     public MarketMainRecyclerAdapter.InnerHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        //给item的布局文件添加进我们设置View里面
         View view = View.inflate(parent.getContext(), R.layout.market_main_recyclerview_item,null);
-        return new InnerHolder(view);//并且将这个传递给InnerHol这个内部类
+        return new InnerHolder(view);
     }
 
-    //设置item
     @Override
     public void onBindViewHolder(@NonNull MarketMainRecyclerAdapter.InnerHolder holder, int position) {
         holder.setData(iconbeans.get(position));
@@ -50,7 +46,6 @@ public class MarketMainRecyclerAdapter  extends RecyclerView.Adapter<MarketMainR
 
 
     @Override
-    //返回item数目
     public int getItemCount() {
         if(iconbeans != null){
             return iconbeans.size();
@@ -60,6 +55,12 @@ public class MarketMainRecyclerAdapter  extends RecyclerView.Adapter<MarketMainR
 
     public void setCardViewOnClickListener(OnNFTItemClickListener listener){
         mCardViewClickListener = listener;
+    }
+
+    public void addData(NFTDetailData newNFT) {
+        int position = iconbeans.size();
+        iconbeans.add(newNFT);
+        notifyItemInserted(position);
     }
 
     public interface OnNFTItemClickListener{

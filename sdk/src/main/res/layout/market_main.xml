@@ -29,7 +29,7 @@
                 android:layout_height="42dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" >
+                app:layout_constraintTop_toTopOf="parent">
 
             </SearchView>
 
@@ -47,7 +47,7 @@
             </androidx.recyclerview.widget.RecyclerView>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/main_content_line3"
+                android:id="@+id/main_line3"
 
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -56,7 +56,7 @@
                 app:layout_constraintTop_toBottomOf="@id/main_content_line2">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/market_main_filter_detail_recyclerview"
+                    android:id="@+id/main_line3_recyclerview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@color/mirror_background"
@@ -98,14 +98,70 @@
                 </com.mirror.sdk.ui.market.widgets.MirrorExpandedButton>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <com.mirror.sdk.ui.market.widgets.NFTRecyclerView
-                android:id="@+id/market_main_nft_list"
+            <com.mirror.sdk.ui.market.widgets.MainBottomScrollView
+                android:id="@+id/main_bottom_parent"
                 android:layout_width="match_parent"
-                android:layout_height="800dp"
-                android:background="@color/mirror_background"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/main_content_line2" />
+                app:layout_constraintTop_toBottomOf="@id/main_content_line2">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/main_bottom_constraint"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.mirror.sdk.ui.market.widgets.MainRecyclerView
+                        android:id="@+id/main_bottom_recyclerview"
+                        android:layout_width="match_parent"
+                        android:layout_height="800dp"
+                        android:background="@color/mirror_background"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toTopOf="@id/market_main_bottom_loading">
+
+                    </com.mirror.sdk.ui.market.widgets.MainRecyclerView>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/market_main_bottom_loading"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="@color/mirror_background"
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/main_bottom_recyclerview">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="Loading..." />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.mirror.sdk.ui.market.widgets.MainBottomScrollView>
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/market_main_searchview_expand"
+                android:layout_width="match_parent"
+                android:layout_height="900dp"
+                android:background="@color/mirror_pure_white"
+                app:cardCornerRadius="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/market_main_searchview">
+
+<!--                <androidx.recyclerview.widget.RecyclerView-->
+<!--                    android:id="@+id/main_search_expand_recyclerview"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent" />-->
+            </androidx.cardview.widget.CardView>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/market_main_filter_expand_parent"

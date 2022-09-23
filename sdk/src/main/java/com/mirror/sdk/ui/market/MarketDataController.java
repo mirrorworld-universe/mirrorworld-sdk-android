@@ -22,6 +22,12 @@ public class MarketDataController {
         return instance;
     }
 
+    public int NFTNowPage = 1;
+
+    private MarketDataController(){
+        mNFTs = new ArrayList<>();
+    }
+
     //base data
     private List<CollectionInfo> mCollections;
     private List<NFTDetailData> mNFTs;
@@ -32,8 +38,8 @@ public class MarketDataController {
         mCollections = collections;
     }
 
-    public void setNFTs(List<NFTDetailData> nfts){
-        mNFTs = nfts;
+    public void addNFTs(List<NFTDetailData> nfts){
+        mNFTs.addAll(nfts);
     }
     public List<NFTDetailData> getNFTs(){ return mNFTs; }
 
