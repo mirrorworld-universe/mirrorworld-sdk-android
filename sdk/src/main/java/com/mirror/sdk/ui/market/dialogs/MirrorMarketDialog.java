@@ -406,12 +406,13 @@ public class MirrorMarketDialog extends DialogFragment {
         ViewGroup.LayoutParams params = mBottomParent.getLayoutParams();
         Display display = mActivity.getWindowManager().getDefaultDisplay();
 
-        int minues = 40;//searchview
+        int minues = 42;//searchview
         if(showLine3){
-            minues += 42;//line3
+            minues += 40;//line3
         }
 
-        int newHeight = display.getHeight() - MarketUtils.dpToPx(mActivity,minues);
+        int newHeight = (int) (display.getHeight() - MarketUtils.dp2px(minues));
+        Log.i("Screen change to :", String.valueOf(newHeight)+" totao height is:"+display.getHeight());
         params.height = newHeight;
     }
 
@@ -419,7 +420,7 @@ public class MirrorMarketDialog extends DialogFragment {
         ViewGroup.LayoutParams params = mNFTRecyclerView.getLayoutParams();
         Display display = mActivity.getWindowManager().getDefaultDisplay();
 
-        int minues = 40;//searchview
+        int minues = 42;//searchview
         if(showLine3){
             minues += 42;//line3
         }

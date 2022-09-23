@@ -19,6 +19,10 @@ import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.ui.market.dialogs.MirrorMarketDialog;
+import com.mirror.sdk.ui.market.model.NFTDetailData;
+import com.mirror.sdk.ui.sell.SellDialog;
+import com.mirror.sdk.ui.share.MirrorNoticeDialogType;
+import com.mirror.sdk.ui.share.MirrorResultNotice;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         initViewPage();
 
-        MirrorMarketDialog dialogAddGroup = new MirrorMarketDialog();
-        dialogAddGroup.Init(this);
+        MirrorResultNotice dialogAddGroup = new MirrorResultNotice(this);
+        dialogAddGroup.init(MirrorNoticeDialogType.SUCCESS,"Ops!","Success!");
         dialogAddGroup.show(this.getFragmentManager(), "Add group dialog");
     }
 

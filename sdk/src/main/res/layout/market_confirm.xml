@@ -13,6 +13,10 @@
         app:layout_constraintTop_toTopOf="parent"
         android:background="@color/mirror_pure_white"
         app:cardCornerRadius="20dp"
+        app:cardMaxElevation="0dp"
+        app:cardElevation="0dp"
+        app:cardUseCompatPadding="true"
+        app:cardPreventCornerOverlap="false"
         >
 
         <androidx.constraintlayout.widget.ConstraintLayout

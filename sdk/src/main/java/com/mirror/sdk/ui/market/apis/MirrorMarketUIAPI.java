@@ -3,6 +3,8 @@ package com.mirror.sdk.ui.market.apis;
 import android.app.Activity;
 
 import com.mirror.sdk.MirrorCallback;
+import com.mirror.sdk.ui.market.apis.listeners.GetSellSummaryListener;
+import com.mirror.sdk.ui.market.apis.responses.NFTSellSummary;
 import com.mirror.sdk.ui.market.enums.MarketFilterTypes;
 import com.mirror.sdk.ui.market.apis.listeners.GetCollectionListener;
 import com.mirror.sdk.ui.market.apis.listeners.GetFilterListener;
@@ -96,7 +98,7 @@ public class MirrorMarketUIAPI {
                     @Override
                     public void run() {
                         List<NFTDetailData> infos = new ArrayList<>();
-                        for(int i=0;i<10;i++){
+                        for(int i=0;i<5;i++){
                             NFTDetailData info = new NFTDetailData();
                             info.name = "Mirror Jump #"+page;
                             info.image = "https://storage.mirrorworld.fun/nft/6.png";
@@ -111,6 +113,19 @@ public class MirrorMarketUIAPI {
                 });
             }
         }).start();
+    }
+
+    public static void GetSellSummary(GetSellSummaryListener listener){
+        List<NFTSellSummary> summaries = new ArrayList<>();
+        NFTSellSummary s1 = new NFTSellSummary();
+        s1.name = "Service Fee";
+        s1.value = "4.25%";
+        NFTSellSummary s2 = new NFTSellSummary();
+        s2.name = "Listing/Cancel Fee";
+        s2.value = "Free";
+        summaries.add(s1);
+        summaries.add(s2);
+        listener.OnSuccess(summaries);
     }
 
     private static void GetRandomPNG(){

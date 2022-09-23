@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mirror.sdk.R;
 import com.mirror.sdk.ui.market.enums.MirrorMarketConfig;
 import com.mirror.sdk.ui.market.model.NFTDetailData;
+import com.mirror.sdk.ui.market.utils.GiveBitmap;
+import com.mirror.sdk.ui.market.utils.MarketUtils;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -91,7 +93,7 @@ public class MarketMainRecyclerAdapter  extends RecyclerView.Adapter<MarketMainR
 
         public void setData(NFTDetailData data) {
             mData = data;
-            startLoadImage(data.image,imageProgress,imageView);
+            MarketUtils.startLoadImage(handle,data.image,imageProgress,imageView);
             mTvNumber.setText(data.name);
 
             BigDecimal bg = new BigDecimal(data.price);
@@ -99,55 +101,11 @@ public class MarketMainRecyclerAdapter  extends RecyclerView.Adapter<MarketMainR
             mTvPrice.setText(String.valueOf(f1));
         }
 
-        public Bitmap getURLimage(String url) {
-            Bitmap bmp = null;
-            try {
-                URL myurl = new URL(url);
-                HttpURLConnection conn = (HttpURLConnection) myurl.openConnection();
-                conn.setConnectTimeout(6000);//设置超时
-                conn.setDoInput(true);
-                conn.setUseCaches(false);//不缓存
-                conn.connect();
-                InputStream is = conn.getInputStream();//获得图片的数据流
-                bmp = BitmapFactory.decodeStream(is);//读取图像数据
-                is.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return bmp;
-        }
-
-        class IvUrl{
-            public ImageView imageView;
-            public View imageProgress;
-            public Bitmap bitmap;
-        }
-
-        public void startLoadImage(String url,View imageProgress,ImageView imageView){
-            imageProgress.setVisibility(View.VISIBLE);
-            imageView.setVisibility(View.GONE);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Bitmap bmp = getURLimage(url);
-                    Message msg = new Message();
-                    msg.what = 0;
-                    IvUrl ivUrl = new IvUrl();
-                    ivUrl.imageView = imageView;
-                    ivUrl.imageProgress = imageProgress;
-                    ivUrl.bitmap = bmp;
-                    msg.obj = ivUrl;
-                    handle.sendMessage(msg);
-                }
-            }).start();
-        }
-
         private Handler handle = new Handler() {
             public void handleMessage(Message msg) {
                 switch (msg.what) {
                     case 0:
-                        IvUrl ivUrl=(IvUrl)msg.obj;
+                        GiveBitmap ivUrl=(GiveBitmap)msg.obj;
                         ivUrl.imageView.setImageBitmap(ivUrl.bitmap);
 
                         imageProgress.setVisibility(View.GONE);
