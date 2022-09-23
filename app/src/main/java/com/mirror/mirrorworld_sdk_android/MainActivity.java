@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         initViewPage();
 
         MirrorResultNotice dialogAddGroup = new MirrorResultNotice(this);
-        dialogAddGroup.init(MirrorNoticeDialogType.SUCCESS,"Ops!","Success!");
+        dialogAddGroup.init(MirrorNoticeDialogType.WAITTING,"Ops!","Success!");
         dialogAddGroup.show(this.getFragmentManager(), "Add group dialog");
     }
 

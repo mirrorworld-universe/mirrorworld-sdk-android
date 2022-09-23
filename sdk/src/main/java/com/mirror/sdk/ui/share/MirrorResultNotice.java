@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -34,7 +35,7 @@ public class MirrorResultNotice extends DialogFragment {
     private TextView mTv2;
     private Dialog mDialog;
     private ImageView mImageView;
-    private ProgressBar mProgress;
+    private View mProgress;
 
     public MirrorResultNotice(Activity activity){
         mActivity = activity;
@@ -51,6 +52,7 @@ public class MirrorResultNotice extends DialogFragment {
         super.onStart();
         Dialog dialog = getDialog();
         if (dialog != null) {
+            dialog.setCanceledOnTouchOutside(false);
             Window window = dialog.getWindow();
             if (window != null) {
 //                int width = ViewGroup.LayoutParams.MATCH_PARENT;
@@ -70,6 +72,13 @@ public class MirrorResultNotice extends DialogFragment {
         mProgress = totalView.findViewById(R.id.notice_progress);
         mTv1 = totalView.findViewById(R.id.notice_tv1);
         mTv2 = totalView.findViewById(R.id.notice_tv2);
+        ImageButton button = totalView.findViewById(R.id.notice_button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDialog.dismiss();
+            }
+        });
 
         mTv1.setText(mNotice1);
         mTv2.setText(mNotice2);
@@ -90,7 +99,7 @@ public class MirrorResultNotice extends DialogFragment {
         mDialog = builder.create();
         mDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
-        setCancelable(true);
+//        setCancelable(true);
 
         return mDialog;
     }
