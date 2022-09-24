@@ -3,12 +3,13 @@
     android:layout_width="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/mirror_filter_button_gray"
     app:cardCornerRadius="12dp">
 
     <RelativeLayout
         android:layout_width="335dp"
         android:layout_height="379dp"
-        android:background="@color/cardview_dark_background">
+        android:background="@color/mirror_pure_white">
 
         <ImageView
             android:layout_width="295dp"

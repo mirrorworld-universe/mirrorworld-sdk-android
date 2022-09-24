@@ -9,6 +9,7 @@
     <color name="mirror_font_blue">#386EEC</color>
     <color name="mirror_filter_button_blue">#F0F8FF</color>
     <color name="mirror_filter_button_gray">#DCDCDC</color>
+    <color name="mirror_background_color">#e6e6e6</color>
 
     <color name="colorPrimary">#3F51B5</color>
     <color name="dDVTransparentGray">#99000000</color>

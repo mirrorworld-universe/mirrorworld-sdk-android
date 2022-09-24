@@ -4,6 +4,7 @@ package com.mirror.mirrorworld_sdk_android;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,7 +30,7 @@ public class UITest extends AppCompatActivity {
     private RecyclerView mutiple;
     private int currentHeight = 60;
 
-    private RelativeLayout customTabs;
+    private LinearLayoutCompat customTabs;
 
 
 
@@ -60,7 +61,7 @@ public class UITest extends AppCompatActivity {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 currentHeight+=dy;
-                AlphaMapping();
+               // AlphaMapping();
                 super.onScrolled(recyclerView, dx, dy);
             }
         });

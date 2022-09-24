@@ -26,7 +26,7 @@ public class HeaderAdapter implements Adapter<List<BaseType>>{
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent) {
 
-        View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.header,parent,false);
+        View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.mltiple_header,parent,false);
         return new HeaderAdapter.HeaderViewHolder(view);
     }
 
