@@ -1,6 +1,8 @@
 package com.mirror.sdk.ui.share;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -52,6 +54,7 @@ public class CornerButton extends CardView {
 
     private void initViews(Context context){
         LayoutInflater.from(context).inflate(R.layout.coner_button,this);
+        setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         mTextView = findViewById(R.id.corner_button_tv);
         mImageButton = findViewById(R.id.corner_button_ib);
 

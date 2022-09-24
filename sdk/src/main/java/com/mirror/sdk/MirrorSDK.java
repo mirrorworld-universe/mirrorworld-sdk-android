@@ -729,19 +729,73 @@ public class MirrorSDK {
     }
 
     public void OpenMarket(){
-        MirrorMarketDialog dialogAddGroup = new MirrorMarketDialog();
-        dialogAddGroup.Init(mActivity);
-        dialogAddGroup.show(mActivity.getFragmentManager(), "Add group dialog");
+        if(apiKey == ""){
+            if(mActivity == null){
+                logFlow("Must init sdk first!");
+                return;
+            }
+            apiKey = getSavedString(mActivity,localKeyAppId);
+        }
+        if(apiKey == ""){
+            logFlow("Must set app id first!");
+            return;
+        }
+
+        if(accessToken == ""){
+            logFlow("No access token,start get flow");
+            GetAccessToken(mActivity, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    accessToken = result;
+                    MirrorMarketDialog dialogAddGroup = new MirrorMarketDialog();
+                    dialogAddGroup.Init(mActivity);
+                    dialogAddGroup.show(mActivity.getFragmentManager(), "Add group dialog");
+                }
+            });
+        }else{
+            MirrorMarketDialog dialogAddGroup = new MirrorMarketDialog();
+            dialogAddGroup.Init(mActivity);
+            dialogAddGroup.show(mActivity.getFragmentManager(), "Add group dialog");
+        }
     }
 
     public void OpenSellPage(String mintAddress,NFTJsonObject nftObject){
-        SellDialog dialog = new SellDialog();
-        NFTDetailData uiData = new NFTDetailData();
-        uiData.image = nftObject.image;
-        uiData.name = nftObject.name;
-        uiData.mint_address = mintAddress;
-        uiData.price = 0.0;
-        dialog.init(mActivity,uiData);
+        if(apiKey == ""){
+            if(mActivity == null){
+                logFlow("Must init sdk first!");
+                return;
+            }
+            apiKey = getSavedString(mActivity,localKeyAppId);
+        }
+        if(apiKey == ""){
+            logFlow("Must set app id first!");
+            return;
+        }
+
+        if(accessToken == ""){
+            logFlow("No access token,start get flow");
+            GetAccessToken(mActivity, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    accessToken = result;
+                    SellDialog dialog = new SellDialog();
+                    NFTDetailData uiData = new NFTDetailData();
+                    uiData.image = nftObject.image;
+                    uiData.name = nftObject.name;
+                    uiData.mint_address = mintAddress;
+                    uiData.price = 0.0;
+                    dialog.init(mActivity,uiData);
+                }
+            });
+        }else{
+            SellDialog dialog = new SellDialog();
+            NFTDetailData uiData = new NFTDetailData();
+            uiData.image = nftObject.image;
+            uiData.name = nftObject.name;
+            uiData.mint_address = mintAddress;
+            uiData.price = 0.0;
+            dialog.init(mActivity,uiData);
+        }
     }
 
     public void GetWallet(MirrorCallback mirrorCallback){

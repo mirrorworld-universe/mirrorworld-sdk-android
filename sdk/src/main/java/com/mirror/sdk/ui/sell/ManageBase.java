@@ -3,6 +3,8 @@ package com.mirror.sdk.ui.sell;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -30,6 +32,7 @@ import com.mirror.sdk.ui.market.adapters.SellRecyclerViewAdapter;
 import com.mirror.sdk.ui.market.apis.MirrorMarketUIAPI;
 import com.mirror.sdk.ui.market.apis.listeners.GetSellSummaryListener;
 import com.mirror.sdk.ui.market.apis.responses.NFTSellSummary;
+import com.mirror.sdk.ui.market.enums.MirrorMarketConfig;
 import com.mirror.sdk.ui.market.model.NFTDetailData;
 import com.mirror.sdk.ui.market.utils.GiveBitmap;
 import com.mirror.sdk.ui.market.utils.MarketUtils;
@@ -68,6 +71,21 @@ public class ManageBase extends DialogFragment {
         mNFTData = data;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            dialog.setCanceledOnTouchOutside(false);
+            Window window = dialog.getWindow();
+            if (window != null) {
+//                int width = ViewGroup.LayoutParams.MATCH_PARENT;
+//                int height = ViewGroup.LayoutParams.MATCH_PARENT;
+//                window.setLayout(width, height);
+                if(MirrorMarketConfig.FULL_SCREEN_MODE) window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            }
+        }
+    }
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -51,18 +51,18 @@ public class MainActivity extends AppCompatActivity {
 //        dialogAddGroup.init(this,data);
 //        dialogAddGroup.show(this.getFragmentManager(), "Add group dialog");
 
-//        ManageDialog dialogAddGroup = new ManageDialog();
-//        NFTDetailData data = new NFTDetailData();
-//        data.name = "This is new name";
-//        data.price = 0.0;
-//        data.image = "https://storage.mirrorworld.fun/nft/1.png";
-//        data.mint_address = "fake address";
-//        dialogAddGroup.init(this,data);
-//        dialogAddGroup.show(this.getFragmentManager(),"aaa");
+        ManageDialog dialogAddGroup = new ManageDialog();
+        NFTDetailData data = new NFTDetailData();
+        data.name = "This is new name";
+        data.price = 0.0;
+        data.image = "https://storage.mirrorworld.fun/nft/1.png";
+        data.mint_address = "fake address";
+        dialogAddGroup.init(this,data);
+        dialogAddGroup.show(this.getFragmentManager(),"aaa");
 
-//            MirrorResultNotice dialog = new MirrorResultNotice(this);
-//            dialog.init(MirrorNoticeDialogType.SUCCESS,"dfadf","asdfasd");
-//            dialog.show(this.getFragmentManager(),"aaa");
+            MirrorResultNotice dialog = new MirrorResultNotice(this);
+            dialog.init(MirrorNoticeDialogType.SUCCESS,"dfadf","asdfasd");
+            dialog.show(this.getFragmentManager(),"aaa");
     }
 
     private void initViewPage(){
