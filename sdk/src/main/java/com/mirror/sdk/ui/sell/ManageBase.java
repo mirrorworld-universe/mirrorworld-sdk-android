@@ -55,7 +55,7 @@ public class ManageBase extends DialogFragment {
     protected TextView mNotice;
     protected EditText mEditText;
     protected ViewGroup mEditHint;
-    protected ImageButton mConfirmButton;
+    protected CornerButton mConfirmButton;
     protected CornerButton mManageCancelButton;
     protected CornerButton mManageConfirmButton;
      protected ViewGroup mSellButtonParent;
@@ -99,7 +99,7 @@ public class ManageBase extends DialogFragment {
         mNotice = totalView.findViewById(R.id.sell_line2_notice);
         mEditText = totalView.findViewById(R.id.sell_line2_et);
         mEditHint = totalView.findViewById(R.id.sell_line2_ex_tint);
-        mConfirmButton = totalView.findViewById(R.id.sell_button);
+        mConfirmButton = totalView.findViewById(R.id.sell_confirm);
         mManageCancelButton = totalView.findViewById(R.id.sell_managebuttons_cancel);
         mManageConfirmButton = totalView.findViewById(R.id.sell_managebuttons_confirm);
         mSellButtonParent = totalView.findViewById(R.id.sell_sellbuttons_parent);
@@ -158,7 +158,7 @@ public class ManageBase extends DialogFragment {
                 }
             }
         });
-        mConfirmButton.setOnClickListener(new View.OnClickListener() {
+        mConfirmButton.init(false,"Confirm",new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startListNFT();

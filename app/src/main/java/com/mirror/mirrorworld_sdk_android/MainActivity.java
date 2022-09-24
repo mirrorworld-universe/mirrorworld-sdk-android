@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.Init(this);
         dialog.show(this.getFragmentManager(),"market");
 
-        ManageDialog dialogAddGroup = new ManageDialog();
+        SellDialog dialogAddGroup = new SellDialog();
         NFTDetailData data = new NFTDetailData();
         data.name = "This is new name";
         data.price = 0.0;
