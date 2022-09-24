@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat android:layout_height="wrap_content"
+    android:layout_width="335dp"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingBottom="60dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="Activities"
+        />
+
+    <androidx.cardview.widget.CardView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        app:cardCornerRadius="12dp"
+
+        android:background="@color/mirror_pure_white">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="20dp"
+            android:orientation="vertical">
+
+          <androidx.appcompat.widget.LinearLayoutCompat
+              android:layout_width="match_parent"
+              android:layout_height="75dp"
+
+              android:orientation="horizontal"
+              android:background="@color/mirror_green">
+
+
+              <RelativeLayout
+                  android:layout_width="110dp"
+                  android:layout_height="match_parent">
+                  <TextView
+                      android:layout_height="wrap_content"
+                      android:layout_width="wrap_content"
+                      android:text="dfsaf"
+                      android:textSize="26dp"
+                      android:layout_centerInParent="true"/>
+              </RelativeLayout>
+
+              <RelativeLayout
+                  android:layout_width="110dp"
+                  android:layout_height="match_parent">
+                  <TextView
+                      android:layout_height="wrap_content"
+                      android:layout_width="wrap_content"
+                      android:text="dfsaf"
+                      android:textSize="26dp"
+                      android:layout_centerInParent="true"/>
+              </RelativeLayout>
+
+              <RelativeLayout
+                  android:layout_width="110dp"
+                  android:layout_height="match_parent">
+                  <TextView
+                      android:layout_height="wrap_content"
+                      android:layout_width="wrap_content"
+                      android:text="dfsaf"
+                      android:textSize="26dp"
+                      android:layout_centerInParent="true"/>
+              </RelativeLayout>
+
+
+              <ListView
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                 >
+
+              </ListView>
+
+          </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+    </androidx.cardview.widget.CardView>
+
+
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>
+
