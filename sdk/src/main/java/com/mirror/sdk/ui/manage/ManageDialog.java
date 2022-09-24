@@ -1,4 +1,4 @@
-package com.mirror.sdk.ui.sell;
+package com.mirror.sdk.ui.manage;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -6,7 +6,6 @@ import android.app.DialogFragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -17,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,16 +33,19 @@ import com.mirror.sdk.ui.market.apis.responses.NFTSellSummary;
 import com.mirror.sdk.ui.market.model.NFTDetailData;
 import com.mirror.sdk.ui.market.utils.GiveBitmap;
 import com.mirror.sdk.ui.market.utils.MarketUtils;
+import com.mirror.sdk.ui.sell.ManageBase;
+import com.mirror.sdk.ui.share.CornerButton;
 import com.mirror.sdk.ui.share.MirrorConfirmDialog;
 import com.mirror.sdk.ui.share.MirrorNoticeDialogType;
 import com.mirror.sdk.ui.share.MirrorResultNotice;
 
 import java.util.List;
 
-public class SellDialog extends ManageBase {
+public class ManageDialog extends ManageBase {
+
     @Override
     protected void initWithDifferentUse() {
-        mSellButtonParent.setVisibility(View.VISIBLE);
-        mManageButtonParent.setVisibility(View.GONE);
+        mSellButtonParent.setVisibility(View.GONE);
+        mManageButtonParent.setVisibility(View.VISIBLE);
     }
 }

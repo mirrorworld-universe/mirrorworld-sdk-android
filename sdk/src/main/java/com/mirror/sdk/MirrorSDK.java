@@ -45,18 +45,22 @@ import com.mirror.sdk.listener.wallet.GetWalletTokenListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionBySigListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
 import com.mirror.sdk.listener.wallet.TransferSOLListener;
+import com.mirror.sdk.models.NFTJsonObject;
 import com.mirror.sdk.response.CommonResponse;
 import com.mirror.sdk.response.auth.UserResponse;
 import com.mirror.sdk.response.market.ActivityOfSingleNftResponse;
 import com.mirror.sdk.response.market.ListingResponse;
 import com.mirror.sdk.response.market.MintResponse;
 import com.mirror.sdk.response.market.MultipleNFTsResponse;
+import com.mirror.sdk.response.market.NFTObject;
 import com.mirror.sdk.response.market.SingleNFTResponse;
 import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
 import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
 import com.mirror.sdk.response.wallet.TransferResponse;
 import com.mirror.sdk.ui.WebViewDialog;
 import com.mirror.sdk.ui.market.dialogs.MirrorMarketDialog;
+import com.mirror.sdk.ui.market.model.NFTDetailData;
+import com.mirror.sdk.ui.sell.SellDialog;
 import com.mirror.sdk.utils.MirrorGsonUtils;
 
 import org.json.JSONArray;
@@ -728,6 +732,16 @@ public class MirrorSDK {
         MirrorMarketDialog dialogAddGroup = new MirrorMarketDialog();
         dialogAddGroup.Init(mActivity);
         dialogAddGroup.show(mActivity.getFragmentManager(), "Add group dialog");
+    }
+
+    public void OpenSellPage(String mintAddress,NFTJsonObject nftObject){
+        SellDialog dialog = new SellDialog();
+        NFTDetailData uiData = new NFTDetailData();
+        uiData.image = nftObject.image;
+        uiData.name = nftObject.name;
+        uiData.mint_address = mintAddress;
+        uiData.price = 0.0;
+        dialog.init(mActivity,uiData);
     }
 
     public void GetWallet(MirrorCallback mirrorCallback){
