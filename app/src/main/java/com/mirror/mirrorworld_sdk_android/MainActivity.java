@@ -43,23 +43,27 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         initViewPage();
 
-//        SellDialog dialogAddGroup = new SellDialog();
-//        NFTDetailData data = new NFTDetailData();
-//        data.name = "This is new name";
-//        data.price = 0.0;
-//        data.image = "https://storage.mirrorworld.fun/nft/1.png";
-//        data.mint_address = "fake address";
-//        dialogAddGroup.init(this,data);
-//        dialogAddGroup.show(this.getFragmentManager(), "Add group dialog");
+        MirrorMarketDialog dialog = new MirrorMarketDialog();
+        dialog.Init(this);
+        dialog.show(this.getFragmentManager(),"market");
 
-//        TransferDialog dialogAddGroup = new TransferDialog();
+        ManageDialog dialogAddGroup = new ManageDialog();
+        NFTDetailData data = new NFTDetailData();
+        data.name = "This is new name";
+        data.price = 0.0;
+        data.image = "https://storage.mirrorworld.fun/nft/1.png";
+        data.mint_address = "fake address";
+        dialogAddGroup.init(this,data);
+        dialogAddGroup.show(this.getFragmentManager(), "Add group dialog");
+
+//        TransferDialog transferDialog = new TransferDialog();
 //        NFTDetailData data = new NFTDetailData();
 //        data.name = "This is new name";
 //        data.price = 0.0;
 //        data.image = "https://storage.mirrorworld.fun/nft/1.png";
 //        data.mint_address = "fake address";
-//        dialogAddGroup.init(this,data);
-//        dialogAddGroup.show(this.getFragmentManager(),"aaa");
+//        transferDialog.init(this,data);
+//        transferDialog.show(this.getFragmentManager(),"aaa");
 
 //            MirrorResultNotice dialog = new MirrorResultNotice(this);
 //            dialog.init(MirrorNoticeDialogType.SUCCESS,"dfadf","asdfasd");

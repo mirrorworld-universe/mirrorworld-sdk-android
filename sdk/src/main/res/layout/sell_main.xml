@@ -126,7 +126,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/transfer_line2_tv" >
+                        app:layout_constraintTop_toBottomOf="@id/sell_line2_tv" >
 
                         <EditText
                             android:id="@+id/sell_line2_et"
@@ -204,7 +204,6 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:visibility="gone"
                 android:id="@+id/sell_sellbuttons_parent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
