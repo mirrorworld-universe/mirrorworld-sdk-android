@@ -44,5 +44,6 @@ public class SellDialog extends ManageBase {
     protected void initWithDifferentUse() {
         mSellButtonParent.setVisibility(View.VISIBLE);
         mManageButtonParent.setVisibility(View.GONE);
+        mTitleTextView.setText("Sell");
     }
 }

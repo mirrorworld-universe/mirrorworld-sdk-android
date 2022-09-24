@@ -22,6 +22,7 @@ import com.mirror.sdk.ui.manage.ManageDialog;
 import com.mirror.sdk.ui.market.dialogs.MirrorMarketDialog;
 import com.mirror.sdk.ui.market.model.NFTDetailData;
 import com.mirror.sdk.ui.sell.SellDialog;
+import com.mirror.sdk.ui.sell.TransferDialog;
 import com.mirror.sdk.ui.share.MirrorNoticeDialogType;
 import com.mirror.sdk.ui.share.MirrorResultNotice;
 
@@ -51,18 +52,18 @@ public class MainActivity extends AppCompatActivity {
 //        dialogAddGroup.init(this,data);
 //        dialogAddGroup.show(this.getFragmentManager(), "Add group dialog");
 
-        ManageDialog dialogAddGroup = new ManageDialog();
-        NFTDetailData data = new NFTDetailData();
-        data.name = "This is new name";
-        data.price = 0.0;
-        data.image = "https://storage.mirrorworld.fun/nft/1.png";
-        data.mint_address = "fake address";
-        dialogAddGroup.init(this,data);
-        dialogAddGroup.show(this.getFragmentManager(),"aaa");
+//        TransferDialog dialogAddGroup = new TransferDialog();
+//        NFTDetailData data = new NFTDetailData();
+//        data.name = "This is new name";
+//        data.price = 0.0;
+//        data.image = "https://storage.mirrorworld.fun/nft/1.png";
+//        data.mint_address = "fake address";
+//        dialogAddGroup.init(this,data);
+//        dialogAddGroup.show(this.getFragmentManager(),"aaa");
 
-            MirrorResultNotice dialog = new MirrorResultNotice(this);
-            dialog.init(MirrorNoticeDialogType.SUCCESS,"dfadf","asdfasd");
-            dialog.show(this.getFragmentManager(),"aaa");
+//            MirrorResultNotice dialog = new MirrorResultNotice(this);
+//            dialog.init(MirrorNoticeDialogType.SUCCESS,"dfadf","asdfasd");
+//            dialog.show(this.getFragmentManager(),"aaa");
     }
 
     private void initViewPage(){

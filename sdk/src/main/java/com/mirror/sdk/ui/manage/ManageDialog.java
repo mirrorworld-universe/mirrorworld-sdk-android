@@ -47,5 +47,6 @@ public class ManageDialog extends ManageBase {
     protected void initWithDifferentUse() {
         mSellButtonParent.setVisibility(View.GONE);
         mManageButtonParent.setVisibility(View.VISIBLE);
+        mTitleTextView.setText("Manage List");
     }
 }

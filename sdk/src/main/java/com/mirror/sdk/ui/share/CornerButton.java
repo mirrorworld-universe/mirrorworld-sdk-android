@@ -21,6 +21,8 @@ public class CornerButton extends CardView {
     private ImageButton mImageButton;
     private int mFormalColor;
     private int mPressColor;
+    private int mUnClickableColor;
+    private boolean mUnClickable;
     public CornerButton(@NonNull Context context) {
         super(context);
         initViews(context);
@@ -34,6 +36,17 @@ public class CornerButton extends CardView {
     public CornerButton(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initViews(context);
+    }
+
+    public void setUnclickable(int normalColor){
+        mUnClickable = true;
+        mUnClickableColor = getResources().getColor(normalColor);
+        mImageButton.setBackgroundColor(mUnClickableColor);
+    }
+
+    public void setClickable(){
+        mUnClickable = false;
+        mImageButton.setBackgroundColor(mFormalColor);
     }
 
     public void init(boolean isWhiteStyle,String buttonStr, OnClickListener listener){
@@ -62,9 +75,17 @@ public class CornerButton extends CardView {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction() == MotionEvent.ACTION_DOWN){
-                    mImageButton.setBackgroundColor(mPressColor);
+                    if(mUnClickable){
+                        mImageButton.setBackgroundColor(mUnClickableColor);
+                    }else {
+                        mImageButton.setBackgroundColor(mPressColor);
+                    }
                 }else if(event.getAction() == MotionEvent.ACTION_UP){
-                    mImageButton.setBackgroundColor(mFormalColor);
+                    if(mUnClickable){
+                        mImageButton.setBackgroundColor(mUnClickableColor);
+                    }else {
+                        mImageButton.setBackgroundColor(mFormalColor);
+                    }
                 }
                 return false;
             }

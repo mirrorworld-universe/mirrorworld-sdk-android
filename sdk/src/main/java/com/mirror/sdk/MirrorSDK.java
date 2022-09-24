@@ -61,6 +61,7 @@ import com.mirror.sdk.ui.WebViewDialog;
 import com.mirror.sdk.ui.market.dialogs.MirrorMarketDialog;
 import com.mirror.sdk.ui.market.model.NFTDetailData;
 import com.mirror.sdk.ui.sell.SellDialog;
+import com.mirror.sdk.ui.sell.TransferDialog;
 import com.mirror.sdk.utils.MirrorGsonUtils;
 
 import org.json.JSONArray;
@@ -789,6 +790,45 @@ public class MirrorSDK {
             });
         }else{
             SellDialog dialog = new SellDialog();
+            NFTDetailData uiData = new NFTDetailData();
+            uiData.image = nftObject.image;
+            uiData.name = nftObject.name;
+            uiData.mint_address = mintAddress;
+            uiData.price = 0.0;
+            dialog.init(mActivity,uiData);
+        }
+    }
+
+    public void OpenTransferPage(String mintAddress,NFTJsonObject nftObject){
+        if(apiKey == ""){
+            if(mActivity == null){
+                logFlow("Must init sdk first!");
+                return;
+            }
+            apiKey = getSavedString(mActivity,localKeyAppId);
+        }
+        if(apiKey == ""){
+            logFlow("Must set app id first!");
+            return;
+        }
+
+        if(accessToken == ""){
+            logFlow("No access token,start get flow");
+            GetAccessToken(mActivity, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    accessToken = result;
+                    TransferDialog dialog = new TransferDialog();
+                    NFTDetailData uiData = new NFTDetailData();
+                    uiData.image = nftObject.image;
+                    uiData.name = nftObject.name;
+                    uiData.mint_address = mintAddress;
+                    uiData.price = 0.0;
+                    dialog.init(mActivity,uiData);
+                }
+            });
+        }else{
+            TransferDialog dialog = new TransferDialog();
             NFTDetailData uiData = new NFTDetailData();
             uiData.image = nftObject.image;
             uiData.name = nftObject.name;

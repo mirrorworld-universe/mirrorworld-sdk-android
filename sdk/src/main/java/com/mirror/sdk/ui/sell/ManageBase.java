@@ -18,7 +18,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -61,6 +60,8 @@ public class ManageBase extends DialogFragment {
     protected CornerButton mManageConfirmButton;
      protected ViewGroup mSellButtonParent;
     protected ViewGroup mManageButtonParent;
+    protected TextView mTitleTextView;
+    protected TextView mNameTextView;
 
     public ManageBase(){
 
@@ -103,6 +104,8 @@ public class ManageBase extends DialogFragment {
         mManageConfirmButton = totalView.findViewById(R.id.sell_managebuttons_confirm);
         mSellButtonParent = totalView.findViewById(R.id.sell_sellbuttons_parent);
         mManageButtonParent = totalView.findViewById(R.id.sell_managebuttons_parent);
+        mTitleTextView = totalView.findViewById(R.id.sell_line1_tv);
+        mNameTextView = totalView.findViewById(R.id.sell_line2_tv);
 
         initViews(totalView);
         initWithDifferentUse();
@@ -122,6 +125,7 @@ public class ManageBase extends DialogFragment {
     }
 
     private void initViews(View totalView){
+        mNameTextView.setText(mNFTData.name);
         ImageButton closeButton = totalView.findViewById(R.id.sell_line1_close);
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override

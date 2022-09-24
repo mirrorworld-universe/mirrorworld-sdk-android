@@ -31,7 +31,7 @@
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <ImageButton
-                    android:id="@+id/sell_line1_close"
+                    android:id="@+id/transfer_line1_close"
                     android:layout_marginEnd="20dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -41,11 +41,11 @@
                     app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
 
                 <TextView
-                    android:id="@+id/sell_line1_tv"
+                    android:id="@+id/transfer_line1_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:text="Sell"
+                    android:text="Transfer"
                     android:textSize="26dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -65,7 +65,7 @@
                 app:layout_constraintTop_toBottomOf="@id/transfer_line1">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/sell_line2_content"
+                    android:id="@+id/transfer_line2_content"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
@@ -84,7 +84,7 @@
                             android:layout_width="200dp"
                             android:layout_height="200dp">
                             <ProgressBar
-                                android:id="@+id/sell_line2_progress"
+                                android:id="@+id/transfer_line2_progress"
                                 style="?android:attr/progressBarStyle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -94,7 +94,7 @@
                                 app:layout_constraintBottom_toBottomOf="parent"/>
 
                             <ImageView
-                                android:id="@+id/sell_line2_iv"
+                                android:id="@+id/transfer_line2_iv"
                                 android:layout_width="200dp"
                                 android:layout_height="200dp"
                                 tools:srcCompat="@tools:sample/avatars"
@@ -105,7 +105,7 @@
                     </androidx.cardview.widget.CardView>
 
                     <TextView
-                        android:id="@+id/sell_line2_tv"
+                        android:id="@+id/transfer_line2_tv"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
@@ -129,7 +129,7 @@
                         app:layout_constraintTop_toBottomOf="@id/transfer_line2_tv" >
 
                         <EditText
-                            android:id="@+id/sell_line2_et"
+                            android:id="@+id/transfer_line2_et"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:ems="10"
@@ -137,148 +137,31 @@
                             android:text=""
                             android:gravity="center"/>
 
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/sell_line2_ex_tint"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            app:layout_constraintStart_toStartOf="parent"
+                        <TextView
+                            android:id="@+id/transfer_line2_et_hint"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="SOL Address"
+                            android:textColor="@color/mirror_filter_button_gray"
+                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent">
-
-                            <ImageView
-                                android:id="@+id/sell_line2_et_iv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:srcCompat="@drawable/ic_icon_solana"
-                                app:layout_constraintEnd_toStartOf="@id/transfer_line2_et_tv"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"/>
-
-                            <TextView
-                                android:id="@+id/transfer_line2_et_tv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Selling Price"
-                                android:textColor="@color/mirror_filter_button_gray"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="@id/sell_line2_et_iv"/>
-                        </androidx.constraintlayout.widget.ConstraintLayout>
+                            app:layout_constraintStart_toStartOf="parent"/>
                     </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <TextView
-                        android:id="@+id/sell_line2_notice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="TextView"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        android:textColor="@color/mirror_sell_notice"
-                        app:layout_constraintTop_toBottomOf="@id/transfer_line2_et_parent"
-                        />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/sell_line3"
-                android:background="@color/mirror_sell_front"
-                app:cardCornerRadius="20dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_width="match_parent"
+            <com.mirror.sdk.ui.share.CornerButton
+                android:id="@+id/transfer_button"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/transfer_line2"
-                >
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/sell_line3_recyclerview"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:visibility="gone"
-                android:id="@+id/sell_sellbuttons_parent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_constraintTop_toBottomOf="@id/sell_line3"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                >
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="200dp"
-                    android:layout_height="44dp"
-                    app:cardCornerRadius="100dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <ImageButton
-                        android:id="@+id/sell_button"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:background="@color/mirror_font_blue"
-                        android:text="Button" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="Confirm"
-                        android:textColor="@color/mirror_pure_white"
-                        android:textSize="16dp"/>
-                </androidx.cardview.widget.CardView>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <LinearLayout
-                android:id="@+id/sell_managebuttons_parent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/sell_line3">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@android:color/transparent">
-
-                    <com.mirror.sdk.ui.share.CornerButton
-                        android:id="@+id/sell_managebuttons_cancel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"></com.mirror.sdk.ui.share.CornerButton>
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
-
-                    <com.mirror.sdk.ui.share.CornerButton
-                        android:id="@+id/sell_managebuttons_confirm"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"></com.mirror.sdk.ui.share.CornerButton>
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </LinearLayout>
+                app:layout_constraintBottom_toBottomOf="parent"></com.mirror.sdk.ui.share.CornerButton>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

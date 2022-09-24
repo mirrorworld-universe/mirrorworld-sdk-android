@@ -13,6 +13,7 @@
     <color name="mirror_sell_notice">#386EEC</color>
     <color name="mirror_button_blue">#386EEC</color>
     <color name="mirror_button_blue_press">#4D61B3</color>
+    <color name="mirror_button_blue_unvailable">#C6E2FF</color>
     <color name="mirror_button_white">#FFFFFF</color>
     <color name="mirror_button_white_press">#CFCFCF</color>
 
