@@ -19,6 +19,7 @@ import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.ui.manage.ManageDialog;
+import com.mirror.sdk.ui.market.dialogs.MarketTest;
 import com.mirror.sdk.ui.market.dialogs.MirrorMarketDialog;
 import com.mirror.sdk.ui.market.model.NFTDetailData;
 import com.mirror.sdk.ui.sell.SellDialog;
@@ -43,18 +44,18 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         initViewPage();
 
-        MirrorMarketDialog dialog = new MirrorMarketDialog();
+        MarketTest dialog = new MarketTest();
         dialog.Init(this);
         dialog.show(this.getFragmentManager(),"market");
 
-        SellDialog dialogAddGroup = new SellDialog();
-        NFTDetailData data = new NFTDetailData();
-        data.name = "This is new name";
-        data.price = 0.0;
-        data.image = "https://storage.mirrorworld.fun/nft/1.png";
-        data.mint_address = "fake address";
-        dialogAddGroup.init(this,data);
-        dialogAddGroup.show(this.getFragmentManager(), "Add group dialog");
+//        SellDialog dialogAddGroup = new SellDialog();
+//        NFTDetailData data = new NFTDetailData();
+//        data.name = "This is new name";
+//        data.price = 0.0;
+//        data.image = "https://storage.mirrorworld.fun/nft/1.png";
+//        data.mint_address = "fake address";
+//        dialogAddGroup.init(this,data);
+//        dialogAddGroup.show(this.getFragmentManager(), "Add group dialog");
 
 //        TransferDialog transferDialog = new TransferDialog();
 //        NFTDetailData data = new NFTDetailData();

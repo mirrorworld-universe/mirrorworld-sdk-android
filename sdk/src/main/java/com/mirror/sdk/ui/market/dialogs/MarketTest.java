@@ -52,7 +52,7 @@ import com.mirror.sdk.ui.market.widgets.OnExpandedButtonClick;
 
 import java.util.List;
 
-public class MirrorMarketDialog extends DialogFragment {
+public class MarketTest extends DialogFragment {
 
     Activity mActivity = null;
     boolean mInited = false;
@@ -155,7 +155,7 @@ public class MirrorMarketDialog extends DialogFragment {
     }
 
     private void initNFTRecyclerView(){
-        updateBottomHeight();
+        updateNFTRecyclerViewHeight();
         mNFTRecyclerView.init(mActivity, new MainRecyclerView.OnBottomListener() {
             @Override
             public void OnBottom() {
@@ -378,28 +378,28 @@ public class MirrorMarketDialog extends DialogFragment {
     private void openLine3(){
         showLine3 = true;
         mLine3Parent.setVisibility(View.VISIBLE);
-        updateBottomHeight();
+        updateNFTRecyclerViewHeight();
     }
 
     private void closeLine3(){
         showLine3 = false;
         mLine3Parent.setVisibility(View.GONE);
-        updateBottomHeight();
+        updateNFTRecyclerViewHeight();
     }
 
 
     private void openLoading(){
         showLoading = true;
-        mLoadingView.setVisibility(View.VISIBLE);
-        updateBottomHeight();
+//        mLoadingView.setVisibility(View.VISIBLE);
+        updateNFTRecyclerViewHeight();
         startRequestNFT();
     }
 
     private void closeLoading(){
         showLoading = false;
-        mLoadingView.setVisibility(View.GONE);
+//        mLoadingView.setVisibility(View.GONE);
         mNFTRecyclerView.scrollBy(0,MarketUtils.dpToPx(mActivity,50));
-        updateBottomHeight();
+        updateNFTRecyclerViewHeight();
     }
 
     private void updateBottomHeight(){
