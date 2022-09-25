@@ -1,187 +1,196 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat android:layout_height="wrap_content"
-    android:layout_width="335dp"
-    android:orientation="vertical"
+
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/mirror_filter_button_gray"
+    android:layout_marginTop="50dp">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="335dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:text="On-Chain-Attribute"
-        />
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical"
+        android:background="@color/mirror_filter_button_gray">
 
-    <androidx.cardview.widget.CardView
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        app:cardCornerRadius="12dp"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:textColor="@color/mirror_black"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:text="On-Chain-Attribute" />
 
-        android:background="@color/mirror_pure_white">
-
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="20dp"
-            android:orientation="vertical">
+            android:background="@color/mirror_pure_white"
 
-            <RelativeLayout
+            app:cardCornerRadius="12dp">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="15dp"
-                >
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/mirror_pure_white"
+                android:paddingBottom="20dp">
 
-                <TextView
-                    android:layout_height="match_parent"
-                    android:layout_width="wrap_content"
-                    android:text="name"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginLeft="15dp"
-                    />
-
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginTop="5dp"
-                    android:text="value"/>
-
-                <TextView
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_alignParentBottom="true"
-                    android:background="@color/cardview_dark_background"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"/>
+                    android:layout_height="45dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@color/mirror_pure_white">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="5dp"
+                        android:text="Background"
+                        android:textColor="#90000000"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="15dp"
+                        android:textColor="@color/mirror_black"
+                        android:text="Pink" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginBottom="5dp"
+                        android:background="@color/mirror_filter_button_gray" />
 
 
+                </RelativeLayout>
 
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="15dp"
-                >
-
-                <TextView
-                    android:layout_height="match_parent"
-                    android:layout_width="wrap_content"
-                    android:text="name"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginLeft="15dp"
-                    />
-
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginTop="5dp"
-                    android:text="value"/>
-
-                <TextView
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_alignParentBottom="true"
-                    android:background="@color/cardview_dark_background"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"/>
+                    android:layout_height="45dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@color/mirror_pure_white">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="5dp"
+                        android:text="Skin"
+                        android:textColor="#90000000"/>
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="15dp"
+                        android:textColor="@color/mirror_black"
+                        android:text="Red" />
 
-            </RelativeLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginBottom="5dp"
+                        android:background="@color/mirror_filter_button_gray" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="15dp"
-                >
+                </RelativeLayout>
 
-                <TextView
-                    android:layout_height="match_parent"
-                    android:layout_width="wrap_content"
-                    android:text="name"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginLeft="15dp"
-                    />
-
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginTop="5dp"
-                    android:text="value"/>
-
-                <TextView
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_alignParentBottom="true"
-                    android:background="@color/cardview_dark_background"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"/>
+                    android:layout_height="45dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@color/mirror_pure_white">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="5dp"
+                        android:text="Shoes"
+                        android:textColor="#90000000"/>
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="15dp"
+                        android:textColor="@color/mirror_black"
+                        android:text="Pink" />
 
-            </RelativeLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginBottom="5dp"
+                        android:background="@color/mirror_filter_button_gray" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="15dp"
-                >
+                </RelativeLayout>
 
-                <TextView
-                    android:layout_height="match_parent"
-                    android:layout_width="wrap_content"
-                    android:text="name"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginLeft="15dp"
-                    />
-
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginTop="5dp"
-                    android:text="value"/>
-
-                <TextView
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_alignParentBottom="true"
-                    android:background="@color/cardview_dark_background"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"/>
+                    android:layout_height="45dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@color/mirror_pure_white">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="5dp"
+                        android:text="Hair"
+                        android:textColor="#90000000"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="15dp"
+                        android:textColor="@color/mirror_black"
+                        android:text="Pink" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginBottom="5dp"
+                        android:background="@color/mirror_filter_button_gray" />
+                </RelativeLayout>
 
 
-
-            </RelativeLayout>
-
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.cardview.widget.CardView>
 
 
-    </androidx.cardview.widget.CardView>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
+</RelativeLayout>
 
-
-
-</androidx.appcompat.widget.LinearLayoutCompat>
 

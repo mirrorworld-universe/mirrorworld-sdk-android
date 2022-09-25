@@ -8,12 +8,20 @@ import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.mirror.sdk.ui.market.dialogs.MirrorMarketDialog;
+import com.mirror.sdk.ui.market.dialogs.MirrorMarketNFTDetailDialog;
 import com.mirror.sdk.ui.market.widgets.multiple.adapter.MainAdapter;
+import com.mirror.sdk.ui.market.widgets.multiple.adapter.TabAdapter;
+import com.mirror.sdk.ui.market.widgets.multiple.adapter.TabsAdapter;
 import com.mirror.sdk.ui.market.widgets.multiple.type.ActivitiesType;
 import com.mirror.sdk.ui.market.widgets.multiple.type.AttributeType;
 import com.mirror.sdk.ui.market.widgets.multiple.type.BaseType;
@@ -28,29 +36,42 @@ public class UITest extends AppCompatActivity {
 
 
     private RecyclerView mutiple;
+
     private int currentHeight = 60;
+
+    private RecyclerView tabs;
 
     private LinearLayoutCompat customTabs;
 
-
-
-
-
+    private Activity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(com.mirror.sdk.R.layout.mutiple_recyclerview);
-        InitView();
-    }
+        setContentView(R.layout.activity_uitest);
+        activity = this;
+        findViewById(R.id.click).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MirrorMarketDialog mirrorMarketDialog = new MirrorMarketDialog();
+                mirrorMarketDialog.Init(activity);
+                mirrorMarketDialog.show(getFragmentManager(),"uifdsa");
 
+            }
+        });
+
+       //InitView();
+    }
 
     private void InitView()
     {
         mutiple = findViewById(com.mirror.sdk.R.id.mutiple_recyclerview);
         customTabs = findViewById(com.mirror.sdk.R.id.custom_tabs_root);
+        tabs = findViewById(com.mirror.sdk.R.id.mutiple_position_tabs);
+
         mutiple.setLayoutManager(new LinearLayoutManager(this));
         mutiple.setAdapter(new MainAdapter(mockData()));
+        tabs.setLayoutManager(new LinearLayoutManager(this));
 
         mutiple.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -61,7 +82,7 @@ public class UITest extends AppCompatActivity {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 currentHeight+=dy;
-               // AlphaMapping();
+                AlphaMapping();
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
@@ -70,7 +91,6 @@ public class UITest extends AppCompatActivity {
 
 
     }
-
 
     private List<BaseType> mockData(){
 
@@ -90,26 +110,40 @@ public class UITest extends AppCompatActivity {
         return datas;
     }
 
+    private List<String> getTabs(){
+        List<String> tabs = new ArrayList<>();
+
+        tabs.add("In-Game-Performance");
+        tabs.add("On-Chain-Attribute");
+        tabs.add("Details");
+        tabs.add("Activities");
+        return tabs;
+    }
 
     private void AlphaMapping(){
 
         if(currentHeight>0 && currentHeight <15){
             customTabs.getBackground().setAlpha(0);
+
             return;
         }
 
         if(currentHeight <= 400){
             float rate = currentHeight*(1/400f);
-
-
-            Log.e("TT-","rate"+rate);
-
             int alpha = Math.round((rate*255));
-
-            Log.e("TT-","alpha"+alpha);
-
             customTabs.getBackground().setAlpha(alpha);
+        }
 
+
+        if(currentHeight> 400){
+            customTabs.getBackground().setAlpha(255);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+            linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+            tabs.setLayoutManager(linearLayoutManager);
+            tabs.setAdapter(new TabsAdapter(getTabs(),mutiple));
+        }else{
+            List<String> empty = new ArrayList<>();
+            tabs.setAdapter(new TabsAdapter(empty,mutiple));
         }
 
 

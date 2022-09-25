@@ -1,92 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat android:layout_height="wrap_content"
-    android:layout_width="335dp"
-    android:orientation="vertical"
+
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingBottom="60dp">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="50dp"
+    android:background="@color/mirror_filter_button_gray">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:text="Activities"
-        />
+    <androidx.appcompat.widget.LinearLayoutCompat android:layout_height="wrap_content"
+        android:layout_width="335dp"
+        android:orientation="vertical"
+        android:paddingBottom="60dp"
+        android:layout_centerHorizontal="true">
 
-    <androidx.cardview.widget.CardView
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        app:cardCornerRadius="12dp"
-
-        android:background="@color/mirror_pure_white">
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="20dp"
-            android:orientation="vertical">
+            android:layout_marginBottom="10dp"
+            android:textColor="@color/mirror_black"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:text="Activities"
+            />
 
-          <androidx.appcompat.widget.LinearLayoutCompat
-              android:layout_width="match_parent"
-              android:layout_height="75dp"
+        <androidx.cardview.widget.CardView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            app:cardCornerRadius="12dp"
 
-              android:orientation="horizontal"
-              android:background="@color/mirror_green">
+            android:background="@color/mirror_pure_white">
 
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="20dp"
+                android:background="@color/mirror_pure_white"
+                android:orientation="vertical">
 
-              <RelativeLayout
-                  android:layout_width="110dp"
-                  android:layout_height="match_parent">
-                  <TextView
-                      android:layout_height="wrap_content"
-                      android:layout_width="wrap_content"
-                      android:text="dfsaf"
-                      android:textSize="26dp"
-                      android:layout_centerInParent="true"/>
-              </RelativeLayout>
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="75dp"
 
-              <RelativeLayout
-                  android:layout_width="110dp"
-                  android:layout_height="match_parent">
-                  <TextView
-                      android:layout_height="wrap_content"
-                      android:layout_width="wrap_content"
-                      android:text="dfsaf"
-                      android:textSize="26dp"
-                      android:layout_centerInParent="true"/>
-              </RelativeLayout>
-
-              <RelativeLayout
-                  android:layout_width="110dp"
-                  android:layout_height="match_parent">
-                  <TextView
-                      android:layout_height="wrap_content"
-                      android:layout_width="wrap_content"
-                      android:text="dfsaf"
-                      android:textSize="26dp"
-                      android:layout_centerInParent="true"/>
-              </RelativeLayout>
+                    android:orientation="horizontal"
+                    android:background="#25386EEC">
 
 
-              <ListView
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                 >
+                    <RelativeLayout
+                        android:layout_width="110dp"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:text="Event"
+                            android:textSize="24dp"
+                            android:textColor="#386EEC"
+                            android:textStyle="bold"
+                            android:layout_centerInParent="true"/>
+                    </RelativeLayout>
 
-              </ListView>
+                    <RelativeLayout
+                        android:layout_width="110dp"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:text="Price"
+                            android:textSize="24dp"
+                            android:textColor="#386EEC"
+                            android:textStyle="bold"
+                            android:layout_centerInParent="true"/>
+                    </RelativeLayout>
 
-          </androidx.appcompat.widget.LinearLayoutCompat>
+                    <RelativeLayout
+                        android:layout_width="110dp"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:text="Data"
+                            android:textSize="24dp"
+                            android:textColor="#386EEC"
+                            android:textStyle="bold"
+                            android:layout_centerInParent="true"/>
+                    </RelativeLayout>
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <ListView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/mutiple_activities_list">
+                </ListView>
 
 
 
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-    </androidx.cardview.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
 
 
 
-</androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+</RelativeLayout>
+
 

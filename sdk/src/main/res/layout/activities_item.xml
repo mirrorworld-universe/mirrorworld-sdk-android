@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="36dp"
+    android:background="@color/mirror_pure_white"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:text="Event"
+        android:textColor="@color/mirror_black"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="18dp"
+        android:id="@+id/multiple_activities_item_event"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:text="Price"
+        android:textColor="@color/mirror_black"
+        android:layout_centerInParent="true"
+        android:id="@+id/multiple_activities_item_price"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:text="Data"
+        android:textColor="@color/mirror_black"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="18dp"
+        android:id="@+id/multiple_activities_item_data"
+        />
+
+
+</RelativeLayout>
