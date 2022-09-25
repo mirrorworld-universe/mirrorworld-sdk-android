@@ -1,5 +1,6 @@
 package com.mirror.sdk.ui.market.dialogs;
 
+import android.app.Activity;
 import android.app.Dialog;
         import android.content.Context;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 
+import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.R;
 import com.mirror.sdk.ui.market.model.NFTDetailData;
 enum ConfirmState{
@@ -24,8 +26,19 @@ public class MirrorMarketConfirmDialog extends Dialog {
 
     private NFTDetailData mNFTData;
     private ConfirmState mState = ConfirmState.main;
+
+    private View main;
+    private View success;
+    private View fail;
+    private View waitting;
+    private Button button;
+    private View buttonParent;
+
+    private Activity activity;
+
     public MirrorMarketConfirmDialog(@NonNull Context context) {
         super(context, R.style.bottom_dialog_bg_style);
+        this.activity = (Activity) context;
     }
 
     public void init(NFTDetailData data){
@@ -39,7 +52,7 @@ public class MirrorMarketConfirmDialog extends Dialog {
         setWindowTheme();
         setCancelable(true);
         setCanceledOnTouchOutside(true);
-        setOnClickListeners();
+        initView();
     }
 
     private void setWindowTheme() {
@@ -52,51 +65,148 @@ public class MirrorMarketConfirmDialog extends Dialog {
         window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
-    private void setOnClickListeners(){
-        View main = findViewById(R.id.confirm_main);
-        View success = findViewById(R.id.confirm_success);
-        View fail = findViewById(R.id.confirm_fail);
-        View waitting = findViewById(R.id.confirm_waitting);
+
+
+
+    private void initView(){
+        main = findViewById(R.id.confirm_main);
+        success = findViewById(R.id.confirm_success);
+        fail = findViewById(R.id.confirm_fail);
+        waitting = findViewById(R.id.confirm_waitting);
+        buttonParent = findViewById(R.id.confirm_button);
+        button = buttonParent.findViewById(R.id.confirm_button_button);
+        enterConfirm();
+    }
+
+    private void enterConfirm(){
+
         main.setVisibility(View.VISIBLE);
         success.setVisibility(View.GONE);
         fail.setVisibility(View.GONE);
         waitting.setVisibility(View.GONE);
+        buttonParent.setVisibility(View.VISIBLE);
+        button.setText("Buy");
 
-        Button button = findViewById(R.id.confirm_button).findViewById(R.id.confirm_button_button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                switch (mState){
-                    case main:{
-                        main.setVisibility(View.GONE);
-                        waitting.setVisibility(View.VISIBLE);
-                        mState = ConfirmState.waitting;
-                        break;
-                    }
-                    case waitting:{
-                        waitting.setVisibility(View.GONE);
-                        success.setVisibility(View.VISIBLE);
-                        mState = ConfirmState.success;
-                        break;
-                    }
-                    case success:{
-                        success.setVisibility(View.GONE);
-                        fail.setVisibility(View.VISIBLE);
-                        mState = ConfirmState.fail;
-                        break;
-                    }
-                    case fail:{
-                        fail.setVisibility(View.GONE);
-                        main.setVisibility(View.VISIBLE);
-                        mState = ConfirmState.main;
-                        break;
-                    }
-                    default:{
-                        Log.e("MirrorMarket:","Unknown confirm dialog state:"+mState);
-                        break;
-                    }
-                }
+            public void onClick(View view) {
+                 enterWait();
+                // call api buy nft
+                //MirrorSDK.getInstance().BuyNFT();
+
+                // just test
+                 new Thread(new Runnable() {
+                     @Override
+                     public void run() {
+                         try {
+                             Thread.sleep(3000);
+                         } catch (InterruptedException e) {
+                         e.printStackTrace();
+                         }
+
+                         activity.runOnUiThread(new Runnable() {
+                             @Override
+                             public void run() {
+                                 enterSuccess();
+                             }
+                         });
+
+                     }
+                 }).start();
+
             }
         });
+
     }
+
+    private void enterWait(){
+
+        main.setVisibility(View.GONE);
+        success.setVisibility(View.GONE);
+        fail.setVisibility(View.GONE);
+        waitting.setVisibility(View.VISIBLE);
+        buttonParent.setVisibility(View.GONE);
+    }
+
+    private void enterSuccess(){
+
+        main.setVisibility(View.GONE);
+        success.setVisibility(View.VISIBLE);
+        fail.setVisibility(View.GONE);
+        waitting.setVisibility(View.GONE);
+        buttonParent.setVisibility(View.VISIBLE);
+        button.setText("Back to MarketPlace");
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // back to market place
+               // MirrorSDK.getInstance().OpenMarket();
+
+                // just test
+                enterFailure();
+            }
+        });
+
+    }
+
+    private void enterFailure(){
+
+        main.setVisibility(View.GONE);
+        success.setVisibility(View.GONE);
+        fail.setVisibility(View.VISIBLE);
+        waitting.setVisibility(View.GONE);
+        buttonParent.setVisibility(View.VISIBLE);
+        button.setText("Retry");
+
+        // just test
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                enterWait();
+                // call api buy nft
+                //MirrorSDK.getInstance().BuyNFT();
+
+                // just test
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(3000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                enterSuccess();
+                            }
+                        });
+
+                    }
+                }).start();
+
+            }
+        });
+
+    }
+
+    private void enterNotFound(){
+        // todo add View
+        main.setVisibility(View.GONE);
+        success.setVisibility(View.GONE);
+        fail.setVisibility(View.GONE);
+        waitting.setVisibility(View.GONE);
+        buttonParent.setVisibility(View.GONE);
+
+    }
+
+
+
+
+
+
+
+
 }

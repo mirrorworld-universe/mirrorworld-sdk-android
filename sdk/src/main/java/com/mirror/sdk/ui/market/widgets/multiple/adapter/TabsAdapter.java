@@ -55,9 +55,9 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.ViewHolder>{
 
     private void JumpToPosition(int index){
         int childLayoutPosition = recyclerView.getChildLayoutPosition(recyclerView.getChildAt(index));
-        if (childLayoutPosition > 0) {
-            recyclerView.smoothScrollToPosition(childLayoutPosition - 1);
-        }
+
+            recyclerView.smoothScrollToPosition(100);
+
     }
 
 

@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
@@ -48,6 +49,8 @@ public class MirrorMarketNFTDetailDialog extends DialogFragment {
     private RecyclerView tabs;
 
     private LinearLayoutCompat customTabs;
+
+    private Button buyNft;
 
 
 
@@ -93,6 +96,15 @@ public class MirrorMarketNFTDetailDialog extends DialogFragment {
         mutiple = view.findViewById(com.mirror.sdk.R.id.mutiple_recyclerview);
         customTabs = view.findViewById(com.mirror.sdk.R.id.custom_tabs_root);
         tabs = view.findViewById(com.mirror.sdk.R.id.mutiple_position_tabs);
+        buyNft = view.findViewById(R.id.multiple_buy_nft);
+
+        buyNft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mOnBuyListener.onBuy(mNFTDetailData);
+            }
+        });
+
 
         InitView();
 

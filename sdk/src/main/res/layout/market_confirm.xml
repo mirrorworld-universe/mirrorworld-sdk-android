@@ -31,13 +31,13 @@
 
                 <ImageButton
                     android:id="@+id/confirm_title_close"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_marginEnd="@dimen/market_nftdetail_content_lrmargin"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+                  android:background="@drawable/ic_icon_delete" />
 
                 <TextView
                     android:id="@+id/confirm_title_title"
@@ -45,15 +45,28 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/market_nftdetail_content_lrmargin"
                     android:text="Buy"
+                    android:textColor="@color/mirror_black"
+                    android:textSize="18dp"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/mirror_filter_button_gray"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="1.0" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:visibility="gone"
+                android:visibility="visible"
                 android:id="@+id/confirm_main"
-                android:background="@color/mirror_white"
+                android:background="@color/mirror_pure_white"
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
                 app:layout_constraintBottom_toTopOf="@+id/confirm_button"

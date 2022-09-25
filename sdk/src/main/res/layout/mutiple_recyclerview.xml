@@ -65,6 +65,7 @@
                 android:layout_height="60dp"
                 android:background="#386EEC"
                 android:text="Buy"
+                android:id="@+id/multiple_buy_nft"
                 android:textSize="18dp"
                 android:textColor="@color/mirror_pure_white"
                />
