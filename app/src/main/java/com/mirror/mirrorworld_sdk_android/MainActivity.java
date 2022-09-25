@@ -44,9 +44,9 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         initViewPage();
 
-        MarketTest dialog = new MarketTest();
-        dialog.Init(this);
-        dialog.show(this.getFragmentManager(),"market");
+//        MirrorMarketDialog dialog = new MirrorMarketDialog();
+//        dialog.Init(this);
+//        dialog.show(this.getFragmentManager(),"market");
 
 //        SellDialog dialogAddGroup = new SellDialog();
 //        NFTDetailData data = new NFTDetailData();

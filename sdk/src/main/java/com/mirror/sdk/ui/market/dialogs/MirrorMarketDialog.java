@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
@@ -94,7 +95,7 @@ public class MirrorMarketDialog extends DialogFragment {
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-        ConstraintLayout totalView = (ConstraintLayout) mActivity.getLayoutInflater().inflate(R.layout.main_test, null);
+        ConstraintLayout totalView = (ConstraintLayout) mActivity.getLayoutInflater().inflate(R.layout.market_main, null);
         ConstraintLayout contentView = totalView.findViewById(R.id.market_main_content_parent);
         mTotalConstraintSet = new ConstraintSet();
         mContentView = contentView;
@@ -149,6 +150,7 @@ public class MirrorMarketDialog extends DialogFragment {
                 int width = ViewGroup.LayoutParams.MATCH_PARENT;
                 int height = ViewGroup.LayoutParams.MATCH_PARENT;
                 window.setLayout(width, height);
+                window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
                 if(MirrorMarketConfig.FULL_SCREEN_MODE) window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             }
         }
