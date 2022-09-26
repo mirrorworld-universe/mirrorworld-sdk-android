@@ -430,11 +430,6 @@ please try again!"/>
             </RelativeLayout>
 
 
-
-
-
-
-
             <RelativeLayout
                 android:id="@+id/reference"
                 android:layout_marginTop="60dp"
