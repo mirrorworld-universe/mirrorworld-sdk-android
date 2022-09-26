@@ -7,6 +7,7 @@
     <color name="mirror_pure_white">#FFFFFF</color>
     <color name="mirror_background">#FFFFFF</color>
     <color name="mirror_font_blue">#386EEC</color>
+    <color name="mirror_font_blue_light">#CCFFFF</color>
     <color name="mirror_filter_button_blue">#F0F8FF</color>
     <color name="mirror_filter_button_gray">#DCDCDC</color>
     <color name="mirror_background_color">#e6e6e6</color>

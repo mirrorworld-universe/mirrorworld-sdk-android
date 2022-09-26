@@ -33,6 +33,7 @@ public class MirrorMarketConfirmDialog extends Dialog {
     private View waitting;
     private Button button;
     private View buttonParent;
+    private View notFound;
 
     private Activity activity;
 
@@ -75,6 +76,7 @@ public class MirrorMarketConfirmDialog extends Dialog {
         waitting = findViewById(R.id.confirm_waitting);
         buttonParent = findViewById(R.id.confirm_button);
         button = buttonParent.findViewById(R.id.confirm_button_button);
+        notFound = findViewById(R.id.confirm_not_found);
         enterConfirm();
     }
 
@@ -180,7 +182,7 @@ public class MirrorMarketConfirmDialog extends Dialog {
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                enterSuccess();
+                               enterNotFound();
                             }
                         });
 
@@ -199,6 +201,7 @@ public class MirrorMarketConfirmDialog extends Dialog {
         fail.setVisibility(View.GONE);
         waitting.setVisibility(View.GONE);
         buttonParent.setVisibility(View.GONE);
+        notFound.setVisibility(View.VISIBLE);
 
     }
 
