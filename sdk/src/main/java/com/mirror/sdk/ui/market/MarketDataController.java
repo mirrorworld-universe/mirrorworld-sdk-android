@@ -26,6 +26,8 @@ public class MarketDataController {
 
     private MarketDataController(){
         mNFTs = new ArrayList<>();
+        NFTRequestInfo = new GetNFTsRequest();
+        NFTRequestInfo.filter = new ArrayList<>();
     }
 
     //base data
@@ -33,6 +35,7 @@ public class MarketDataController {
     private List<NFTDetailData> mNFTs;
     //filter data
     private CollectionOrder mNowOrder;
+    public String NowCollection;
 
     public void setCollections(List<CollectionInfo> collections){
         mCollections = collections;
@@ -51,7 +54,7 @@ public class MarketDataController {
         return mNowOrder;
     }
 
-    public GetNFTsRequest NFTRequestInfo = new GetNFTsRequest();
+    public GetNFTsRequest NFTRequestInfo;
     public void addRequestFilterValue(CollectionFilter filter,String value){
 //        if(filter.filter_type == MarketFilterTypes.ENUM){
 //            addRequestEnumFilter(value);

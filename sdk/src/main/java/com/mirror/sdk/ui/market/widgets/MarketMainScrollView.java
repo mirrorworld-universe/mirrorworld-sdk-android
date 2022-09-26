@@ -56,10 +56,10 @@ public class MarketMainScrollView extends NestedScrollView{
 
     @Override
     public void onNestedPreScroll(@NonNull View target, int dx, int dy, @NonNull int[] consumed, int type) {
-        Log.i("1111","onNestedPreScroll");
+//        Log.i("1111","onNestedPreScroll");
         boolean isParentScroll = dispatchNestedPreScroll(dx, dy, consumed, null, type);
         // 在父嵌套布局没有滑动时，处理此控件是否需要滑动
-        Log.i("Scroll parent", "isParentScroll :" + isParentScroll);
+//        Log.i("Scroll parent", "isParentScroll :" + isParentScroll);
         if (!isParentScroll) {
             // 向上滑动且此控件没有滑动到底部时，需要让此控件继续滑动以保证滑动连贯一致性
             boolean needKeepScroll = dy > 0 && !isScrollEnd();

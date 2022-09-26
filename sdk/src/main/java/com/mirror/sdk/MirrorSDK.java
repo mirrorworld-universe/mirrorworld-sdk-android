@@ -26,6 +26,7 @@ import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.constant.MirrorLoginPageMode;
 import com.mirror.sdk.constant.MirrorResCode;
 import com.mirror.sdk.constant.MirrorUrl;
+import com.mirror.sdk.listener.OnCheckSDKUseable;
 import com.mirror.sdk.listener.auth.FetchUserListener;
 import com.mirror.sdk.listener.auth.LoginListener;
 import com.mirror.sdk.listener.market.BuyNFTListener;
@@ -47,6 +48,7 @@ import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
 import com.mirror.sdk.listener.wallet.TransferSOLListener;
 import com.mirror.sdk.models.NFTJsonObject;
 import com.mirror.sdk.response.CommonResponse;
+import com.mirror.sdk.response.UIResponse;
 import com.mirror.sdk.response.auth.UserResponse;
 import com.mirror.sdk.response.market.ActivityOfSingleNftResponse;
 import com.mirror.sdk.response.market.ListingResponse;
@@ -54,10 +56,23 @@ import com.mirror.sdk.response.market.MintResponse;
 import com.mirror.sdk.response.market.MultipleNFTsResponse;
 import com.mirror.sdk.response.market.NFTObject;
 import com.mirror.sdk.response.market.SingleNFTResponse;
+import com.mirror.sdk.response.marketui.GetNFTsResponse;
 import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
 import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
 import com.mirror.sdk.response.wallet.TransferResponse;
 import com.mirror.sdk.ui.WebViewDialog;
+import com.mirror.sdk.ui.manage.ManageDialog;
+import com.mirror.sdk.ui.market.apis.listeners.GetCollectionListener;
+import com.mirror.sdk.ui.market.apis.listeners.GetFilterListener;
+import com.mirror.sdk.ui.market.apis.listeners.GetNFTsListener;
+import com.mirror.sdk.ui.market.apis.requests.GetNFTsRequest;
+import com.mirror.sdk.ui.market.apis.requests.GetNFTsRequestFilter;
+import com.mirror.sdk.ui.market.apis.requests.GetNFTsRequestOrder;
+import com.mirror.sdk.ui.market.apis.responses.CollectionFilter;
+import com.mirror.sdk.ui.market.apis.responses.CollectionInfo;
+import com.mirror.sdk.ui.market.apis.responses.CollectionOrder;
+import com.mirror.sdk.ui.market.apis.responses.GetCollectionsResponse;
+import com.mirror.sdk.ui.market.apis.responses.GetFiltersResponse;
 import com.mirror.sdk.ui.market.dialogs.MirrorMarketDialog;
 import com.mirror.sdk.ui.market.model.NFTDetailData;
 import com.mirror.sdk.ui.sell.SellDialog;
@@ -729,35 +744,40 @@ public class MirrorSDK {
         loginPageMode = MirrorLoginPageMode.KeepIfLoginDone;
     }
 
-    public void OpenMarket(){
-        if(apiKey == ""){
-            if(mActivity == null){
-                logFlow("Must init sdk first!");
-                return;
+    public void OpenNFTManagePage(NFTDetailData nftObject){
+        checkSDKInited(new OnCheckSDKUseable() {
+            @Override
+            public void OnChecked() {
+                ManageDialog dialog = new ManageDialog();
+                NFTDetailData uiData = new NFTDetailData();
+                uiData.image = nftObject.image;
+                uiData.name = nftObject.name;
+                uiData.mint_address = nftObject.mint_address;
+                uiData.price = 0.0;
+                dialog.init(mActivity,uiData);
             }
-            apiKey = getSavedString(mActivity,localKeyAppId);
-        }
-        if(apiKey == ""){
-            logFlow("Must set app id first!");
-            return;
-        }
 
-        if(accessToken == ""){
-            logFlow("No access token,start get flow");
-            GetAccessToken(mActivity, new MirrorCallback() {
-                @Override
-                public void callback(String result) {
-                    accessToken = result;
-                    MirrorMarketDialog dialogAddGroup = new MirrorMarketDialog();
-                    dialogAddGroup.Init(mActivity);
-                    dialogAddGroup.show(mActivity.getFragmentManager(), "Add group dialog");
-                }
-            });
-        }else{
-            MirrorMarketDialog dialogAddGroup = new MirrorMarketDialog();
-            dialogAddGroup.Init(mActivity);
-            dialogAddGroup.show(mActivity.getFragmentManager(), "Add group dialog");
-        }
+            @Override
+            public void OnUnUsable() {
+
+            }
+        });
+    }
+
+    public void OpenMarket(List<String> collectionAddresses){
+        checkSDKInited(new OnCheckSDKUseable() {
+            @Override
+            public void OnChecked() {
+                MirrorMarketDialog dialogAddGroup = new MirrorMarketDialog();
+                dialogAddGroup.Init(mActivity,collectionAddresses);
+                dialogAddGroup.show(mActivity.getFragmentManager(), "Add group dialog");
+            }
+
+            @Override
+            public void OnUnUsable() {
+
+            }
+        });
     }
 
     public void OpenSellPage(String mintAddress,NFTJsonObject nftObject){
@@ -786,6 +806,7 @@ public class MirrorSDK {
                     uiData.mint_address = mintAddress;
                     uiData.price = 0.0;
                     dialog.init(mActivity,uiData);
+                    dialog.show(mActivity.getFragmentManager(),"sell");
                 }
             });
         }else{
@@ -796,6 +817,7 @@ public class MirrorSDK {
             uiData.mint_address = mintAddress;
             uiData.price = 0.0;
             dialog.init(mActivity,uiData);
+            dialog.show(mActivity.getFragmentManager(),"sell");
         }
     }
 
@@ -1077,7 +1099,97 @@ public class MirrorSDK {
 
         String url = GetAPIRoot() + MirrorUrl.URL_QUERY_MARKET_PLACE;
         checkParamsAndGet(url,map, mirrorCallback);
+    }
 
+    private void checkSDKInited(OnCheckSDKUseable callback){
+        if(apiKey == ""){
+            if(mActivity == null){
+                logFlow("Must init sdk first!");
+                return;
+            }
+            apiKey = getSavedString(mActivity,localKeyAppId);
+        }
+        if(apiKey == ""){
+            logFlow("Must set app id first!");
+            return;
+        }
+
+        if(accessToken == ""){
+            logFlow("No access token,start get flow");
+            GetAccessToken(mActivity, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    accessToken = result;
+                    callback.OnChecked();
+                }
+            });
+            return;
+        }else{
+            callback.OnChecked();
+        }
+    }
+
+    private final String marketRoot = "https://api-staging.mirrorworld.fun/v1/marketplace/";
+    private final String MarketGetCollectionUrl = marketRoot + "collections";
+    private final String MarketGetCollectionFiltersUrl = marketRoot + "collection/filter_info?collection=";
+    private final String MarketGetNFTs = marketRoot + "nfts";
+
+    public void getMarketNFTs(GetNFTsRequest request, GetNFTsListener listener){
+        String jsonStr = MirrorGsonUtils.getInstance().toJson(request);
+        String url = MarketGetNFTs;
+        checkParamsAndPost(url,jsonStr,getHandlerCallback(new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+
+                UIResponse<List<NFTDetailData>> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<UIResponse<List<NFTDetailData>>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    listener.onSuccess(response.data);
+                }else{
+                    listener.onFailed(response.code,response.message);
+                }
+            }
+        }));
+    }
+
+    public void getMarketFilters(String collectionAddress, GetFilterListener listener){
+        String url = MarketGetCollectionFiltersUrl + collectionAddress;
+        checkParamsAndGet(url, null, new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<GetFiltersResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<GetFiltersResponse>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    listener.onSuccess(response.data.filter_info);
+                }else
+                    listener.onFailed(response.code,response.message);
+            }
+        });
+    }
+
+    public void getMarketCollections(List<String> addresses, GetCollectionListener listener){
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        for (String tag : addresses) {
+            jsonArray.put(tag);
+        }
+        try {
+            jsonObject.put("collections", jsonArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+
+        String url = MarketGetCollectionUrl;
+        checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                UIResponse<List<CollectionInfo>> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<UIResponse<List<CollectionInfo>>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    listener.onSuccess(response.data);
+                }else{
+                    listener.onFail(response.code,response.message);
+                }
+            }
+        }));
     }
 
     private void LoginWithEmailPostRequest(String url, String data, MirrorCallback mirrorCallback){

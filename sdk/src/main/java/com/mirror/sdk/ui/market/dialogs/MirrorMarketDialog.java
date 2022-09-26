@@ -26,10 +26,13 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.R;
+import com.mirror.sdk.constant.MirrorConstant;
 import com.mirror.sdk.ui.market.MarketDataController;
 import com.mirror.sdk.ui.market.MarketUIController;
 import com.mirror.sdk.ui.market.apis.listeners.GetFilterListener;
+import com.mirror.sdk.ui.market.apis.requests.GetNFTsRequestOrder;
 import com.mirror.sdk.ui.market.apis.responses.CollectionFilter;
 import com.mirror.sdk.ui.market.apis.responses.CollectionOrder;
 import com.mirror.sdk.ui.market.droplist.DropListSimpleAdapter;
@@ -57,6 +60,7 @@ public class MirrorMarketDialog extends DialogFragment {
 
     Activity mActivity = null;
     boolean mInited = false;
+    private List<String> mCollectionAddresses;
 
     //widgets
     ConstraintLayout mContentView;
@@ -78,12 +82,13 @@ public class MirrorMarketDialog extends DialogFragment {
     private boolean showLoading;
     private boolean showLine3;
 
-    public void Init(Activity activity){
+    public void Init(Activity activity,List<String> collectionAddresses){
         if(mInited){
             return;
         }
         mInited = true;
 
+        mCollectionAddresses = collectionAddresses;
         mActivity = activity;
     }
     @NonNull
@@ -223,17 +228,17 @@ public class MirrorMarketDialog extends DialogFragment {
     }
 
     private void startRequestCollections(RecyclerView view){
-        MirrorMarketUIAPI.GetCollections(new GetCollectionListener() {
+        MirrorSDK.getInstance().getMarketCollections(mCollectionAddresses,new GetCollectionListener() {
             @Override
-            public void onSuccess(GetCollectionsResponse response) {
-                if(response.collections.size() == 0){
+            public void onSuccess(List<CollectionInfo> response) {
+                if(response.size() == 0){
                     View collectionParent = view.findViewById(R.id.main_content_line1rv);
                     collectionParent.setVisibility(View.GONE);
-                }else if(response.collections.size() == 1){
+                }else if(response.size() == 1){
                     View collectionParent = view.findViewById(R.id.main_content_line1rv);
                     collectionParent.setVisibility(View.GONE);
 
-                    CollectionInfo collection = response.collections.get(0);
+                    CollectionInfo collection = response.get(0);
                     MarketUIController.getInstance().selectCollection(collection);
                     setFilterBar(collection);
                     startRequestNFT();
@@ -242,13 +247,13 @@ public class MirrorMarketDialog extends DialogFragment {
                     View collectionParent = view.findViewById(R.id.main_content_line1rv);
                     collectionParent.setVisibility(View.VISIBLE);
 
-                    CollectionInfo collection = response.collections.get(0);
+                    CollectionInfo collection = response.get(0);
                     MarketUIController.getInstance().selectCollection(collection);
                     setFilterBar(collection);
                     startRequestNFT();
                     startRequestFilters(collection);
                 }
-                MarketMainCollectionTabsAdapter adapter = new MarketMainCollectionTabsAdapter(response.collections);
+                MarketMainCollectionTabsAdapter adapter = new MarketMainCollectionTabsAdapter(response);
                 view.setAdapter(adapter);
             }
 
@@ -260,7 +265,7 @@ public class MirrorMarketDialog extends DialogFragment {
     }
 
     private void startRequestFilters(CollectionInfo collectionInfo){
-        MirrorMarketUIAPI.GetFilters(collectionInfo, new GetFilterListener() {
+        MirrorSDK.getInstance().getMarketFilters(collectionInfo.collection, new GetFilterListener() {
             @Override
             public void onSuccess(List<CollectionFilter> filters) {
                 //add tabs
@@ -293,12 +298,13 @@ public class MirrorMarketDialog extends DialogFragment {
     }
 
     private void startRequestNFT(){
-        int nowPage = MarketDataController.getInstance().NFTNowPage;
-        MirrorMarketUIAPI.GetNFTs(mActivity,nowPage,new GetNFTsListener() {
+        MarketDataController.getInstance().NFTRequestInfo.page = MarketDataController.getInstance().NFTNowPage;
+        MirrorSDK.getInstance().getMarketNFTs(MarketDataController.getInstance().NFTRequestInfo,new GetNFTsListener() {
             @Override
             public void onSuccess(List<NFTDetailData> nfts) {
                 MarketDataController.getInstance().addNFTs(nfts);
                 MarketDataController.getInstance().NFTNowPage++;
+
                 MarketMainRecyclerAdapter adapter = (MarketMainRecyclerAdapter) mNFTRecyclerView.getAdapter();
                 for(int i=0;i<nfts.size();i++){
                     adapter.addData(nfts.get(i));
@@ -307,7 +313,7 @@ public class MirrorMarketDialog extends DialogFragment {
             }
 
             @Override
-            public void onFailed() {
+            public void onFailed(long code,String message) {
                 closeLoading();
             }
         });
