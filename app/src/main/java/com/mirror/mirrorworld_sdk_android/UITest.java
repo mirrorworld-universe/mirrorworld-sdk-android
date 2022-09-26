@@ -1,23 +1,17 @@
 package com.mirror.mirrorworld_sdk_android;
 
-
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.Activity;
-
 import android.os.Bundle;
 import android.view.View;
 
-
+import com.mirror.sdk.ui.market.dialogs.MirrorMarketConfirmDialog;
 import com.mirror.sdk.ui.market.dialogs.MirrorMarketDialog;
-import com.mirror.sdk.ui.market.dialogs.MirrorMarketNFTDetailDialog;
 import com.mirror.sdk.ui.market.widgets.multiple.adapter.MainAdapter;
-import com.mirror.sdk.ui.market.widgets.multiple.adapter.TabAdapter;
 import com.mirror.sdk.ui.market.widgets.multiple.adapter.TabsAdapter;
 import com.mirror.sdk.ui.market.widgets.multiple.type.ActivitiesType;
 import com.mirror.sdk.ui.market.widgets.multiple.type.AttributeType;
@@ -25,7 +19,6 @@ import com.mirror.sdk.ui.market.widgets.multiple.type.BaseType;
 import com.mirror.sdk.ui.market.widgets.multiple.type.Details;
 import com.mirror.sdk.ui.market.widgets.multiple.type.GamePerformance;
 import com.mirror.sdk.ui.market.widgets.multiple.type.HeaderType;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +48,9 @@ public class UITest extends AppCompatActivity {
                 address.add("qkuKJWMi14rdYLPBghfBRDpJASdbcLU6xZH3cpUZfng");
                 mirrorMarketDialog.Init(activity,address);
                 mirrorMarketDialog.show(getFragmentManager(),"uifdsa");
+
+//                MirrorMarketConfirmDialog mirrorMarketConfirmDialog = new MirrorMarketConfirmDialog(activity);
+//                mirrorMarketConfirmDialog.show();
 
             }
         });
