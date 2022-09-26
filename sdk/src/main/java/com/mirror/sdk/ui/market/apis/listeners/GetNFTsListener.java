@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface GetNFTsListener {
     void onSuccess(List<NFTDetailData> nfts);
-    void onFailed();
+    void onFailed(long code,String message);
 }

@@ -9,7 +9,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.TypedValue;
 import android.view.Display;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import com.mirror.sdk.ui.market.widgets.MarketMainRecyclerAdapter;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -22,6 +26,44 @@ public class MarketUtils {
     }
     public static float dp2px(float dpValue) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpValue, Resources.getSystem().getDisplayMetrics());
+    }
+
+    public static void startLoadImage(Handler handler,String url, View imageProgress, ImageView imageView){
+        imageProgress.setVisibility(View.VISIBLE);
+        imageView.setVisibility(View.GONE);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Bitmap bmp = MarketUtils.getURLImage(url);
+                Message msg = new Message();
+                msg.what = 0;
+                GiveBitmap ivUrl = new GiveBitmap();
+                ivUrl.imageView = imageView;
+                ivUrl.imageProgress = imageProgress;
+                ivUrl.bitmap = bmp;
+                msg.obj = ivUrl;
+                handler.sendMessage(msg);
+            }
+        }).start();
+    }
+
+    public static Bitmap getURLImage(String url) {
+        Bitmap bmp = null;
+        try {
+            URL myurl = new URL(url);
+            HttpURLConnection conn = (HttpURLConnection) myurl.openConnection();
+            conn.setConnectTimeout(6000);//设置超时
+            conn.setDoInput(true);
+            conn.setUseCaches(false);//不缓存
+            conn.connect();
+            InputStream is = conn.getInputStream();//获得图片的数据流
+            bmp = BitmapFactory.decodeStream(is);//读取图像数据
+            is.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return bmp;
     }
 
 

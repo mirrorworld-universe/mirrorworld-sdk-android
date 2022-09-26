@@ -8,3 +8,4 @@ public class CommonResponse<E> {
     public String message;
     public long http_status_code;
 }
+

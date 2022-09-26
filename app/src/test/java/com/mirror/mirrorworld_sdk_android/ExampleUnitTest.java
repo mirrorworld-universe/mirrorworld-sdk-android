@@ -30,6 +30,7 @@ import com.mirror.sdk.listener.wallet.GetWalletTransactionBySigListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
 import com.mirror.sdk.listener.wallet.TransactionsDTO;
 import com.mirror.sdk.listener.wallet.TransferSOLListener;
+import com.mirror.sdk.response.CommonResponse;
 import com.mirror.sdk.response.auth.UserResponse;
 import com.mirror.sdk.response.market.ActivityOfSingleNftResponse;
 import com.mirror.sdk.response.market.ListingResponse;
@@ -39,6 +40,7 @@ import com.mirror.sdk.response.market.SingleNFTResponse;
 import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
 import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
 import com.mirror.sdk.response.wallet.TransferResponse;
+import com.mirror.sdk.utils.MirrorGsonUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,6 +124,16 @@ public class ExampleUnitTest {
         }
 
         return accessToken;
+    }
+
+    @Test
+    public void TestJson(){
+        String json = "{\"code\":0,\"status\":\"success\",\"message\":\"success\",\"data\":[{\"collection\":\"qkuKJWMi14rdYLPBghfBRDpJASdbcLU6xZH3cpUZfng\",\"collection_name\":\"mirror jump\",\"collection_type\":\"NFT\",\"collection_orders\":[{\"order_field\":\"price\",\"order_desc\":\"Price: Low to High\",\"desc\":false},{\"order_field\":\"price\",\"order_desc\":\"Price: High to Low\",\"desc\":true},{\"order_field\":\"list_time\",\"order_desc\":\"Latest\",\"desc\":true}],\"collection_filter\":[]}]}";
+        try {
+            JSONObject jsonObj = new JSONObject(json);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test

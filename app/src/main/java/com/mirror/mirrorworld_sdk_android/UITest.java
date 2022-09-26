@@ -9,13 +9,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
-import android.content.Context;
+
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+
 
 import com.mirror.sdk.ui.market.dialogs.MirrorMarketDialog;
 import com.mirror.sdk.ui.market.dialogs.MirrorMarketNFTDetailDialog;
@@ -48,13 +45,15 @@ public class UITest extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_uitest);
+        setContentView(com.mirror.sdk.R.layout.activity_uitest);
         activity = this;
-        findViewById(R.id.click).setOnClickListener(new View.OnClickListener() {
+        findViewById(com.mirror.sdk.R.id.click).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 MirrorMarketDialog mirrorMarketDialog = new MirrorMarketDialog();
-                mirrorMarketDialog.Init(activity);
+                List<String> address = new ArrayList<>();
+                address.add("qkuKJWMi14rdYLPBghfBRDpJASdbcLU6xZH3cpUZfng");
+                mirrorMarketDialog.Init(activity,address);
                 mirrorMarketDialog.show(getFragmentManager(),"uifdsa");
 
             }

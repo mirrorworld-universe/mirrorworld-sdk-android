@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mirror.sdk.R;
 import com.mirror.sdk.ui.market.enums.MirrorMarketConfig;
 import com.mirror.sdk.ui.market.model.NFTDetailData;
+import com.mirror.sdk.ui.market.utils.GiveBitmap;
+import com.mirror.sdk.ui.market.utils.MarketUtils;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -25,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MarketMainRecyclerAdapter  extends RecyclerView.Adapter<MarketMainRecyclerAdapter.InnerHolder>{
-    //构造方法 得到activity那边传递过来的数据
     List<NFTDetailData> iconbeans = new ArrayList<NFTDetailData>();
     OnNFTItemClickListener mCardViewClickListener = null;
 
@@ -35,14 +36,11 @@ public class MarketMainRecyclerAdapter  extends RecyclerView.Adapter<MarketMainR
 
     @NonNull
     @Override
-    //设置view
     public MarketMainRecyclerAdapter.InnerHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        //给item的布局文件添加进我们设置View里面
         View view = View.inflate(parent.getContext(), R.layout.market_main_recyclerview_item,null);
-        return new InnerHolder(view);//并且将这个传递给InnerHol这个内部类
+        return new InnerHolder(view);
     }
 
-    //设置item
     @Override
     public void onBindViewHolder(@NonNull MarketMainRecyclerAdapter.InnerHolder holder, int position) {
         holder.setData(iconbeans.get(position));
@@ -50,7 +48,6 @@ public class MarketMainRecyclerAdapter  extends RecyclerView.Adapter<MarketMainR
 
 
     @Override
-    //返回item数目
     public int getItemCount() {
         if(iconbeans != null){
             return iconbeans.size();
@@ -60,6 +57,12 @@ public class MarketMainRecyclerAdapter  extends RecyclerView.Adapter<MarketMainR
 
     public void setCardViewOnClickListener(OnNFTItemClickListener listener){
         mCardViewClickListener = listener;
+    }
+
+    public void addData(NFTDetailData newNFT) {
+        int position = iconbeans.size();
+        iconbeans.add(newNFT);
+        notifyItemInserted(position);
     }
 
     public interface OnNFTItemClickListener{
@@ -90,7 +93,7 @@ public class MarketMainRecyclerAdapter  extends RecyclerView.Adapter<MarketMainR
 
         public void setData(NFTDetailData data) {
             mData = data;
-            startLoadImage(data.image,imageProgress,imageView);
+            MarketUtils.startLoadImage(handle,data.image,imageProgress,imageView);
             mTvNumber.setText(data.name);
 
             BigDecimal bg = new BigDecimal(data.price);
@@ -98,55 +101,11 @@ public class MarketMainRecyclerAdapter  extends RecyclerView.Adapter<MarketMainR
             mTvPrice.setText(String.valueOf(f1));
         }
 
-        public Bitmap getURLimage(String url) {
-            Bitmap bmp = null;
-            try {
-                URL myurl = new URL(url);
-                HttpURLConnection conn = (HttpURLConnection) myurl.openConnection();
-                conn.setConnectTimeout(6000);//设置超时
-                conn.setDoInput(true);
-                conn.setUseCaches(false);//不缓存
-                conn.connect();
-                InputStream is = conn.getInputStream();//获得图片的数据流
-                bmp = BitmapFactory.decodeStream(is);//读取图像数据
-                is.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return bmp;
-        }
-
-        class IvUrl{
-            public ImageView imageView;
-            public View imageProgress;
-            public Bitmap bitmap;
-        }
-
-        public void startLoadImage(String url,View imageProgress,ImageView imageView){
-            imageProgress.setVisibility(View.VISIBLE);
-            imageView.setVisibility(View.GONE);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Bitmap bmp = getURLimage(url);
-                    Message msg = new Message();
-                    msg.what = 0;
-                    IvUrl ivUrl = new IvUrl();
-                    ivUrl.imageView = imageView;
-                    ivUrl.imageProgress = imageProgress;
-                    ivUrl.bitmap = bmp;
-                    msg.obj = ivUrl;
-                    handle.sendMessage(msg);
-                }
-            }).start();
-        }
-
         private Handler handle = new Handler() {
             public void handleMessage(Message msg) {
                 switch (msg.what) {
                     case 0:
-                        IvUrl ivUrl=(IvUrl)msg.obj;
+                        GiveBitmap ivUrl=(GiveBitmap)msg.obj;
                         ivUrl.imageView.setImageBitmap(ivUrl.bitmap);
 
                         imageProgress.setVisibility(View.GONE);

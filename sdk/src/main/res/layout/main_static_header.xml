@@ -56,7 +56,7 @@
         app:layout_constraintTop_toBottomOf="@+id/main_static_header_line2">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/market_main_filter_detail_recyclerview"
+            android:id="@+id/main_line3_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/mirror_background"/>

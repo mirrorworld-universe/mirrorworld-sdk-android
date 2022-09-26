@@ -1,6 +1,5 @@
 package com.mirror.sdk.ui.market.widgets;
 
-import android.app.Instrumentation;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -23,16 +22,6 @@ public class MarketMainScrollView extends NestedScrollView{
         this.setVerticalScrollBarEnabled(false);
         mContext = context;
     }
-
-//    @Override
-//    public boolean onInterceptTouchEvent(MotionEvent e) {
-//        if(MarketUIController.getInstance().isOut) {
-//            super.onInterceptTouchEvent(e);
-//            return true;
-//        }else {
-//            return false;
-//        }
-//    }
 
     @Override
     public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes) {
@@ -67,10 +56,10 @@ public class MarketMainScrollView extends NestedScrollView{
 
     @Override
     public void onNestedPreScroll(@NonNull View target, int dx, int dy, @NonNull int[] consumed, int type) {
-        Log.i("1111","onNestedPreScroll");
+//        Log.i("1111","onNestedPreScroll");
         boolean isParentScroll = dispatchNestedPreScroll(dx, dy, consumed, null, type);
         // 在父嵌套布局没有滑动时，处理此控件是否需要滑动
-        Log.i("Scroll parent", "isParentScroll :" + isParentScroll);
+//        Log.i("Scroll parent", "isParentScroll :" + isParentScroll);
         if (!isParentScroll) {
             // 向上滑动且此控件没有滑动到底部时，需要让此控件继续滑动以保证滑动连贯一致性
             boolean needKeepScroll = dy > 0 && !isScrollEnd();
@@ -87,6 +76,10 @@ public class MarketMainScrollView extends NestedScrollView{
     private float mVelocityY = 0;
     @Override
     public boolean onTouchEvent(MotionEvent e) {
+        if(MarketUIController.getInstance().IsFilterDetailExpanded){
+            MarketUIController.getInstance().foldFilterDetail(true);
+            return true;
+        }
         if (e.getAction() == MotionEvent.ACTION_DOWN) {
             mLastY = e.getY();
             mNestedYOffsets = 0;
