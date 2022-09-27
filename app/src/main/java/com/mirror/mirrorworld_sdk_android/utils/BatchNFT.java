@@ -27,10 +27,10 @@ public class BatchNFT {
     private int mJsonIdx = 0;
 
     private String mGenerateJsonUrl = "https://mirror-jump-json.mirrorworld.fun/api/v1/metadata/json";
-    private String mAPIKey = "mw_RRetgcSVAXj6OpssSBj0t0PXbqsahlbnDaJ";
-    String mCollection = "qkuKJWMi14rdYLPBghfBRDpJASdbcLU6xZH3cpUZfng";
+    private String mAPIKey = "mw_testAmRKdRbBsBbIAw3CeMqS9GORmcG5BRUCU4D";
+    String mCollection = "BXqCckKEidhJUpYrg4u2ocdiDKwJY3WujHvVDPTMf6nL";
     String mSolanaNamePre = "Mirror Jump #";
-    String mMarket = "8sGsGSYX1JCkUd7rQGiU3rkRrEo5YMSvtKboW2rqaKT";
+    String mMarket = "AiEqGqMDMa7G6sDF484pqfgsxRGuCcjgxv43MxoiVCsz";
     String mEmail = "squall19871987@163.com";
     String mPwd = "edu2act.org";
 
@@ -94,8 +94,6 @@ public class BatchNFT {
                 generateNFT(postData,price);
             }
         });
-
-
     }
 
     private int generateCount = 0;

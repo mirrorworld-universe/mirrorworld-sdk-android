@@ -744,16 +744,16 @@ public class MirrorSDK {
         loginPageMode = MirrorLoginPageMode.KeepIfLoginDone;
     }
 
-    public void OpenNFTManagePage(NFTDetailData nftObject){
+    public void OpenNFTManagePage(String image,String name,String minAddress,Double price){
         checkSDKInited(new OnCheckSDKUseable() {
             @Override
             public void OnChecked() {
                 ManageDialog dialog = new ManageDialog();
                 NFTDetailData uiData = new NFTDetailData();
-                uiData.image = nftObject.image;
-                uiData.name = nftObject.name;
-                uiData.mint_address = nftObject.mint_address;
-                uiData.price = 0.0;
+                uiData.image = image;
+                uiData.name = name;
+                uiData.mint_address = minAddress;
+                uiData.price = price;
                 dialog.init(mActivity,uiData);
             }
 
@@ -780,84 +780,45 @@ public class MirrorSDK {
         });
     }
 
-    public void OpenSellPage(String mintAddress,NFTJsonObject nftObject){
-        if(apiKey == ""){
-            if(mActivity == null){
-                logFlow("Must init sdk first!");
-                return;
+    public void OpenSellPage(String mintAddress,String image,String name){
+        checkSDKInited(new OnCheckSDKUseable() {
+            @Override
+            public void OnChecked() {
+                SellDialog dialog = new SellDialog();
+                NFTDetailData uiData = new NFTDetailData();
+                uiData.image = image;
+                uiData.name = name;
+                uiData.mint_address = mintAddress;
+                uiData.price = 0.0;
+                dialog.init(mActivity,uiData);
+                dialog.show(mActivity.getFragmentManager(),"sell");
             }
-            apiKey = getSavedString(mActivity,localKeyAppId);
-        }
-        if(apiKey == ""){
-            logFlow("Must set app id first!");
-            return;
-        }
 
-        if(accessToken == ""){
-            logFlow("No access token,start get flow");
-            GetAccessToken(mActivity, new MirrorCallback() {
-                @Override
-                public void callback(String result) {
-                    accessToken = result;
-                    SellDialog dialog = new SellDialog();
-                    NFTDetailData uiData = new NFTDetailData();
-                    uiData.image = nftObject.image;
-                    uiData.name = nftObject.name;
-                    uiData.mint_address = mintAddress;
-                    uiData.price = 0.0;
-                    dialog.init(mActivity,uiData);
-                    dialog.show(mActivity.getFragmentManager(),"sell");
-                }
-            });
-        }else{
-            SellDialog dialog = new SellDialog();
-            NFTDetailData uiData = new NFTDetailData();
-            uiData.image = nftObject.image;
-            uiData.name = nftObject.name;
-            uiData.mint_address = mintAddress;
-            uiData.price = 0.0;
-            dialog.init(mActivity,uiData);
-            dialog.show(mActivity.getFragmentManager(),"sell");
-        }
+            @Override
+            public void OnUnUsable() {
+
+            }
+        });
     }
 
-    public void OpenTransferPage(String mintAddress,NFTJsonObject nftObject){
-        if(apiKey == ""){
-            if(mActivity == null){
-                logFlow("Must init sdk first!");
-                return;
+    public void OpenTransferPage(String mintAddress,String image,String name){
+        checkSDKInited(new OnCheckSDKUseable() {
+            @Override
+            public void OnChecked() {
+                TransferDialog dialog = new TransferDialog();
+                NFTDetailData uiData = new NFTDetailData();
+                uiData.image = image;
+                uiData.name = name;
+                uiData.mint_address = mintAddress;
+                uiData.price = 0.0;
+                dialog.init(mActivity,uiData);
             }
-            apiKey = getSavedString(mActivity,localKeyAppId);
-        }
-        if(apiKey == ""){
-            logFlow("Must set app id first!");
-            return;
-        }
 
-        if(accessToken == ""){
-            logFlow("No access token,start get flow");
-            GetAccessToken(mActivity, new MirrorCallback() {
-                @Override
-                public void callback(String result) {
-                    accessToken = result;
-                    TransferDialog dialog = new TransferDialog();
-                    NFTDetailData uiData = new NFTDetailData();
-                    uiData.image = nftObject.image;
-                    uiData.name = nftObject.name;
-                    uiData.mint_address = mintAddress;
-                    uiData.price = 0.0;
-                    dialog.init(mActivity,uiData);
-                }
-            });
-        }else{
-            TransferDialog dialog = new TransferDialog();
-            NFTDetailData uiData = new NFTDetailData();
-            uiData.image = nftObject.image;
-            uiData.name = nftObject.name;
-            uiData.mint_address = mintAddress;
-            uiData.price = 0.0;
-            dialog.init(mActivity,uiData);
-        }
+            @Override
+            public void OnUnUsable() {
+
+            }
+        });
     }
 
     public void GetWallet(MirrorCallback mirrorCallback){

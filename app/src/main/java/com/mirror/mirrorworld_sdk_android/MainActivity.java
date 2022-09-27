@@ -16,6 +16,7 @@ import android.view.WindowManager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
+import com.mirror.mirrorworld_sdk_android.utils.BatchNFT;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.response.UIResponse;
@@ -85,6 +86,10 @@ public class MainActivity extends AppCompatActivity {
 //        uiData.price = 0.0;
 //        dialog.init(this,uiData);
 //        dialog.show(this.getFragmentManager(),"aaa");
+
+        BatchNFT fa = new BatchNFT();
+        fa.init();
+        fa.List5NFT();
     }
 
     private void initViewPage(){
