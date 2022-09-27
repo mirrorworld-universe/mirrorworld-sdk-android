@@ -77,8 +77,7 @@
                         android:layout_marginTop="10dp"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintBottom_toTopOf="@id/transfer_line2_tv">
+                        app:layout_constraintEnd_toEndOf="parent">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="200dp"
@@ -131,11 +130,14 @@
                         <EditText
                             android:id="@+id/sell_line2_et"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:ems="10"
                             android:inputType="numberDecimal"
                             android:text=""
-                            android:gravity="center"/>
+                            android:gravity="center"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            />
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/sell_line2_ex_tint"
@@ -247,7 +249,7 @@
                     <com.mirror.sdk.ui.share.CornerButton
                         android:id="@+id/sell_managebuttons_cancel"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"></com.mirror.sdk.ui.share.CornerButton>
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -260,7 +262,7 @@
                     <com.mirror.sdk.ui.share.CornerButton
                         android:id="@+id/sell_managebuttons_confirm"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"></com.mirror.sdk.ui.share.CornerButton>
                 </androidx.constraintlayout.widget.ConstraintLayout>

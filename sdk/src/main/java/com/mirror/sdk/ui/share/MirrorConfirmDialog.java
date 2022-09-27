@@ -27,13 +27,13 @@ public class MirrorConfirmDialog extends DialogFragment {
     private Dialog mDialog;
     private View.OnClickListener mListener;
 
-    public MirrorConfirmDialog(Activity activity){
-        mActivity = activity;
+    public MirrorConfirmDialog(){
     }
 
-    public void init(String content, View.OnClickListener listener){
+    public void init(Activity activity,String content, View.OnClickListener listener){
         mContont = content;
         mListener = listener;
+        mActivity = activity;
     }
 
     @Override

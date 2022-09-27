@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="42dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/recyclerView"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
@@ -35,7 +34,6 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout" >
@@ -112,9 +110,11 @@
                 <TextView
                     android:id="@+id/nftdetail_ingameperformance_title"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:text="In-Game Performance"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+
                     android:layout_marginStart="20dp"/>
 
                 <androidx.cardview.widget.CardView

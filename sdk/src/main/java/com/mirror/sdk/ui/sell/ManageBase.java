@@ -192,15 +192,15 @@ public class ManageBase extends DialogFragment {
             mNotice.setText("Please input a number.");
             return;
         }
-        MirrorConfirmDialog dialog = new MirrorConfirmDialog(mActivity);
-        dialog.init("Do you want to change the price to "+price+" SOL?", new View.OnClickListener() {
+        MirrorConfirmDialog dialog = new MirrorConfirmDialog();
+        dialog.init(mActivity,"Do you want to change the price to "+price+" SOL?", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MirrorSDK.getInstance().UpdateNFTListing(mintAddress, price, new UpdateListListener() {
                     @Override
                     public void onUpdateSuccess(ListingResponse listingResponse) {
-                        MirrorResultNotice noticeDialog = new MirrorResultNotice(mActivity);
-                        noticeDialog.init(MirrorNoticeDialogType.SUCCESS,"Congratulations!",
+                        MirrorResultNotice noticeDialog = new MirrorResultNotice();
+                        noticeDialog.init(mActivity,MirrorNoticeDialogType.SUCCESS,"Congratulations!",
                                 "List Successfully");
                         noticeDialog.show(mActivity.getFragmentManager(),"notice");
                         mDialog.dismiss();
@@ -209,8 +209,8 @@ public class ManageBase extends DialogFragment {
 
                     @Override
                     public void onUpdateFailed(long code, String message) {
-                        MirrorResultNotice noticeDialog = new MirrorResultNotice(mActivity);
-                        noticeDialog.init(MirrorNoticeDialogType.FAIL,"Ops!",
+                        MirrorResultNotice noticeDialog = new MirrorResultNotice();
+                        noticeDialog.init(mActivity,MirrorNoticeDialogType.FAIL,"Ops!",
                                 "Please Try Again!");
                         noticeDialog.show(mActivity.getFragmentManager(),"notice");
                         dialog.dismiss();
@@ -236,15 +236,15 @@ public class ManageBase extends DialogFragment {
             return;
         }
 
-        MirrorConfirmDialog dialog = new MirrorConfirmDialog(mActivity);
-        dialog.init("Are you sure you want to cancel the list?", new View.OnClickListener() {
+        MirrorConfirmDialog dialog = new MirrorConfirmDialog();
+        dialog.init(mActivity,"Are you sure you want to cancel the list?", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MirrorSDK.getInstance().CancelNFTListing(mintAddress, price, new CancelListListener() {
                     @Override
                     public void onCancelSuccess(ListingResponse listingResponse) {
-                        MirrorResultNotice noticeDialog = new MirrorResultNotice(mActivity);
-                        noticeDialog.init(MirrorNoticeDialogType.SUCCESS,"Congratulations!",
+                        MirrorResultNotice noticeDialog = new MirrorResultNotice();
+                        noticeDialog.init(mActivity,MirrorNoticeDialogType.SUCCESS,"Congratulations!",
                                 "List Successfully");
                         noticeDialog.show(mActivity.getFragmentManager(),"notice");
                         mDialog.dismiss();
@@ -253,8 +253,8 @@ public class ManageBase extends DialogFragment {
 
                     @Override
                     public void onCancelFailed(long code, String message) {
-                        MirrorResultNotice noticeDialog = new MirrorResultNotice(mActivity);
-                        noticeDialog.init(MirrorNoticeDialogType.FAIL,"Ops!",
+                        MirrorResultNotice noticeDialog = new MirrorResultNotice();
+                        noticeDialog.init(mActivity,MirrorNoticeDialogType.FAIL,"Ops!",
                                 "Please Try Again!");
                         noticeDialog.show(mActivity.getFragmentManager(),"notice");
                         dialog.dismiss();
@@ -282,15 +282,15 @@ public class ManageBase extends DialogFragment {
         MirrorSDK.getInstance().ListNFT(mintAddress, price, new ListNFTListener() {
             @Override
             public void onListSuccess(ListingResponse listingResponse) {
-                MirrorResultNotice notice = new MirrorResultNotice(mActivity);
-                notice.init(MirrorNoticeDialogType.SUCCESS,"Congratulations!","List Successfully");
+                MirrorResultNotice notice = new MirrorResultNotice();
+                notice.init(mActivity,MirrorNoticeDialogType.SUCCESS,"Congratulations!","List Successfully");
                 notice.show(mActivity.getFragmentManager(),"success");
             }
 
             @Override
             public void onListFailed(long code, String message) {
-                MirrorResultNotice notice = new MirrorResultNotice(mActivity);
-                notice.init(MirrorNoticeDialogType.FAIL,"Ops!","Please Try Again");
+                MirrorResultNotice notice = new MirrorResultNotice();
+                notice.init(mActivity,MirrorNoticeDialogType.FAIL,"Ops!","Please Try Again");
                 notice.show(mActivity.getFragmentManager(),"success");
             }
         });

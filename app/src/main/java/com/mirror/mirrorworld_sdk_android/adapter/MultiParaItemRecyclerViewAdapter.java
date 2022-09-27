@@ -162,7 +162,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             MirrorSDK.getInstance().OpenWallet();
         }else if(apiId == DemoAPIID.OPEN_MARKET){
             List<String> collections = new ArrayList<>();
-            collections.add("qkuKJWMi14rdYLPBghfBRDpJASdbcLU6xZH3cpUZfng");
+            collections.add("BXqCckKEidhJUpYrg4u2ocdiDKwJY3WujHvVDPTMf6nL");
             MirrorSDK.getInstance().OpenMarket(collections);
         }else if(apiId == DemoAPIID.LOGIN_With_EMAIL){
 

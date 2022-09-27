@@ -10,7 +10,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        >
 
         <TextView
             android:layout_width="wrap_content"
@@ -18,7 +18,7 @@
             android:text="click"
             android:id="@+id/click"
             android:layout_centerInParent="true"
-            android:background="@color/black"/>
+            />
 
     </RelativeLayout>
 

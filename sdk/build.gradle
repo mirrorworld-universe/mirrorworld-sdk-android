@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-
+    android.defaultConfig.vectorDrawables.useSupportLibrary = true
     testOptions {
         unitTests.returnDefaultValues = true
     }

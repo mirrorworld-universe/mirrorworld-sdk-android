@@ -31,8 +31,12 @@ public class BatchNFT {
     String mCollection = "BXqCckKEidhJUpYrg4u2ocdiDKwJY3WujHvVDPTMf6nL";
     String mSolanaNamePre = "Mirror Jump #";
     String mMarket = "AiEqGqMDMa7G6sDF484pqfgsxRGuCcjgxv43MxoiVCsz";
-    String mEmail = "squall19871987@163.com";
-    String mPwd = "edu2act.org";
+    //Production
+//    String mEmail = "squall19871987@163.com";
+//    String mPwd = "edu2act.org";
+    //Staging
+    String mEmail = "squall19871@sina.com";
+    String mPwd = "yuebaobao";
 
     public void init(){
         mDelays = new ArrayList<>();
@@ -54,7 +58,7 @@ public class BatchNFT {
         mRares.add("Ledengary");
         mRares.add("Mythical");
         mRoles = new ArrayList<>();
-        mRoles.add("Samuraimon");
+        mRoles.add("Samurai");
         mRoles.add("Zombie");
         mRoles.add("Cat Maid");
         mRoles.add("Pirate Captain");
@@ -79,7 +83,7 @@ public class BatchNFT {
     public void List5NFT(){
         init();
 
-        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.DevNet);
+        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.StagingDevNet);
         MirrorSDK.getInstance().SetApiKey(mAPIKey);
         MirrorSDK.getInstance().LoginWithEmail(mEmail, mPwd, new MirrorCallback() {
             @Override
@@ -115,7 +119,7 @@ public class BatchNFT {
                     MirrorSDK.getInstance().MintNFT(mCollection, solanaName, solanaSymbol, urlPath, MirrorConfirmation.Finalized ,new MintNFTListener() {
                         @Override
                         public void onMintSuccess(MintResponse userResponse) {
-                            Log.i("MintSuccess:",userResponse.mint_address+"   delaySec:");
+                            Log.i("MintSuccess:",userResponse.mint_address);
                             MirrorSDK.getInstance().ListNFT(userResponse.mint_address, price,MirrorConfirmation.Finalized,mMarket, new ListNFTListener() {
                                 @Override
                                 public void onListSuccess(ListingResponse listingResponse) {

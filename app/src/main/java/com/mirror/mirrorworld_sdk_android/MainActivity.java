@@ -87,9 +87,9 @@ public class MainActivity extends AppCompatActivity {
 //        dialog.init(this,uiData);
 //        dialog.show(this.getFragmentManager(),"aaa");
 
-        BatchNFT fa = new BatchNFT();
-        fa.init();
-        fa.List5NFT();
+//        BatchNFT fa = new BatchNFT();
+//        fa.init();
+//        fa.List5NFT();
     }
 
     private void initViewPage(){

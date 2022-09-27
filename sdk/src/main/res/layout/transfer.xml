@@ -131,11 +131,13 @@
                         <EditText
                             android:id="@+id/transfer_line2_et"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:ems="10"
                             android:inputType="numberDecimal"
                             android:text=""
-                            android:gravity="center"/>
+                            android:gravity="center"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"/>
 
                         <TextView
                             android:id="@+id/transfer_line2_et_hint"

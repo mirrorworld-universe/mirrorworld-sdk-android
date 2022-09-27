@@ -630,6 +630,7 @@ public class MirrorSDK {
         checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
             @Override
             public void callback(String result) {
+                logFlow("ListResult:"+result);
                 CommonResponse<ListingResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<ListingResponse>>(){}.getType());
                 if(response.code == MirrorResCode.SUCCESS){
                     listener.onListSuccess(response.data);
@@ -936,6 +937,7 @@ public class MirrorSDK {
         checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
             @Override
             public void callback(String result) {
+                logFlow("FetchNFTsByUpdateAuthorities result"+result);
                 CommonResponse<MultipleNFTsResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<MultipleNFTsResponse>>(){}.getType());
                 if(response.code == MirrorResCode.SUCCESS){
                     listener.onFetchSuccess(response.data);

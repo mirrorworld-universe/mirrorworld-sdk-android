@@ -164,16 +164,16 @@ public class TransferDialog extends DialogFragment {
                 MirrorSDK.getInstance().TransferNFTToAnotherSolanaWallet(mNFTData.mint_address, input, new TransferNFTListener() {
                     @Override
                     public void onTransferSuccess(ListingResponse listingResponse) {
-                        MirrorResultNotice notice = new MirrorResultNotice(mActivity);
-                        notice.init(MirrorNoticeDialogType.SUCCESS,"Transfer Success!","");
+                        MirrorResultNotice notice = new MirrorResultNotice();
+                        notice.init(mActivity,MirrorNoticeDialogType.SUCCESS,"Transfer Success!","");
                         notice.show(mActivity.getFragmentManager(),"notice");
                         mDialog.dismiss();
                     }
 
                     @Override
                     public void onTransferFailed(long code, String message) {
-                        MirrorResultNotice notice = new MirrorResultNotice(mActivity);
-                        notice.init(MirrorNoticeDialogType.FAIL,"Transfer Failed!","Please try again");
+                        MirrorResultNotice notice = new MirrorResultNotice();
+                        notice.init(mActivity,MirrorNoticeDialogType.FAIL,"Transfer Failed!","Please try again");
                         notice.show(mActivity.getFragmentManager(),"notice");
                     }
                 });

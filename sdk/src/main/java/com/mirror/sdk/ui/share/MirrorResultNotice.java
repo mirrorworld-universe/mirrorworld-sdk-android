@@ -37,13 +37,14 @@ public class MirrorResultNotice extends DialogFragment {
     private ImageView mImageView;
     private View mProgress;
 
-    public MirrorResultNotice(Activity activity){
-        mActivity = activity;
+    public MirrorResultNotice(){
+
     }
 
-    public void init(MirrorNoticeDialogType imageType,String notice1,String notice2){
+    public void init(Activity activity,MirrorNoticeDialogType imageType,String notice1,String notice2){
         mImagePositive = imageType;
         mNotice1 = notice1;
+        mActivity = activity;
         mNotice2 = notice2;
     }
 
