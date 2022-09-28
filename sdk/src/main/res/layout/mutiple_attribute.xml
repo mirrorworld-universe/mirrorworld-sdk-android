@@ -24,12 +24,12 @@
             android:textStyle="bold"
             android:text="On-Chain-Attribute" />
 
-        <androidx.cardview.widget.CardView
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/mirror_pure_white"
-
-            app:cardCornerRadius="12dp">
+            android:background="@drawable/second_style"
+            android:padding="10dp"
+         >
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
@@ -186,7 +186,7 @@
             </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-        </androidx.cardview.widget.CardView>
+        </RelativeLayout>
 
 
     </androidx.appcompat.widget.LinearLayoutCompat>

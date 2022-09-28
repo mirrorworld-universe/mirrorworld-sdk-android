@@ -29,13 +29,13 @@
                 android:textColor="@color/mirror_black"
                 />
 
-            <androidx.cardview.widget.CardView
+            <RelativeLayout
                 android:layout_marginTop="30dp"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                app:cardCornerRadius="12dp"
-
-                android:background="@color/mirror_pure_white">
+                android:background="@drawable/second_style"
+                android:padding="10dp"
+                >
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
@@ -167,7 +167,7 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-            </androidx.cardview.widget.CardView>
+            </RelativeLayout>
         </RelativeLayout>
 
 

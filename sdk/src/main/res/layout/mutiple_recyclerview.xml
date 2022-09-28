@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_centerHorizontal="true"
     android:background="@color/mirror_filter_button_gray">
 
@@ -53,23 +52,25 @@
 
 
 
-        <androidx.cardview.widget.CardView
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="36dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="15dp">
+            android:layout_marginRight="15dp"
+            android:background="@drawable/blue_button_style"
+            android:padding="10dp">
             <Button
-                android:layout_width="224dp"
-                android:layout_height="60dp"
+
+                android:layout_width="214dp"
+                android:layout_height="40dp"
                 android:background="#386EEC"
                 android:text="Buy"
                 android:id="@+id/multiple_buy_nft"
                 android:textSize="18dp"
                 android:textColor="@color/mirror_pure_white"
                />
-        </androidx.cardview.widget.CardView>
+        </RelativeLayout>
 
 
 

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -23,16 +22,16 @@
             android:textStyle="bold"
             />
 
-        <androidx.cardview.widget.CardView
+        <RelativeLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            app:cardCornerRadius="12dp"
-            android:background="@color/mirror_pure_white">
+            app:cardCornerRadius="12dp">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/mirror_pure_white"
+                android:background="@drawable/second_style"
+                android:padding="10dp"
                 android:orientation="vertical">
 
                 <RelativeLayout
@@ -175,25 +174,22 @@
 
                 </RelativeLayout>
 
-
-
             </androidx.appcompat.widget.LinearLayoutCompat>
 
+        </RelativeLayout>
 
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp"
-            android:background="@color/mirror_pure_white"
             android:layout_marginTop="12dp">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@color/mirror_pure_white">
+                android:padding="10dp"
+                android:background="@drawable/second_style"
+              >
 
                 <TextView
                     android:text="Passive Skill Set"
@@ -210,14 +206,14 @@
                     android:layout_height="wrap_content"
                     android:columnCount="2">
 
-                    <androidx.cardview.widget.CardView
-                        android:layout_height="147dp"
-                        android:layout_width="147dp"
+                    <RelativeLayout
+                        android:layout_height="137dp"
+                        android:layout_width="137dp"
                         android:layout_marginLeft="15dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
-                        app:cardCornerRadius="12dp"
-                        android:background="@color/mirror_pure_white">
+                        android:padding="10dp"
+                        android:background="@drawable/second_style">
                         <RelativeLayout
                             android:layout_height="match_parent"
                             android:layout_width="match_parent"
@@ -243,16 +239,16 @@
 
                         </RelativeLayout>
 
-                    </androidx.cardview.widget.CardView>
+                    </RelativeLayout>
 
-                    <androidx.cardview.widget.CardView
-                        android:layout_height="147dp"
-                        android:layout_width="147dp"
+                    <RelativeLayout
+                        android:layout_height="137dp"
+                        android:layout_width="137dp"
                         android:layout_marginLeft="15dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
-                        app:cardCornerRadius="12dp"
-                        android:background="@color/mirror_pure_white">
+                        android:padding="10dp"
+                        android:background="@drawable/second_style">
                         <RelativeLayout
                             android:layout_height="match_parent"
                             android:layout_width="match_parent"
@@ -278,15 +274,16 @@
 
                         </RelativeLayout>
 
-                    </androidx.cardview.widget.CardView>
+                    </RelativeLayout>
 
-                    <androidx.cardview.widget.CardView
-                        android:layout_height="147dp"
-                        android:layout_width="147dp"
+                    <RelativeLayout
+                        android:layout_height="137dp"
+                        android:layout_width="137dp"
                         android:layout_marginLeft="15dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
-                        app:cardCornerRadius="12dp">
+                        android:padding="10dp"
+                        android:background="@drawable/second_style">
                         <RelativeLayout
                             android:layout_height="match_parent"
                             android:layout_width="match_parent"
@@ -312,15 +309,16 @@
 
                         </RelativeLayout>
 
-                    </androidx.cardview.widget.CardView>
+                    </RelativeLayout>
 
-                    <androidx.cardview.widget.CardView
-                        android:layout_height="147dp"
-                        android:layout_width="147dp"
+                    <RelativeLayout
+                        android:layout_height="137dp"
+                        android:layout_width="137dp"
                         android:layout_marginLeft="15dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
-                        app:cardCornerRadius="12dp">
+                        android:padding="10dp"
+                        android:background="@drawable/second_style">
                         <RelativeLayout
                             android:layout_height="match_parent"
                             android:layout_width="match_parent"
@@ -346,18 +344,15 @@
 
                         </RelativeLayout>
 
-                    </androidx.cardview.widget.CardView>
-
+                    </RelativeLayout>
 
                 </GridLayout>
-
-
 
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-        </androidx.cardview.widget.CardView>
+        </RelativeLayout>
 
 
     </androidx.appcompat.widget.LinearLayoutCompat>
