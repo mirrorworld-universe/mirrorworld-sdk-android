@@ -15,3 +15,6 @@ dependencyResolutionManagement {
 rootProject.name = "mirrorworld-sdk-android"
 include ':app'
 include ':sdk'
+include ':marketui'
+include ':marketui'
+include ':market'

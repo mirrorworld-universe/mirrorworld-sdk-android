@@ -16,22 +16,8 @@ import android.view.WindowManager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
-import com.mirror.mirrorworld_sdk_android.utils.BatchNFT;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.MirrorSDK;
-import com.mirror.sdk.response.UIResponse;
-import com.mirror.sdk.ui.manage.ManageDialog;
-import com.mirror.sdk.ui.market.apis.responses.GetCollectionsResponse;
-import com.mirror.sdk.ui.market.dialogs.MirrorMarketDialog;
-import com.mirror.sdk.ui.market.model.NFTDetailData;
-import com.mirror.sdk.ui.sell.SellDialog;
-import com.mirror.sdk.ui.sell.TransferDialog;
-import com.mirror.sdk.ui.share.MirrorNoticeDialogType;
-import com.mirror.sdk.ui.share.MirrorResultNotice;
-import com.mirror.sdk.utils.MirrorGsonUtils;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
