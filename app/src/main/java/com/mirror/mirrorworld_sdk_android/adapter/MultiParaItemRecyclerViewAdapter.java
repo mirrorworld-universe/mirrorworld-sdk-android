@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mirror.mirrorworld_sdk_android.R;
 import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
-import com.mirror.sdk.MirrorCallback;
+import com.mirror.sdk.listener.universal.MirrorCallback;
 import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.constant.MirrorConfirmation;
 import com.mirror.mirrorworld_sdk_android.DemoAPIID;

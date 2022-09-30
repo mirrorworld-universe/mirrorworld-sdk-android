@@ -1,15 +1,25 @@
 package com.mirror.sdk;
 
+import static android.text.InputType.TYPE_CLASS_TEXT;
+import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Message;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.BaseInputConnection;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
 import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
@@ -26,7 +36,7 @@ import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.constant.MirrorLoginPageMode;
 import com.mirror.sdk.constant.MirrorResCode;
 import com.mirror.sdk.constant.MirrorUrl;
-import com.mirror.sdk.listener.OnCheckSDKUseable;
+import com.mirror.sdk.listener.universal.OnCheckSDKUseable;
 import com.mirror.sdk.listener.auth.FetchUserListener;
 import com.mirror.sdk.listener.auth.LoginListener;
 import com.mirror.sdk.listener.market.BuyNFTListener;
@@ -42,12 +52,12 @@ import com.mirror.sdk.listener.market.MintNFTListener;
 import com.mirror.sdk.listener.market.TransferNFTListener;
 import com.mirror.sdk.listener.market.UpdateListListener;
 import com.mirror.sdk.listener.universal.BoolListener;
+import com.mirror.sdk.listener.universal.MirrorCallback;
 import com.mirror.sdk.listener.wallet.GetWalletTokenListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionBySigListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
 import com.mirror.sdk.listener.wallet.TransferSOLListener;
 import com.mirror.sdk.response.CommonResponse;
-import com.mirror.sdk.response.UIResponse;
 import com.mirror.sdk.response.auth.UserResponse;
 import com.mirror.sdk.response.market.ActivityOfSingleNftResponse;
 import com.mirror.sdk.response.market.ListingResponse;
@@ -59,6 +69,7 @@ import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
 import com.mirror.sdk.response.wallet.TransferResponse;
 import com.mirror.sdk.ui.WebViewDialog;
 import com.mirror.sdk.utils.MirrorGsonUtils;
+import com.mirror.sdk.utils.MirrorSoftKeyboardUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -112,6 +123,8 @@ public class MirrorSDK {
     private LoginListener cbLogin = null;
     private MirrorCallback cbStringLogin = null;
 
+    //ui
+    private WebView mLoginMainWebView = null;
 
     private MirrorSDK(){
 
@@ -183,19 +196,6 @@ public class MirrorSDK {
     }
 
     public void StartLogin(){
-//        if(apiKey == ""){
-//            apiKey = getSavedString(mActivity,localKeyAppId);
-//            logFlow("No apiKey use locally api key:"+ apiKey);
-//        }
-//        if(apiKey == ""){
-//            logFlow("Must set app id first!");
-//            return;
-//        }
-//        logFlow("Start login called.");
-//        SDKFragmentDialog ddd = new SDKFragmentDialog();
-//        ddd.SetParams(apiKey, mActivity,appName, mActivity.getApplicationContext());
-//        ddd.show(mActivity.getFragmentManager(),"Tag");
-
         if(apiKey == ""){
             apiKey = getSavedString(mActivity,localKeyAppId);
             logFlow("No apiKey use locally api key:"+ apiKey);
@@ -210,19 +210,28 @@ public class MirrorSDK {
 
         parentDialog = dialog;
         dialog.setCanceledOnTouchOutside(false);
-        WebView wv = new WebView(mActivity);
-        setWebView(mActivity,wv);
+        mLoginMainWebView = new CustomWebView(mActivity);
+        mLoginMainWebView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+        mLoginMainWebView.setFocusable(true);
+        mLoginMainWebView.setFocusableInTouchMode(true);
+        setWebView(mActivity,mLoginMainWebView);
         dialog.setButton("Close", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
-                wv.destroy();
+                mLoginMainWebView.destroy();
                 dialog.dismiss();
             }
         });
 
         RelativeLayout layout = getPopupWindowLayout(mActivity);
-        layout.addView(wv);
+        layout.addView(mLoginMainWebView);
         dialog.setView(layout);
+
+//        int width = ViewGroup.LayoutParams.MATCH_PARENT;
+//        int height = ViewGroup.LayoutParams.MATCH_PARENT;
+//        dialog.getWindow().setLayout(width, height);
+//        dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         dialog.show();
         loginPageMode = MirrorLoginPageMode.CloseIfLoginDone;
@@ -231,7 +240,43 @@ public class MirrorSDK {
 //        dialog.SetParams(mActivity);
 //        dialog.show();
     }
+    public class CustomWebView extends WebView {
+        public CustomWebView(Context context) {
+            super(context);
 
+            init();
+        }
+
+        public CustomWebView(Context context, AttributeSet attrs) {
+            super(context, attrs);
+
+            init();
+        }
+
+        public CustomWebView(Context context, AttributeSet attrs, int defStyleAttr) {
+            super(context, attrs, defStyleAttr);
+
+            init();
+        }
+
+        protected void init() {
+            setFocusable(true);
+            setFocusableInTouchMode(true);
+        }
+
+        @Override
+        public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
+            BaseInputConnection baseInputConnection = new BaseInputConnection(this, false);
+            outAttrs.imeOptions = IME_ACTION_DONE;
+            outAttrs.inputType = TYPE_CLASS_TEXT;
+            return baseInputConnection;
+        }
+
+        @Override
+        public boolean onCheckIsTextEditor() {
+            return true;
+        }
+    }
     public void StartLogin(LoginListener loginListener){
         StartLogin();
         cbLogin = loginListener;
@@ -718,10 +763,11 @@ public class MirrorSDK {
     }
 
     private void doOpenWallet(){
-        String url = MirrorUrl.URL_AUTH + apiKey;
-        WebViewDialog dialog = new WebViewDialog(mActivity,url);
-        dialog.SetParams(mActivity);
-        dialog.show();
+//        String url = MirrorUrl.URL_AUTH + apiKey;
+//        WebViewDialog dialog = new WebViewDialog(mActivity,url);
+//        dialog.SetParams(mActivity);
+//        dialog.show();
+        StartLogin();
 
         loginPageMode = MirrorLoginPageMode.KeepIfLoginDone;
     }
@@ -1407,7 +1453,17 @@ public class MirrorSDK {
 
     private void setWebView(Context context,WebView webView){
         this.mLoginWebView = webView;
-        webView.setWebViewClient(new WebViewClient());
+        webView.setWebViewClient(new WebViewClient(){
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+//                mLoginMainWebView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+//                if(url.contains("discord.com/")){
+//                }else {
+//
+//                }
+                return super.shouldOverrideUrlLoading(view, url);
+            }
+        });
         final String finalUrl = MirrorUrl.URL_AUTH + apiKey;
         logFlow("open login page with url:"+finalUrl);
         webView.loadUrl(finalUrl);
@@ -1482,10 +1538,16 @@ public class MirrorSDK {
         }
     }
 
-    @JavascriptInterface
-    public void closePage() {
-        parentDialog.dismiss();
-    }
+//    @JavascriptInterface
+//    public void openSoftKeyboard() {
+//        MirrorSoftKeyboardUtil.showSoftInput();
+//    }
+//
+//
+//    @JavascriptInterface
+//    public void hideSoftKeyboard() {
+//        parentDialog.dismiss();
+//    }
 
     private void saveRefreshToken(String refreshToken){
         logFlow("save refresh token to local:"+refreshToken);
@@ -1520,6 +1582,9 @@ public class MirrorSDK {
 
     private RelativeLayout getPopupWindowLayout(Context context) {
         RelativeLayout relative = new RelativeLayout(context);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        relative.setLayoutParams(lp);
         addProgressBar(context,relative);
         return relative;
     }

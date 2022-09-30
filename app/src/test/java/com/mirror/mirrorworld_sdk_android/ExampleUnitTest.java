@@ -6,41 +6,24 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-import android.util.Log;
-
-import com.mirror.sdk.MirrorCallback;
+import com.mirror.sdk.listener.universal.MirrorCallback;
 import com.mirror.sdk.MirrorSDK;
-import com.mirror.sdk.constant.MirrorConfirmation;
 import com.mirror.sdk.constant.MirrorEnv;
-import com.mirror.sdk.constant.MirrorUrl;
 import com.mirror.sdk.listener.auth.FetchUserListener;
-import com.mirror.sdk.listener.market.CancelListListener;
-import com.mirror.sdk.listener.market.CreateSubCollectionListener;
-import com.mirror.sdk.listener.market.CreateTopCollectionListener;
 import com.mirror.sdk.listener.market.FetchNFTsListener;
 import com.mirror.sdk.listener.market.FetchByOwnerListener;
 import com.mirror.sdk.listener.market.FetchSingleNFTActivityListener;
 import com.mirror.sdk.listener.market.FetchSingleNFTListener;
-import com.mirror.sdk.listener.market.ListNFTListener;
-import com.mirror.sdk.listener.market.MintNFTListener;
-import com.mirror.sdk.listener.market.TransferNFTListener;
-import com.mirror.sdk.listener.market.UpdateListListener;
 import com.mirror.sdk.listener.wallet.GetWalletTokenListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionBySigListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
 import com.mirror.sdk.listener.wallet.TransactionsDTO;
-import com.mirror.sdk.listener.wallet.TransferSOLListener;
-import com.mirror.sdk.response.CommonResponse;
 import com.mirror.sdk.response.auth.UserResponse;
 import com.mirror.sdk.response.market.ActivityOfSingleNftResponse;
-import com.mirror.sdk.response.market.ListingResponse;
-import com.mirror.sdk.response.market.MintResponse;
 import com.mirror.sdk.response.market.MultipleNFTsResponse;
 import com.mirror.sdk.response.market.SingleNFTResponse;
 import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
 import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
-import com.mirror.sdk.response.wallet.TransferResponse;
-import com.mirror.sdk.utils.MirrorGsonUtils;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.mirror.sdk.listener;
+package com.mirror.sdk.listener.universal;
 
 public interface OnCheckSDKUseable {
     void OnChecked();

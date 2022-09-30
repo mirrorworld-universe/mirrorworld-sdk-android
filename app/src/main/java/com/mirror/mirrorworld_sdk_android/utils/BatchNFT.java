@@ -2,7 +2,7 @@ package com.mirror.mirrorworld_sdk_android.utils;
 
 import android.util.Log;
 
-import com.mirror.sdk.MirrorCallback;
+import com.mirror.sdk.listener.universal.MirrorCallback;
 import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.constant.MirrorConfirmation;
 import com.mirror.sdk.constant.MirrorEnv;
