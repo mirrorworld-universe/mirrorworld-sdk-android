@@ -67,9 +67,7 @@ import com.mirror.sdk.response.market.SingleNFTResponse;
 import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
 import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
 import com.mirror.sdk.response.wallet.TransferResponse;
-import com.mirror.sdk.ui.WebViewDialog;
 import com.mirror.sdk.utils.MirrorGsonUtils;
-import com.mirror.sdk.utils.MirrorSoftKeyboardUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
