@@ -58,6 +58,7 @@ import com.mirror.sdk.listener.wallet.GetWalletTransactionBySigListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
 import com.mirror.sdk.listener.wallet.TransferSOLListener;
 import com.mirror.sdk.response.CommonResponse;
+import com.mirror.sdk.response.auth.LoginResponse;
 import com.mirror.sdk.response.auth.UserResponse;
 import com.mirror.sdk.response.market.ActivityOfSingleNftResponse;
 import com.mirror.sdk.response.market.ListingResponse;
@@ -98,6 +99,7 @@ public class MirrorSDK {
     private String refreshToken = "";
     private String accessToken = "";
     private String mWalletAddress = "";
+    private long mUserId = 0;
 
     private String appName = "MirrorWorldMobileSDK";
     private String delegateName = "mwm";
@@ -146,6 +148,12 @@ public class MirrorSDK {
             this.refreshToken = getRefreshToken(this.mActivity);
         }
         this.env = env;
+
+
+
+//        String responseDataStr = "{\"access_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTUwMywiZXRoX2FkZHJlc3MiOm51bGwsInNvbF9hZGRyZXNzIjoiSHlNU0M3Skozc2tyY1hOZG1jTkJONFhzVlNRSExLN3pnYlBpWkFEN2ZhS2QiLCJlbWFpbCI6IjI1NzMwNDA1NjBAcXEuY29tIiwid2FsbGV0Ijp7ImV0aF9hZGRyZXNzIjpudWxsLCJzb2xfYWRkcmVzcyI6Ikh5TVNDN0pKM3NrcmNYTmRtY05CTjRYc1ZTUUhMSzd6Z2JQaVpBRDdmYUtkIn0sImNsaWVudF9pZCI6IlRlY1JBc2lXcjRKQy01VGtDY3ZPNnVzRG1sLTF4a2l3aFlGOS5wWlZ4dkNray5taXJyb3J3b3JsZC5mdW4iLCJpYXQiOjE2NjQ1ODU2NzYsImV4cCI6MTY2NzE3NzY3NiwianRpIjoiYXV0aDo1NTAzIn0.KwQz9hNTOt33A0Qq5yBKPn8RdKwQXkFpTxTZmhPs0vE\",\"refresh_token\":\"cjhRaIQS-mIdRPGLmG-KM\",\"user\":{\"id\":5503,\"eth_address\":null,\"sol_address\":\"HyMSC7JJ3skrcXNdmcNBN4XsVSQHLK7zgbPiZAD7faKd\",\"email\":\"2573040560@qq.com\",\"email_verified\":false,\"username\":\"Qiang\",\"main_user_id\":null,\"allow_spend\":true,\"has_security\":false,\"createdAt\":\"2022-07-29T08:28:47.000Z\",\"updatedAt\":\"2022-09-30T00:13:44.000Z\",\"is_subaccount\":false,\"wallet\":{\"eth_address\":null,\"sol_address\":\"HyMSC7JJ3skrcXNdmcNBN4XsVSQHLK7zgbPiZAD7faKd\"}}}";
+//        LoginResponse aaa = MirrorGsonUtils.getInstance().fromJson(responseDataStr,new TypeToken<LoginResponse>(){}.getType());
+//        logFlow(aaa.access_token);
     }
 
     public String GetRefreshTokenFromResponse(String response){
@@ -203,6 +211,11 @@ public class MirrorSDK {
             return;
         }
         logFlow("Start login called.");
+
+        openStartPage();
+    }
+
+    private void openStartPage(){
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         AlertDialog dialog = builder.create();
 
@@ -233,11 +246,8 @@ public class MirrorSDK {
 
         dialog.show();
         loginPageMode = MirrorLoginPageMode.CloseIfLoginDone;
-//        final String finalUrl = MirrorUrl.URL_AUTH + apiKey;
-//        LoginDialog dialog = new LoginDialog(mActivity, finalUrl);
-//        dialog.SetParams(mActivity);
-//        dialog.show();
     }
+
     public class CustomWebView extends WebView {
         public CustomWebView(Context context) {
             super(context);
@@ -275,14 +285,62 @@ public class MirrorSDK {
             return true;
         }
     }
+
     public void StartLogin(LoginListener loginListener){
-        StartLogin();
-        cbLogin = loginListener;
+        checkSDKInited(new OnCheckSDKUseable() {
+            @Override
+            public void OnChecked() {
+                CheckAuthenticated(new BoolListener() {
+                    @Override
+                    public void onBool(boolean boolValue) {
+                        if(boolValue){
+                            loginListener.onLoginSuccess();
+                        }else {
+                            openStartPage();
+                            cbLogin = loginListener;
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void OnUnUsable() {
+                openStartPage();
+                cbLogin = loginListener;
+            }
+        });
     }
 
     public void StartLogin(MirrorCallback listener){
-        StartLogin();
-        cbStringLogin = listener;
+        checkSDKInited(new OnCheckSDKUseable() {
+            @Override
+            public void OnChecked() {
+                CheckAuthenticated(new BoolListener() {
+                    @Override
+                    public void onBool(boolean boolValue) {
+                        if(boolValue){
+                            LoginResponse fakeRes = new LoginResponse();
+                            fakeRes.access_token = accessToken;
+                            fakeRes.refresh_token = refreshToken;
+                            fakeRes.user = new UserResponse();
+                            fakeRes.user.sol_address = mWalletAddress;
+                            fakeRes.user.id = mUserId;
+
+                            listener.callback(MirrorGsonUtils.getInstance().toJson(fakeRes));
+                        }else {
+                            openStartPage();
+                            cbStringLogin = listener;
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void OnUnUsable() {
+                openStartPage();
+                cbStringLogin = listener;
+            }
+        });
     }
 
     public void SetDebug(boolean debug){
@@ -330,6 +388,8 @@ public class MirrorSDK {
         FetchUser(new FetchUserListener() {
             @Override
             public void onUserFetched(UserResponse userResponse) {
+                mWalletAddress = userResponse.sol_address;
+                mUserId = userResponse.id;
                 listener.onBool(true);
             }
 
@@ -1075,6 +1135,7 @@ public class MirrorSDK {
     public void GetAccessToken(Activity activityContext, MirrorCallback mirrorCallback){
         logFlow("ready to get access token,now refreshToken is:"+refreshToken);
         if(refreshToken == ""){
+            logFlow("No refresh token,jump to login page...");
             StartLogin();
             return;
         }
@@ -1509,14 +1570,18 @@ public class MirrorSDK {
         logFlow("receive login response:"+dataJsonStr);
         JSONObject jsonObject = null;
         try {
-            jsonObject = new JSONObject(dataJsonStr);
-            accessToken = jsonObject.getString("access_token");
-            String token = jsonObject.getString("refresh_token");
-            saveRefreshToken(token);
-        } catch (JSONException e) {
+            LoginResponse aaa = MirrorGsonUtils.getInstance().fromJson(dataJsonStr,new TypeToken<LoginResponse>(){}.getType());
+            saveRefreshToken(aaa.refresh_token);
+            accessToken = aaa.access_token;
+            mWalletAddress = aaa.user.sol_address;
+            mUserId = aaa.user.id;
+//            jsonObject = new JSONObject(dataJsonStr);
+//            accessToken = jsonObject.getString("access_token");
+//            String token = jsonObject.getString("refresh_token");
+//            saveRefreshToken(token);
+        } catch (Exception e) {
             e.printStackTrace();
         }
-//        LoginResponse loginResponse = MirrorGsonUtils.getInstance().fromJson(dataJsonStr,LoginResponse.class);
 
         if(loginPageMode == MirrorLoginPageMode.CloseIfLoginDone){
             parentDialog.dismiss();

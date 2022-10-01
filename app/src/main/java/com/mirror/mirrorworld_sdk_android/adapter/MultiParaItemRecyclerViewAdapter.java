@@ -147,15 +147,10 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             holder.mResultView.setText(String.valueOf(holder.mEt1.getText()));
 
         }else if(apiId == DemoAPIID.START_LOGIN){
-            MirrorSDK.getInstance().StartLogin(new LoginListener() {
+            MirrorSDK.getInstance().StartLogin(new MirrorCallback() {
                 @Override
-                public void onLoginSuccess() {
-                    holder.mResultView.setText("Login success!");
-                }
-
-                @Override
-                public void onLoginFail() {
-                    holder.mResultView.setText("Login failed!");
+                public void callback(String result) {
+                    holder.mResultView.setText(result);
                 }
             });
         }else if(apiId == DemoAPIID.OPEN_WALLET){
