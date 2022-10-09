@@ -2,10 +2,10 @@ package com.mirror.market.market.apis;
 
 public class MirrorMarketUIAPI {
 
-    private final String marketRoot = "https://api-staging.mirrorworld.fun/v1/marketplace/";
-    private final String MarketGetCollectionUrl = marketRoot + "collections";
-    private final String MarketGetCollectionFiltersUrl = marketRoot + "collection/filter_info?collection=";
-    private final String MarketGetNFTs = marketRoot + "nfts";
+//    private final String marketRoot = "https://api-staging.mirrorworld.fun/v1/marketplace/";
+//    private final String MarketGetCollectionUrl = marketRoot + "collections";
+//    private final String MarketGetCollectionFiltersUrl = marketRoot + "collection/filter_info?collection=";
+//    private final String MarketGetNFTs = marketRoot + "nfts";
 
 //    public void OpenNFTManagePage(String image,String name,String minAddress,Double price){
 //        checkSDKInited(new OnCheckSDKUseable() {

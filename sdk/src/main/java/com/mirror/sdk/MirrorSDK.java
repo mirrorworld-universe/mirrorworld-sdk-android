@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.http.SslError;
 import android.os.Build;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -22,6 +23,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -351,6 +353,21 @@ public class MirrorSDK {
         apiKey = id;
         if(mActivity != null){
             saveString(localKeyAppId, apiKey);
+        }
+    }
+
+    private String GetMainRoot(){
+        if(env == MirrorEnv.StagingMainNet){
+            return "https://auth-staging.mirrorworld.fun/";
+        }else if(env == MirrorEnv.StagingDevNet){
+            return "https://auth-staging.mirrorworld.fun/";
+        }else if(env == MirrorEnv.DevNet){
+            return "https://auth.mirrorworld.fun/";
+        }else if(env == MirrorEnv.MainNet){
+            return "https://auth.mirrorworld.fun/";
+        }else {
+            logFlow("Unknown env:"+env);
+            return "https://auth-staging.mirrorworld.fun/";
         }
     }
 
@@ -1522,12 +1539,18 @@ public class MirrorSDK {
 //                }
                 return super.shouldOverrideUrlLoading(view, url);
             }
-        });
-        final String finalUrl = MirrorUrl.URL_AUTH + apiKey;
+
+                                     @Override
+                                     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+//                                         super.onReceivedSslError(view, handler, error);
+                                         handler.proceed();
+                                     }
+                                 }
+        );
+        final String finalUrl = GetMainRoot() + apiKey;
         logFlow("open login page with url:"+finalUrl);
         webView.loadUrl(finalUrl);
         WebSettings webSettings = webView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
 
         //set autofit
         webSettings.setUseWideViewPort(true);
@@ -1558,8 +1581,6 @@ public class MirrorSDK {
         webSettings.setSaveFormData(true);
         webSettings.setEnableSmoothTransition(true);
         webSettings.setJavaScriptEnabled(true);
-        webSettings.setDomStorageEnabled(true);
-        webSettings.setAppCacheEnabled(true);
         webSettings.setUseWideViewPort(true); // 将图片调整到适合webview的大小
 
         webView.addJavascriptInterface(this, delegateName);

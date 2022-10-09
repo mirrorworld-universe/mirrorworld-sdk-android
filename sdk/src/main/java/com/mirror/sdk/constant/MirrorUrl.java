@@ -1,7 +1,7 @@
 package com.mirror.sdk.constant;
 
 public class MirrorUrl {
-    public static final String URL_AUTH = "https://auth-staging.mirrorworld.fun/";
+//    public static final String URL_AUTH ="https://auth-staging.mirrorworld.fun/";//"https://next-version-test.vercel.app/";//"https://auth-staging.mirrorworld.fun/";//"https://app.mirrorworld.fun/";//
     //auth
     public static final String URL_REFRESH_TOKEN = "auth/refresh-token";
     public static final String URL_QUERY_USER = "auth/user";
