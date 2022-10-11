@@ -15,8 +15,10 @@ import android.os.Build;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
@@ -70,6 +72,7 @@ import com.mirror.sdk.response.market.SingleNFTResponse;
 import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
 import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
 import com.mirror.sdk.response.wallet.TransferResponse;
+import com.mirror.sdk.ui.MirrorDialog;
 import com.mirror.sdk.utils.MirrorGsonUtils;
 
 import org.json.JSONArray;
@@ -111,7 +114,7 @@ public class MirrorSDK {
     private Activity mActivity = null;
     public MirrorEnv env = MirrorEnv.MainNet;
 
-    private AlertDialog parentDialog = null;
+    private MirrorDialog parentDialog = null;
     private WebView mLoginWebView = null;
     private String userAgent = null;
 
@@ -217,36 +220,56 @@ public class MirrorSDK {
         openStartPage();
     }
 
-    private void openStartPage(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-        AlertDialog dialog = builder.create();
-
-        parentDialog = dialog;
-        dialog.setCanceledOnTouchOutside(false);
+    public void openInnerUrl(String url){
+//        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+//        AlertDialog dialog = builder.create();
+        MirrorDialog dialog = new MirrorDialog();
+//        dialog.setCanceledOnTouchOutside(false);
         mLoginMainWebView = new CustomWebView(mActivity);
         mLoginMainWebView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
         mLoginMainWebView.setFocusable(true);
         mLoginMainWebView.setFocusableInTouchMode(true);
-        setWebView(mActivity,mLoginMainWebView);
-        dialog.setButton("Close", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                mLoginMainWebView.destroy();
-                dialog.dismiss();
-            }
-        });
+        setWebView(mActivity,mLoginMainWebView,url);
+//        dialog.setButton("Close", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int id) {
+//                mLoginMainWebView.destroy();
+//                dialog.dismiss();
+//            }
+//        });
 
         RelativeLayout layout = getPopupWindowLayout(mActivity);
         layout.addView(mLoginMainWebView);
-        dialog.setView(layout);
+//        dialog.setView(layout);
+        dialog.init(mActivity,layout);
 
-//        int width = ViewGroup.LayoutParams.MATCH_PARENT;
-//        int height = ViewGroup.LayoutParams.MATCH_PARENT;
-//        dialog.getWindow().setLayout(width, height);
-//        dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        parentDialog = dialog;
 
-        dialog.show();
+        //full screen
+        int width = ViewGroup.LayoutParams.MATCH_PARENT;
+        int height = ViewGroup.LayoutParams.MATCH_PARENT;
+
+//            Window window = dialog.getWindow();
+//            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//            window.setLayout(width, height);
+//            window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//                WindowManager.LayoutParams paramsWindow = window.getAttributes();
+//                paramsWindow.width = window.getWindowManager().getDefaultDisplay().getWidth();
+//                int screenHeight = window.getWindowManager().getDefaultDisplay().getHeight();
+//                Log.i("0000001", String.valueOf(screenHeight));
+//                paramsWindow.height = screenHeight;//getWindowDefineHeight();
+//                paramsWindow.gravity = Gravity.BOTTOM;
+////                paramsWindow.windowAnimations = R.style.common_dialog;
+//                window.setAttributes(paramsWindow);
+//                window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        dialog.show(mActivity.getFragmentManager(),"");
+    }
+
+    private void openStartPage(){
+        final String finalUrl = GetMainRoot() + apiKey;
+        openInnerUrl(finalUrl);
         loginPageMode = MirrorLoginPageMode.CloseIfLoginDone;
     }
 
@@ -1527,7 +1550,7 @@ public class MirrorSDK {
         return stringBuffer;
     }
 
-    private void setWebView(Context context,WebView webView){
+    private void setWebView(Context context,WebView webView,String url){
         this.mLoginWebView = webView;
         webView.setWebViewClient(new WebViewClient(){
             @Override
@@ -1540,16 +1563,13 @@ public class MirrorSDK {
                 return super.shouldOverrideUrlLoading(view, url);
             }
 
-                                     @Override
-                                     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+                 @Override
+                 public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
 //                                         super.onReceivedSslError(view, handler, error);
-                                         handler.proceed();
-                                     }
-                                 }
+                     handler.proceed();
+                 }
+             }
         );
-        final String finalUrl = GetMainRoot() + apiKey;
-        logFlow("open login page with url:"+finalUrl);
-        webView.loadUrl(finalUrl);
         WebSettings webSettings = webView.getSettings();
 
         //set autofit
@@ -1573,7 +1593,7 @@ public class MirrorSDK {
 
         // WebView Tweaks
         webSettings.setRenderPriority(WebSettings.RenderPriority.HIGH);
-        webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         webSettings.setAppCacheEnabled(true);
         webSettings.setDomStorageEnabled(true);
         webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
@@ -1584,6 +1604,9 @@ public class MirrorSDK {
         webSettings.setUseWideViewPort(true); // 将图片调整到适合webview的大小
 
         webView.addJavascriptInterface(this, delegateName);
+
+        logFlow("open login page with url:"+url);
+        webView.loadUrl(url);
     }
 
     @JavascriptInterface
