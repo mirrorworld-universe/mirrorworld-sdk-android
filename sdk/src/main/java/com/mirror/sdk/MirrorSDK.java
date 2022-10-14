@@ -1667,6 +1667,11 @@ public class MirrorSDK {
         }
     }
 
+    @JavascriptInterface
+    public void closePage() {
+        parentDialog.dismiss();
+    }
+
 //    @JavascriptInterface
 //    public void openSoftKeyboard() {
 //        MirrorSoftKeyboardUtil.showSoftInput();
