@@ -3,7 +3,6 @@ package com.mirror.sdk.constant;
 public class MirrorConstant {
     public static final String JsDelegateName = "mwm";
     public static final String AppName = "MirrorWorldMobileSDK";
-
-    //market
-    public static final int pageSize = 10;
+    public static final String DefaultWebviewNotice = "Webview on this device do not support operation";
+    public static final int LowestWebviewVersion = 91;
 }

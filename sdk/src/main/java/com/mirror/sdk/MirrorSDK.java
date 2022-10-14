@@ -32,10 +32,12 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 
 import com.google.gson.reflect.TypeToken;
 import com.mirror.sdk.constant.MirrorConfirmation;
+import com.mirror.sdk.constant.MirrorConstant;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.constant.MirrorLoginPageMode;
 import com.mirror.sdk.constant.MirrorResCode;
@@ -99,6 +101,7 @@ public class MirrorSDK {
     //user custom
     private boolean debugMode = true;
     private String apiKey = "";
+    private String mWebviewNotice = MirrorConstant.DefaultWebviewNotice;
 
     //secret
     private String refreshToken = "";
@@ -106,8 +109,7 @@ public class MirrorSDK {
     private String mWalletAddress = "";
     private long mUserId = 0;
 
-    private String appName = "MirrorWorldMobileSDK";
-    private String delegateName = "mwm";
+    //run time
     private WebView webViewPopUp = null;
     private AlertDialog builder = null;
     private Context globalContext = null;
@@ -118,6 +120,7 @@ public class MirrorSDK {
     private WebView mLoginWebView = null;
     private String userAgent = null;
 
+    //keys
     private String localFileKey = "mirror_local_storage";
     private String localKeyRefreshToken = "mirror_refresh_token";
     private String localKeyAppId = "mirror_app_id";
@@ -220,7 +223,7 @@ public class MirrorSDK {
         openStartPage();
     }
 
-    public void openInnerUrl(String url){
+    public boolean openInnerUrl(String url){
 //        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
 //        AlertDialog dialog = builder.create();
         MirrorDialog dialog = new MirrorDialog();
@@ -229,6 +232,12 @@ public class MirrorSDK {
         mLoginMainWebView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
         mLoginMainWebView.setFocusable(true);
         mLoginMainWebView.setFocusableInTouchMode(true);
+
+        if(!isWebviewSupport(mLoginMainWebView)){
+            logFlow("Webview not support,update it please.");
+            return false;
+        }
+
         setWebView(mActivity,mLoginMainWebView,url);
 //        dialog.setButton("Close", new DialogInterface.OnClickListener() {
 //            @Override
@@ -246,9 +255,8 @@ public class MirrorSDK {
         parentDialog = dialog;
 
         //full screen
-        int width = ViewGroup.LayoutParams.MATCH_PARENT;
-        int height = ViewGroup.LayoutParams.MATCH_PARENT;
-
+//        int width = ViewGroup.LayoutParams.MATCH_PARENT;
+//        int height = ViewGroup.LayoutParams.MATCH_PARENT;
 //            Window window = dialog.getWindow();
 //            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 //            window.setLayout(width, height);
@@ -265,6 +273,8 @@ public class MirrorSDK {
 //                window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         dialog.show(mActivity.getFragmentManager(),"");
+
+        return true;
     }
 
     private void openStartPage(){
@@ -370,6 +380,10 @@ public class MirrorSDK {
 
     public void SetDebug(boolean debug){
         debugMode = debug;
+    }
+
+    public void setWebviewNotice(String notice){
+        mWebviewNotice = notice;
     }
 
     public void SetApiKey(String id){
@@ -1571,14 +1585,13 @@ public class MirrorSDK {
              }
         );
         WebSettings webSettings = webView.getSettings();
-
         //set autofit
         webSettings.setUseWideViewPort(true);
         webSettings.setLoadWithOverviewMode(true);
 
         // Set User Agent
         userAgent = System.getProperty("http.agent");
-        webSettings.setUserAgentString(userAgent + appName);
+        webSettings.setUserAgentString(userAgent + MirrorConstant.AppName);
 
         // Enable Cookies
         CookieManager.getInstance().setAcceptCookie(true);
@@ -1602,8 +1615,9 @@ public class MirrorSDK {
         webSettings.setEnableSmoothTransition(true);
         webSettings.setJavaScriptEnabled(true);
         webSettings.setUseWideViewPort(true); // 将图片调整到适合webview的大小
+//        webSettings.setPluginState(WebSettings.PluginState.ON);
 
-        webView.addJavascriptInterface(this, delegateName);
+        webView.addJavascriptInterface(this, MirrorConstant.JsDelegateName);
 
         logFlow("open login page with url:"+url);
         webView.loadUrl(url);
@@ -1712,6 +1726,25 @@ public class MirrorSDK {
         }
     }
 
+    private boolean isWebviewSupport(WebView webView){
+        String ua = webView.getSettings().getUserAgentString();
+        logFlow("UA: " + ua);
+        String startStr = "Chrome/";
+        String endStr = "Mobile Safari/";
+        int startIdx = ua.indexOf(startStr);
+        int endIdx = ua.indexOf(endStr);
+        String versionStr = ua.substring(startIdx+startStr.length(),endIdx);
+        String mainVersionStr = versionStr.substring(0,versionStr.indexOf('.'));
+        int mainVersion = Integer.parseInt(mainVersionStr);
+
+        if(mainVersion <= MirrorConstant.LowestWebviewVersion){
+            Toast.makeText(mActivity, mWebviewNotice, Toast.LENGTH_LONG).show();
+            return false;
+        }
+        
+        return true;
+    }
+
     class MirrorChromeClient extends WebChromeClient {
         @Override
         public boolean onCreateWindow(WebView view, boolean isDialog,
@@ -1789,7 +1822,4 @@ public class MirrorSDK {
 
         }
     }
-
-
-
 }
