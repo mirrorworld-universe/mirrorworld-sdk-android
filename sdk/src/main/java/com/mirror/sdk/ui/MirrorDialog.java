@@ -1,66 +1,38 @@
 package com.mirror.sdk.ui;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import com.mirror.sdk.R;
 
-public class MirrorDialog extends DialogFragment {
-
-    Activity mActivity;
-    View mTotalView;
-
-
-    public void init(Activity activity, View view){
-        mActivity = activity;
-        mTotalView = view;
+public class MirrorDialog extends Dialog {
+    public MirrorDialog(Context context) {
+        super(context);
+        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
     }
 
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        if(mActivity == null){
-            Log.e("MirrorMarket","Must init first!");
-            return null;
-        }
+    public MirrorDialog(Context context, int themeResId) {
+        super(context, themeResId);
+        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+    }
 
-//        mTotalView = (MainRecyclerView) mActivity.getLayoutInflater().inflate(R.layout.market_main3, null);
-//        initView();
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-        builder.setView(mTotalView);
-        Dialog dialog = builder.create();
-        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-
-        return dialog;
+    protected MirrorDialog(Context context, boolean cancelable, OnCancelListener cancelListener) {
+        super(context, cancelable, cancelListener);
+        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Dialog dialog = getDialog();
-        if (dialog != null) {
-            Window window = dialog.getWindow();
-            if (window != null) {
-                int width = ViewGroup.LayoutParams.MATCH_PARENT;
-                int height = ViewGroup.LayoutParams.MATCH_PARENT;
-                window.setLayout(width, height);
-                window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            }
+
+        Window window = this.getWindow();
+        if (window != null) {
+            int width = ViewGroup.LayoutParams.MATCH_PARENT;
+            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+            window.setLayout(width, height);
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
     }
-
-//    private void initView(){
-//        mTotalView.init(mActivity);
-//        MainDialogAdapter mainRecyclerAdapter = new MainDialogAdapter();
-//        mTotalView.setLayoutManager(new LinearLayoutManager(mActivity));
-//        mTotalView.setAdapter(mainRecyclerAdapter);
-//    }
 }

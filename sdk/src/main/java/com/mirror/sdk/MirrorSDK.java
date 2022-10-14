@@ -157,6 +157,7 @@ public class MirrorSDK {
         }
         this.env = env;
 
+        MirrorGsonUtils.getInstance();
 
 
 //        String responseDataStr = "{\"access_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTUwMywiZXRoX2FkZHJlc3MiOm51bGwsInNvbF9hZGRyZXNzIjoiSHlNU0M3Skozc2tyY1hOZG1jTkJONFhzVlNRSExLN3pnYlBpWkFEN2ZhS2QiLCJlbWFpbCI6IjI1NzMwNDA1NjBAcXEuY29tIiwid2FsbGV0Ijp7ImV0aF9hZGRyZXNzIjpudWxsLCJzb2xfYWRkcmVzcyI6Ikh5TVNDN0pKM3NrcmNYTmRtY05CTjRYc1ZTUUhMSzd6Z2JQaVpBRDdmYUtkIn0sImNsaWVudF9pZCI6IlRlY1JBc2lXcjRKQy01VGtDY3ZPNnVzRG1sLTF4a2l3aFlGOS5wWlZ4dkNray5taXJyb3J3b3JsZC5mdW4iLCJpYXQiOjE2NjQ1ODU2NzYsImV4cCI6MTY2NzE3NzY3NiwianRpIjoiYXV0aDo1NTAzIn0.KwQz9hNTOt33A0Qq5yBKPn8RdKwQXkFpTxTZmhPs0vE\",\"refresh_token\":\"cjhRaIQS-mIdRPGLmG-KM\",\"user\":{\"id\":5503,\"eth_address\":null,\"sol_address\":\"HyMSC7JJ3skrcXNdmcNBN4XsVSQHLK7zgbPiZAD7faKd\",\"email\":\"2573040560@qq.com\",\"email_verified\":false,\"username\":\"Qiang\",\"main_user_id\":null,\"allow_spend\":true,\"has_security\":false,\"createdAt\":\"2022-07-29T08:28:47.000Z\",\"updatedAt\":\"2022-09-30T00:13:44.000Z\",\"is_subaccount\":false,\"wallet\":{\"eth_address\":null,\"sol_address\":\"HyMSC7JJ3skrcXNdmcNBN4XsVSQHLK7zgbPiZAD7faKd\"}}}";
@@ -226,8 +227,8 @@ public class MirrorSDK {
     public boolean openInnerUrl(String url){
 //        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
 //        AlertDialog dialog = builder.create();
-        MirrorDialog dialog = new MirrorDialog();
-//        dialog.setCanceledOnTouchOutside(false);
+        MirrorDialog dialog = new MirrorDialog(mActivity);
+        dialog.setCanceledOnTouchOutside(false);
         mLoginMainWebView = new CustomWebView(mActivity);
         mLoginMainWebView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
         mLoginMainWebView.setFocusable(true);
@@ -249,8 +250,8 @@ public class MirrorSDK {
 
         RelativeLayout layout = getPopupWindowLayout(mActivity);
         layout.addView(mLoginMainWebView);
-//        dialog.setView(layout);
-        dialog.init(mActivity,layout);
+        dialog.setContentView(layout);
+//        dialog.init(mActivity,layout);
 
         parentDialog = dialog;
 
@@ -272,7 +273,7 @@ public class MirrorSDK {
 //                window.setAttributes(paramsWindow);
 //                window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        dialog.show(mActivity.getFragmentManager(),"");
+        dialog.show();
 
         return true;
     }
@@ -1633,10 +1634,13 @@ public class MirrorSDK {
             accessToken = aaa.access_token;
             mWalletAddress = aaa.user.sol_address;
             mUserId = aaa.user.id;
+
 //            jsonObject = new JSONObject(dataJsonStr);
-//            accessToken = jsonObject.getString("access_token");
 //            String token = jsonObject.getString("refresh_token");
 //            saveRefreshToken(token);
+//            accessToken = jsonObject.getString("access_token");
+//            mWalletAddress = jsonObject.getJSONObject("user").getString("sol_address");
+//            mUserId = Long.parseLong(jsonObject.getJSONObject("user").getString("id"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1649,6 +1653,7 @@ public class MirrorSDK {
             logFlow("Unknown login page mode:"+loginPageMode);
         }
 
+        logFlow("cbLogin:"+cbLogin+"  cbStringLogin:"+cbStringLogin);
         if(cbLogin != null){
             logFlow("login success and LoginListener callback called.");
             cbLogin.onLoginSuccess();
