@@ -348,35 +348,38 @@ public class MirrorSDK {
     }
 
     public void StartLogin(MirrorCallback listener){
-        checkSDKInited(new OnCheckSDKUseable() {
-            @Override
-            public void OnChecked() {
-                CheckAuthenticated(new BoolListener() {
-                    @Override
-                    public void onBool(boolean boolValue) {
-                        if(boolValue){
-                            LoginResponse fakeRes = new LoginResponse();
-                            fakeRes.access_token = accessToken;
-                            fakeRes.refresh_token = refreshToken;
-                            fakeRes.user = new UserResponse();
-                            fakeRes.user.sol_address = mWalletAddress;
-                            fakeRes.user.id = mUserId;
-
-                            listener.callback(MirrorGsonUtils.getInstance().toJson(fakeRes));
-                        }else {
-                            openStartPage();
-                            cbStringLogin = listener;
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void OnUnUsable() {
-                openStartPage();
-                cbStringLogin = listener;
-            }
-        });
+        openStartPage();
+        cbStringLogin = listener;
+        return;
+//        checkSDKInited(new OnCheckSDKUseable() {
+//            @Override
+//            public void OnChecked() {
+//                CheckAuthenticated(new BoolListener() {
+//                    @Override
+//                    public void onBool(boolean boolValue) {
+//                        if(boolValue){
+//                            LoginResponse fakeRes = new LoginResponse();
+//                            fakeRes.access_token = accessToken;
+//                            fakeRes.refresh_token = refreshToken;
+//                            fakeRes.user = new UserResponse();
+//                            fakeRes.user.sol_address = mWalletAddress;
+//                            fakeRes.user.id = mUserId;
+//
+//                            listener.callback(MirrorGsonUtils.getInstance().toJson(fakeRes));
+//                        }else {
+//                            openStartPage();
+//                            cbStringLogin = listener;
+//                        }
+//                    }
+//                });
+//            }
+//
+//            @Override
+//            public void OnUnUsable() {
+//                openStartPage();
+//                cbStringLogin = listener;
+//            }
+//        });
     }
 
     public void SetDebug(boolean debug){
@@ -1629,18 +1632,18 @@ public class MirrorSDK {
         logFlow("receive login response:"+dataJsonStr);
         JSONObject jsonObject = null;
         try {
-            LoginResponse aaa = MirrorGsonUtils.getInstance().fromJson(dataJsonStr,new TypeToken<LoginResponse>(){}.getType());
-            saveRefreshToken(aaa.refresh_token);
-            accessToken = aaa.access_token;
-            mWalletAddress = aaa.user.sol_address;
-            mUserId = aaa.user.id;
+//            LoginResponse aaa = MirrorGsonUtils.getInstance().fromJson(dataJsonStr,new TypeToken<LoginResponse>(){}.getType());
+//            saveRefreshToken(aaa.refresh_token);
+//            accessToken = aaa.access_token;
+//            mWalletAddress = aaa.user.sol_address;
+//            mUserId = aaa.user.id;
 
-//            jsonObject = new JSONObject(dataJsonStr);
-//            String token = jsonObject.getString("refresh_token");
-//            saveRefreshToken(token);
-//            accessToken = jsonObject.getString("access_token");
-//            mWalletAddress = jsonObject.getJSONObject("user").getString("sol_address");
-//            mUserId = Long.parseLong(jsonObject.getJSONObject("user").getString("id"));
+            jsonObject = new JSONObject(dataJsonStr);
+            String token = jsonObject.getString("refresh_token");
+            saveRefreshToken(token);
+            accessToken = jsonObject.getString("access_token");
+            mWalletAddress = jsonObject.getJSONObject("user").getString("sol_address");
+            mUserId = Long.parseLong(jsonObject.getJSONObject("user").getString("id"));
         } catch (Exception e) {
             e.printStackTrace();
         }
