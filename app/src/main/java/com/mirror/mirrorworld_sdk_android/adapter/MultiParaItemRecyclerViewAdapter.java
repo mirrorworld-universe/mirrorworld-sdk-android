@@ -156,7 +156,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
         }else if(apiId == DemoAPIID.OPEN_WALLET){
             MirrorSDK.getInstance().OpenWallet();
         }else if(apiId == DemoAPIID.OPEN_MARKET){
-
+            MirrorSDK.getInstance().openMarket();
         }else if(apiId == DemoAPIID.LOGIN_With_EMAIL){
 
             String email = String.valueOf(holder.mEt1.getText());

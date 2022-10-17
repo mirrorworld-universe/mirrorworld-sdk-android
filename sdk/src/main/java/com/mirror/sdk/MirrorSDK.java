@@ -223,6 +223,7 @@ public class MirrorSDK {
     }
 
     public boolean openInnerUrl(String url){
+        logFlow("try to open url:"+url);
 //        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
 //        AlertDialog dialog = builder.create();
         MirrorDialog dialog = new MirrorDialog(mActivity);
@@ -424,6 +425,21 @@ public class MirrorSDK {
         }
     }
 
+    private String getMarketRoot(){
+        if(env == MirrorEnv.StagingMainNet){
+            return "https://jump-devnet.mirrorworld.fun";
+        }else if(env == MirrorEnv.StagingDevNet){
+            return "https://jump-devnet.mirrorworld.fun";
+        }else if(env == MirrorEnv.DevNet){
+            return "https://jump-devnet.mirrorworld.fun";
+        }else if(env == MirrorEnv.MainNet){
+            return "https://jump-devnet.mirrorworld.fun";
+        }else {
+            logFlow("Unknown env:"+env);
+            return "https://jump-devnet.mirrorworld.fun";
+        }
+    }
+
     private String GetSSORoot(){
         if(env == MirrorEnv.StagingMainNet){
             return "https://api-staging.mirrorworld.fun/v1/";
@@ -491,6 +507,7 @@ public class MirrorSDK {
         checkParamsAndGet(url, map, new MirrorCallback() {
             @Override
             public void callback(String result) {
+                logFlow("FetchUser result"+result);
                 CommonResponse<UserResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<UserResponse>>(){}.getType());
                 if(response.code == MirrorResCode.SUCCESS){
                     fetchUserListener.onUserFetched(response.data);
@@ -851,6 +868,21 @@ public class MirrorSDK {
 
             }
         }));
+    }
+
+    public void openMarket(){
+        checkSDKInited(new OnCheckSDKUseable() {
+            @Override
+            public void OnChecked() {
+                String url = getMarketRoot()+ "?auth=" + accessToken;
+                openInnerUrl(url);
+            }
+
+            @Override
+            public void OnUnUsable() {
+                logFlow("openMarket:sdk not prepared.");
+            }
+        });
     }
 
     //Wallet
