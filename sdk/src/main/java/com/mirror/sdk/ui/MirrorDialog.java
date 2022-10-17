@@ -17,7 +17,7 @@ public class MirrorDialog extends Dialog {
     public MirrorDialog(Context context) {
 //        super(context);
         super(context,R.style.fullDialog);
-        init();
+//        init();
     }
 
     public MirrorDialog(Context context, int themeResId) {
@@ -32,9 +32,11 @@ public class MirrorDialog extends Dialog {
 
     private void init(){
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        hideNavigationBar();
-        adjustFullScreen(getWindow());
+        getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+//        hideNavigationBar();
+//        adjustFullScreen(getWindow());
 //        getWindow().setBackgroundDrawableResource(R.color.bg_color_translucent);
+
     }
     private void hideNavigationBar() {
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION

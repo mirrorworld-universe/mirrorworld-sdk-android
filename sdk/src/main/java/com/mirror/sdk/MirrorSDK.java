@@ -360,39 +360,39 @@ public class MirrorSDK {
 
     public void StartLogin(MirrorCallback listener){
         //not use Gson
-//        openStartPage();
-//        cbStringLogin = listener;
-//        return;
+        openStartPage();
+        cbStringLogin = listener;
+        return;
         //use Gson
-        checkSDKInited(new OnCheckSDKUseable() {
-            @Override
-            public void OnChecked() {
-                CheckAuthenticated(new BoolListener() {
-                    @Override
-                    public void onBool(boolean boolValue) {
-                        if(boolValue){
-                            LoginResponse fakeRes = new LoginResponse();
-                            fakeRes.access_token = accessToken;
-                            fakeRes.refresh_token = refreshToken;
-                            fakeRes.user = new UserResponse();
-                            fakeRes.user.sol_address = mWalletAddress;
-                            fakeRes.user.id = mUserId;
-
-                            listener.callback(MirrorGsonUtils.getInstance().toJson(fakeRes));
-                        }else {
-                            openStartPage();
-                            cbStringLogin = listener;
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void OnUnUsable() {
-                openStartPage();
-                cbStringLogin = listener;
-            }
-        });
+//        checkSDKInited(new OnCheckSDKUseable() {
+//            @Override
+//            public void OnChecked() {
+//                CheckAuthenticated(new BoolListener() {
+//                    @Override
+//                    public void onBool(boolean boolValue) {
+//                        if(boolValue){
+//                            LoginResponse fakeRes = new LoginResponse();
+//                            fakeRes.access_token = accessToken;
+//                            fakeRes.refresh_token = refreshToken;
+//                            fakeRes.user = new UserResponse();
+//                            fakeRes.user.sol_address = mWalletAddress;
+//                            fakeRes.user.id = mUserId;
+//
+//                            listener.callback(MirrorGsonUtils.getInstance().toJson(fakeRes));
+//                        }else {
+//                            openStartPage();
+//                            cbStringLogin = listener;
+//                        }
+//                    }
+//                });
+//            }
+//
+//            @Override
+//            public void OnUnUsable() {
+//                openStartPage();
+//                cbStringLogin = listener;
+//            }
+//        });
     }
 
     public void SetDebug(boolean debug){
@@ -1614,6 +1614,7 @@ public class MirrorSDK {
 
     private void setWebView(Context context,WebView webView,String url){
         this.mLoginWebView = webView;
+        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         webView.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
