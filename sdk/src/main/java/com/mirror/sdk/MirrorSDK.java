@@ -1,35 +1,48 @@
 package com.mirror.sdk;
 
+import static android.text.InputType.TYPE_CLASS_TEXT;
+import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.http.SslError;
 import android.os.Build;
 import android.os.Message;
-import android.util.DisplayMetrics;
+import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.BaseInputConnection;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
 import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 
 import com.google.gson.reflect.TypeToken;
 import com.mirror.sdk.constant.MirrorConfirmation;
+import com.mirror.sdk.constant.MirrorConstant;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.constant.MirrorLoginPageMode;
 import com.mirror.sdk.constant.MirrorResCode;
 import com.mirror.sdk.constant.MirrorUrl;
+import com.mirror.sdk.listener.universal.OnCheckSDKUseable;
 import com.mirror.sdk.listener.auth.FetchUserListener;
 import com.mirror.sdk.listener.auth.LoginListener;
 import com.mirror.sdk.listener.market.BuyNFTListener;
@@ -45,11 +58,13 @@ import com.mirror.sdk.listener.market.MintNFTListener;
 import com.mirror.sdk.listener.market.TransferNFTListener;
 import com.mirror.sdk.listener.market.UpdateListListener;
 import com.mirror.sdk.listener.universal.BoolListener;
+import com.mirror.sdk.listener.universal.MirrorCallback;
 import com.mirror.sdk.listener.wallet.GetWalletTokenListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionBySigListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
 import com.mirror.sdk.listener.wallet.TransferSOLListener;
 import com.mirror.sdk.response.CommonResponse;
+import com.mirror.sdk.response.auth.LoginResponse;
 import com.mirror.sdk.response.auth.UserResponse;
 import com.mirror.sdk.response.market.ActivityOfSingleNftResponse;
 import com.mirror.sdk.response.market.ListingResponse;
@@ -59,9 +74,7 @@ import com.mirror.sdk.response.market.SingleNFTResponse;
 import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
 import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
 import com.mirror.sdk.response.wallet.TransferResponse;
-import com.mirror.sdk.ui.LoginDialog;
-import com.mirror.sdk.ui.SDKFragmentDialog;
-import com.mirror.sdk.ui.WebViewDialog;
+import com.mirror.sdk.ui.MirrorDialog;
 import com.mirror.sdk.utils.MirrorGsonUtils;
 
 import org.json.JSONArray;
@@ -75,6 +88,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -88,24 +103,26 @@ public class MirrorSDK {
     //user custom
     private boolean debugMode = true;
     private String apiKey = "";
+    private String mWebviewNotice = MirrorConstant.DefaultWebviewNotice;
 
     //secret
     private String refreshToken = "";
     private String accessToken = "";
     private String mWalletAddress = "";
+    private long mUserId = 0;
 
-    private String appName = "MirrorWorldMobileSDK";
-    private String delegateName = "mwm";
+    //run time
     private WebView webViewPopUp = null;
     private AlertDialog builder = null;
     private Context globalContext = null;
     private Activity mActivity = null;
-    private MirrorEnv env = MirrorEnv.MainNet;
+    public MirrorEnv env = MirrorEnv.MainNet;
 
-    private AlertDialog parentDialog = null;
+    private MirrorDialog parentDialog = null;
     private WebView mLoginWebView = null;
     private String userAgent = null;
 
+    //keys
     private String localFileKey = "mirror_local_storage";
     private String localKeyRefreshToken = "mirror_refresh_token";
     private String localKeyAppId = "mirror_app_id";
@@ -116,6 +133,8 @@ public class MirrorSDK {
     private LoginListener cbLogin = null;
     private MirrorCallback cbStringLogin = null;
 
+    //ui
+    private WebView mLoginMainWebView = null;
 
     private MirrorSDK(){
 
@@ -139,6 +158,9 @@ public class MirrorSDK {
             this.refreshToken = getRefreshToken(this.mActivity);
         }
         this.env = env;
+        String responseDataStr = "{\"access_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTUwMywiZXRoX2FkZHJlc3MiOm51bGwsInNvbF9hZGRyZXNzIjoiSHlNU0M3Skozc2tyY1hOZG1jTkJONFhzVlNRSExLN3pnYlBpWkFEN2ZhS2QiLCJlbWFpbCI6IjI1NzMwNDA1NjBAcXEuY29tIiwid2FsbGV0Ijp7ImV0aF9hZGRyZXNzIjpudWxsLCJzb2xfYWRkcmVzcyI6Ikh5TVNDN0pKM3NrcmNYTmRtY05CTjRYc1ZTUUhMSzd6Z2JQaVpBRDdmYUtkIn0sImNsaWVudF9pZCI6IlRlY1JBc2lXcjRKQy01VGtDY3ZPNnVzRG1sLTF4a2l3aFlGOS5wWlZ4dkNray5taXJyb3J3b3JsZC5mdW4iLCJpYXQiOjE2NjQ1ODU2NzYsImV4cCI6MTY2NzE3NzY3NiwianRpIjoiYXV0aDo1NTAzIn0.KwQz9hNTOt33A0Qq5yBKPn8RdKwQXkFpTxTZmhPs0vE\",\"refresh_token\":\"cjhRaIQS-mIdRPGLmG-KM\",\"user\":{\"id\":5503,\"eth_address\":null,\"sol_address\":\"HyMSC7JJ3skrcXNdmcNBN4XsVSQHLK7zgbPiZAD7faKd\",\"email\":\"2573040560@qq.com\",\"email_verified\":false,\"username\":\"Qiang\",\"main_user_id\":null,\"allow_spend\":true,\"has_security\":false,\"createdAt\":\"2022-07-29T08:28:47.000Z\",\"updatedAt\":\"2022-09-30T00:13:44.000Z\",\"is_subaccount\":false,\"wallet\":{\"eth_address\":null,\"sol_address\":\"HyMSC7JJ3skrcXNdmcNBN4XsVSQHLK7zgbPiZAD7faKd\"}}}";
+        LoginResponse aaa = MirrorGsonUtils.getInstance().fromJson(responseDataStr,new TypeToken<LoginResponse>(){}.getType());
+        logFlow(aaa.access_token);
     }
 
     public String GetRefreshTokenFromResponse(String response){
@@ -187,19 +209,6 @@ public class MirrorSDK {
     }
 
     public void StartLogin(){
-//        if(apiKey == ""){
-//            apiKey = getSavedString(mActivity,localKeyAppId);
-//            logFlow("No apiKey use locally api key:"+ apiKey);
-//        }
-//        if(apiKey == ""){
-//            logFlow("Must set app id first!");
-//            return;
-//        }
-//        logFlow("Start login called.");
-//        SDKFragmentDialog ddd = new SDKFragmentDialog();
-//        ddd.SetParams(apiKey, mActivity,appName, mActivity.getApplicationContext());
-//        ddd.show(mActivity.getFragmentManager(),"Tag");
-
         if(apiKey == ""){
             apiKey = getSavedString(mActivity,localKeyAppId);
             logFlow("No apiKey use locally api key:"+ apiKey);
@@ -209,45 +218,189 @@ public class MirrorSDK {
             return;
         }
         logFlow("Start login called.");
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-        AlertDialog dialog = builder.create();
 
-        parentDialog = dialog;
+        openStartPage();
+    }
+
+    public boolean openInnerUrl(String url){
+        logFlow("try to open url:"+url);
+//        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+//        AlertDialog dialog = builder.create();
+        MirrorDialog dialog = new MirrorDialog(mActivity);
         dialog.setCanceledOnTouchOutside(false);
-        WebView wv = new WebView(mActivity);
-        setWebView(mActivity,wv);
-        dialog.setButton("Close", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                wv.destroy();
-                dialog.dismiss();
-            }
-        });
+        mLoginMainWebView = new CustomWebView(mActivity);
+        mLoginMainWebView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+        mLoginMainWebView.setFocusable(true);
+        mLoginMainWebView.setFocusableInTouchMode(true);
+
+        if(!isWebviewSupport(mLoginMainWebView)){
+            logFlow("Webview not support,update it please.");
+            return false;
+        }
+
+        setWebView(mActivity,mLoginMainWebView,url);
+//        dialog.setButton("Close", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int id) {
+//                mLoginMainWebView.destroy();
+//                dialog.dismiss();
+//            }
+//        });
 
         RelativeLayout layout = getPopupWindowLayout(mActivity);
-        layout.addView(wv);
-        dialog.setView(layout);
+        layout.addView(mLoginMainWebView);
+        dialog.setContentView(layout);
+//        dialog.init(mActivity,layout);
+
+        parentDialog = dialog;
+
+        //full screen
+//        int width = ViewGroup.LayoutParams.MATCH_PARENT;
+//        int height = ViewGroup.LayoutParams.MATCH_PARENT;
+//            Window window = dialog.getWindow();
+//            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//            window.setLayout(width, height);
+//            window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//                WindowManager.LayoutParams paramsWindow = window.getAttributes();
+//                paramsWindow.width = window.getWindowManager().getDefaultDisplay().getWidth();
+//                int screenHeight = window.getWindowManager().getDefaultDisplay().getHeight();
+//                Log.i("0000001", String.valueOf(screenHeight));
+//                paramsWindow.height = screenHeight;//getWindowDefineHeight();
+//                paramsWindow.gravity = Gravity.BOTTOM;
+////                paramsWindow.windowAnimations = R.style.common_dialog;
+//                window.setAttributes(paramsWindow);
+//                window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         dialog.show();
+
+        return true;
+    }
+
+    private void openStartPage(){
+        if(apiKey == ""){
+            if(mActivity == null){
+                logFlow("Must init sdk first!");
+                return;
+            }
+            apiKey = getSavedString(mActivity,localKeyAppId);
+        }
+        if(apiKey == ""){
+            logFlow("Must set app id first!");
+            return;
+        }
+
+        String finalUrl = GetMainRoot() + apiKey;
+        openInnerUrl(finalUrl);
         loginPageMode = MirrorLoginPageMode.CloseIfLoginDone;
-//        final String finalUrl = MirrorUrl.URL_AUTH + apiKey;
-//        LoginDialog dialog = new LoginDialog(mActivity, finalUrl);
-//        dialog.SetParams(mActivity);
-//        dialog.show();
+    }
+
+    public class CustomWebView extends WebView {
+        public CustomWebView(Context context) {
+            super(context);
+
+            init();
+        }
+
+        public CustomWebView(Context context, AttributeSet attrs) {
+            super(context, attrs);
+
+            init();
+        }
+
+        public CustomWebView(Context context, AttributeSet attrs, int defStyleAttr) {
+            super(context, attrs, defStyleAttr);
+
+            init();
+        }
+
+        protected void init() {
+            setFocusable(true);
+            setFocusableInTouchMode(true);
+        }
+
+        @Override
+        public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
+            BaseInputConnection baseInputConnection = new BaseInputConnection(this, false);
+            outAttrs.imeOptions = IME_ACTION_DONE;
+            outAttrs.inputType = TYPE_CLASS_TEXT;
+            return baseInputConnection;
+        }
+
+        @Override
+        public boolean onCheckIsTextEditor() {
+            return true;
+        }
     }
 
     public void StartLogin(LoginListener loginListener){
-        StartLogin();
-        cbLogin = loginListener;
+        checkSDKInited(new OnCheckSDKUseable() {
+            @Override
+            public void OnChecked() {
+                CheckAuthenticated(new BoolListener() {
+                    @Override
+                    public void onBool(boolean boolValue) {
+                        if(boolValue){
+                            loginListener.onLoginSuccess();
+                        }else {
+                            openStartPage();
+                            cbLogin = loginListener;
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void OnUnUsable() {
+                openStartPage();
+                cbLogin = loginListener;
+            }
+        });
     }
 
     public void StartLogin(MirrorCallback listener){
-        StartLogin();
+        //not use Gson
+        openStartPage();
         cbStringLogin = listener;
+        return;
+        //use Gson
+//        checkSDKInited(new OnCheckSDKUseable() {
+//            @Override
+//            public void OnChecked() {
+//                CheckAuthenticated(new BoolListener() {
+//                    @Override
+//                    public void onBool(boolean boolValue) {
+//                        if(boolValue){
+//                            LoginResponse fakeRes = new LoginResponse();
+//                            fakeRes.access_token = accessToken;
+//                            fakeRes.refresh_token = refreshToken;
+//                            fakeRes.user = new UserResponse();
+//                            fakeRes.user.sol_address = mWalletAddress;
+//                            fakeRes.user.id = mUserId;
+//
+//                            listener.callback(MirrorGsonUtils.getInstance().toJson(fakeRes));
+//                        }else {
+//                            openStartPage();
+//                            cbStringLogin = listener;
+//                        }
+//                    }
+//                });
+//            }
+//
+//            @Override
+//            public void OnUnUsable() {
+//                openStartPage();
+//                cbStringLogin = listener;
+//            }
+//        });
     }
 
     public void SetDebug(boolean debug){
         debugMode = debug;
+    }
+
+    public void setWebviewNotice(String notice){
+        mWebviewNotice = notice;
     }
 
     public void SetApiKey(String id){
@@ -257,8 +410,40 @@ public class MirrorSDK {
         }
     }
 
+    private String GetMainRoot(){
+        if(env == MirrorEnv.StagingMainNet){
+            return "https://auth-staging.mirrorworld.fun/";
+        }else if(env == MirrorEnv.StagingDevNet){
+            return "https://auth-staging.mirrorworld.fun/";
+        }else if(env == MirrorEnv.DevNet){
+            return "https://auth.mirrorworld.fun/";
+        }else if(env == MirrorEnv.MainNet){
+            return "https://auth.mirrorworld.fun/";
+        }else {
+            logFlow("Unknown env:"+env);
+            return "https://auth-staging.mirrorworld.fun/";
+        }
+    }
+
+    private String getMarketRoot(){
+        if(env == MirrorEnv.StagingMainNet){
+            return "https://jump-devnet.mirrorworld.fun";
+        }else if(env == MirrorEnv.StagingDevNet){
+            return "https://jump-devnet.mirrorworld.fun";
+        }else if(env == MirrorEnv.DevNet){
+            return "https://jump-devnet.mirrorworld.fun";
+        }else if(env == MirrorEnv.MainNet){
+            return "https://jump-devnet.mirrorworld.fun";
+        }else {
+            logFlow("Unknown env:"+env);
+            return "https://jump-devnet.mirrorworld.fun";
+        }
+    }
+
     private String GetSSORoot(){
-        if(env == MirrorEnv.Staging){
+        if(env == MirrorEnv.StagingMainNet){
+            return "https://api-staging.mirrorworld.fun/v1/";
+        }else if(env == MirrorEnv.StagingDevNet){
             return "https://api-staging.mirrorworld.fun/v1/";
         }else if(env == MirrorEnv.DevNet){
             return "https://api.mirrorworld.fun/v1/";
@@ -271,7 +456,9 @@ public class MirrorSDK {
     }
 
     private String GetAPIRoot(){
-        if(env == MirrorEnv.Staging){
+        if(env == MirrorEnv.StagingMainNet){
+            return "https://api-staging.mirrorworld.fun/v1/mainnet/";
+        }else if(env == MirrorEnv.StagingDevNet){
             return "https://api-staging.mirrorworld.fun/v1/devnet/";
         }else if(env == MirrorEnv.DevNet){
             return "https://api.mirrorworld.fun/v1/devnet/";
@@ -287,6 +474,8 @@ public class MirrorSDK {
         FetchUser(new FetchUserListener() {
             @Override
             public void onUserFetched(UserResponse userResponse) {
+                mWalletAddress = userResponse.sol_address;
+                mUserId = userResponse.id;
                 listener.onBool(true);
             }
 
@@ -318,6 +507,7 @@ public class MirrorSDK {
         checkParamsAndGet(url, map, new MirrorCallback() {
             @Override
             public void callback(String result) {
+                logFlow("FetchUser result"+result);
                 CommonResponse<UserResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<UserResponse>>(){}.getType());
                 if(response.code == MirrorResCode.SUCCESS){
                     fetchUserListener.onUserFetched(response.data);
@@ -457,6 +647,7 @@ public class MirrorSDK {
     public void CreateVerifiedSubCollection(String collection_mint, String name, String symbol, String detailUrl, CreateSubCollectionListener createSubCollectionListener){
         CreateVerifiedSubCollection(collection_mint,name,symbol,detailUrl, MirrorConfirmation.Default,createSubCollectionListener);
     }
+
     public void TransferNFTToAnotherSolanaWallet(String mint_address, String to_wallet_address, TransferNFTListener transferNFTListener){
         JSONObject jsonObject = new JSONObject();
         try {
@@ -591,12 +782,16 @@ public class MirrorSDK {
         UpdateNFTListing(mint_address, price,MirrorConfirmation.Default, listener);
     }
 
-    public void ListNFT(String mint_address, Double price, String confirmation, ListNFTListener listener){
+    public void ListNFT(String mint_address, Double price, String confirmation,ListNFTListener listener){
+        ListNFT(mint_address, price, confirmation,"", listener);
+    }
+    public void ListNFT(String mint_address, Double price, String confirmation,String auction_house, ListNFTListener listener){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("mint_address", mint_address);
             jsonObject.put("price", price);
             jsonObject.put("confirmation",confirmation);
+            if(auction_house != null && auction_house != "") jsonObject.put("auction_house",auction_house);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -606,6 +801,7 @@ public class MirrorSDK {
         checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
             @Override
             public void callback(String result) {
+                logFlow("ListResult:"+result);
                 CommonResponse<ListingResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<ListingResponse>>(){}.getType());
                 if(response.code == MirrorResCode.SUCCESS){
                     listener.onListSuccess(response.data);
@@ -674,6 +870,21 @@ public class MirrorSDK {
         }));
     }
 
+    public void openMarket(){
+        checkSDKInited(new OnCheckSDKUseable() {
+            @Override
+            public void OnChecked() {
+                String url = getMarketRoot()+ "?auth=" + accessToken;
+                openInnerUrl(url);
+            }
+
+            @Override
+            public void OnUnUsable() {
+                logFlow("openMarket:sdk not prepared.");
+            }
+        });
+    }
+
     //Wallet
     public void OpenWallet(){
         if(apiKey == ""){
@@ -712,10 +923,11 @@ public class MirrorSDK {
     }
 
     private void doOpenWallet(){
-        String url = MirrorUrl.URL_AUTH + apiKey;
-        WebViewDialog dialog = new WebViewDialog(mActivity,url);
-        dialog.SetParams(mActivity);
-        dialog.show();
+//        String url = MirrorUrl.URL_AUTH + apiKey;
+//        WebViewDialog dialog = new WebViewDialog(mActivity,url);
+//        dialog.SetParams(mActivity);
+//        dialog.show();
+        StartLogin();
 
         loginPageMode = MirrorLoginPageMode.KeepIfLoginDone;
     }
@@ -835,6 +1047,7 @@ public class MirrorSDK {
         checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
             @Override
             public void callback(String result) {
+                logFlow("FetchNFTsByUpdateAuthorities result"+result);
                 CommonResponse<MultipleNFTsResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<MultipleNFTsResponse>>(){}.getType());
                 if(response.code == MirrorResCode.SUCCESS){
                     listener.onFetchSuccess(response.data);
@@ -959,7 +1172,34 @@ public class MirrorSDK {
 
         String url = GetAPIRoot() + MirrorUrl.URL_QUERY_MARKET_PLACE;
         checkParamsAndGet(url,map, mirrorCallback);
+    }
 
+    private void checkSDKInited(OnCheckSDKUseable callback){
+        if(apiKey == ""){
+            if(mActivity == null){
+                logFlow("Must init sdk first!");
+                return;
+            }
+            apiKey = getSavedString(mActivity,localKeyAppId);
+        }
+        if(apiKey == ""){
+            logFlow("Must set app id first!");
+            return;
+        }
+
+        if(accessToken == ""){
+            logFlow("No access token,start get flow");
+            GetAccessToken(mActivity, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    accessToken = result;
+                    callback.OnChecked();
+                }
+            });
+            return;
+        }else{
+            callback.OnChecked();
+        }
     }
 
     private void LoginWithEmailPostRequest(String url, String data, MirrorCallback mirrorCallback){
@@ -967,7 +1207,7 @@ public class MirrorSDK {
     }
 
 
-    private void doPostRequest(String url, String data, MirrorCallback mirrorCallback){
+    public void doPostRequest(String url, String data, MirrorCallback mirrorCallback){
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -997,6 +1237,7 @@ public class MirrorSDK {
     public void GetAccessToken(Activity activityContext, MirrorCallback mirrorCallback){
         logFlow("ready to get access token,now refreshToken is:"+refreshToken);
         if(refreshToken == ""){
+            logFlow("No refresh token,jump to login page...");
             StartLogin();
             return;
         }
@@ -1371,22 +1612,51 @@ public class MirrorSDK {
         return stringBuffer;
     }
 
-    private void setWebView(Context context,WebView webView){
+    private void setWebView(Context context,WebView webView,String url){
         this.mLoginWebView = webView;
-        webView.setWebViewClient(new WebViewClient());
-        final String finalUrl = MirrorUrl.URL_AUTH + apiKey;
-        logFlow("open login page with url:"+finalUrl);
-        webView.loadUrl(finalUrl);
-        WebSettings webSettings = webView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
+        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        webView.setWebViewClient(new WebViewClient(){
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+//                mLoginMainWebView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+//                if(url.contains("discord.com/")){
+//                }else {
+//
+//                }
+                return super.shouldOverrideUrlLoading(view, url);
+            }
 
+                 @Override
+                 public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+//                                         super.onReceivedSslError(view, handler, error);
+                     handler.proceed();
+                 }
+             }
+        );
+
+        //尝试解决跨域问题
+//        try {
+//            Class<?> clazz = webView.getSettings().getClass();
+//            Method method = clazz.getMethod("setAllowUniversalAccessFromFileURLs", boolean.class);
+//            if (method != null) {
+//                method.invoke(webView.getSettings(), true);
+//            }
+//        } catch (NoSuchMethodException e) {
+//            e.printStackTrace();
+//        } catch (InvocationTargetException e) {
+//            e.printStackTrace();
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        }
+
+        WebSettings webSettings = webView.getSettings();
         //set autofit
         webSettings.setUseWideViewPort(true);
         webSettings.setLoadWithOverviewMode(true);
 
         // Set User Agent
         userAgent = System.getProperty("http.agent");
-        webSettings.setUserAgentString(userAgent + appName);
+        webSettings.setUserAgentString(userAgent + MirrorConstant.AppName);
 
         // Enable Cookies
         CookieManager.getInstance().setAcceptCookie(true);
@@ -1401,7 +1671,7 @@ public class MirrorSDK {
 
         // WebView Tweaks
         webSettings.setRenderPriority(WebSettings.RenderPriority.HIGH);
-        webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         webSettings.setAppCacheEnabled(true);
         webSettings.setDomStorageEnabled(true);
         webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
@@ -1409,11 +1679,13 @@ public class MirrorSDK {
         webSettings.setSaveFormData(true);
         webSettings.setEnableSmoothTransition(true);
         webSettings.setJavaScriptEnabled(true);
-        webSettings.setDomStorageEnabled(true);
-        webSettings.setAppCacheEnabled(true);
         webSettings.setUseWideViewPort(true); // 将图片调整到适合webview的大小
+//        webSettings.setPluginState(WebSettings.PluginState.ON);
 
-        webView.addJavascriptInterface(this, delegateName);
+        webView.addJavascriptInterface(this, MirrorConstant.JsDelegateName);
+
+        logFlow("open login page with url:"+url);
+        webView.loadUrl(url);
     }
 
     @JavascriptInterface
@@ -1421,14 +1693,21 @@ public class MirrorSDK {
         logFlow("receive login response:"+dataJsonStr);
         JSONObject jsonObject = null;
         try {
-            jsonObject = new JSONObject(dataJsonStr);
-            accessToken = jsonObject.getString("access_token");
-            String token = jsonObject.getString("refresh_token");
-            saveRefreshToken(token);
-        } catch (JSONException e) {
+            LoginResponse aaa = MirrorGsonUtils.getInstance().fromJson(dataJsonStr,new TypeToken<LoginResponse>(){}.getType());
+            saveRefreshToken(aaa.refresh_token);
+            accessToken = aaa.access_token;
+            mWalletAddress = aaa.user.sol_address;
+            mUserId = aaa.user.id;
+
+//            jsonObject = new JSONObject(dataJsonStr);
+//            String token = jsonObject.getString("refresh_token");
+//            saveRefreshToken(token);
+//            accessToken = jsonObject.getString("access_token");
+//            mWalletAddress = jsonObject.getJSONObject("user").getString("sol_address");
+//            mUserId = Long.parseLong(jsonObject.getJSONObject("user").getString("id"));
+        } catch (Exception e) {
             e.printStackTrace();
         }
-//        LoginResponse loginResponse = MirrorGsonUtils.getInstance().fromJson(dataJsonStr,LoginResponse.class);
 
         if(loginPageMode == MirrorLoginPageMode.CloseIfLoginDone){
             parentDialog.dismiss();
@@ -1438,6 +1717,7 @@ public class MirrorSDK {
             logFlow("Unknown login page mode:"+loginPageMode);
         }
 
+        logFlow("cbLogin:"+cbLogin+"  cbStringLogin:"+cbStringLogin);
         if(cbLogin != null){
             logFlow("login success and LoginListener callback called.");
             cbLogin.onLoginSuccess();
@@ -1452,6 +1732,17 @@ public class MirrorSDK {
     public void closePage() {
         parentDialog.dismiss();
     }
+
+//    @JavascriptInterface
+//    public void openSoftKeyboard() {
+//        MirrorSoftKeyboardUtil.showSoftInput();
+//    }
+//
+//
+//    @JavascriptInterface
+//    public void hideSoftKeyboard() {
+//        parentDialog.dismiss();
+//    }
 
     private void saveRefreshToken(String refreshToken){
         logFlow("save refresh token to local:"+refreshToken);
@@ -1486,6 +1777,9 @@ public class MirrorSDK {
 
     private RelativeLayout getPopupWindowLayout(Context context) {
         RelativeLayout relative = new RelativeLayout(context);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        relative.setLayoutParams(lp);
         addProgressBar(context,relative);
         return relative;
     }
@@ -1504,6 +1798,25 @@ public class MirrorSDK {
         if(debugMode){
             Log.d("MirrorSDK",value);
         }
+    }
+
+    private boolean isWebviewSupport(WebView webView){
+        String ua = webView.getSettings().getUserAgentString();
+        logFlow("UA: " + ua);
+        String startStr = "Chrome/";
+        String endStr = "Mobile Safari/";
+        int startIdx = ua.indexOf(startStr);
+        int endIdx = ua.indexOf(endStr);
+        String versionStr = ua.substring(startIdx+startStr.length(),endIdx);
+        String mainVersionStr = versionStr.substring(0,versionStr.indexOf('.'));
+        int mainVersion = Integer.parseInt(mainVersionStr);
+
+        if(mainVersion <= MirrorConstant.LowestWebviewVersion){
+            Toast.makeText(mActivity, mWebviewNotice, Toast.LENGTH_LONG).show();
+            return false;
+        }
+        
+        return true;
     }
 
     class MirrorChromeClient extends WebChromeClient {
@@ -1583,7 +1896,4 @@ public class MirrorSDK {
 
         }
     }
-
-
-
 }

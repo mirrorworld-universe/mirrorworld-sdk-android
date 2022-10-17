@@ -1,5 +1,7 @@
 package com.mirror.mirrorworld_sdk_android;
 
+import static org.junit.Assert.assertEquals;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -30,9 +32,50 @@ public class MainActivity extends AppCompatActivity {
         makeStatusBarTransparent(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        MirrorSDK.getInstance().InitSDK(this, MirrorEnv.Staging);
+        MirrorSDK.getInstance().InitSDK(this, MirrorEnv.StagingDevNet);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         initViewPage();
+
+//        MirrorMarketDialog dialog = new MirrorMarketDialog();
+//        List<String> collections = new ArrayList<>();
+//        collections.add("qkuKJWMi14rdYLPBghfBRDpJASdbcLU6xZH3cpUZfng");
+//        dialog.Init(this,collections);
+//        dialog.show(this.getFragmentManager(),"market");
+
+//        SellDialog dialogAddGroup = new SellDialog();
+//        NFTDetailData data = new NFTDetailData();
+//        data.name = "This is new name";
+//        data.price = 0.0;
+//        data.image = "https://storage.mirrorworld.fun/nft/1.png";
+//        data.mint_address = "fake address";
+//        dialogAddGroup.init(this,data);
+//        dialogAddGroup.show(this.getFragmentManager(), "Add group dialog");
+
+//        TransferDialog transferDialog = new TransferDialog();
+//        NFTDetailData data = new NFTDetailData();
+//        data.name = "This is new name";
+//        data.price = 0.0;
+//        data.image = "https://storage.mirrorworld.fun/nft/1.png";
+//        data.mint_address = "fake address";
+//        transferDialog.init(this,data);
+//        transferDialog.show(this.getFragmentManager(),"aaa");
+
+//            MirrorResultNotice dialog = new MirrorResultNotice(this);
+//            dialog.init(MirrorNoticeDialogType.SUCCESS,"dfadf","asdfasd");
+//            dialog.show(this.getFragmentManager(),"aaa");
+
+//        ManageDialog dialog = new ManageDialog();
+//        NFTDetailData uiData = new NFTDetailData();
+//        uiData.image = "";
+//        uiData.name = "nftObject.name";
+//        uiData.mint_address = "nftObject.mint_address";
+//        uiData.price = 0.0;
+//        dialog.init(this,uiData);
+//        dialog.show(this.getFragmentManager(),"aaa");
+
+//        BatchNFT fa = new BatchNFT();
+//        fa.init();
+//        fa.List5NFT();
     }
 
     private void initViewPage(){
@@ -96,6 +139,11 @@ public class MainActivity extends AppCompatActivity {
                 DemoAPIID.OPEN_WALLET,"Open wallet",
                 "Open user's wallet after login.",
                 "OpenWallet",
+                null,null,null,null,null,null));
+        items.add(new MultiItemData.MultiItem(
+                DemoAPIID.OPEN_MARKET,"Open market",
+                "Open market after login.",
+                "OpenMarket",
                 null,null,null,null,null,null));
 
 
@@ -250,7 +298,5 @@ public class MainActivity extends AppCompatActivity {
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
     }
-
-
 
 }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="mirror_black">#000000</color>
+    <color name="mirror_orange">#EE6911</color>
+    <color name="mirror_green">#B8DD22</color>
+    <color name="mirror_white">#FFFFCC</color>
+    <color name="mirror_pure_white">#FFFFFF</color>
+    <color name="mirror_background">#FFFFFF</color>
+    <color name="mirror_font_blue">#386EEC</color>
+    <color name="mirror_font_blue_light">#CCFFFF</color>
+    <color name="mirror_filter_button_blue">#F0F8FF</color>
+    <color name="mirror_filter_button_gray">#DCDCDC</color>
+
+    <color name="mirror_background_color">#e6e6e6</color>
+
+    <color name="mirror_sell_front">#F5F6FA</color>
+    <color name="mirror_sell_notice">#386EEC</color>
+    <color name="mirror_button_blue">#386EEC</color>
+    <color name="mirror_button_blue_press">#4D61B3</color>
+    <color name="mirror_button_blue_unvailable">#C6E2FF</color>
+    <color name="mirror_button_white">#FFFFFF</color>
+    <color name="mirror_button_white_press">#CFCFCF</color>
+
+
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="dDVTransparentGray">#99000000</color>
+    <color name="dDVColorPrimary">@color/colorPrimary</color>
+    <color name="transparentGray">#99000000</color>
+    <color name="dropDownContainerColor">#d32f2f</color>
+    <color name="dropDownSelectedColor">#b71c1c</color>
+</resources>

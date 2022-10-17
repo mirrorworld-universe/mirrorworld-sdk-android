@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mirror.mirrorworld_sdk_android.R;
 import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
-import com.mirror.sdk.MirrorCallback;
+import com.mirror.sdk.listener.universal.MirrorCallback;
 import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.constant.MirrorConfirmation;
 import com.mirror.mirrorworld_sdk_android.DemoAPIID;
@@ -147,19 +147,16 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             holder.mResultView.setText(String.valueOf(holder.mEt1.getText()));
 
         }else if(apiId == DemoAPIID.START_LOGIN){
-            MirrorSDK.getInstance().StartLogin(new LoginListener() {
+            MirrorSDK.getInstance().StartLogin(new MirrorCallback() {
                 @Override
-                public void onLoginSuccess() {
-                    holder.mResultView.setText("Login success!");
-                }
-
-                @Override
-                public void onLoginFail() {
-                    holder.mResultView.setText("Login failed!");
+                public void callback(String result) {
+                    holder.mResultView.setText(result);
                 }
             });
         }else if(apiId == DemoAPIID.OPEN_WALLET){
             MirrorSDK.getInstance().OpenWallet();
+        }else if(apiId == DemoAPIID.OPEN_MARKET){
+            MirrorSDK.getInstance().openMarket();
         }else if(apiId == DemoAPIID.LOGIN_With_EMAIL){
 
             String email = String.valueOf(holder.mEt1.getText());
