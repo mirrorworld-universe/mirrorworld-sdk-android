@@ -1721,10 +1721,12 @@ public class MirrorSDK {
         if(cbLogin != null){
             logFlow("login success and LoginListener callback called.");
             cbLogin.onLoginSuccess();
+            cbLogin = null;
         }
         if(cbStringLogin != null){
             logFlow("login success and MirrorCallback callback called.");
             cbStringLogin.callback(dataJsonStr);
+            cbStringLogin = null;
         }
     }
 
