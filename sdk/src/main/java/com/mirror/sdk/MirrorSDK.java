@@ -42,6 +42,7 @@ import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.constant.MirrorLoginPageMode;
 import com.mirror.sdk.constant.MirrorResCode;
 import com.mirror.sdk.constant.MirrorUrl;
+import com.mirror.sdk.listener.universal.MSimpleCallback;
 import com.mirror.sdk.listener.universal.OnCheckSDKUseable;
 import com.mirror.sdk.listener.auth.FetchUserListener;
 import com.mirror.sdk.listener.auth.LoginListener;
@@ -132,6 +133,7 @@ public class MirrorSDK {
     private MirrorLoginPageMode loginPageMode = MirrorLoginPageMode.CloseIfLoginDone;
     private LoginListener cbLogin = null;
     private MirrorCallback cbStringLogin = null;
+    private MSimpleCallback cbLogout = null;
 
     //ui
     private WebView mLoginMainWebView = null;
@@ -408,6 +410,10 @@ public class MirrorSDK {
         if(mActivity != null){
             saveString(localKeyAppId, apiKey);
         }
+    }
+
+    public void setLogoutCallback(MSimpleCallback callback){
+        cbLogout = callback;
     }
 
     private String GetMainRoot(){
@@ -1689,6 +1695,12 @@ public class MirrorSDK {
     }
 
     @JavascriptInterface
+    public void androidLogout(){
+        clearCache();
+        if(cbLogout != null) cbLogout.callback();
+    }
+
+    @JavascriptInterface
     public void setLoginResponse(String dataJsonStr) {
         logFlow("receive login response:"+dataJsonStr);
         JSONObject jsonObject = null;
@@ -1760,6 +1772,18 @@ public class MirrorSDK {
         SharedPreferences sp = mActivity.getSharedPreferences(localFileKey, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString(key, value);
+        //editor.apply()
+        editor.commit();
+    }
+
+    private void clearCache(){
+        accessToken = "";
+        refreshToken = "";
+        SharedPreferences sp = mActivity.getSharedPreferences(localFileKey, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(localKeyRefreshToken, "");
+        editor.putString(localKeyAppId, "");
+        editor.putString(localKeyWalletAddress, "");
         //editor.apply()
         editor.commit();
     }

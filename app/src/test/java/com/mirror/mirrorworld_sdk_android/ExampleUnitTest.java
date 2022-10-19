@@ -240,67 +240,67 @@ public class ExampleUnitTest {
         assertEquals("success",Status);
     }
 
-    @Test
-    public void FetchNFTsByCreatorAddresses(){
-        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.StagingDevNet);
-        final Object lockMintSuccess = new Object();
-        MirrorSDK.getInstance().SetApiKey(appid);
-        MirrorSDK.getInstance().LoginWithEmail(userEmail, password, new MirrorCallback() {
-            @Override
-            public void callback(String result) {
-
-                MirrorSDK.getInstance().SetAccessToken(GetAccessTokenFromResponse(result));
-                MirrorSDK.getInstance().SetRefreshToken(GetRefreshTokenFromResponse(result));
-
-                MirrorSDK.getInstance().MintNFT(subCollection, "nameL", "symbolK","https://market-assets.mirrorworld.fun/gen1/1.json",MirrorConfirmation.Finalized,  new MintNFTListener() {
-                    @Override
-                    public void onMintSuccess(MintResponse userResponse) {
-                        List<String> creators = new ArrayList<>();
-                        creators.add(userResponse.creator_address);
-                        Double limit = 10.0;
-                        MirrorSDK.getInstance().FetchNFTsByCreatorAddresses(creators, limit, limit, new FetchNFTsListener() {
-                            @Override
-                            public void onFetchSuccess(MultipleNFTsResponse multipleNFTsResponse) {
-                                Status = "success";
-
-                                synchronized (lockMintSuccess) {
-                                    lockMintSuccess.notify();
-                                }
-                            }
-
-                            @Override
-                            public void onFetchFailed(long code, String message) {
-                                Status = "success";
-
-                                synchronized (lockMintSuccess) {
-                                    lockMintSuccess.notify();
-                                }
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onMintFailed(long code, String message) {
-                        Status = "MintFailed"+code+" "+message;
-                        synchronized (lockMintSuccess) {
-                            lockMintSuccess.notify();
-                        }
-                    }
-                });
-
-            }
-        });
-
-        try {
-            synchronized (lockMintSuccess) {
-                lockMintSuccess.wait();
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        assertEquals("success",Status);
-    }
+//    @Test
+//    public void FetchNFTsByCreatorAddresses(){
+//        MirrorSDK.getInstance().InitSDK(null, MirrorEnv.StagingDevNet);
+//        final Object lockMintSuccess = new Object();
+//        MirrorSDK.getInstance().SetApiKey(appid);
+//        MirrorSDK.getInstance().LoginWithEmail(userEmail, password, new MirrorCallback() {
+//            @Override
+//            public void callback(String result) {
+//
+//                MirrorSDK.getInstance().SetAccessToken(GetAccessTokenFromResponse(result));
+//                MirrorSDK.getInstance().SetRefreshToken(GetRefreshTokenFromResponse(result));
+//
+//                MirrorSDK.getInstance().MintNFT(subCollection, "nameL", "symbolK","https://market-assets.mirrorworld.fun/gen1/1.json",MirrorConfirmation.Finalized,  new MintNFTListener() {
+//                    @Override
+//                    public void onMintSuccess(MintResponse userResponse) {
+//                        List<String> creators = new ArrayList<>();
+//                        creators.add(userResponse.creator_address);
+//                        Double limit = 10.0;
+//                        MirrorSDK.getInstance().FetchNFTsByCreatorAddresses(creators, limit, limit, new FetchNFTsListener() {
+//                            @Override
+//                            public void onFetchSuccess(MultipleNFTsResponse multipleNFTsResponse) {
+//                                Status = "success";
+//
+//                                synchronized (lockMintSuccess) {
+//                                    lockMintSuccess.notify();
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onFetchFailed(long code, String message) {
+//                                Status = "success";
+//
+//                                synchronized (lockMintSuccess) {
+//                                    lockMintSuccess.notify();
+//                                }
+//                            }
+//                        });
+//                    }
+//
+//                    @Override
+//                    public void onMintFailed(long code, String message) {
+//                        Status = "MintFailed"+code+" "+message;
+//                        synchronized (lockMintSuccess) {
+//                            lockMintSuccess.notify();
+//                        }
+//                    }
+//                });
+//
+//            }
+//        });
+//
+//        try {
+//            synchronized (lockMintSuccess) {
+//                lockMintSuccess.wait();
+//            }
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//
+//        assertEquals("success",Status);
+//    }
 
 //    @Test
 //    public void FetchNFTsByUpdateAuthorities(){
