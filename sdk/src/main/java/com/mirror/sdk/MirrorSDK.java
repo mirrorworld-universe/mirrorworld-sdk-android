@@ -1696,7 +1696,7 @@ public class MirrorSDK {
     }
 
     @JavascriptInterface
-    public void androidLogout(){
+    public void walletLogout(){
         clearCache();
         if(cbLogout != null) cbLogout.callback();
     }
