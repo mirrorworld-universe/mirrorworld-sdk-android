@@ -933,8 +933,9 @@ public class MirrorSDK {
 //        WebViewDialog dialog = new WebViewDialog(mActivity,url);
 //        dialog.SetParams(mActivity);
 //        dialog.show();
-        StartLogin();
 
+        String finalUrl = GetMainRoot();
+        openInnerUrl(finalUrl);
         loginPageMode = MirrorLoginPageMode.KeepIfLoginDone;
     }
 
