@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Message;
@@ -361,6 +362,11 @@ public class MirrorSDK {
     }
 
     public void StartLogin(MirrorCallback listener){
+//        String url = "https://auth-staging.mirrorworld.fun/";
+//        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+//        CustomTabsIntent customTabsIntent = builder.build();
+//        customTabsIntent.launchUrl(mActivity, Uri.parse(url));
+
         //not use Gson
         openStartPage();
         cbStringLogin = listener;
@@ -433,13 +439,13 @@ public class MirrorSDK {
 
     private String getMarketRoot(){
         if(env == MirrorEnv.StagingMainNet){
-            return "https://jump-devnet.mirrorworld.fun";
+            return "https://jump.mirrorworld.fun/";
         }else if(env == MirrorEnv.StagingDevNet){
             return "https://jump-devnet.mirrorworld.fun";
         }else if(env == MirrorEnv.DevNet){
             return "https://jump-devnet.mirrorworld.fun";
         }else if(env == MirrorEnv.MainNet){
-            return "https://jump-devnet.mirrorworld.fun";
+            return "https://jump.mirrorworld.fun/";
         }else {
             logFlow("Unknown env:"+env);
             return "https://jump-devnet.mirrorworld.fun";
