@@ -166,9 +166,6 @@ public class MirrorSDK {
             this.refreshToken = getRefreshToken(this.mActivity);
         }
         this.env = env;
-        String responseDataStr = "{\"access_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTUwMywiZXRoX2FkZHJlc3MiOm51bGwsInNvbF9hZGRyZXNzIjoiSHlNU0M3Skozc2tyY1hOZG1jTkJONFhzVlNRSExLN3pnYlBpWkFEN2ZhS2QiLCJlbWFpbCI6IjI1NzMwNDA1NjBAcXEuY29tIiwid2FsbGV0Ijp7ImV0aF9hZGRyZXNzIjpudWxsLCJzb2xfYWRkcmVzcyI6Ikh5TVNDN0pKM3NrcmNYTmRtY05CTjRYc1ZTUUhMSzd6Z2JQaVpBRDdmYUtkIn0sImNsaWVudF9pZCI6IlRlY1JBc2lXcjRKQy01VGtDY3ZPNnVzRG1sLTF4a2l3aFlGOS5wWlZ4dkNray5taXJyb3J3b3JsZC5mdW4iLCJpYXQiOjE2NjQ1ODU2NzYsImV4cCI6MTY2NzE3NzY3NiwianRpIjoiYXV0aDo1NTAzIn0.KwQz9hNTOt33A0Qq5yBKPn8RdKwQXkFpTxTZmhPs0vE\",\"refresh_token\":\"cjhRaIQS-mIdRPGLmG-KM\",\"user\":{\"id\":5503,\"eth_address\":null,\"sol_address\":\"HyMSC7JJ3skrcXNdmcNBN4XsVSQHLK7zgbPiZAD7faKd\",\"email\":\"2573040560@qq.com\",\"email_verified\":false,\"username\":\"Qiang\",\"main_user_id\":null,\"allow_spend\":true,\"has_security\":false,\"createdAt\":\"2022-07-29T08:28:47.000Z\",\"updatedAt\":\"2022-09-30T00:13:44.000Z\",\"is_subaccount\":false,\"wallet\":{\"eth_address\":null,\"sol_address\":\"HyMSC7JJ3skrcXNdmcNBN4XsVSQHLK7zgbPiZAD7faKd\"}}}";
-        LoginResponse aaa = MirrorGsonUtils.getInstance().fromJson(responseDataStr,new TypeToken<LoginResponse>(){}.getType());
-        logFlow(aaa.access_token);
     }
 
     public String GetRefreshTokenFromResponse(String response){
@@ -423,6 +420,7 @@ public class MirrorSDK {
     }
 
     public void SetDebug(boolean debug){
+        Log.d("MirrorSDK","Set debug to:"+debug);
         debugMode = debug;
     }
 
@@ -1861,7 +1859,7 @@ public class MirrorSDK {
         if(debugMode){
             Log.d("MirrorSDK",value);
             if(mActivity != null) {
-                Toast.makeText(mActivity, value, Toast.LENGTH_LONG).show();
+//                Toast.makeText(mActivity, value, Toast.LENGTH_LONG).show();
             }
         }
     }
