@@ -13,4 +13,6 @@ public class MirrorWorld {
     public static void startLogin(){
         MirrorSDK.getInstance().StartLogin();
     }
+
+//    public static void set
 }

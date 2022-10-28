@@ -131,6 +131,12 @@ public class MainActivity extends AppCompatActivity {
                 null,null,null,null,null,null));
 
         items.add(new MultiItemData.MultiItem(
+                DemoAPIID.OPEN_LOGIN_PAGE,"Open login page",
+                "Open the login page by custom tab",
+                "Go",
+                null,null,null,null,null,null));
+
+        items.add(new MultiItemData.MultiItem(
                 DemoAPIID.LOGIN_With_EMAIL,"Login with email",
                 "Logs in a user with their email address and password",
                 "LoginWithEmail",

@@ -7,11 +7,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.net.http.SslError;
 import android.os.Build;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -26,7 +26,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
-import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -35,6 +34,8 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+
+import androidx.browser.customtabs.CustomTabsIntent;
 
 import com.google.gson.reflect.TypeToken;
 import com.mirror.sdk.constant.MirrorConfirmation;
@@ -78,6 +79,7 @@ import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
 import com.mirror.sdk.response.wallet.TransferResponse;
 import com.mirror.sdk.ui.MirrorDialog;
 import com.mirror.sdk.utils.MirrorGsonUtils;
+import com.mirror.sdk.utils.MirrorWebviewUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -117,7 +119,7 @@ public class MirrorSDK {
     private WebView webViewPopUp = null;
     private AlertDialog builder = null;
     private Context globalContext = null;
-    private Activity mActivity = null;
+    public Activity mActivity = null;
     public MirrorEnv env = MirrorEnv.MainNet;
 
     private MirrorDialog parentDialog = null;
@@ -138,6 +140,9 @@ public class MirrorSDK {
 
     //ui
     private WebView mLoginMainWebView = null;
+
+    //temp
+    public Intent backIntent;
 
     private MirrorSDK(){
 
@@ -236,7 +241,7 @@ public class MirrorSDK {
         mLoginMainWebView.setFocusable(true);
         mLoginMainWebView.setFocusableInTouchMode(true);
 
-        if(!isWebviewSupport(mLoginMainWebView)){
+        if(!MirrorWebviewUtils.isWebviewSupport(mActivity,mLoginMainWebView,mWebviewNotice,debugMode)){
             logFlow("Webview not support,update it please.");
             return false;
         }
@@ -361,12 +366,26 @@ public class MirrorSDK {
         });
     }
 
-    public void StartLogin(MirrorCallback listener){
-//        String url = "https://auth-staging.mirrorworld.fun/";
-//        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-//        CustomTabsIntent customTabsIntent = builder.build();
-//        customTabsIntent.launchUrl(mActivity, Uri.parse(url));
+    public void openLoginPage(){
+        final Activity activity = mActivity;
+        sdkSimpleCheck(new OnCheckSDKUseable() {
+            @Override
+            public void OnChecked() {
+//                String url = GetMainRoot() + apiKey;
+                String url = "http://192.168.31.243:8080/";
+                CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder().build();
+//                customTabsIntent.intent.setPackage("com.android.chrome");
+                customTabsIntent.launchUrl(activity, Uri.parse(url));
+            }
 
+            @Override
+            public void OnUnUsable() {
+                logFlow("SDK not inited.");
+            }
+        });
+    }
+
+    public void StartLogin(MirrorCallback listener){
         //not use Gson
         openStartPage();
         cbStringLogin = listener;
@@ -1187,6 +1206,23 @@ public class MirrorSDK {
         checkParamsAndGet(url,map, mirrorCallback);
     }
 
+    private void sdkSimpleCheck(OnCheckSDKUseable callback){
+        if(apiKey == ""){
+            if(mActivity == null){
+                logFlow("Must init sdk first!");
+                callback.OnUnUsable();
+                return;
+            }
+            apiKey = getSavedString(mActivity,localKeyAppId);
+        }
+        if(apiKey == ""){
+            logFlow("Must set app id first!");
+            callback.OnUnUsable();
+            return;
+        }
+        callback.OnChecked();
+    }
+
     private void checkSDKInited(OnCheckSDKUseable callback){
         if(apiKey == ""){
             if(mActivity == null){
@@ -1638,12 +1674,6 @@ public class MirrorSDK {
 //                }
                 return super.shouldOverrideUrlLoading(view, url);
             }
-
-                 @Override
-                 public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-//                                         super.onReceivedSslError(view, handler, error);
-                     handler.proceed();
-                 }
              }
         );
 
@@ -1765,7 +1795,7 @@ public class MirrorSDK {
 //        parentDialog.dismiss();
 //    }
 
-    private void saveRefreshToken(String refreshToken){
+    public void saveRefreshToken(String refreshToken){
         logFlow("save refresh token to local:"+refreshToken);
         this.refreshToken = refreshToken;
         SharedPreferences sp = mActivity.getSharedPreferences(localFileKey, Context.MODE_PRIVATE);
@@ -1830,26 +1860,10 @@ public class MirrorSDK {
     private void logFlow(String value){
         if(debugMode){
             Log.d("MirrorSDK",value);
+            if(mActivity != null) {
+                Toast.makeText(mActivity, value, Toast.LENGTH_LONG).show();
+            }
         }
-    }
-
-    private boolean isWebviewSupport(WebView webView){
-        String ua = webView.getSettings().getUserAgentString();
-        logFlow("UA: " + ua);
-        String startStr = "Chrome/";
-        String endStr = "Mobile Safari/";
-        int startIdx = ua.indexOf(startStr);
-        int endIdx = ua.indexOf(endStr);
-        String versionStr = ua.substring(startIdx+startStr.length(),endIdx);
-        String mainVersionStr = versionStr.substring(0,versionStr.indexOf('.'));
-        int mainVersion = Integer.parseInt(mainVersionStr);
-
-        if(mainVersion <= MirrorConstant.LowestWebviewVersion){
-            Toast.makeText(mActivity, mWebviewNotice, Toast.LENGTH_LONG).show();
-            return false;
-        }
-        
-        return true;
     }
 
     class MirrorChromeClient extends WebChromeClient {
