@@ -553,7 +553,7 @@ public class ExampleUnitTest {
                 MirrorSDK.getInstance().SetAccessToken(GetAccessTokenFromResponse(result));
                 MirrorSDK.getInstance().SetRefreshToken(GetRefreshTokenFromResponse(result));
 
-                MirrorSDK.getInstance().FetchNFTsByOwnerAddresses(owners, 1, 1, new FetchByOwnerListener() {
+                MirrorSDK.getInstance().FetchNFTsByOwnerAddresses(owners, 100, 0, new FetchByOwnerListener() {
                     @Override
                     public void onFetchSuccess(MultipleNFTsResponse multipleNFTsResponse) {
                         Status = "success";
@@ -564,7 +564,7 @@ public class ExampleUnitTest {
 
                     @Override
                     public void onFetchFailed(long code, String message) {
-                        Status = "fail";
+                        Status = message;
                         synchronized (lock) {
                             lock.notify();
                         }

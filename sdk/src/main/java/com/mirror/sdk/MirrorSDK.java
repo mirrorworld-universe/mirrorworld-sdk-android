@@ -77,8 +77,10 @@ import com.mirror.sdk.response.market.SingleNFTResponse;
 import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
 import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
 import com.mirror.sdk.response.wallet.TransferResponse;
+import com.mirror.sdk.ui.MainWebView;
 import com.mirror.sdk.ui.MirrorDialog;
 import com.mirror.sdk.utils.MirrorGsonUtils;
+import com.mirror.sdk.utils.MirrorThreadUtils;
 import com.mirror.sdk.utils.MirrorWebviewUtils;
 
 import org.json.JSONArray;
@@ -1712,7 +1714,7 @@ public class MirrorSDK {
 
         // WebView Tweaks
         webSettings.setRenderPriority(WebSettings.RenderPriority.HIGH);
-        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         webSettings.setAppCacheEnabled(true);
         webSettings.setDomStorageEnabled(true);
         webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
@@ -1739,12 +1741,15 @@ public class MirrorSDK {
     public void setLoginResponse(String dataJsonStr) {
         logFlow("receive login response:"+dataJsonStr);
         JSONObject jsonObject = null;
-        try {
-            LoginResponse aaa = MirrorGsonUtils.getInstance().fromJson(dataJsonStr,new TypeToken<LoginResponse>(){}.getType());
-            saveRefreshToken(aaa.refresh_token);
-            accessToken = aaa.access_token;
-            mWalletAddress = aaa.user.sol_address;
-            mUserId = aaa.user.id;
+        MirrorThreadUtils.runLogicInUIThread(mActivity, new MSimpleCallback() {
+            @Override
+            public void callback() {
+                try {
+                    LoginResponse aaa = MirrorGsonUtils.getInstance().fromJson(dataJsonStr,new TypeToken<LoginResponse>(){}.getType());
+                    saveRefreshToken(aaa.refresh_token);
+                    accessToken = aaa.access_token;
+                    mWalletAddress = aaa.user.sol_address;
+                    mUserId = aaa.user.id;
 
 //            jsonObject = new JSONObject(dataJsonStr);
 //            String token = jsonObject.getString("refresh_token");
@@ -1752,29 +1757,31 @@ public class MirrorSDK {
 //            accessToken = jsonObject.getString("access_token");
 //            mWalletAddress = jsonObject.getJSONObject("user").getString("sol_address");
 //            mUserId = Long.parseLong(jsonObject.getJSONObject("user").getString("id"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-        if(loginPageMode == MirrorLoginPageMode.CloseIfLoginDone){
-            parentDialog.dismiss();
-        }else if(loginPageMode == MirrorLoginPageMode.KeepIfLoginDone){
-            //do nothing
-        }else {
-            logFlow("Unknown login page mode:"+loginPageMode);
-        }
+                if(loginPageMode == MirrorLoginPageMode.CloseIfLoginDone){
+                    parentDialog.dismiss();
+                }else if(loginPageMode == MirrorLoginPageMode.KeepIfLoginDone){
+                    //do nothing
+                }else {
+                    logFlow("Unknown login page mode:"+loginPageMode);
+                }
 
-        logFlow("cbLogin:"+cbLogin+"  cbStringLogin:"+cbStringLogin);
-        if(cbLogin != null){
-            logFlow("login success and LoginListener callback called.");
-            cbLogin.onLoginSuccess();
-            cbLogin = null;
-        }
-        if(cbStringLogin != null){
-            logFlow("login success and MirrorCallback callback called.");
-            cbStringLogin.callback(dataJsonStr);
-            cbStringLogin = null;
-        }
+                logFlow("cbLogin:"+cbLogin+"  cbStringLogin:"+cbStringLogin);
+                if(cbLogin != null){
+                    logFlow("login success and LoginListener callback called.");
+                    cbLogin.onLoginSuccess();
+                    cbLogin = null;
+                }
+                if(cbStringLogin != null){
+                    logFlow("login success and MirrorCallback callback called.");
+                    cbStringLogin.callback(dataJsonStr);
+                    cbStringLogin = null;
+                }
+            }
+        });
     }
 
     @JavascriptInterface
@@ -1868,7 +1875,7 @@ public class MirrorSDK {
         @Override
         public boolean onCreateWindow(WebView view, boolean isDialog,
                                       boolean isUserGesture, Message resultMsg) {
-            webViewPopUp = new WebView(globalContext);
+            webViewPopUp = new MainWebView(globalContext);
             WebSettings webViewPopupSetting = webViewPopUp.getSettings();
             webViewPopUp.setVerticalScrollBarEnabled(false);
             webViewPopUp.setHorizontalScrollBarEnabled(false);
@@ -1885,7 +1892,7 @@ public class MirrorSDK {
                 webViewPopUp.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             }
             webViewPopupSetting.setRenderPriority(WebSettings.RenderPriority.HIGH);
-            webViewPopupSetting.setCacheMode(WebSettings.LOAD_NO_CACHE);
+            webViewPopupSetting.setCacheMode(WebSettings.LOAD_DEFAULT);
 
             // pop the  webview with alert dialog
             builder = new AlertDialog.Builder(mActivity).create();
