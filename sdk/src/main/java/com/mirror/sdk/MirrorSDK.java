@@ -229,10 +229,21 @@ public class MirrorSDK {
         openStartPage();
     }
 
+    private void openInnerUrlOnUIThread(String url){
+        if(mActivity == null){
+            logFlow("openInnerUrlOnUIThread failed,need inite first.");
+            return;
+        }
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                openInnerUrl(url);
+            }
+        });
+    }
+
     public boolean openInnerUrl(String url){
         logFlow("try to open url:"+url);
-//        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-//        AlertDialog dialog = builder.create();
         MirrorDialog dialog = new MirrorDialog(mActivity);
         dialog.setCanceledOnTouchOutside(false);
         mLoginMainWebView = new CustomWebView(mActivity);
@@ -246,13 +257,6 @@ public class MirrorSDK {
         }
 
         setWebView(mActivity,mLoginMainWebView,url);
-//        dialog.setButton("Close", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int id) {
-//                mLoginMainWebView.destroy();
-//                dialog.dismiss();
-//            }
-//        });
 
         RelativeLayout layout = getPopupWindowLayout(mActivity);
         layout.addView(mLoginMainWebView);
@@ -260,25 +264,6 @@ public class MirrorSDK {
 //        dialog.init(mActivity,layout);
 
         parentDialog = dialog;
-
-        //full screen
-//        int width = ViewGroup.LayoutParams.MATCH_PARENT;
-//        int height = ViewGroup.LayoutParams.MATCH_PARENT;
-//            Window window = dialog.getWindow();
-//            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//            window.setLayout(width, height);
-//            window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-//                WindowManager.LayoutParams paramsWindow = window.getAttributes();
-//                paramsWindow.width = window.getWindowManager().getDefaultDisplay().getWidth();
-//                int screenHeight = window.getWindowManager().getDefaultDisplay().getHeight();
-//                Log.i("0000001", String.valueOf(screenHeight));
-//                paramsWindow.height = screenHeight;//getWindowDefineHeight();
-//                paramsWindow.gravity = Gravity.BOTTOM;
-////                paramsWindow.windowAnimations = R.style.common_dialog;
-//                window.setAttributes(paramsWindow);
-//                window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
         dialog.show();
 
         return true;
@@ -298,7 +283,7 @@ public class MirrorSDK {
         }
 
         String finalUrl = GetMainRoot() + apiKey;
-        openInnerUrl(finalUrl);
+        openInnerUrlOnUIThread(finalUrl);
         loginPageMode = MirrorLoginPageMode.CloseIfLoginDone;
     }
 
@@ -906,7 +891,7 @@ public class MirrorSDK {
             @Override
             public void OnChecked() {
                 String url = getMarketRoot()+ "?auth=" + accessToken;
-                openInnerUrl(url);
+                openInnerUrlOnUIThread(url);
             }
 
             @Override
@@ -960,7 +945,7 @@ public class MirrorSDK {
 //        dialog.show();
 
         String finalUrl = GetMainRoot();
-        openInnerUrl(finalUrl);
+        openInnerUrlOnUIThread(finalUrl);
         loginPageMode = MirrorLoginPageMode.KeepIfLoginDone;
     }
 
