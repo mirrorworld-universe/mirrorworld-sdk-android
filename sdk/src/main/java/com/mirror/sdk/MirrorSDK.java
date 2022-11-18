@@ -944,7 +944,7 @@ public class MirrorSDK {
 //        dialog.SetParams(mActivity);
 //        dialog.show();
 
-        String finalUrl = GetMainRoot();
+        String finalUrl = GetMainRoot() + "jwt?key=" + accessToken;
         openInnerUrlOnUIThread(finalUrl);
         loginPageMode = MirrorLoginPageMode.KeepIfLoginDone;
     }
