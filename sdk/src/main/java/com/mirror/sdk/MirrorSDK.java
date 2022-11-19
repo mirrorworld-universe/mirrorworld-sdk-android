@@ -104,6 +104,7 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class MirrorSDK {
     //user custom
@@ -115,7 +116,6 @@ public class MirrorSDK {
     private String refreshToken = "";
     private String accessToken = "";
     private String mWalletAddress = "";
-    private long mUserId = 0;
 
     //run time
     private WebView webViewPopUp = null;
@@ -162,6 +162,7 @@ public class MirrorSDK {
     }
 
     public void InitSDK(Activity activityContext,MirrorEnv env){
+        Log.d("MirrorSDK Version:",MirrorConstant.Version);
         logFlow("Mirror SDK inited!");
         this.mActivity = activityContext;
         if(this.mActivity != null){
@@ -491,7 +492,6 @@ public class MirrorSDK {
             @Override
             public void onUserFetched(UserResponse userResponse) {
                 mWalletAddress = userResponse.sol_address;
-                mUserId = userResponse.id;
                 listener.onBool(true);
             }
 
@@ -924,6 +924,8 @@ public class MirrorSDK {
             return;
         }
 
+        //Use this if login page updated
+//        doOpenWallet();
         if(accessToken == ""){
             logFlow("No access token,start get flow");
             GetAccessToken(mActivity, new MirrorCallback() {
@@ -944,7 +946,9 @@ public class MirrorSDK {
 //        dialog.SetParams(mActivity);
 //        dialog.show();
 
-        String finalUrl = GetMainRoot() + "jwt?key=" + accessToken;
+        String finalUrl = GetMainRoot();
+//        String finalUrl = GetMainRoot() + "jwt?key=" + accessToken;
+        logFlow("wallet url:"+finalUrl);
         openInnerUrlOnUIThread(finalUrl);
         loginPageMode = MirrorLoginPageMode.KeepIfLoginDone;
     }
@@ -1734,7 +1738,6 @@ public class MirrorSDK {
                     saveRefreshToken(aaa.refresh_token);
                     accessToken = aaa.access_token;
                     mWalletAddress = aaa.user.sol_address;
-                    mUserId = aaa.user.id;
 
 //            jsonObject = new JSONObject(dataJsonStr);
 //            String token = jsonObject.getString("refresh_token");
@@ -1849,7 +1852,7 @@ public class MirrorSDK {
 
     private void logFlow(String value){
         if(debugMode){
-            Log.d("MirrorSDK",value);
+            Log.d("MirrorSDK"+MirrorConstant.Version,value);
             if(mActivity != null) {
 //                Toast.makeText(mActivity, value, Toast.LENGTH_LONG).show();
             }

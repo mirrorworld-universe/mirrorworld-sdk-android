@@ -1,8 +1,11 @@
 package com.mirror.sdk.utils;
 
 import android.app.Activity;
+import android.content.Context;
+import android.os.Build;
 import android.os.Debug;
 import android.util.Log;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Toast;
 
@@ -28,5 +31,26 @@ public class MirrorWebviewUtils {
         }
 
         return true;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static String GetWebViewUserAgent(Context ctx) {
+        String ua = "";
+        try {
+            if(Build.VERSION.SDK_INT < 19) {
+                WebView web = new WebView(ctx);
+                ua = web.getSettings().getUserAgentString();
+                web.destroy();
+            }
+            else
+            {
+                ua = WebSettings.getDefaultUserAgent(ctx);
+            }
+        }
+        catch(Exception e) {
+            Log.e("SDK", "GetWebViewUserAgent Exception");
+            e.printStackTrace();
+        }
+        return ua;
     }
 }
