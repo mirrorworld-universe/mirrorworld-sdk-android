@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -101,6 +102,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -162,8 +164,7 @@ public class MirrorSDK {
     }
 
     public void InitSDK(Activity activityContext,MirrorEnv env){
-        Log.d("MirrorSDK Version:",MirrorConstant.Version);
-        logFlow("Mirror SDK inited!");
+        Log.d("MirrorSDK Version",MirrorConstant.Version);
         this.mActivity = activityContext;
         if(this.mActivity != null){
             this.refreshToken = getRefreshToken(this.mActivity);
@@ -283,7 +284,7 @@ public class MirrorSDK {
             return;
         }
 
-        String finalUrl = GetMainRoot() + apiKey;
+        String finalUrl = GetMainRoot() + apiKey + "?v="+MirrorConstant.Version;
         openInnerUrlOnUIThread(finalUrl);
         loginPageMode = MirrorLoginPageMode.CloseIfLoginDone;
     }
@@ -351,15 +352,30 @@ public class MirrorSDK {
         });
     }
 
-    public void openLoginPage(){
+    /**
+     * Open login page with Custom Tab
+     */
+    public void openLoginPage(MirrorCallback loginCb){
+        ArrayList<ResolveInfo> infos = MirrorWebviewUtils.getCustomTabsPackages(mActivity);
+        if(infos.size() == 0){
+            openStartPage();
+            cbStringLogin = loginCb;
+        }else {
+//            String url = "http://192.168.31.243:8080/";
+            String url = GetMainRoot() + apiKey;
+            openWebPageWithCustomTab(url);
+            cbStringLogin = loginCb;
+        }
+    }
+
+    private void openWebPageWithCustomTab(String url){
         final Activity activity = mActivity;
         sdkSimpleCheck(new OnCheckSDKUseable() {
             @Override
             public void OnChecked() {
-//                String url = GetMainRoot() + apiKey;
-                String url = "http://192.168.31.243:8080/";
                 CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder().build();
-//                customTabsIntent.intent.setPackage("com.android.chrome");
+                String packageName = MirrorWebviewUtils.getPackageNameToUse(activity);
+                customTabsIntent.intent.setPackage(packageName);
                 customTabsIntent.launchUrl(activity, Uri.parse(url));
             }
 
@@ -444,11 +460,11 @@ public class MirrorSDK {
 
     private String getMarketRoot(){
         if(env == MirrorEnv.StagingMainNet){
-            return "https://jump.mirrorworld.fun/";
+            return "";//no url yet
         }else if(env == MirrorEnv.StagingDevNet){
             return "https://jump-devnet.mirrorworld.fun";
         }else if(env == MirrorEnv.DevNet){
-            return "https://jump-devnet.mirrorworld.fun";
+            return "";//No url yet
         }else if(env == MirrorEnv.MainNet){
             return "https://jump.mirrorworld.fun/";
         }else {
@@ -946,8 +962,8 @@ public class MirrorSDK {
 //        dialog.SetParams(mActivity);
 //        dialog.show();
 
-        String finalUrl = GetMainRoot();
-//        String finalUrl = GetMainRoot() + "jwt?key=" + accessToken;
+//        String finalUrl = GetMainRoot();
+        String finalUrl = GetMainRoot() + "jwt?key=" + accessToken + "&v="+MirrorConstant.Version;
         logFlow("wallet url:"+finalUrl);
         openInnerUrlOnUIThread(finalUrl);
         loginPageMode = MirrorLoginPageMode.KeepIfLoginDone;
@@ -1750,7 +1766,7 @@ public class MirrorSDK {
                 }
 
                 if(loginPageMode == MirrorLoginPageMode.CloseIfLoginDone){
-                    parentDialog.dismiss();
+                    if(parentDialog!= null) parentDialog.dismiss();
                 }else if(loginPageMode == MirrorLoginPageMode.KeepIfLoginDone){
                     //do nothing
                 }else {
@@ -1777,18 +1793,9 @@ public class MirrorSDK {
         parentDialog.dismiss();
     }
 
-//    @JavascriptInterface
-//    public void openSoftKeyboard() {
-//        MirrorSoftKeyboardUtil.showSoftInput();
-//    }
-//
-//
-//    @JavascriptInterface
-//    public void hideSoftKeyboard() {
-//        parentDialog.dismiss();
-//    }
-
     public void saveRefreshToken(String refreshToken){
+        if(refreshToken == "") return;
+
         logFlow("save refresh token to local:"+refreshToken);
         this.refreshToken = refreshToken;
         SharedPreferences sp = mActivity.getSharedPreferences(localFileKey, Context.MODE_PRIVATE);

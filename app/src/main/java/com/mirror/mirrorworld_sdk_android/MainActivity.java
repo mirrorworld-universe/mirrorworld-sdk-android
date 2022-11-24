@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -18,6 +19,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.MirrorSDK;
+import com.mirror.sdk.utils.MirrorWebviewUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,47 +37,12 @@ public class MainActivity extends AppCompatActivity {
         MirrorSDK.getInstance().InitSDK(this, MirrorEnv.StagingDevNet);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         initViewPage();
+    }
 
-//        MirrorMarketDialog dialog = new MirrorMarketDialog();
-//        List<String> collections = new ArrayList<>();
-//        collections.add("qkuKJWMi14rdYLPBghfBRDpJASdbcLU6xZH3cpUZfng");
-//        dialog.Init(this,collections);
-//        dialog.show(this.getFragmentManager(),"market");
-
-//        SellDialog dialogAddGroup = new SellDialog();
-//        NFTDetailData data = new NFTDetailData();
-//        data.name = "This is new name";
-//        data.price = 0.0;
-//        data.image = "https://storage.mirrorworld.fun/nft/1.png";
-//        data.mint_address = "fake address";
-//        dialogAddGroup.init(this,data);
-//        dialogAddGroup.show(this.getFragmentManager(), "Add group dialog");
-
-//        TransferDialog transferDialog = new TransferDialog();
-//        NFTDetailData data = new NFTDetailData();
-//        data.name = "This is new name";
-//        data.price = 0.0;
-//        data.image = "https://storage.mirrorworld.fun/nft/1.png";
-//        data.mint_address = "fake address";
-//        transferDialog.init(this,data);
-//        transferDialog.show(this.getFragmentManager(),"aaa");
-
-//            MirrorResultNotice dialog = new MirrorResultNotice(this);
-//            dialog.init(MirrorNoticeDialogType.SUCCESS,"dfadf","asdfasd");
-//            dialog.show(this.getFragmentManager(),"aaa");
-
-//        ManageDialog dialog = new ManageDialog();
-//        NFTDetailData uiData = new NFTDetailData();
-//        uiData.image = "";
-//        uiData.name = "nftObject.name";
-//        uiData.mint_address = "nftObject.mint_address";
-//        uiData.price = 0.0;
-//        dialog.init(this,uiData);
-//        dialog.show(this.getFragmentManager(),"aaa");
-
-//        BatchNFT fa = new BatchNFT();
-//        fa.init();
-//        fa.List5NFT();
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.e("MirrorSDK","onDestroy");
     }
 
     private void initViewPage(){

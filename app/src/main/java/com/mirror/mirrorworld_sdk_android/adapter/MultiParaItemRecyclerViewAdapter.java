@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +55,7 @@ import com.mirror.sdk.utils.MirrorStringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /*** @author Pu
  * @createTime 2022/8/17 17:12
@@ -156,9 +158,13 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 }
             });
         }else if(apiId == DemoAPIID.OPEN_LOGIN_PAGE){
-            MirrorSDK.getInstance().openLoginPage();
-//            String url = "bbb://browsercall/card?card_id=828";
-//
+            MirrorSDK.getInstance().openLoginPage(new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    Log.d("MirrorSDK","kllklklklkkl");
+                }
+            });
+//            String url = "mwsdk://browsercall:10001/card?card_id=828";
 //            Intent intent = new Intent(Intent.ACTION_VIEW,
 //                    Uri.parse(url));
 //            mContext.startActivity(intent);
