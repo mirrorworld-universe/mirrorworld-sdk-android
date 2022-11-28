@@ -27,6 +27,8 @@ public class RedirectActivity extends AppCompatActivity {
     }
 
     private void parseScheme(Uri data){
+        String dataKey = "data";
+        String dataValue = "";
         String accessTokenKey = "access_token";
         String accessTokenValue = "";
         String refreshTokenKey = "refresh_token";
@@ -51,43 +53,38 @@ public class RedirectActivity extends AppCompatActivity {
 
         accessTokenValue = data.getQueryParameter(accessTokenKey);
         refreshTokenValue = data.getQueryParameter(refreshTokenKey);
+        dataValue = data.getQueryParameter(dataKey);
+        accessTokenValue = removeQuotation(accessTokenValue);
+        refreshTokenValue = removeQuotation(refreshTokenValue);
         Log.d("MirrorSDK aac",accessTokenValue);
         Log.d("MirrorSDK ref",refreshTokenValue);
 
-        if (port == MirrorConstant.CustomPort_Login){
-            MirrorSDK.getInstance().SetAccessToken(accessTokenValue);
-            MirrorSDK.getInstance().SetRefreshToken(refreshTokenValue);
-            MirrorSDK.getInstance().saveRefreshToken(refreshTokenValue);
+        MirrorSDK.getInstance().SetAccessToken(accessTokenValue);
+        MirrorSDK.getInstance().SetRefreshToken(refreshTokenValue);
+        MirrorSDK.getInstance().saveRefreshToken(refreshTokenValue);
 
-            Intent intent = new Intent(this,MirrorSDK.getInstance().mActivity.getClass());
-            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            startActivity(intent);
+        Intent intent = new Intent(this,MirrorSDK.getInstance().mActivity.getClass());
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        startActivity(intent);
 
-            MirrorSDK.getInstance().setLoginResponse("{\n" +
-                    "        \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIzODgsImV0aF9hZGRyZXNzIjoiMHgzOTFmMjA3YzNlOEZDYjY3ZjdjNjMwREY3NjMzMjQ5YjMwMjkyMTg0Iiwic29sX2FkZHJlc3MiOiJGc2JVRVZvaXcyNXAxTXFtS0ZoM0MyMWdHWGdkOHFqclV1dlpUU1VCNG1kdyIsImVtYWlsIjoic3F1YWxsMTk4NzE5ODdAMTYzLmNvbSIsIndhbGxldCI6eyJldGhfYWRkcmVzcyI6IjB4MzkxZjIwN2MzZThGQ2I2N2Y3YzYzMERGNzYzMzI0OWIzMDI5MjE4NCIsInNvbF9hZGRyZXNzIjoiRnNiVUVWb2l3MjVwMU1xbUtGaDNDMjFnR1hnZDhxanJVdXZaVFNVQjRtZHcifSwiY2xpZW50X2lkIjoib0U1X3h3eUFhUFVTcU1zQUtSYS05Ym5yS09QS3d5NmtYdnBnLlhsYVk2VTMxLm1pcnJvcndvcmxkLmZ1biIsImlhdCI6MTY2OTE5NzI3OSwiZXhwIjoxNjcxNzg5Mjc5LCJqdGkiOiJhdXRoOjEyMzg4In0.jNDL9hDjE90sFBQDYNt6hCQiak022bF4_ExPvpvZcI0\",\n" +
-                    "        \"refresh_token\": \"pY0XJ5qk6spIcIKwysSPH\",\n" +
-                    "        \"user\": {\n" +
-                    "            \"id\": 12388,\n" +
-                    "            \"eth_address\": null,\n" +
-                    "            \"sol_address\": null,\n" +
-                    "            \"email\": \"squall19871987@163.com\",\n" +
-                    "            \"email_verified\": true,\n" +
-                    "            \"username\": \"yellow-close\",\n" +
-                    "            \"main_user_id\": null,\n" +
-                    "            \"allow_spend\": true,\n" +
-                    "            \"has_security\": false,\n" +
-                    "            \"createdAt\": \"2022-09-19T10:25:00.000Z\",\n" +
-                    "            \"updatedAt\": \"2022-09-19T10:25:00.000Z\",\n" +
-                    "            \"is_subaccount\": false,\n" +
-                    "            \"wallet\": {\n" +
-                    "                \"eth_address\": \"0x391f207c3e8FCb67f7c630DF7633249b30292184\",\n" +
-                    "                \"sol_address\": \"FsbUEVoiw25p1MqmKFh3C21gGXgd8qjrUuvZTSUB4mdw\"\n" +
-                    "            }\n" +
-                    "        },\n" +
-                    "        \"type\": \"email\"\n" +
-                    "    }");
-        }else {
-            Log.e("MirrorSDK","Unknown scheme port:"+port);
+        String loginResult = "{\n" +
+                "        \"access_token\": \""+accessTokenValue+"\",\n" +
+                "        \"refresh_token\": \""+refreshTokenValue+"\",\n" +
+                "        \"user\": dataValue,\n" +
+                "    }";
+        MirrorSDK.getInstance().logFlow("loginResult:"+loginResult);
+
+        MirrorSDK.getInstance().setLoginResponse(loginResult);
+    }
+
+    private String removeQuotation(String originStr){
+        String resultStr = originStr;
+        if(originStr.indexOf("\"") > -1){
+            MirrorSDK.getInstance().logFlow("removeQuotation before:"+originStr);
+            resultStr = originStr.substring(1,originStr.length() - 2);
+            MirrorSDK.getInstance().logFlow("removeQuotation after:"+resultStr);
         }
+
+        return resultStr;
     }
 }

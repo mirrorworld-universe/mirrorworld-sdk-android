@@ -66,6 +66,15 @@ public class MirrorWebviewUtils {
         return ua;
     }
 
+    public static boolean isSupportCustomTab(Activity activity){
+        ArrayList<ResolveInfo> infos = MirrorWebviewUtils.getCustomTabsPackages(activity);
+        if(infos.size() == 0){
+            return false;
+        }else {
+            return true;
+        }
+    }
+
     /**
      * Returns a list of packages that support Custom Tabs.
      */

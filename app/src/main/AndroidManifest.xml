@@ -62,8 +62,7 @@
                 <!--协议部分-->
                 <!--声明自定义scheme，类似于http, https-->
                 <data android:scheme="mwsdk"
-                    android:host="browsercall"
-                    android:port="10001"/>
+                    android:host="userinfo"/>
             </intent-filter>
         </activity>
     </application>
