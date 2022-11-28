@@ -27,6 +27,7 @@ public class RedirectActivity extends AppCompatActivity {
     }
 
     private void parseScheme(Uri data){
+
         String dataKey = "data";
         String dataValue = "";
         String accessTokenKey = "access_token";
@@ -54,6 +55,9 @@ public class RedirectActivity extends AppCompatActivity {
         accessTokenValue = data.getQueryParameter(accessTokenKey);
         refreshTokenValue = data.getQueryParameter(refreshTokenKey);
         dataValue = data.getQueryParameter(dataKey);
+        Log.d("MirrorSDK data origin:",dataValue);
+        dataValue = Uri.decode(dataValue);
+        Log.d("MirrorSDK data decoded:",dataValue);
         accessTokenValue = removeQuotation(accessTokenValue);
         refreshTokenValue = removeQuotation(refreshTokenValue);
         Log.d("MirrorSDK aac",accessTokenValue);
@@ -70,7 +74,7 @@ public class RedirectActivity extends AppCompatActivity {
         String loginResult = "{\n" +
                 "        \"access_token\": \""+accessTokenValue+"\",\n" +
                 "        \"refresh_token\": \""+refreshTokenValue+"\",\n" +
-                "        \"user\": dataValue,\n" +
+                "        \"user\": "+dataValue+"\n" +
                 "    }";
         MirrorSDK.getInstance().logFlow("loginResult:"+loginResult);
 

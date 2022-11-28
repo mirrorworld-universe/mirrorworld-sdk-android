@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Debug;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -44,6 +45,7 @@ import com.mirror.sdk.constant.MirrorConstant;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.constant.MirrorLoginPageMode;
 import com.mirror.sdk.constant.MirrorResCode;
+import com.mirror.sdk.constant.MirrorSafeOptType;
 import com.mirror.sdk.constant.MirrorUrl;
 import com.mirror.sdk.listener.universal.MSimpleCallback;
 import com.mirror.sdk.listener.universal.OnCheckSDKUseable;
@@ -78,6 +80,7 @@ import com.mirror.sdk.response.market.SingleNFTResponse;
 import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
 import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
 import com.mirror.sdk.response.wallet.TransferResponse;
+import com.mirror.sdk.safe.ActionRequestOptional;
 import com.mirror.sdk.ui.MainWebView;
 import com.mirror.sdk.ui.MirrorDialog;
 import com.mirror.sdk.utils.MirrorGsonUtils;
@@ -141,6 +144,8 @@ public class MirrorSDK {
     private LoginListener cbLogin = null;
     private MirrorCallback cbStringLogin = null;
     private MSimpleCallback cbLogout = null;
+    private MirrorCallback cbWalletLoginPassivity = null;
+    private MirrorCallback safeFlowCb = null;
 
     //ui
     private WebView mLoginMainWebView = null;
@@ -368,6 +373,7 @@ public class MirrorSDK {
     }
 
     public void openUrl(String url){
+        logFlow("Try to open url with custom tab:"+url);
         if(apiKey == ""){
             if(mActivity == null){
                 logFlow("Must init sdk first!");
@@ -943,6 +949,10 @@ public class MirrorSDK {
         });
     }
 
+    public void OpenWallet(MirrorCallback loginCb){
+        OpenWallet();
+        cbWalletLoginPassivity = loginCb;
+    }
     //Wallet
     public void OpenWallet(){
         if(apiKey == ""){
@@ -991,6 +1001,7 @@ public class MirrorSDK {
         }
         logFlow("wallet url:"+finalUrlPre);
         openUrl(finalUrlPre);
+
         loginPageMode = MirrorLoginPageMode.KeepIfLoginDone;
     }
 
@@ -1809,6 +1820,11 @@ public class MirrorSDK {
                     cbStringLogin.callback(dataJsonStr);
                     cbStringLogin = null;
                 }
+                if(cbWalletLoginPassivity != null){
+                    logFlow("wallet passivity login success.");
+                    cbWalletLoginPassivity.callback(dataJsonStr);
+                    cbWalletLoginPassivity = null;
+                }
             }
         });
     }
@@ -1966,6 +1982,33 @@ public class MirrorSDK {
                 Log.d("Dismissed with Error: ", e.getStackTrace().toString());
             }
 
+        }
+
+
+        public void getSecurityToken(MirrorCallback callback){
+
+        }
+
+        private void requestActionAuthorization(MirrorSafeOptType type,String message,int value,MirrorCallback callback){
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("type", type);
+                jsonObject.put("message", message);
+                jsonObject.put("value", value);
+                jsonObject.put("params",new ActionRequestOptional());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            String data = jsonObject.toString();
+
+            String url = GetAPIRoot() + MirrorUrl.URL_ACTION_REQUEST;
+            checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    logFlow("requestActionAuthorization result:"+result);
+
+                }
+            }));
         }
     }
 }
