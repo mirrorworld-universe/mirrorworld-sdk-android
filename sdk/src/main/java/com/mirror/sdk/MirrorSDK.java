@@ -5,23 +5,17 @@ import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Debug;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
@@ -34,10 +28,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
-
+import androidx.browser.customtabs.CustomTabsClient;
 import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.browser.customtabs.CustomTabsServiceConnection;
 
 import com.google.gson.reflect.TypeToken;
 import com.mirror.sdk.constant.MirrorConfirmation;
@@ -45,7 +39,6 @@ import com.mirror.sdk.constant.MirrorConstant;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.constant.MirrorLoginPageMode;
 import com.mirror.sdk.constant.MirrorResCode;
-import com.mirror.sdk.constant.MirrorSafeOptType;
 import com.mirror.sdk.constant.MirrorUrl;
 import com.mirror.sdk.listener.universal.MSimpleCallback;
 import com.mirror.sdk.listener.universal.OnCheckSDKUseable;
@@ -80,7 +73,6 @@ import com.mirror.sdk.response.market.SingleNFTResponse;
 import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
 import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
 import com.mirror.sdk.response.wallet.TransferResponse;
-import com.mirror.sdk.safe.ActionRequestOptional;
 import com.mirror.sdk.ui.MainWebView;
 import com.mirror.sdk.ui.MirrorDialog;
 import com.mirror.sdk.utils.MirrorGsonUtils;
@@ -98,8 +90,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -109,7 +99,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class MirrorSDK {
     //user custom
@@ -120,6 +109,7 @@ public class MirrorSDK {
     //secret
     private String refreshToken = "";
     private String accessToken = "";
+    private String xAuthToken = "";
     private String mWalletAddress = "";
 
     //run time
@@ -145,13 +135,12 @@ public class MirrorSDK {
     private MirrorCallback cbStringLogin = null;
     private MSimpleCallback cbLogout = null;
     private MirrorCallback cbWalletLoginPassivity = null;
-    private MirrorCallback safeFlowCb = null;
+    public MirrorCallback safeFlowCb = null;
 
     //ui
     private WebView mLoginMainWebView = null;
 
     //temp
-    public Intent backIntent;
 
     private MirrorSDK(){
 
@@ -175,7 +164,8 @@ public class MirrorSDK {
             this.refreshToken = getRefreshToken(this.mActivity);
         }
         this.env = env;
-    }
+        launchTab(mActivity);
+  }
 
     public String GetRefreshTokenFromResponse(String response){
         String refreshToken = null;
@@ -219,7 +209,11 @@ public class MirrorSDK {
 
     public void SetAccessToken(String accessToken){
         this.accessToken = accessToken;
+    }
 
+    public void SetXAuthToken(String xAuthToken){
+        logFlow("Set x auth token to:"+xAuthToken);
+        this.xAuthToken = xAuthToken;
     }
 
     public void StartLogin(){
@@ -289,7 +283,7 @@ public class MirrorSDK {
             return;
         }
 
-        String finalUrl = GetMainRoot() + apiKey + "?useSchemeRedirect=false";
+        String finalUrl = getAuthRoot() + apiKey + "?useSchemeRedirect=false";
         openInnerUrlOnUIThread(finalUrl);
         loginPageMode = MirrorLoginPageMode.CloseIfLoginDone;
     }
@@ -361,13 +355,13 @@ public class MirrorSDK {
      * Open login page with Custom Tab
      */
     public void openLoginPage(MirrorCallback loginCb){
-        String urlPre = GetMainRoot() + apiKey + "?useSchemeRedirect=";
+        String urlPre = getAuthRoot() + apiKey + "?useSchemeRedirect=";
         if(MirrorWebviewUtils.isSupportCustomTab(mActivity)){
             urlPre += "true";
         }else {
             urlPre += "false";
         }
-//        String urlPre = "http://192.168.31.243:8080/";
+//        urlPre = "http://192.168.31.243:8080/";
         openUrl(urlPre);
         cbStringLogin = loginCb;
     }
@@ -391,7 +385,23 @@ public class MirrorSDK {
             openInnerUrlOnUIThread(url);
         }else {
             openWebPageWithCustomTab(url);
+//            launchTab(mActivity, Uri.parse("mwsdk://userinfo?data=userInfoJsonString&access_token=accesstokentest&refresh_token=refreshtokentest"));
         }
+    }
+
+    void launchTab(Context context){
+        final CustomTabsServiceConnection connection = new CustomTabsServiceConnection() {
+            @Override
+            public void onCustomTabsServiceConnected(ComponentName componentName, CustomTabsClient client) {
+//                final CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+//                final CustomTabsIntent intent = builder.build();
+                client.warmup(0L); // This prevents backgrounding after redirection
+//                intent.launchUrl(context, uri);
+            }
+            @Override
+            public void onServiceDisconnected(ComponentName name) {}
+        };
+        CustomTabsClient.bindCustomTabsService(context, "com.android.chrome", connection);
     }
 
     private void openWebPageWithCustomTab(String url){
@@ -399,9 +409,12 @@ public class MirrorSDK {
         sdkSimpleCheck(new OnCheckSDKUseable() {
             @Override
             public void OnChecked() {
-                CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder().build();
+                CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+                CustomTabsIntent customTabsIntent = builder.build();
                 String packageName = MirrorWebviewUtils.getPackageNameToUse(activity);
                 customTabsIntent.intent.setPackage(packageName);
+//                customTabsIntent.intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+//                customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 customTabsIntent.launchUrl(activity, Uri.parse(url));
             }
 
@@ -459,7 +472,7 @@ public class MirrorSDK {
     }
 
     public void SetApiKey(String id){
-        apiKey = id;
+        apiKey = id.trim();
         if(mActivity != null){
             saveString(localKeyAppId, apiKey);
         }
@@ -469,7 +482,7 @@ public class MirrorSDK {
         cbLogout = callback;
     }
 
-    private String GetMainRoot(){
+    public String getAuthRoot(){
         if(env == MirrorEnv.StagingMainNet){
             return "https://auth-staging.mirrorworld.fun/";
         }else if(env == MirrorEnv.StagingDevNet){
@@ -514,7 +527,37 @@ public class MirrorSDK {
         }
     }
 
-    private String GetAPIRoot(){
+    public String getActionRoot(){
+        if(env == MirrorEnv.StagingMainNet){
+            return "https://api-staging.mirrorworld.fun/v1/";
+        }else if(env == MirrorEnv.StagingDevNet){
+            return "https://api-staging.mirrorworld.fun/v1/";
+        }else if(env == MirrorEnv.DevNet){
+            return "https://api.mirrorworld.fun/v1/";
+        }else if(env == MirrorEnv.MainNet){
+            return "https://api.mirrorworld.fun/v1/";
+        }else {
+            logFlow("Unknown env:"+env);
+            return "https://api.mirrorworld.fun/v1/";
+        }
+    }
+
+    public String getActionRootWithoutVersion(){
+        if(env == MirrorEnv.StagingMainNet){
+            return "https://auth-staging.mirrorworld.fun/";
+        }else if(env == MirrorEnv.StagingDevNet){
+            return "https://auth-staging.mirrorworld.fun/";
+        }else if(env == MirrorEnv.DevNet){
+            return "https://auth.mirrorworld.fun/";
+        }else if(env == MirrorEnv.MainNet){
+            return "https://auth.mirrorworld.fun/";
+        }else {
+            logFlow("Unknown env:"+env);
+            return "https://auth.mirrorworld.fun/";
+        }
+    }
+
+    public String GetAPIRoot(){
         if(env == MirrorEnv.StagingMainNet){
             return "https://api-staging.mirrorworld.fun/v1/mainnet/";
         }else if(env == MirrorEnv.StagingDevNet){
@@ -671,39 +714,6 @@ public class MirrorSDK {
     }
     public void CreateVerifiedCollection(String name, String symbol, String detailUrl, CreateTopCollectionListener createTopCollectionListener){
         CreateVerifiedCollection(name,symbol,detailUrl,MirrorConfirmation.Default,createTopCollectionListener);
-    }
-
-    public void CreateVerifiedSubCollection(String collection_mint, String name, String symbol, String detailUrl,String confirmation, CreateSubCollectionListener createSubCollectionListener){
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("name", name);
-            jsonObject.put("collection_mint", collection_mint);
-            jsonObject.put("symbol", symbol);
-            jsonObject.put("url", detailUrl);
-            jsonObject.put("confirmation", confirmation);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        String data = jsonObject.toString();
-
-        String url = GetAPIRoot() + MirrorUrl.URL_MINT_LOWER_LEVEL_COLLECTION;
-        checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
-            @Override
-            public void callback(String result) {
-
-                CommonResponse<MintResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<MintResponse>>(){}.getType());
-                if(response.code == MirrorResCode.SUCCESS){
-                    createSubCollectionListener.onCreateSuccess(response.data);
-                }else{
-                    createSubCollectionListener.onCreateFailed(response.code,response.message);
-                }
-
-            }
-        }));
-
-    }
-    public void CreateVerifiedSubCollection(String collection_mint, String name, String symbol, String detailUrl, CreateSubCollectionListener createSubCollectionListener){
-        CreateVerifiedSubCollection(collection_mint,name,symbol,detailUrl, MirrorConfirmation.Default,createSubCollectionListener);
     }
 
     public void TransferNFTToAnotherSolanaWallet(String mint_address, String to_wallet_address, TransferNFTListener transferNFTListener){
@@ -993,7 +1003,7 @@ public class MirrorSDK {
     }
 
     private void doOpenWallet(){
-        String finalUrlPre = GetMainRoot() + "jwt?key=" + accessToken + "&useSchemeRedirect=";
+        String finalUrlPre = getAuthRoot() + "jwt?key=" + accessToken + "&useSchemeRedirect=";
         if(MirrorWebviewUtils.isSupportCustomTab(mActivity)){
             finalUrlPre += "true";
         }else {
@@ -1247,7 +1257,7 @@ public class MirrorSDK {
         checkParamsAndGet(url,map, mirrorCallback);
     }
 
-    private void sdkSimpleCheck(OnCheckSDKUseable callback){
+    public void sdkSimpleCheck(OnCheckSDKUseable callback){
         if(apiKey == ""){
             if(mActivity == null){
                 logFlow("Must init sdk first!");
@@ -1264,7 +1274,7 @@ public class MirrorSDK {
         callback.OnChecked();
     }
 
-    private void checkSDKInited(OnCheckSDKUseable callback){
+    public void checkSDKInited(OnCheckSDKUseable callback){
         if(apiKey == ""){
             if(mActivity == null){
                 logFlow("Must init sdk first!");
@@ -1335,6 +1345,7 @@ public class MirrorSDK {
         if(apiKey == ""){
             apiKey = getSavedString(activityContext,localKeyAppId);
         }
+
         if(apiKey == ""){
             logFlow("Must set app id first!");
             return;
@@ -1427,10 +1438,11 @@ public class MirrorSDK {
 
     private void post(String url, String data, MirrorCallback mirrorCallback) {
         logFlow("post json:"+data);
+        logFlow("accessToken:"+accessToken);
+        logFlow("apiKey:"+apiKey);
+        logFlow("xAuthKey:"+xAuthToken);
 
         try {
-            //HttpURLConnection
-            //1.实例化一个URL对象
             URL urll = new URL(url);
             HttpURLConnection conn = (HttpURLConnection) urll.openConnection();
             conn.setDoOutput(true);
@@ -1442,17 +1454,13 @@ public class MirrorSDK {
             conn.setRequestProperty("Accept","application/json");
             conn.setRequestProperty("x-api-key", apiKey);
             conn.setRequestProperty("Authorization","Bearer "+accessToken);
-
-
-
+            if(xAuthToken != "") conn.setRequestProperty("x-authorization-token",xAuthToken);
 
             OutputStream out = conn.getOutputStream();
-            //写数据
             if(null != data){
                 out.write(data.getBytes(Charset.forName("UTF-8")));
             }
 
-            //4.获取响应码
             if (conn.getResponseCode() != HttpURLConnection.HTTP_OK && conn.getResponseCode() != 201) {
                 InputStream ip= conn.getErrorStream();
                 InputStream inputStream = new BufferedInputStream(ip);
@@ -1491,7 +1499,7 @@ public class MirrorSDK {
         }
     }
 
-    private MirrorCallback getHandlerCallback(MirrorCallback mirrorCallback){
+    public MirrorCallback getHandlerCallback(MirrorCallback mirrorCallback){
         return new MirrorCallback() {
             @Override
             public void callback(String result) {
@@ -1543,7 +1551,7 @@ public class MirrorSDK {
         }
     }
 
-    private void checkParamsAndPost(String url, String data, MirrorCallback mirrorCallback){
+    public void checkParamsAndPost(String url, String data, MirrorCallback mirrorCallback){
         if(apiKey == ""){
             if(mActivity == null){
                 logFlow("Must init sdk first!");
@@ -1605,8 +1613,6 @@ public class MirrorSDK {
             public void run() {
                 URL url = null;
                 try {
-
-                   logFlow("appId"+ apiKey);
                     url = new URL(urlRefreshToken);
                     HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                     urlConnection.setRequestProperty("x-refresh-token",accessToken);
@@ -1773,6 +1779,14 @@ public class MirrorSDK {
     }
 
     @JavascriptInterface
+    public void setActionApprovalToken(String xAuthToken){
+        if(safeFlowCb != null){
+            safeFlowCb.callback(xAuthToken);
+            safeFlowCb = null;
+        }
+    }
+
+    @JavascriptInterface
     public void walletLogout(){
         clearCache();
         if(cbLogout != null) cbLogout.callback();
@@ -1907,6 +1921,10 @@ public class MirrorSDK {
         }
     }
 
+    final public static void logError(String value){
+        Log.e("MirrorSDK Error"+MirrorConstant.Version,value);
+    }
+
     class MirrorChromeClient extends WebChromeClient {
         @Override
         public boolean onCreateWindow(WebView view, boolean isDialog,
@@ -1982,33 +2000,6 @@ public class MirrorSDK {
                 Log.d("Dismissed with Error: ", e.getStackTrace().toString());
             }
 
-        }
-
-
-        public void getSecurityToken(MirrorCallback callback){
-
-        }
-
-        private void requestActionAuthorization(MirrorSafeOptType type,String message,int value,MirrorCallback callback){
-            JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put("type", type);
-                jsonObject.put("message", message);
-                jsonObject.put("value", value);
-                jsonObject.put("params",new ActionRequestOptional());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            String data = jsonObject.toString();
-
-            String url = GetAPIRoot() + MirrorUrl.URL_ACTION_REQUEST;
-            checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
-                @Override
-                public void callback(String result) {
-                    logFlow("requestActionAuthorization result:"+result);
-
-                }
-            }));
         }
     }
 }

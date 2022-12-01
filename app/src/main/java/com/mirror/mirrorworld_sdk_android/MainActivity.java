@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i("MirrorSDK","onCreate");
         makeStatusBarTransparent(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -144,11 +145,11 @@ public class MainActivity extends AppCompatActivity {
                 "name","symbol","detailUrl",null,null,null));
 
 
-        items.add(
-
-                new MultiItemData.MultiItem(DemoAPIID.CREATE_VERIFIED_SUB_COLLECTION,"Mint New Lower-level Collection","This request is using API Key from collectionMirror World Mobile SDK",
-                        "LOW_COLLECTION","collection_mint","name",
-                        "symbol","detailUrl",null,null));
+//        items.add(
+//
+//                new MultiItemData.MultiItem(DemoAPIID.CREATE_VERIFIED_SUB_COLLECTION,"Mint New Lower-level Collection","This request is using API Key from collectionMirror World Mobile SDK",
+//                        "LOW_COLLECTION","collection_mint","name",
+//                        "symbol","detailUrl",null,null));
 
         items.add(
 

@@ -1,10 +1,12 @@
 package com.mirror.sdk.utils;
 import com.google.gson.Gson;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.lang.reflect.Type;
 
 public class MirrorGsonUtils {
-
 
     private static volatile MirrorGsonUtils instance;
     public static MirrorGsonUtils getInstance(){
@@ -30,5 +32,13 @@ public class MirrorGsonUtils {
         return mGson.toJson(object);
     }
 
-
+    public JSONObject toJsonObj(Object object){
+        String jsonStr = mGson.toJson(object);
+        try {
+            return new JSONObject(jsonStr);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

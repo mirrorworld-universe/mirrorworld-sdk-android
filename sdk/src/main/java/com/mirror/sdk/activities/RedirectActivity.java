@@ -18,10 +18,21 @@ public class RedirectActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("RedirectActivity","onCreate");
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
         Log.d("MirrorSDK",intent.toURI());
+        Uri uri = intent.getData();
+        parseScheme(uri);
+    }
+
+    @Override
+    protected void onResume() {
+        Log.d("RedirectActivity","onResume");
+        super.onResume();
+        Intent intent = getIntent();
+        Log.d("MirrorSDK resume",intent.toURI());
         Uri uri = intent.getData();
         parseScheme(uri);
     }
@@ -40,17 +51,6 @@ public class RedirectActivity extends AppCompatActivity {
         String host = data.getHost();
         int port = data.getPort();
         String path = data.getPath();
-//        Set<String> queryParameterNames = data.getQueryParameterNames();
-//        for (String key : queryParameterNames) {
-//            Log.d("MirrorSDK",key);
-//            String value = data.getQueryParameter(key);
-//            Log.d("MirrorSDK v",value);
-//            if(key == accessTokenKey){
-//                accessTokenValue = value;
-//            }else if(key == refreshTokenKey){
-//                refreshTokenValue = value;
-//            }
-//        }
 
         accessTokenValue = data.getQueryParameter(accessTokenKey);
         refreshTokenValue = data.getQueryParameter(refreshTokenKey);
@@ -79,13 +79,15 @@ public class RedirectActivity extends AppCompatActivity {
         MirrorSDK.getInstance().logFlow("loginResult:"+loginResult);
 
         MirrorSDK.getInstance().setLoginResponse(loginResult);
+
+        finish();
     }
 
     private String removeQuotation(String originStr){
         String resultStr = originStr;
         if(originStr.indexOf("\"") > -1){
             MirrorSDK.getInstance().logFlow("removeQuotation before:"+originStr);
-            resultStr = originStr.substring(1,originStr.length() - 2);
+            resultStr = originStr.substring(1,originStr.length() - 1);
             MirrorSDK.getInstance().logFlow("removeQuotation after:"+resultStr);
         }
 

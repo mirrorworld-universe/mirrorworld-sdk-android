@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mirror.mirrorworld_sdk_android.R;
 import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
+import com.mirror.sdk.MirrorWorld;
 import com.mirror.sdk.listener.universal.MirrorCallback;
 import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.constant.MirrorConfirmation;
@@ -232,31 +233,18 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(message);
                 }
             });
-        }else if(apiId == DemoAPIID.CREATE_VERIFIED_SUB_COLLECTION){
-            String collection_mint = String.valueOf(holder.mEt1.getText());
-            String name = String.valueOf(holder.mEt2.getText());
-            String symbol = String.valueOf(holder.mEt3.getText());
-            String detailUrl = String.valueOf(holder.mEt4.getText());
-
-            MirrorSDK.getInstance().CreateVerifiedSubCollection(collection_mint, name, symbol, detailUrl, new CreateSubCollectionListener() {
-                @Override
-                public void onCreateSuccess(MintResponse userResponse) {
-                    holder.mResultView.setText(userResponse.name+userResponse.mint_address);
-                }
-
-                @Override
-                public void onCreateFailed(long code, String message) {
-                    holder.mResultView.setText(message);
-                }
-            });
         }else if(apiId == DemoAPIID.MINT_NFT){
             String collection_mint = String.valueOf(holder.mEt1.getText());
             String name = String.valueOf(holder.mEt2.getText());
             String symbol = String.valueOf(holder.mEt3.getText());
             String detailUrl = String.valueOf(holder.mEt4.getText());
 
+            collection_mint = "DUuMbpmH3oiREntViXfGZhrLMbVcYBwGeBa4Wn9X8QfM";
+            name = "1";
+            symbol ="1";
+            detailUrl = "https://metadata-assets.mirrorworld.fun/mirror_jump/metadata/1.json";
 
-            MirrorSDK.getInstance().MintNFT(collection_mint, name, symbol, detailUrl, new MintNFTListener() {
+            MirrorWorld.mintNFT(collection_mint, name, symbol, detailUrl, new MintNFTListener() {
                 @Override
                 public void onMintSuccess(MintResponse userResponse) {
                     holder.mResultView.setText(userResponse.name+userResponse.mint_address);

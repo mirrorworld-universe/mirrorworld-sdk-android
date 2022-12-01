@@ -1,5 +1,4 @@
 package com.mirror.sdk.utils;
-
 import static androidx.browser.customtabs.CustomTabsService.ACTION_CUSTOM_TABS_CONNECTION;
 
 import android.app.Activity;
