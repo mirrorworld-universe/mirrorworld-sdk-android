@@ -512,7 +512,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
         }else if(apiId == DemoAPIID.TRANSFER_SQL){
             String public_key = String.valueOf(holder.mEt1.getText());
             String amountStr = String.valueOf(holder.mEt2.getText());
-            int amount = 0;
+            float amount = 0;
             try{
                amount = Integer.valueOf(amountStr);
             }catch (NumberFormatException e){

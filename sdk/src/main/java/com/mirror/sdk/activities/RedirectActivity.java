@@ -8,9 +8,15 @@ import android.os.Bundle;
 import android.os.Debug;
 import android.util.Log;
 
+import com.google.gson.reflect.TypeToken;
 import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.MirrorWorld;
 import com.mirror.sdk.constant.MirrorConstant;
+import com.mirror.sdk.response.CommonResponse;
+import com.mirror.sdk.response.action.ActionAuthResponse;
+import com.mirror.sdk.response.action.ApproveResponse;
+import com.mirror.sdk.response.market.ListingResponse;
+import com.mirror.sdk.utils.MirrorGsonUtils;
 
 import java.util.Set;
 
@@ -29,28 +35,70 @@ public class RedirectActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        Log.d("RedirectActivity","onResume");
         super.onResume();
-        Intent intent = getIntent();
-        Log.d("MirrorSDK resume",intent.toURI());
-        Uri uri = intent.getData();
-        parseScheme(uri);
+        Log.d("RedirectActivity","onResume");
+//        Intent intent = getIntent();
+//        Log.d("MirrorSDK resume",intent.toURI());
+//        Uri uri = intent.getData();
+//        parseScheme(uri);
     }
 
     private void parseScheme(Uri data){
+        String scheme = data.getScheme();
+        String authority = data.getAuthority();
+        String host = data.getHost();
+        int port = data.getPort();
+        String path = data.getPath();
 
+        if(host.equals("approve")){
+            handleApprove(data);
+        }else if(host.equals("userinfo")){
+            handleUserInfo(data);
+        }else {
+            Log.e("MirrorSDK","Unknown scheme host:"+host);
+        }
+    }
+
+    private void handleApprove(Uri data){
+
+        String dataKey = "data";
+        String dataValue = "";
+        String authTokenKey = "authorization_token";
+        String authTokenValue = "";
+        String refreshTokenKey = "refresh_token";
+        String refreshTokenValue = "";
+
+        dataValue = data.getQueryParameter(dataKey);
+        Log.d("MirrorSDK data origin:",dataValue);
+        ApproveResponse response = MirrorGsonUtils.getInstance().fromJson(dataValue,new TypeToken<ApproveResponse>(){}.getType());
+
+        MirrorSDK.getInstance().logFlow("Scheme auth token:"+response.authorization_token);
+
+        MirrorSDK.getInstance().setActionApprovalToken(response.authorization_token);
+
+        Intent intent = new Intent(this,MirrorSDK.getInstance().mActivity.getClass());
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        startActivity(intent);
+
+//        String loginResult = "{\n" +
+//                "        \"access_token\": \""+accessTokenValue+"\",\n" +
+//                "        \"refresh_token\": \""+refreshTokenValue+"\",\n" +
+//                "        \"user\": "+dataValue+"\n" +
+//                "    }";
+//        MirrorSDK.getInstance().logFlow("loginResult:"+loginResult);
+
+//        MirrorSDK.getInstance().setLoginResponse(loginResult);
+
+        finish();
+    }
+
+    private void handleUserInfo(Uri data){
         String dataKey = "data";
         String dataValue = "";
         String accessTokenKey = "access_token";
         String accessTokenValue = "";
         String refreshTokenKey = "refresh_token";
         String refreshTokenValue = "";
-
-        String scheme = data.getScheme();
-        String authority = data.getAuthority();
-        String host = data.getHost();
-        int port = data.getPort();
-        String path = data.getPath();
 
         accessTokenValue = data.getQueryParameter(accessTokenKey);
         refreshTokenValue = data.getQueryParameter(refreshTokenKey);

@@ -8,6 +8,7 @@ import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
@@ -414,7 +415,7 @@ public class MirrorSDK {
                 String packageName = MirrorWebviewUtils.getPackageNameToUse(activity);
                 customTabsIntent.intent.setPackage(packageName);
 //                customTabsIntent.intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-//                customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                customTabsIntent.intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 customTabsIntent.launchUrl(activity, Uri.parse(url));
             }
 
@@ -1036,7 +1037,7 @@ public class MirrorSDK {
         return;
     }
 
-    public void TransferSOL(String toPublickey, int amount, TransferSOLListener transferSOLListener){
+    public void TransferSOL(String toPublickey, float amount, TransferSOLListener transferSOLListener){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("to_publickey", toPublickey);
@@ -1780,8 +1781,10 @@ public class MirrorSDK {
 
     @JavascriptInterface
     public void setActionApprovalToken(String xAuthToken){
+        Log.d("MirrorSDK world",xAuthToken);
+        SetXAuthToken(xAuthToken);
         if(safeFlowCb != null){
-            safeFlowCb.callback(xAuthToken);
+            safeFlowCb.callback("");
             safeFlowCb = null;
         }
     }
