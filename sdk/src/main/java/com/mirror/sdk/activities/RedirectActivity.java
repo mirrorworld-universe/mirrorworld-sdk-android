@@ -63,13 +63,8 @@ public class RedirectActivity extends AppCompatActivity {
 
         String dataKey = "data";
         String dataValue = "";
-        String authTokenKey = "authorization_token";
-        String authTokenValue = "";
-        String refreshTokenKey = "refresh_token";
-        String refreshTokenValue = "";
 
         dataValue = data.getQueryParameter(dataKey);
-        Log.d("MirrorSDK data origin:",dataValue);
         ApproveResponse response = MirrorGsonUtils.getInstance().fromJson(dataValue,new TypeToken<ApproveResponse>(){}.getType());
 
         MirrorSDK.getInstance().logFlow("Scheme auth token:"+response.authorization_token);
@@ -79,15 +74,6 @@ public class RedirectActivity extends AppCompatActivity {
         Intent intent = new Intent(this,MirrorSDK.getInstance().mActivity.getClass());
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(intent);
-
-//        String loginResult = "{\n" +
-//                "        \"access_token\": \""+accessTokenValue+"\",\n" +
-//                "        \"refresh_token\": \""+refreshTokenValue+"\",\n" +
-//                "        \"user\": "+dataValue+"\n" +
-//                "    }";
-//        MirrorSDK.getInstance().logFlow("loginResult:"+loginResult);
-
-//        MirrorSDK.getInstance().setLoginResponse(loginResult);
 
         finish();
     }

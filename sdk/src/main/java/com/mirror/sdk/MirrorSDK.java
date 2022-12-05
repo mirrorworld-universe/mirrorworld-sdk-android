@@ -366,6 +366,16 @@ public class MirrorSDK {
         openUrl(urlPre);
         cbStringLogin = loginCb;
     }
+    public void openLoginPage(LoginListener loginCb){
+        String urlPre = getAuthRoot() + apiKey + "?useSchemeRedirect=";
+        if(MirrorWebviewUtils.isSupportCustomTab(mActivity)){
+            urlPre += "true";
+        }else {
+            urlPre += "false";
+        }
+        openUrl(urlPre);
+        cbLogin = loginCb;
+    }
 
     public void openUrl(String url){
         logFlow("Try to open url with custom tab:"+url);
@@ -1185,7 +1195,7 @@ public class MirrorSDK {
         checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
     }
 
-    private void TransferToken(String toPublickey, int amount, String token_mint, int decimals, MirrorCallback mirrorCallback){
+    public void TransferToken(String toPublickey, float amount, String token_mint, float decimals, MirrorCallback mirrorCallback){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("to_publickey", toPublickey);

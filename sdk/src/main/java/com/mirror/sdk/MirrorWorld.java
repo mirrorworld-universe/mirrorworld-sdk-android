@@ -1,30 +1,43 @@
 package com.mirror.sdk;
 
 import android.app.Activity;
-import android.util.Log;
 
 import com.mirror.sdk.constant.MirrorConfirmation;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.constant.MirrorSafeOptType;
 import com.mirror.sdk.listener.auth.FetchUserListener;
 import com.mirror.sdk.listener.auth.LoginListener;
+import com.mirror.sdk.listener.auth.QueryUserListener;
 import com.mirror.sdk.listener.market.BuyNFTListener;
 import com.mirror.sdk.listener.market.CancelListListener;
 import com.mirror.sdk.listener.market.CreateTopCollectionListener;
 import com.mirror.sdk.listener.market.FetchByOwnerListener;
 import com.mirror.sdk.listener.market.FetchNFTsListener;
 import com.mirror.sdk.listener.market.FetchSingleNFTActivityListener;
+import com.mirror.sdk.listener.market.FetchSingleNFTListener;
 import com.mirror.sdk.listener.market.ListNFTListener;
 import com.mirror.sdk.listener.market.MintNFTListener;
 import com.mirror.sdk.listener.market.TransferNFTListener;
 import com.mirror.sdk.listener.market.UpdateListListener;
 import com.mirror.sdk.listener.universal.BoolListener;
-import com.mirror.sdk.listener.universal.MSimpleCallback;
 import com.mirror.sdk.listener.universal.MirrorCallback;
 import com.mirror.sdk.listener.wallet.GetWalletTokenListener;
+import com.mirror.sdk.listener.wallet.GetWalletTransactionBySigListener;
+import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
 import com.mirror.sdk.listener.wallet.TransferSOLListener;
 import com.mirror.sdk.particle.MirrorSafeAPI;
-import com.mirror.sdk.request.RequestMintNFT;
+import com.mirror.sdk.request.ReqBuyNFT;
+import com.mirror.sdk.request.ReqCancelListing;
+import com.mirror.sdk.request.ReqCreateCollection;
+import com.mirror.sdk.request.ReqListingNFT;
+import com.mirror.sdk.request.ReqMintNFT;
+import com.mirror.sdk.request.ReqTransNFT;
+import com.mirror.sdk.request.ReqTransSOL;
+import com.mirror.sdk.request.ReqTransSPLToken;
+import com.mirror.sdk.request.ReqUpdateListingNFT;
+import com.mirror.sdk.utils.MirrorGsonUtils;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +49,8 @@ public class MirrorWorld {
      * @param activity
      * @param mirrorEnv
      */
-    final public static void initMirrorWorld(Activity activity, MirrorEnv mirrorEnv){
+    final public static void initMirrorWorld(Activity activity,String apiKey, MirrorEnv mirrorEnv){
+        MirrorSDK.getInstance().SetApiKey(apiKey);
         MirrorSDK.getInstance().InitSDK(activity,mirrorEnv);
     }
 
@@ -44,7 +58,11 @@ public class MirrorWorld {
      * Login.
      */
     final public static void startLogin(LoginListener loginListener){
-        MirrorSDK.getInstance().StartLogin(loginListener);
+        MirrorSDK.getInstance().openLoginPage(loginListener);
+    }
+
+    final public static void startLogin(MirrorCallback callback){
+        MirrorSDK.getInstance().openLoginPage(callback);
     }
 
     /**
@@ -52,6 +70,20 @@ public class MirrorWorld {
      */
     final public static void loginWithEmail(String email,String password,MirrorCallback callback){
         MirrorSDK.getInstance().LoginWithEmail(email, password, callback);
+    }
+
+    /**
+     * Open user's wallet page.
+     */
+    final public static void openWallet(){
+        MirrorSDK.getInstance().OpenWallet();
+    }
+
+    /**
+     * Open market of this app.
+     */
+    final public static void openMarket(){
+        MirrorSDK.getInstance().openMarket();
     }
 
     /**
@@ -63,6 +95,15 @@ public class MirrorWorld {
     }
 
     /**
+     * Query some user and get details;
+     * @param email
+     * @param listener
+     */
+    final public static void queryUser(String email, FetchUserListener listener){
+        MirrorSDK.getInstance().QueryUser(email,listener);
+    }
+
+    /**
      * Get tokens from the current user.
      * @param listener
      */
@@ -70,9 +111,24 @@ public class MirrorWorld {
         MirrorSDK.getInstance().GetWalletTokens(listener);
     }
 
-//    final public static void getTransactions(){
-//        MirrorSDK.getInstance().Transactions();
-//    }
+    /**
+     * Get transactions of the logged user.
+     * @param limit
+     * @param before
+     * @param walletTransactionListener
+     */
+    final public static void getTransactions(String limit, String before, GetWalletTransactionListener walletTransactionListener){
+        MirrorSDK.getInstance().Transactions(limit, before, walletTransactionListener);
+    }
+
+    /**
+     * Get transaction with its signature.
+     * @param signature
+     * @param listener
+     */
+    final public static void getTransaction(String signature, GetWalletTransactionBySigListener listener){
+        MirrorSDK.getInstance().GetTransactionBySignature(signature, listener);
+    }
 
 //    final public static void getNFTs(){
 //        MirrorSDK.getInstance().Fetch
@@ -81,6 +137,15 @@ public class MirrorWorld {
 //    final public static void getNFTs(){
 //        MirrorSDK.getInstance().FetchNFT
 //    }
+
+    /**
+     * Get details of a single NFT.
+     * @param mint_address
+     * @param fetchSingleNFT
+     */
+    final public static void getNFTDetails(String mint_address, FetchSingleNFTListener fetchSingleNFT){
+        MirrorSDK.getInstance().GetNFTDetails(mint_address, fetchSingleNFT);
+    }
 
     /**
      * Get NFTs by owner's wallet address
@@ -100,12 +165,44 @@ public class MirrorWorld {
      * @param listener
      */
     final public static void transferSOL(String toPublicKey, float amount, TransferSOLListener listener){
-        MirrorSDK.getInstance().TransferSOL(toPublicKey, amount, listener);
+
+        ReqTransSOL requestMintNFT = new ReqTransSOL();
+        requestMintNFT.toPublicKey = toPublicKey;
+        requestMintNFT.amount = amount;
+
+        JSONObject params = MirrorGsonUtils.getInstance().toJsonObj(requestMintNFT);
+        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.TransferSol, "TransferSol", 0, params, new MirrorCallback() {
+            @Override
+            public void callback(String nothing) {
+                MirrorSDK.getInstance().TransferSOL(toPublicKey, amount, listener);
+            }
+        });
     }
 
-//    final public static void transferSPLToken(){
-//        MirrorSDK.getInstance().Tran
-//    }
+    /**
+     * Transfer SPL token to a recipient
+     * @param toPublickey
+     * @param amount
+     * @param token_mint
+     * @param decimals
+     * @param mirrorCallback
+     */
+    final public static void transferSPLToken(String toPublickey, float amount, String token_mint, float decimals, MirrorCallback mirrorCallback){
+
+        ReqTransSPLToken req = new ReqTransSPLToken();
+        req.toPublickey = toPublickey;
+        req.amount = amount;
+        req.token_mint = token_mint;
+        req.decimals = decimals;
+
+        JSONObject params = MirrorGsonUtils.getInstance().toJsonObj(req);
+        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.TransferSPLToken, "TransferSPLToken", 0, params, new MirrorCallback() {
+            @Override
+            public void callback(String nothing) {
+                MirrorSDK.getInstance().TransferToken(toPublickey, amount, token_mint, decimals, mirrorCallback);
+            }
+        });
+    }
 
     /**
      * Create a collection for minting NFTs
@@ -119,7 +216,19 @@ public class MirrorWorld {
     }
 
     final public static void createVerifiedCollection(String name, String symbol, String detailUrl,String confirmation, CreateTopCollectionListener createTopCollectionListener){
-        MirrorSDK.getInstance().CreateVerifiedCollection(name, symbol, detailUrl, confirmation, createTopCollectionListener);
+        ReqCreateCollection req = new ReqCreateCollection();
+        req.name = name;
+        req.symbol = symbol;
+        req.detailUrl = detailUrl;
+        req.confirmation = confirmation;
+
+        JSONObject params = MirrorGsonUtils.getInstance().toJsonObj(req);
+        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.CreateCollection, "CreateCollection", 0, params, new MirrorCallback() {
+            @Override
+            public void callback(String nothing) {
+                MirrorSDK.getInstance().CreateVerifiedCollection(name, symbol, detailUrl, confirmation, createTopCollectionListener);
+            }
+        });
     }
 
     /**
@@ -135,14 +244,15 @@ public class MirrorWorld {
     }
 
     final public static void mintNFT(String collection_mint, String name, String symbol, String detailUrl, String confirmation,MintNFTListener mintNFTListener){
-        RequestMintNFT requestMintNFT = new RequestMintNFT();
+        ReqMintNFT requestMintNFT = new ReqMintNFT();
         requestMintNFT.collection_mint = collection_mint;
         requestMintNFT.name = name;
         requestMintNFT.symbol = symbol;
         requestMintNFT.url = detailUrl;
         requestMintNFT.confirmation = confirmation;
 
-        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.MintNFT, "test", 0,requestMintNFT, new MirrorCallback() {
+        JSONObject params = MirrorGsonUtils.getInstance().toJsonObj(requestMintNFT);
+        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.MintNFT, "mint nft", 0, params, new MirrorCallback() {
             @Override
             public void callback(String nothing) {
                 MirrorSDK.getInstance().MintNFT(collection_mint,name,symbol,detailUrl,confirmation,mintNFTListener);
@@ -156,13 +266,24 @@ public class MirrorWorld {
      * @param price
      * @param listener
      */
-//    final public static void updateNFT(String mint_address, Double price, UpdateListListener listener){
-//        MirrorSDK.getInstance().UpdateNFTListing(mint_address, price, MirrorConfirmation.Default, listener);
-//    }
-//
-//    final public static void updateNFT(String mint_address, Double price,String confirmation, UpdateListListener listener){
-//        MirrorSDK.getInstance().UpdateNFTListing(mint_address, price, confirmation, listener);
-//    }
+    final public static void updateNFT(String mint_address, Double price, UpdateListListener listener){
+        MirrorSDK.getInstance().UpdateNFTListing(mint_address, price, MirrorConfirmation.Default, listener);
+    }
+
+    final public static void updateNFT(String mint_address, Double price,String confirmation, UpdateListListener listener){
+        ReqUpdateListingNFT req = new ReqUpdateListingNFT();
+        req.mint_address = mint_address;
+        req.price = price;
+        req.confirmation = confirmation;
+
+        JSONObject params = MirrorGsonUtils.getInstance().toJsonObj(req);
+        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.UpdateListing, "UpdateListing", 0, params, new MirrorCallback() {
+            @Override
+            public void callback(String nothing) {
+                MirrorSDK.getInstance().UpdateNFTListing(mint_address, price, confirmation, listener);
+            }
+        });
+    }
 
     /**
      *
@@ -174,7 +295,19 @@ public class MirrorWorld {
         MirrorSDK.getInstance().ListNFT(mint_address, price, MirrorConfirmation.Default, listener);
     }
     final public static void listingNFT(String mint_address, Double price, String confirmation,String auction_house, ListNFTListener listener){
-        MirrorSDK.getInstance().ListNFT(mint_address, price, confirmation, auction_house, listener);
+        ReqListingNFT req = new ReqListingNFT();
+        req.mint_address = mint_address;
+        req.price = price;
+        req.confirmation = confirmation;
+        req.auction_house = auction_house;
+
+        JSONObject params = MirrorGsonUtils.getInstance().toJsonObj(req);
+        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.ListNFT, "ListNFT", 0, params, new MirrorCallback() {
+            @Override
+            public void callback(String nothing) {
+                MirrorSDK.getInstance().ListNFT(mint_address, price, confirmation, auction_house, listener);
+            }
+        });
     }
 
     /**
@@ -184,7 +317,16 @@ public class MirrorWorld {
      * @param buyNFTListener
      */
     final public static void buyNFT(String mint_address, Double price, BuyNFTListener buyNFTListener){
-        MirrorSDK.getInstance().BuyNFT(mint_address, price, buyNFTListener);
+        ReqBuyNFT req = new ReqBuyNFT();
+        req.mint_address = mint_address;
+        req.price = price;
+
+        JSONObject params = MirrorGsonUtils.getInstance().toJsonObj(req);
+        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.BuyNFT, "BuyNFT", 0, params, new MirrorCallback() {
+            @Override
+            public void callback(String nothing) {MirrorSDK.getInstance().BuyNFT(mint_address, price, buyNFTListener);
+            }
+        });
     }
 
     /**
@@ -211,7 +353,18 @@ public class MirrorWorld {
     }
 
     final public static void cancelNFTListing(String mint_address, Double price,String confirmation, CancelListListener listener){
-        MirrorSDK.getInstance().CancelNFTListing(mint_address, price, confirmation, listener);
+        ReqCancelListing req = new ReqCancelListing();
+        req.mint_address = mint_address;
+        req.price = price;
+        req.confirmation = confirmation;
+
+        JSONObject params = MirrorGsonUtils.getInstance().toJsonObj(req);
+        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.CancelListing, "CancelListing", 0, params, new MirrorCallback() {
+            @Override
+            public void callback(String nothing) {
+                MirrorSDK.getInstance().CancelNFTListing(mint_address, price, confirmation, listener);
+            }
+        });
     }
 
     /**
@@ -221,7 +374,17 @@ public class MirrorWorld {
      * @param transferNFTListener
      */
     final public static void transferNFT(String mint_address, String to_wallet_address, TransferNFTListener transferNFTListener){
-        MirrorSDK.getInstance().TransferNFTToAnotherSolanaWallet(mint_address, to_wallet_address, transferNFTListener);
+        ReqTransNFT req = new ReqTransNFT();
+        req.mint_address = mint_address;
+        req.to_wallet_address = to_wallet_address;
+
+        JSONObject params = MirrorGsonUtils.getInstance().toJsonObj(req);
+        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.TransferNFT, "TransferNFT", 0, params, new MirrorCallback() {
+            @Override
+            public void callback(String nothing) {
+                MirrorSDK.getInstance().TransferNFTToAnotherSolanaWallet(mint_address, to_wallet_address, transferNFTListener);
+            }
+        });
     }
 
     /**

@@ -3,23 +3,18 @@ package com.mirror.sdk.particle;
 import com.google.gson.reflect.TypeToken;
 import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.constant.MirrorResCode;
-import com.mirror.sdk.constant.MirrorSafeOptType;
 import com.mirror.sdk.constant.MirrorUrl;
 import com.mirror.sdk.listener.universal.MirrorCallback;
 import com.mirror.sdk.listener.universal.OnCheckSDKUseable;
-import com.mirror.sdk.request.BaseRequest;
-import com.mirror.sdk.request.RequestMintNFT;
 import com.mirror.sdk.response.CommonResponse;
 import com.mirror.sdk.response.action.ActionAuthResponse;
-import com.mirror.sdk.response.market.ActivityOfSingleNftResponse;
-import com.mirror.sdk.safe.ActionRequestOptional;
 import com.mirror.sdk.utils.MirrorGsonUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MirrorSafeAPI {
-    final public static void getSecurityToken(String type, String message, int value, BaseRequest request, MirrorCallback callback){
+    final public static void getSecurityToken(String type, String message, int value, JSONObject request, MirrorCallback callback){
         MirrorSDK.getInstance().safeFlowCb = callback;
         MirrorSDK.getInstance().sdkSimpleCheck(new OnCheckSDKUseable() {
             @Override
@@ -34,14 +29,13 @@ public class MirrorSafeAPI {
         });
     }
 
-    final private static void requestActionAuthorization(String type, String message, int value, BaseRequest requestPrams){
+    final private static void requestActionAuthorization(String type, String message, int value, JSONObject requestPrams){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("type", type);
             jsonObject.put("message", message);
             jsonObject.put("value", value);
-            JSONObject params = MirrorGsonUtils.getInstance().toJsonObj(requestPrams);
-            jsonObject.put("params",params);
+            jsonObject.put("params",requestPrams);
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -19,7 +19,6 @@ import com.google.android.material.tabs.TabLayout;
 import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.MirrorSDK;
-import com.mirror.sdk.utils.MirrorWebviewUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,21 +86,15 @@ public class MainActivity extends AppCompatActivity {
         List<MultiItemData.MultiItem> items = new ArrayList<>();
 
         items.add(new MultiItemData.MultiItem(
-                DemoAPIID.SET_APP_ID,"Set App ID",
-                "Set app id before user all apis",
-                "SetAppID",
+                DemoAPIID.INIT_SDK,"Init SDK",
+                "Set app id and init sdk",
+                "Init",
                 "appid",null,null,null,null,null));
 
         items.add(new MultiItemData.MultiItem(
                 DemoAPIID.START_LOGIN,"Start login",
                 "Open the login page",
                 "Login",
-                null,null,null,null,null,null));
-
-        items.add(new MultiItemData.MultiItem(
-                DemoAPIID.OPEN_LOGIN_PAGE,"Open login page",
-                "Open the login page by custom tab",
-                "Go",
                 null,null,null,null,null,null));
 
         items.add(new MultiItemData.MultiItem(
