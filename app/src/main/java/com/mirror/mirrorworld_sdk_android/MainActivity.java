@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                 DemoAPIID.INIT_SDK,"Init SDK",
                 "Set app id and init sdk",
                 "Init",
-                "appid",null,null,null,null,null));
+                "APIKey",null,null,null,null,null));
 
         items.add(new MultiItemData.MultiItem(
                 DemoAPIID.START_LOGIN,"Start login",

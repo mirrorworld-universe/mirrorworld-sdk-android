@@ -8,7 +8,6 @@ import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
@@ -47,7 +46,6 @@ import com.mirror.sdk.listener.auth.FetchUserListener;
 import com.mirror.sdk.listener.auth.LoginListener;
 import com.mirror.sdk.listener.market.BuyNFTListener;
 import com.mirror.sdk.listener.market.CancelListListener;
-import com.mirror.sdk.listener.market.CreateSubCollectionListener;
 import com.mirror.sdk.listener.market.CreateTopCollectionListener;
 import com.mirror.sdk.listener.market.FetchNFTsListener;
 import com.mirror.sdk.listener.market.FetchByOwnerListener;
@@ -127,7 +125,7 @@ public class MirrorSDK {
     //keys
     private String localFileKey = "mirror_local_storage";
     private String localKeyRefreshToken = "mirror_refresh_token";
-    private String localKeyAppId = "mirror_app_id";
+    private String localKeyAPIKey = "mirror_api_key";
     private String localKeyWalletAddress = "mirror_wallet_address";
 
     //logic
@@ -219,7 +217,7 @@ public class MirrorSDK {
 
     public void StartLogin(){
         if(apiKey == ""){
-            apiKey = getSavedString(mActivity,localKeyAppId);
+            apiKey = getSavedString(mActivity, localKeyAPIKey);
             logFlow("No apiKey use locally api key:"+ apiKey);
         }
         if(apiKey == ""){
@@ -277,7 +275,7 @@ public class MirrorSDK {
                 logFlow("Must init sdk first!");
                 return;
             }
-            apiKey = getSavedString(mActivity,localKeyAppId);
+            apiKey = getSavedString(mActivity, localKeyAPIKey);
         }
         if(apiKey == ""){
             logFlow("Must set app id first!");
@@ -384,7 +382,7 @@ public class MirrorSDK {
                 logFlow("Must init sdk first!");
                 return;
             }
-            apiKey = getSavedString(mActivity,localKeyAppId);
+            apiKey = getSavedString(mActivity, localKeyAPIKey);
         }
         if(apiKey == ""){
             logFlow("Must set app id first!");
@@ -485,7 +483,7 @@ public class MirrorSDK {
     public void SetApiKey(String id){
         apiKey = id.trim();
         if(mActivity != null){
-            saveString(localKeyAppId, apiKey);
+            saveString(localKeyAPIKey, apiKey);
         }
     }
 
@@ -981,7 +979,7 @@ public class MirrorSDK {
                 logFlow("Must init sdk first!");
                 return;
             }
-            apiKey = getSavedString(mActivity,localKeyAppId);
+            apiKey = getSavedString(mActivity, localKeyAPIKey);
         }
         if(apiKey == ""){
             logFlow("Must set app id first!");
@@ -1275,7 +1273,7 @@ public class MirrorSDK {
                 callback.OnUnUsable();
                 return;
             }
-            apiKey = getSavedString(mActivity,localKeyAppId);
+            apiKey = getSavedString(mActivity, localKeyAPIKey);
         }
         if(apiKey == ""){
             logFlow("Must set app id first!");
@@ -1291,7 +1289,7 @@ public class MirrorSDK {
                 logFlow("Must init sdk first!");
                 return;
             }
-            apiKey = getSavedString(mActivity,localKeyAppId);
+            apiKey = getSavedString(mActivity, localKeyAPIKey);
         }
         if(apiKey == ""){
             logFlow("Must set app id first!");
@@ -1354,7 +1352,7 @@ public class MirrorSDK {
         }
 
         if(apiKey == ""){
-            apiKey = getSavedString(activityContext,localKeyAppId);
+            apiKey = getSavedString(activityContext, localKeyAPIKey);
         }
 
         if(apiKey == ""){
@@ -1535,7 +1533,7 @@ public class MirrorSDK {
                 logFlow("Must init sdk first!");
                 return;
             }
-            apiKey = getSavedString(mActivity,localKeyAppId);
+            apiKey = getSavedString(mActivity, localKeyAPIKey);
         }
         if(apiKey == ""){
             logFlow("Must set app id first!");
@@ -1568,7 +1566,7 @@ public class MirrorSDK {
                 logFlow("Must init sdk first!");
                 return;
             }
-            apiKey = getSavedString(mActivity,localKeyAppId);
+            apiKey = getSavedString(mActivity, localKeyAPIKey);
         }
         if(apiKey == ""){
             logFlow("Must set app id first!");
@@ -1887,7 +1885,7 @@ public class MirrorSDK {
         SharedPreferences sp = mActivity.getSharedPreferences(localFileKey, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString(localKeyRefreshToken, "");
-        editor.putString(localKeyAppId, "");
+        editor.putString(localKeyAPIKey, "");
         editor.putString(localKeyWalletAddress, "");
         //editor.apply()
         editor.commit();
