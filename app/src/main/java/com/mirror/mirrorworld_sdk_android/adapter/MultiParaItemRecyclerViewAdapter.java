@@ -175,7 +175,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             MirrorWorld.fetchUser(new FetchUserListener() {
                 @Override
                 public void onUserFetched(UserResponse userResponse) {
-                    holder.mResultView.setText(userResponse.email+userResponse.eth_address);
+                    holder.mResultView.setText(userResponse.email+" eth_address "+userResponse.wallet.eth_address+" solona_address "+userResponse.wallet.sol_address);
                 }
 
                 @Override
@@ -188,7 +188,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             MirrorWorld.queryUser(email,new FetchUserListener() {
                 @Override
                 public void onUserFetched(UserResponse userResponse) {
-                    holder.mResultView.setText(userResponse.email+userResponse.eth_address);
+                    holder.mResultView.setText(userResponse.email+" username "+userResponse.username);
                 }
 
                 @Override
@@ -421,7 +421,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             MirrorWorld.getTokens(new GetWalletTokenListener() {
                 @Override
                 public void onSuccess(GetWalletTokenResponse walletTokenResponse) {
-                    holder.mResultView.setText("Get wallet token success! Token count is:"+walletTokenResponse.tokens.size());
+                    holder.mResultView.setText("Get wallet token success!");
                 }
 
                 @Override
