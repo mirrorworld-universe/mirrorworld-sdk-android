@@ -42,6 +42,8 @@ public class DemoAPIID {
 
     public static final int TRANSFER_NFT_TO_ANOTHER_SOLANA_WALLET =15;
 
+    public static final int TRANSFER_SPL_TOKEN = 201;
+
     public static final int BUY_NFT = 21;
 
 

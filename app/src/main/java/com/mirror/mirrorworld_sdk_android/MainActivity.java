@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i("MirrorSDK","onCreate");
         makeStatusBarTransparent(this);
         super.onCreate(savedInstanceState);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_main);
         MirrorSDK.getInstance().InitSDK(this, MirrorEnv.StagingDevNet);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -210,6 +211,11 @@ public class MainActivity extends AppCompatActivity {
                 new MultiItemData.MultiItem(DemoAPIID.TRANSFER_NFT_TO_ANOTHER_SOLANA_WALLET,"Transfer NFT to another solana wallet","Transfer NFT to another solana wallet",
                         "TRANSFER_NFT","mint_address","to_wallet_address",
                         null,null,null,null));
+        items.add(
+
+                new MultiItemData.MultiItem(DemoAPIID.TRANSFER_SPL_TOKEN,"Transfer SPL Token","Transfer SPL Token to another wallet.",
+                        "TRANSFER","toPublicKey","amount",
+                        "token_mint","decimals",null,null));
         items.add(
 
                 new MultiItemData.MultiItem(DemoAPIID.BUY_NFT,"Buy NFT on the marketplace","Buy NFT on the marketplace",

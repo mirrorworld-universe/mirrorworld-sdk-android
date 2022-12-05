@@ -215,20 +215,6 @@ public class MirrorSDK {
         this.xAuthToken = xAuthToken;
     }
 
-    public void StartLogin(){
-        if(apiKey == ""){
-            apiKey = getSavedString(mActivity, localKeyAPIKey);
-            logFlow("No apiKey use locally api key:"+ apiKey);
-        }
-        if(apiKey == ""){
-            logFlow("Must set app id first!");
-            return;
-        }
-        logFlow("Start login called.");
-
-        openStartPage();
-    }
-
     private void openInnerUrlOnUIThread(String url){
         if(mActivity == null){
             logFlow("openInnerUrlOnUIThread failed,need inite first.");
@@ -373,6 +359,17 @@ public class MirrorSDK {
         }
         openUrl(urlPre);
         cbLogin = loginCb;
+    }
+    private void autoOpenLogin(MirrorCallback jwtCb){
+        openLoginPage(new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                LoginResponse res = MirrorGsonUtils.getInstance().fromJson(result,new TypeToken<LoginResponse>(){}.getType());
+                if(jwtCb != null){
+                    jwtCb.callback(res.access_token);
+                }
+            }
+        });
     }
 
     public void openUrl(String url){
@@ -1111,6 +1108,8 @@ public class MirrorSDK {
                 CommonResponse<GetWalletTransactionsResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<GetWalletTransactionsResponse>>(){}.getType());
                 if(response.code == MirrorResCode.SUCCESS){
                     listener.onSuccess(response.data.transactions);
+                }else if(response.code == MirrorResCode.NO_RESOURCES){
+                    listener.onFailed(response.code,"No this transaction.");
                 }else{
                     listener.onFailed(response.code,response.message);
                 }
@@ -1347,7 +1346,7 @@ public class MirrorSDK {
         logFlow("ready to get access token,now refreshToken is:"+refreshToken);
         if(refreshToken == ""){
             logFlow("No refresh token,jump to login page...");
-            StartLogin();
+            autoOpenLogin(mirrorCallback);
             return;
         }
 
@@ -1372,7 +1371,7 @@ public class MirrorSDK {
                         int code = (int) itJson.get("code");
                         if (code != 0){
                             logFlow("You have no authorization to visit api,now popup login window."+result);
-                            StartLogin();
+                            autoOpenLogin(mirrorCallback);
                         }else{
                             String accessToken = itJson.getJSONObject("data").getString("access_token");
                             String newRefreshToken = itJson.getJSONObject("data").getString("refresh_token");
@@ -1400,7 +1399,7 @@ public class MirrorSDK {
                                 int code = (int) itJson.get("code");
                                 if (code != 0){
                                     logFlow("You have no authorization to visit api,now popup login window."+result);
-                                    StartLogin();
+                                    autoOpenLogin(mirrorCallback);
                                 }else{
                                     String accessToken = itJson.getJSONObject("data").getString("access_token");
                                     String newRefreshToken = itJson.getJSONObject("data").getString("refresh_token");
@@ -1672,19 +1671,26 @@ public class MirrorSDK {
             urlConn.setRequestProperty("Authorization","Bearer "+accessToken);
             urlConn.setRequestMethod("GET");
 
-            InputStreamReader in = new InputStreamReader(urlConn.getInputStream());
+            logFlow("http get code:"+urlConn.getResponseCode());
+            if(urlConn.getResponseCode() == MirrorResCode.NO_RESOURCES){
+                CommonResponse res = new CommonResponse();
+                res.code = MirrorResCode.NO_RESOURCES;
+                urlConn.disconnect();
+                return MirrorGsonUtils.getInstance().toJson(res);
+            }else {
+                InputStreamReader in = new InputStreamReader(urlConn.getInputStream());
 
-            BufferedReader buffer = new BufferedReader(in);
-            String inputLine = null;
+                BufferedReader buffer = new BufferedReader(in);
+                String inputLine = null;
 
-            result = "";
+                result = "";
 
-            while((inputLine = buffer.readLine())!=null){
-                result += inputLine + "\n";
+                while((inputLine = buffer.readLine())!=null){
+                    result += inputLine + "\n";
+                }
+                in.close();
+                urlConn.disconnect();
             }
-
-            in.close();
-            urlConn.disconnect();
         }catch (IOException e) {
             e.printStackTrace();
         }
