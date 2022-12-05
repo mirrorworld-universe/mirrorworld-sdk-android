@@ -4,6 +4,8 @@ public class DemoAPIID {
 
     public static final int INIT_SDK = 0;
 
+    public static final int SET_JWT = 104;
+
     public static final int START_LOGIN = 101;
 
     public static final int LOGIN_With_EMAIL = 1;

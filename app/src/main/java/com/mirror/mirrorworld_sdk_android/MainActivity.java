@@ -93,6 +93,13 @@ public class MainActivity extends AppCompatActivity {
                 "APIKey",null,null,null,null,null));
 
         items.add(new MultiItemData.MultiItem(
+                DemoAPIID.SET_JWT,"Set JWT",
+                "Set jwt",
+                "Set It",
+                "jwt",null,null,null,null,null));
+
+
+        items.add(new MultiItemData.MultiItem(
                 DemoAPIID.START_LOGIN,"Start login",
                 "Open the login page",
                 "Login",

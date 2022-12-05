@@ -152,6 +152,13 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             }
             MirrorWorld.initMirrorWorld(mContext,String.valueOf(holder.mEt1.getText()), MirrorEnv.StagingDevNet);
             holder.mResultView.setText("SDK has been inited!");
+        }else if(apiId == DemoAPIID.SET_JWT){
+            if(!checkEt(holder.mEt1)){
+                showToast("Please input!");
+                return;
+            }
+            MirrorSDK.getInstance().SetAccessToken(String.valueOf(holder.mEt1.getText()));
+            holder.mResultView.setText("JWT has been set!");
         }else if(apiId == DemoAPIID.START_LOGIN){
             MirrorWorld.startLogin(new MirrorCallback() {
                 @Override
@@ -339,14 +346,15 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             try{
                 limit =  Integer.valueOf(String.valueOf(holder.mEt2.getText()));
                 offset = Integer.valueOf(String.valueOf(holder.mEt3.getText()));
-
             }catch (NumberFormatException E){
 
             }
             MirrorWorld.fetchNFTsByOwnerAddresses(owners, limit, offset, new FetchByOwnerListener() {
                 @Override
                 public void onFetchSuccess(MultipleNFTsResponse multipleNFTsResponse) {
-                    holder.mResultView.setText(multipleNFTsResponse.nfts.size());
+                    int count = multipleNFTsResponse.nfts.size();
+                    String countStr = "You have " + count + " NFTs";
+                    holder.mResultView.setText(countStr);
                 }
 
                 @Override
@@ -364,7 +372,8 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             MirrorWorld.fetchNFTsByMintAddresses(mint_address, new FetchNFTsListener() {
                 @Override
                 public void onFetchSuccess(MultipleNFTsResponse multipleNFTsResponse) {
-                    holder.mResultView.setText(multipleNFTsResponse.nfts.size());
+                    String notice = "Fetched " + multipleNFTsResponse.nfts.size() + " NFTs";
+                    holder.mResultView.setText(notice);
                 }
 
                 @Override
