@@ -2,7 +2,7 @@ package com.mirror.mirrorworld_sdk_android;
 
 public class DemoAPIID {
 
-    public static final int SET_APP_ID = 0;
+    public static final int INIT_SDK = 0;
 
     public static final int START_LOGIN = 101;
 
@@ -19,8 +19,6 @@ public class DemoAPIID {
 
 
     public static final int CREATE_VERIFIED_COLLECTION =4;
-
-    public static final int CREATE_VERIFIED_SUB_COLLECTION = 5;
 
     public static final int MINT_NFT =6;
 
@@ -45,8 +43,6 @@ public class DemoAPIID {
     public static final int TRANSFER_NFT_TO_ANOTHER_SOLANA_WALLET =15;
 
     public static final int BUY_NFT = 21;
-
-
 
 
 
