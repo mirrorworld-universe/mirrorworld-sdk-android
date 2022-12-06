@@ -58,9 +58,11 @@ import com.mirror.sdk.listener.market.TransferNFTListener;
 import com.mirror.sdk.listener.market.UpdateListListener;
 import com.mirror.sdk.listener.universal.BoolListener;
 import com.mirror.sdk.listener.universal.MirrorCallback;
+import com.mirror.sdk.listener.wallet.GetOneWalletTransactionBySigListener;
 import com.mirror.sdk.listener.wallet.GetWalletTokenListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionBySigListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
+import com.mirror.sdk.listener.wallet.TransactionsDTO;
 import com.mirror.sdk.listener.wallet.TransferSOLListener;
 import com.mirror.sdk.response.CommonResponse;
 import com.mirror.sdk.response.auth.LoginResponse;
@@ -1099,9 +1101,9 @@ public class MirrorSDK {
         });
     }
 
-    public void Transactions(String limit, String before, GetWalletTransactionListener walletTransactionListener){
+    public void Transactions(int limit, String before, GetWalletTransactionListener walletTransactionListener){
         HashMap<String,String> map = new HashMap<String,String>();
-        map.put("limit",limit);
+        if(limit != 0) map.put("limit", String.valueOf(limit));
         map.put("before",before);
 
         String url = GetAPIRoot() + MirrorUrl.URL_GET_WALLET_TRANSACTIONS;
@@ -1118,14 +1120,14 @@ public class MirrorSDK {
         });
     }
 
-    public void GetTransactionBySignature(String signature, GetWalletTransactionBySigListener listener){
+    public void GetTransactionBySignature(String signature, GetOneWalletTransactionBySigListener listener){
         String url = GetAPIRoot() + MirrorUrl.URL_GET_WALLET_TRANSACTIONS + "/"+signature;
         checkParamsAndGet(url, null, new MirrorCallback() {
             @Override
             public void callback(String result) {
-                CommonResponse<GetWalletTransactionsResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<GetWalletTransactionsResponse>>(){}.getType());
+                CommonResponse<TransactionsDTO> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<TransactionsDTO>>(){}.getType());
                 if(response.code == MirrorResCode.SUCCESS){
-                    listener.onSuccess(response.data.transactions);
+                    listener.onSuccess(response.data);
                 }else if(response.code == MirrorResCode.NO_RESOURCES){
                     listener.onFailed(response.code,"No this transaction.");
                 }else{

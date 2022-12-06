@@ -18,6 +18,7 @@ import com.mirror.sdk.listener.market.FetchNFTsListener;
 import com.mirror.sdk.listener.market.FetchByOwnerListener;
 import com.mirror.sdk.listener.market.FetchSingleNFTActivityListener;
 import com.mirror.sdk.listener.market.FetchSingleNFTListener;
+import com.mirror.sdk.listener.wallet.GetOneWalletTransactionBySigListener;
 import com.mirror.sdk.listener.wallet.GetWalletTokenListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionBySigListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
@@ -398,7 +399,7 @@ public class ExampleUnitTest {
                  MirrorSDK.getInstance().SetAccessToken(GetAccessTokenFromResponse(result));
                  MirrorSDK.getInstance().SetRefreshToken(GetRefreshTokenFromResponse(result));
 
-                 MirrorSDK.getInstance().Transactions("1", "5pTshp58jboUBUqHEPSn6KZ6hCc6ZU7NL4BghjQU15J8vBitKSaHqc8ms5XCkbUByYnabEY8MS8H12RbzzAMUxBn", new GetWalletTransactionListener() {
+                 MirrorSDK.getInstance().Transactions(1, "5pTshp58jboUBUqHEPSn6KZ6hCc6ZU7NL4BghjQU15J8vBitKSaHqc8ms5XCkbUByYnabEY8MS8H12RbzzAMUxBn", new GetWalletTransactionListener() {
                      @Override
                      public void onSuccess(GetWalletTransactionsResponse walletTransactionsResponse) {
                          Status = GetStatus( result);
@@ -443,9 +444,9 @@ public class ExampleUnitTest {
                 MirrorSDK.getInstance().SetAccessToken(GetAccessTokenFromResponse(result));
                 MirrorSDK.getInstance().SetRefreshToken(GetRefreshTokenFromResponse(result));
 
-                MirrorSDK.getInstance().GetTransactionBySignature("5pTshp58jboUBUqHEPSn6KZ6hCc6ZU7NL4BghjQU15J8vBitKSaHqc8ms5XCkbUByYnabEY8MS8H12RbzzAMUxBn", new GetWalletTransactionBySigListener() {
+                MirrorSDK.getInstance().GetTransactionBySignature("5pTshp58jboUBUqHEPSn6KZ6hCc6ZU7NL4BghjQU15J8vBitKSaHqc8ms5XCkbUByYnabEY8MS8H12RbzzAMUxBn", new GetOneWalletTransactionBySigListener() {
                     @Override
-                    public void onSuccess(List<TransactionsDTO> walletTransactions) {
+                    public void onSuccess(TransactionsDTO walletTransactions) {
                         Status = GetStatus( result);
                         synchronized (lock) {
                             lock.notify();

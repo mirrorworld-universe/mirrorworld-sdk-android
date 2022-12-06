@@ -37,6 +37,7 @@ import com.mirror.sdk.listener.market.ListNFTListener;
 import com.mirror.sdk.listener.market.MintNFTListener;
 import com.mirror.sdk.listener.market.TransferNFTListener;
 import com.mirror.sdk.listener.market.UpdateListListener;
+import com.mirror.sdk.listener.wallet.GetOneWalletTransactionBySigListener;
 import com.mirror.sdk.listener.wallet.GetWalletTokenListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionBySigListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
@@ -51,6 +52,7 @@ import com.mirror.sdk.response.market.SingleNFTResponse;
 import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
 import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
 import com.mirror.sdk.response.wallet.TransferResponse;
+import com.mirror.sdk.utils.MirrorGsonUtils;
 import com.mirror.sdk.utils.MirrorStringUtils;
 
 import java.util.ArrayList;
@@ -526,11 +528,16 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 }
             });
         }else if(apiId == DemoAPIID.WALLET_TRANSACTIONS){
-            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
+            if(!checkEt(holder.mEt2)){
                 showToast("Please input!");
                 return;
             }
-            String limit = String.valueOf(holder.mEt1.getText());
+            int limit = 0;
+            try{
+                limit = Integer.valueOf(String.valueOf(holder.mEt1.getText()));
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
             String before = String.valueOf(holder.mEt2.getText());
             MirrorWorld.getTransactions(limit, before, new GetWalletTransactionListener() {
                 @Override
@@ -549,10 +556,10 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 return;
             }
             String sig = String.valueOf(holder.mEt1.getText());
-            MirrorWorld.getTransaction(sig, new GetWalletTransactionBySigListener() {
+            MirrorWorld.getTransaction(sig, new GetOneWalletTransactionBySigListener() {
                 @Override
-                public void onSuccess(List<TransactionsDTO> walletTransactions) {
-                    holder.mResultView.setText("GetTransactionBySignature success! transaction count is " + walletTransactions.size());
+                public void onSuccess(TransactionsDTO walletTransactions) {
+                    holder.mResultView.setText("GetTransactionBySignature success!" + MirrorGsonUtils.getInstance().toJson(walletTransactions));
                 }
 
                 @Override

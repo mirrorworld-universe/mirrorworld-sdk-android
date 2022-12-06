@@ -22,6 +22,7 @@ import com.mirror.sdk.listener.market.UpdateListListener;
 import com.mirror.sdk.listener.universal.BoolListener;
 import com.mirror.sdk.listener.universal.MSimpleCallback;
 import com.mirror.sdk.listener.universal.MirrorCallback;
+import com.mirror.sdk.listener.wallet.GetOneWalletTransactionBySigListener;
 import com.mirror.sdk.listener.wallet.GetWalletTokenListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionBySigListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
@@ -114,11 +115,13 @@ public class MirrorWorld {
 
     /**
      * Get transactions of the logged user.
-     * @param limit
      * @param before
      * @param walletTransactionListener
      */
-    final public static void getTransactions(String limit, String before, GetWalletTransactionListener walletTransactionListener){
+    final public static void getTransactions(String before, GetWalletTransactionListener walletTransactionListener){
+        MirrorSDK.getInstance().Transactions(0, before, walletTransactionListener);
+    }
+    final public static void getTransactions(int limit, String before, GetWalletTransactionListener walletTransactionListener){
         MirrorSDK.getInstance().Transactions(limit, before, walletTransactionListener);
     }
 
@@ -127,7 +130,7 @@ public class MirrorWorld {
      * @param signature
      * @param listener
      */
-    final public static void getTransaction(String signature, GetWalletTransactionBySigListener listener){
+    final public static void getTransaction(String signature, GetOneWalletTransactionBySigListener listener){
         MirrorSDK.getInstance().GetTransactionBySignature(signature, listener);
     }
 
