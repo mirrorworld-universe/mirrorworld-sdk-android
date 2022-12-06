@@ -216,7 +216,7 @@ public class MirrorWorld {
      * @param createTopCollectionListener
      */
     final public static void createVerifiedCollection(String name, String symbol, String detailUrl, CreateTopCollectionListener createTopCollectionListener){
-        MirrorSDK.getInstance().CreateVerifiedCollection(name, symbol, detailUrl, MirrorConfirmation.Default, createTopCollectionListener);
+        createVerifiedCollection(name, symbol, detailUrl, MirrorConfirmation.Default, createTopCollectionListener);
     }
 
     final public static void createVerifiedCollection(String name, String symbol, String detailUrl,String confirmation, CreateTopCollectionListener createTopCollectionListener){
