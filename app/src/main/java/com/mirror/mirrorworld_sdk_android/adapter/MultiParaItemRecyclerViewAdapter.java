@@ -236,7 +236,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             MirrorWorld.createVerifiedCollection(name, symbol, detailsUrl, new CreateTopCollectionListener() {
                 @Override
                 public void onCreateSuccess(MintResponse mintResponse) {
-                    holder.mResultView.setText(mintResponse.name+mintResponse.mint_address);
+                    holder.mResultView.setText("Creating result is:"+MirrorGsonUtils.getInstance().toJson(mintResponse));
                 }
 
                 @Override
@@ -257,7 +257,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             MirrorWorld.mintNFT(collection_mint, name, symbol, detailUrl, new MintNFTListener() {
                 @Override
                 public void onMintSuccess(MintResponse userResponse) {
-                    holder.mResultView.setText(userResponse.name+userResponse.mint_address);
+                    holder.mResultView.setText("Mint NFT result is:"+MirrorGsonUtils.getInstance().toJson(userResponse));
                 }
 
                 @Override
@@ -424,7 +424,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             MirrorWorld.getNFTDetails(mint_address, new FetchSingleNFTListener() {
                 @Override
                 public void onFetchSuccess(SingleNFTResponse nftObject) {
-                    holder.mResultView.setText(nftObject.nft.name+nftObject.nft.description);
+                    holder.mResultView.setText("NFT details is:"+MirrorGsonUtils.getInstance().toJson(nftObject));
                 }
 
                 @Override
