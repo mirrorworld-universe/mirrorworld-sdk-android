@@ -20,6 +20,7 @@ import com.mirror.sdk.listener.market.MintNFTListener;
 import com.mirror.sdk.listener.market.TransferNFTListener;
 import com.mirror.sdk.listener.market.UpdateListListener;
 import com.mirror.sdk.listener.universal.BoolListener;
+import com.mirror.sdk.listener.universal.MSimpleCallback;
 import com.mirror.sdk.listener.universal.MirrorCallback;
 import com.mirror.sdk.listener.wallet.GetWalletTokenListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionBySigListener;
@@ -75,8 +76,8 @@ public class MirrorWorld {
     /**
      * Open user's wallet page.
      */
-    final public static void openWallet(){
-        MirrorSDK.getInstance().OpenWallet();
+    final public static void openWallet(MirrorCallback callback){
+        MirrorSDK.getInstance().OpenWallet(callback);
     }
 
     /**
@@ -396,14 +397,30 @@ public class MirrorWorld {
         MirrorSDK.getInstance().FetchNFTsByMintAddresses(mint_addresses, fetchByMintAddressListener);
     }
 
-    final public static void fetchNFTsByCreatorAddresses(List<String> creators, Double limit, Double offset, FetchNFTsListener listener){
+    final public static void fetchNFTsByCreatorAddresses(List<String> creators, int limit, int offset, FetchNFTsListener listener){
         MirrorSDK.getInstance().FetchNFTsByCreatorAddresses(creators, limit, offset, listener);
     }
 
-    final public static void fetchNFTsByUpdateAuthorities(List<String> update_authorities, Double limit, Double offset, FetchNFTsListener listener){
+    /**
+     * Fetch NFTs by authorities
+     * @param update_authorities
+     * @param listener
+     */
+    final public static void fetchNFTsByUpdateAuthorities(List<String> update_authorities,FetchNFTsListener listener){
+        MirrorSDK.getInstance().FetchNFTsByUpdateAuthorities(update_authorities, listener);
+    }
+    final public static void fetchNFTsByUpdateAuthorities(List<String> update_authorities, int limit, int offset, FetchNFTsListener listener){
         MirrorSDK.getInstance().FetchNFTsByUpdateAuthorities(update_authorities, limit, offset, listener);
     }
 
+    /**
+     * Fetch NFTs By Owner Addresses
+     * @param owners
+     * @param fetchByOwnerListener
+     */
+    final public static void fetchNFTsByOwnerAddresses(List<String> owners, FetchByOwnerListener fetchByOwnerListener){
+        MirrorSDK.getInstance().FetchNFTsByOwnerAddresses(owners, fetchByOwnerListener);
+    }
     final public static void fetchNFTsByOwnerAddresses(List<String> owners, int limit, int offset, FetchByOwnerListener fetchByOwnerListener){
         MirrorSDK.getInstance().FetchNFTsByOwnerAddresses(owners, limit, offset, fetchByOwnerListener);
     }

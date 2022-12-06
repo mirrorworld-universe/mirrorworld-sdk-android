@@ -27,10 +27,12 @@ public class MainActivity extends AppCompatActivity {
 
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
+    public static Activity mActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.i("MirrorSDK","onCreate");
+        mActivity = this;
         makeStatusBarTransparent(this);
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
@@ -220,11 +222,6 @@ public class MainActivity extends AppCompatActivity {
                         null,null,null,null));
         items.add(
 
-                new MultiItemData.MultiItem(DemoAPIID.TRANSFER_SPL_TOKEN,"Transfer SPL Token","Transfer SPL Token to another wallet.",
-                        "TRANSFER","toPublicKey","amount",
-                        "token_mint","decimals",null,null));
-        items.add(
-
                 new MultiItemData.MultiItem(DemoAPIID.BUY_NFT,"Buy NFT on the marketplace","Buy NFT on the marketplace",
                         "Buy_NFT","mint_address","price",
                         null,null,null,null));
@@ -241,6 +238,11 @@ public class MainActivity extends AppCompatActivity {
                 "Get_Wallet_Token",
                 null,null,null,null,null,null));
 
+        items.add(
+
+                new MultiItemData.MultiItem(DemoAPIID.TRANSFER_SPL_TOKEN,"Transfer SPL Token","Transfer SPL Token to another wallet.",
+                        "TRANSFER","toPublicKey","amount",
+                        "token_mint","decimals",null,null));
 
         items.add(
 

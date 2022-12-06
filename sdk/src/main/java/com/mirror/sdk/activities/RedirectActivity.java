@@ -54,13 +54,25 @@ public class RedirectActivity extends AppCompatActivity {
             handleApprove(data);
         }else if(host.equals("userinfo")){
             handleUserInfo(data);
+        }else if(host.equals("wallet")){
+            handleWallet(data);
         }else {
             Log.e("MirrorSDK","Unknown scheme host:"+host);
         }
     }
 
-    private void handleApprove(Uri data){
 
+    private void handleWallet(Uri data){
+        MirrorSDK.getInstance().walletLogout();
+
+        Intent intent = new Intent(this,MirrorSDK.getInstance().mActivity.getClass());
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        startActivity(intent);
+
+        finish();
+    }
+
+    private void handleApprove(Uri data){
         String dataKey = "data";
         String dataValue = "";
 

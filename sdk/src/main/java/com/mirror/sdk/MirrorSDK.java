@@ -133,7 +133,6 @@ public class MirrorSDK {
     private MirrorLoginPageMode loginPageMode = MirrorLoginPageMode.CloseIfLoginDone;
     private LoginListener cbLogin = null;
     private MirrorCallback cbStringLogin = null;
-    private MSimpleCallback cbLogout = null;
     private MirrorCallback cbWalletLoginPassivity = null;
     public MirrorCallback safeFlowCb = null;
 
@@ -341,25 +340,44 @@ public class MirrorSDK {
      * Open login page with Custom Tab
      */
     public void openLoginPage(MirrorCallback loginCb){
-        String urlPre = getAuthRoot() + apiKey + "?useSchemeRedirect=";
-        if(MirrorWebviewUtils.isSupportCustomTab(mActivity)){
-            urlPre += "true";
-        }else {
-            urlPre += "false";
-        }
-//        urlPre = "http://192.168.31.243:8080/";
-        openUrl(urlPre);
-        cbStringLogin = loginCb;
+        sdkSimpleCheck(new OnCheckSDKUseable() {
+            @Override
+            public void OnChecked() {
+                String urlPre = getAuthRoot() + apiKey + "?useSchemeRedirect=";
+                if(MirrorWebviewUtils.isSupportCustomTab(mActivity)){
+                    urlPre += "true";
+                }else {
+                    urlPre += "false";
+                }
+                openUrl(urlPre);
+                cbStringLogin = loginCb;
+            }
+
+            @Override
+            public void OnUnUsable() {
+                logFlow("SDK not inited!");
+            }
+        });
     }
     public void openLoginPage(LoginListener loginCb){
-        String urlPre = getAuthRoot() + apiKey + "?useSchemeRedirect=";
-        if(MirrorWebviewUtils.isSupportCustomTab(mActivity)){
-            urlPre += "true";
-        }else {
-            urlPre += "false";
-        }
-        openUrl(urlPre);
-        cbLogin = loginCb;
+        sdkSimpleCheck(new OnCheckSDKUseable() {
+            @Override
+            public void OnChecked() {
+                String urlPre = getAuthRoot() + apiKey + "?useSchemeRedirect=";
+                if(MirrorWebviewUtils.isSupportCustomTab(mActivity)){
+                    urlPre += "true";
+                }else {
+                    urlPre += "false";
+                }
+                openUrl(urlPre);
+                cbLogin = loginCb;
+            }
+
+            @Override
+            public void OnUnUsable() {
+                logFlow("SDK not inited!");
+            }
+        });
     }
     private void autoOpenLogin(MirrorCallback jwtCb){
         openLoginPage(new MirrorCallback() {
@@ -483,10 +501,6 @@ public class MirrorSDK {
         if(mActivity != null){
             saveString(localKeyAPIKey, apiKey);
         }
-    }
-
-    public void setLogoutCallback(MSimpleCallback callback){
-        cbLogout = callback;
     }
 
     public String getAuthRoot(){
@@ -749,8 +763,11 @@ public class MirrorSDK {
         }));
     }
 
-    public void FetchNFTsByOwnerAddresses(List<String> owners, int limit, int offset, FetchByOwnerListener fetchByOwnerListener){
+    public void FetchNFTsByOwnerAddresses(List<String> owners, FetchByOwnerListener fetchByOwnerListener){
+        FetchNFTsByOwnerAddresses(owners,0,0,fetchByOwnerListener);
+    }
 
+    public void FetchNFTsByOwnerAddresses(List<String> owners, int limit, int offset, FetchByOwnerListener fetchByOwnerListener){
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         for (String tag : owners) {
@@ -758,8 +775,8 @@ public class MirrorSDK {
         }
         try {
             jsonObject.put("owners", jsonArray);
-            jsonObject.put("limit", limit);
-            jsonObject.put("offset", offset);
+            if(limit != 0) jsonObject.put("limit", limit);
+            if(offset != 0) jsonObject.put("offset", offset);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1119,8 +1136,10 @@ public class MirrorSDK {
     }
 
 
-    // not implement method(server)
-    public void FetchNFTsByUpdateAuthorities(List<String> update_authorities, Double limit, Double offset, FetchNFTsListener listener){
+    public void FetchNFTsByUpdateAuthorities(List<String> update_authorities, FetchNFTsListener listener){
+        FetchNFTsByUpdateAuthorities(update_authorities,0,0,listener);
+    }
+    public void FetchNFTsByUpdateAuthorities(List<String> update_authorities, int limit, int offset, FetchNFTsListener listener){
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         for (String tag : update_authorities) {
@@ -1128,8 +1147,8 @@ public class MirrorSDK {
         }
         try {
             jsonObject.put("update_authorities", jsonArray);
-            jsonObject.put("limit", limit);
-            jsonObject.put("offset", offset);
+            if(limit != 0) jsonObject.put("limit", limit);
+            if(offset != 0) jsonObject.put("offset", offset);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1150,7 +1169,7 @@ public class MirrorSDK {
         }));
     }
 
-    public void FetchNFTsByCreatorAddresses(List<String> creators, Double limit, Double offset, FetchNFTsListener listener){
+    public void FetchNFTsByCreatorAddresses(List<String> creators, int limit, int offset, FetchNFTsListener listener){
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         for (String tag : creators) {
@@ -1807,7 +1826,11 @@ public class MirrorSDK {
     @JavascriptInterface
     public void walletLogout(){
         clearCache();
-        if(cbLogout != null) cbLogout.callback();
+        if(cbWalletLoginPassivity != null){
+            logFlow("wallet passivity login success.");
+            cbWalletLoginPassivity.callback("");
+            cbWalletLoginPassivity = null;
+        }
     }
 
     @JavascriptInterface

@@ -167,7 +167,13 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 }
             });
         }else if(apiId == DemoAPIID.OPEN_WALLET){
-            MirrorWorld.openWallet();
+            MirrorWorld.openWallet(new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    MirrorSDK.getInstance().logFlow("Wallet logout callback runs!");
+                    showToast("Wallet logout callback runs!");
+                }
+            });
         }else if(apiId == DemoAPIID.OPEN_MARKET){
             MirrorWorld.openMarket();
         }else if(apiId == DemoAPIID.LOGIN_With_EMAIL){
@@ -342,7 +348,6 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
 
             int limit = 0;
             int offset = 0;
-
             try{
                 limit =  Integer.valueOf(String.valueOf(holder.mEt2.getText()));
                 offset = Integer.valueOf(String.valueOf(holder.mEt3.getText()));
@@ -382,24 +387,21 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 }
             });
         }else if(apiId == DemoAPIID.FETCH_NFT_BY_UPDATE_AUTHORITIES){
-            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3)){
+            if(!checkEt(holder.mEt1)){
                 showToast("Please input!");
                 return;
             }
             List<String> update_address = new ArrayList<>();
             update_address.add(String.valueOf(holder.mEt1.getText()));
 
-            Double limit = 0.0;
-            Double offset = 0.0;
-
+            int limit = 0;
+            int offset = 0;
             try{
-               limit =  Double.valueOf(String.valueOf(holder.mEt2.getText()));
-               offset = Double.valueOf(String.valueOf(holder.mEt3.getText()));
-
+               limit =  Integer.valueOf(String.valueOf(holder.mEt2.getText()));
+               offset = Integer.valueOf(String.valueOf(holder.mEt3.getText()));
             }catch (NumberFormatException E){
 
             }
-
             MirrorWorld.fetchNFTsByUpdateAuthorities(update_address, limit, offset, new FetchNFTsListener() {
                 @Override
                 public void onFetchSuccess(MultipleNFTsResponse multipleNFTsResponse) {
@@ -586,12 +588,12 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
     }
 
     private void showToast(String content){
-        Toast.makeText(mContext,content,Toast.LENGTH_LONG);
+        Toast.makeText(mContext,content,Toast.LENGTH_LONG).show();
     }
 
     private boolean checkEt(EditText et1){
-        if(et1 != null && et1.getText().equals("")){
-            Log.e("MirrorSDK","edit text is null!");
+        if(et1 == null || (et1 != null && et1.getText().length() == 0)){
+            Log.e("MirrorSDK","edit text is null!"+et1.getText().length());
             return false;
         }
         return true;
