@@ -1,13 +1,18 @@
 package com.mirror.sdk.constant;
 
 public class MirrorUrl {
-//    public static final String URL_AUTH ="https://auth-staging.mirrorworld.fun/";//"https://next-version-test.vercel.app/";//"https://auth-staging.mirrorworld.fun/";//"https://app.mirrorworld.fun/";//
+
     //auth
     public static final String URL_REFRESH_TOKEN = "auth/refresh-token";
     public static final String URL_QUERY_USER = "auth/user";
     public static final String URL_IS_AUTHENTICATED = "auth/me";
     public static final String URL_LOGIN_WITH_EMAIL = "auth/login";
+    public static final String URL_LOGOUT = "auth/logout";
     public static final String URL_ME = "auth/me";
+
+    //Action Authorization
+    public static final String URL_ACTION_REQUEST = "auth/actions/request";
+    public static final String URL_ACTION_APPROVE = "approve/";
 
     //market
     public static final String URL_QUERY_NFT_DETAIL = "solana/nft/";

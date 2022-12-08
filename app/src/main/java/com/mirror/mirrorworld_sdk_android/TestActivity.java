@@ -2,6 +2,8 @@ package com.mirror.mirrorworld_sdk_android;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -25,7 +27,12 @@ public class TestActivity extends AppCompatActivity {
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MirrorSDK.getInstance().openInnerUrl(et.getText().toString());
+                String url = "aaa://browsercall/card?card_id=828";
+
+                Intent intent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(url));
+                startActivity(intent);
+//                MirrorSDK.getInstance().openInnerUrl(et.getText().toString());
             }
         });
     }

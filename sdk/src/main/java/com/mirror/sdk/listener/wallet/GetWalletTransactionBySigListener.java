@@ -16,3 +16,4 @@ public interface GetWalletTransactionBySigListener {
     void onSuccess(List<TransactionsDTO> walletTransactions);
     void onFailed(long code,String message);
 }
+

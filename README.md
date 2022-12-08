@@ -8,12 +8,15 @@ Create a developer account on the [Developer dashboard](https://app.mirrorworld.
 
 ## Import SDK
 
-*Notice:
-The minimum version that SDK requires is Android 4.4.*
 
-1.  Download and uncompress [Mirror World Android SDK](https://github.com/mirrorworld-universe/mirrorworld-sdk-android/releases/tag/v1.1.0).
-2.  Put the mirrorsdk.aar under folder 'libs'.If there is no libs folder,you may create one.
+> **Notice:**
+>
+> *The minimum version that SDK requires is Android 4.4.*
+
+1.  Download and uncompress [Mirror World Android SDK](https://github.com/mirrorworld-universe/mirrorworld-sdk-android/releases/tag/v1.3.0).
+2.  Put the `mirrorsdk1.3.0.aar` under the 'libs' folder. You may create a 'libs' folder if it doesn't exist
     <img src="https://market-assets.mirrorworld.fun/docs/build.png" width="30%" height="30%" />
+
 3.  Add configeration to build.gradle:
 
 ```java
@@ -22,37 +25,123 @@ dependencies {
 }
 ```
 
+4. Config CustomTab!
+   If you want to use CustomTab to show content to users(Recommand), you need to config the following contents on your AndroidManifest.xml:
+
+**Add permission of internet.**
+```xml
+<uses-permission android:name="android.permission.INTERNET" />
+```
+
+**Register this activity**
+```xml
+<activity
+    android:name="com.mirror.sdk.activities.RedirectActivity"
+    android:exported="true">
+
+    <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+        <data android:scheme="mwsdk"/>
+    </intent-filter>
+</activity>
+```
+
+So, the finnaly file would looked as this:
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.mirror.mirrorworld_sdk_android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
+
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Mirrorworldsdkandroid"
+        tools:targetApi="31">
+        <activity
+            android:name=".MainActivity"
+            android:launchMode="singleTask"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+
+        <activity
+            android:name="com.mirror.sdk.activities.RedirectActivity"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="mwsdk"/>
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
+```
+
+**Add dependence**
+```xml
+implementation 'androidx.browser:browser:1.4.0'
+```
+
+And then, you will see CustomTab when you try to open our prepared web page.
+
+
+*Tips:If you want to make your app has only one task, you can set your own activity to SingTast:*
+```xml
+android:launchMode="singleTask"
+```
+And finnaly,your activity config may like this:
+```xml
+<activity
+    android:name=".MainActivity"
+    android:launchMode="singleTask"
+    android:exported="true">
+    <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+    </intent-filter>
+</activity>
+```
+
+
 ## Usage
 
-1.  Initialization
-    We can init Mirror World SDK with the following code:
+### Initialization
+We can initialize Mirror World SDK with the following code:
 
 ```java
 Activity activity = this;
-String apiKey = "your api key";
+String apiKey = "your-api-key";
 boolean useDebugMode = true;
 
-MirrorSDK.getInstance().SetApiKey(apiKey);
-MirrorSDK.getInstance().SetDebug(useDebugMode);
-MirrorSDK.getInstance().InitSDK(activity,MirrorEnv.DevNet);
+MirrorWorld.setDebug(useDebugMode);
+MirrorWorld.initMirrorWorld(activity,apiKey,MirrorEnv.DevNet);
 ```
 
-1.  Guide user to login
-    When user open your app, you may want to know whether this user needs to login, you can call the following code to know that.
+### Guide user to login
+Users need to log in to use some MirrorSDK features (or APIs).
+If you want them to login(or again), you can use the following code:
 
 ```java
-MirrorSDK.getInstance().CheckAuthenticated(emailAddr, new BoolListener() {
-    @Override
-    public void onBool(boolean boolValue) {
-        Log.i("Mirror","This user's login state is:" + boolean);
-    }
-});
-```
-
-If you want him to login(or again), you can use the following code:
-
-```java
-MirrorSDK.getInstance().StartLogin(new LoginListener() {
+MirrorWorld.startLogin(new LoginListener() {
     @Override
     public void onLoginSuccess() {
         Log.i("Mirror","User login success!");
@@ -65,6 +154,109 @@ MirrorSDK.getInstance().StartLogin(new LoginListener() {
 });
 ```
 
+But you may not want to let them login every time, so you can use CheckAuthenticated API to check if they have already logged in.
+According the result, you can show them a login button or hide your login button and make them enter your dApp or game directly.
+
+```java
+MirrorWorld.isLoggedIn(new BoolListener() {
+    @Override
+    public void onBool(boolean boolValue) {
+        Log.i("Mirror","This user's login state is:" + boolean);
+    }
+});
+```
+
+### Open wallet
+Users may want to check their wallet in the app, you can use openWallet API:
+
+```java
+MirrorWorld.openWallet();
+```
+
+### User get NFTs
+Fetch a user's NFTs by calling `GetNFTsOwnedByAddress`
+
+```java
+List<String> owners = new ArrayList<>();
+owners.add("owner_wallet_address_1");
+owners.add("owner_wallet_address_2");
+
+MirrorWorld.fetchNFTsByOwnerAddresses(owners, new FetchByOwnerListener() {
+    @Override
+    public void onFetchSuccess(MultipleNFTsResponse multipleNFTsResponse) {
+        Log.d("Fetch result","success");
+    }
+
+    @Override
+    public void onFetchFailed(long code, String message) {
+        Log.d("Fetch result","failed,code:"+code+",message:"+message);
+    }
+});
+```
+Or you can fetch NFTs by another parameter:
+
+- fetchNFTsByMintAddresses
+- fetchNFTsByOwnerAddresses
+- fetchNFTsByCreatorAddresses
+- fetchNFTsByUpdateAuthorities
+
+Refer to the documentation for the complete [API Reference](https://docs.mirrorworld.fun/android/android-APIReference).
+
+### Transfer & List
+#### Transfer NFT
+You can transfer an NFT to another wallet:
+
+```java
+String mint_address = "address";
+String to_wallet_address = "target_wallet";
+
+MirrorWorld.transferNFT(mint_address, to_wallet_address, new TransferNFTListener() {
+@Override
+public void onTransferSuccess(ListingResponse listingResponse) {
+    Log.d("Transfer result","success");
+}
+
+@Override
+public void onTransferFailed(long code, String message) {
+   Log.d("Transfer result","failed");
+}
+});
+```
+#### List
+If you want to list an NFT on a marketplace,you may use these code:
+```java
+String mint_address = "nft_mint_address";
+Double price = 0.1;
+
+MirrorWorld.listingNFT(mint_address, price, MirrorConfirmation.Finalized, new ListNFTListener() {
+@Override
+public void onListSuccess(ListingResponse listingResponse) {
+    Log.d("ListNFT success","price is:"+listingResponse.price);
+}
+
+@Override
+public void onListFailed(long code, String message) {
+    Log.d("ListNFT faild",message);
+}
+});
+```
+
+#### Confirmation
+When we call some API of SDK, you are allowed to pass a param named `confirmation` to it.
+You can use all the confirmation we provide in 'Confirmation' enum. Here is an explanation for every kind of them:
+
+- Default
+  If you pass this kind of confirmation to an API, it will use a default confirmation to handle this call, most of the time, it equals 'Confirmed'.
+- Finalized:
+  If you use this, API will wait for Solana to finalize the transaction before returning the HTTP response to you.
+  So the time will be longer more or less.
+- Confirmed:
+  It is a fairly quick response to the user and is a reasonable promise that the transaction if processed, will be eventually finalized after a certain number of confirmations by the validator network.
+- Processed:
+  The node will query its most recent block. Note that the block may still be skipped by the cluster.
+
+
 ## Full API Documentation
 
-You can view the documentation for Mirror World SDK for Mobile on [our Official Documentation Site](https://docs.mirrorworld.fun/android/android-APIReference)
+You can view the documentation for Mirror World SDK for Mobile on
+[our Official Documentation Site](https://docs.mirrorworld.fun/android/android-api)
