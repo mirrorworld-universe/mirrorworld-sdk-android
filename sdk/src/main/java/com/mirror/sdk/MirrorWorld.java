@@ -1,6 +1,7 @@
 package com.mirror.sdk;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.mirror.sdk.constant.MirrorConfirmation;
 import com.mirror.sdk.constant.MirrorEnv;
