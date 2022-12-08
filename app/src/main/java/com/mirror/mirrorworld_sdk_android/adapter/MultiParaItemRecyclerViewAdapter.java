@@ -215,7 +215,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             MirrorWorld.queryUser(email,new FetchUserListener() {
                 @Override
                 public void onUserFetched(UserResponse userResponse) {
-                    holder.mResultView.setText(userResponse.email+" username "+userResponse.username);
+                    holder.mResultView.setText(userResponse.email+" sol_address "+userResponse.sol_address);
                 }
 
                 @Override
