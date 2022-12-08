@@ -8,6 +8,8 @@ public class DemoAPIID {
 
     public static final int START_LOGIN = 101;
 
+    public static final int LOGOUT = 105;
+
     public static final int LOGIN_With_EMAIL = 1;
 
     public static final int OPEN_WALLET = 102;

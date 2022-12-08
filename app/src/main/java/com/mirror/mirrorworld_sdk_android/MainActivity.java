@@ -112,6 +112,13 @@ public class MainActivity extends AppCompatActivity {
                 "Logs in a user with their email address and password",
                 "LoginWithEmail",
                 "email","passWord",null,null,null,null));
+
+        items.add(new MultiItemData.MultiItem(
+                DemoAPIID.LOGOUT,"logout",
+                "Try to logout current user,cache will be all cleared.",
+                "Logout",
+                null,null,null,null,null,null));
+
         items.add(new MultiItemData.MultiItem(
                 DemoAPIID.OPEN_WALLET,"Open wallet",
                 "Open user's wallet after login.",

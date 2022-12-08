@@ -101,13 +101,13 @@ public class RedirectActivity extends AppCompatActivity {
         accessTokenValue = data.getQueryParameter(accessTokenKey);
         refreshTokenValue = data.getQueryParameter(refreshTokenKey);
         dataValue = data.getQueryParameter(dataKey);
-        Log.d("MirrorSDK data origin:",dataValue);
+//        Log.d("MirrorSDK data origin:",dataValue);
         dataValue = Uri.decode(dataValue);
-        Log.d("MirrorSDK data decoded:",dataValue);
+//        Log.d("MirrorSDK data decoded:",dataValue);
         accessTokenValue = removeQuotation(accessTokenValue);
         refreshTokenValue = removeQuotation(refreshTokenValue);
-        Log.d("MirrorSDK aac",accessTokenValue);
-        Log.d("MirrorSDK ref",refreshTokenValue);
+//        Log.d("MirrorSDK aac",accessTokenValue);
+//        Log.d("MirrorSDK ref",refreshTokenValue);
 
         MirrorSDK.getInstance().SetAccessToken(accessTokenValue);
         MirrorSDK.getInstance().SetRefreshToken(refreshTokenValue);
@@ -132,9 +132,9 @@ public class RedirectActivity extends AppCompatActivity {
     private String removeQuotation(String originStr){
         String resultStr = originStr;
         if(originStr.indexOf("\"") > -1){
-            MirrorSDK.getInstance().logFlow("removeQuotation before:"+originStr);
+//            MirrorSDK.getInstance().logFlow("removeQuotation before:"+originStr);
             resultStr = originStr.substring(1,originStr.length() - 1);
-            MirrorSDK.getInstance().logFlow("removeQuotation after:"+resultStr);
+//            MirrorSDK.getInstance().logFlow("removeQuotation after:"+resultStr);
         }
 
         return resultStr;

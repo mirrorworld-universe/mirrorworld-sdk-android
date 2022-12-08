@@ -21,6 +21,7 @@ import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
 import com.mirror.sdk.MirrorWorld;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.listener.auth.LoginListener;
+import com.mirror.sdk.listener.universal.BoolListener;
 import com.mirror.sdk.listener.universal.MirrorCallback;
 import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.constant.MirrorConfirmation;
@@ -166,6 +167,13 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 @Override
                 public void callback(String result) {
                     holder.mResultView.setText(result);
+                }
+            });
+        }else if(apiId == DemoAPIID.LOGOUT){
+            MirrorWorld.logout(new BoolListener() {
+                @Override
+                public void onBool(boolean boolValue) {
+                    holder.mResultView.setText("Logout result:"+boolValue);
                 }
             });
         }else if(apiId == DemoAPIID.OPEN_WALLET){

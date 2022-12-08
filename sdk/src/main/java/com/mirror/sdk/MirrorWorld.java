@@ -76,6 +76,14 @@ public class MirrorWorld {
     }
 
     /**
+     * Logout.
+     * @param listener
+     */
+    final public static void logout(BoolListener listener){
+        MirrorSDK.getInstance().logout(listener);
+    }
+
+    /**
      * Login with email and get all response.
      */
     final public static void loginWithEmail(String email,String password,MirrorCallback callback){

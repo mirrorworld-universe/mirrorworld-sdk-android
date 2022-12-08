@@ -258,14 +258,14 @@ public class MirrorSDK {
     }
 
     private void openStartPage(){
-        if(apiKey == ""){
+        if(apiKey.equals("")){
             if(mActivity == null){
                 logFlow("Must init sdk first!");
                 return;
             }
             apiKey = getSavedString(mActivity, localKeyAPIKey);
         }
-        if(apiKey == ""){
+        if(apiKey.equals("")){
             logFlow("Must set app id first!");
             return;
         }
@@ -395,14 +395,14 @@ public class MirrorSDK {
 
     public void openUrl(String url){
         logFlow("Try to open url with custom tab:"+url);
-        if(apiKey == ""){
+        if(apiKey.equals("")){
             if(mActivity == null){
                 logFlow("Must init sdk first!");
                 return;
             }
             apiKey = getSavedString(mActivity, localKeyAPIKey);
         }
-        if(apiKey == ""){
+        if(apiKey.equals("")){
             logFlow("Must set app id first!");
             return;
         }
@@ -420,10 +420,7 @@ public class MirrorSDK {
         final CustomTabsServiceConnection connection = new CustomTabsServiceConnection() {
             @Override
             public void onCustomTabsServiceConnected(ComponentName componentName, CustomTabsClient client) {
-//                final CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-//                final CustomTabsIntent intent = builder.build();
                 client.warmup(0L); // This prevents backgrounding after redirection
-//                intent.launchUrl(context, uri);
             }
             @Override
             public void onServiceDisconnected(ComponentName name) {}
@@ -985,47 +982,72 @@ public class MirrorSDK {
         });
     }
 
+    public void logout(BoolListener listener){
+        checkSDKInited(new OnCheckSDKUseable() {
+            @Override
+            public void OnChecked() {
+                logFlow("User logout,clear cache.");
+
+                String urlPre = GetSSORoot() + MirrorUrl.URL_LOGOUT;
+                checkParamsAndPost(urlPre, null, new MirrorCallback() {
+                    @Override
+                    public void callback(String result) {
+                        logFlow("Logout result:" + result);
+                        listener.onBool(true);
+                        clearCache();
+                    }
+                });
+            }
+
+            @Override
+            public void OnUnUsable() {
+                logFlow("No need to logout cause you haven't login yet.");
+                listener.onBool(false);
+            }
+        });
+    }
+
     public void OpenWallet(MirrorCallback loginCb){
         OpenWallet();
         cbWalletLoginPassivity = loginCb;
     }
     //Wallet
     public void OpenWallet(){
-        if(apiKey == ""){
+        if(apiKey.equals("")){
             if(mActivity == null){
                 logFlow("Must init sdk first!");
                 return;
             }
             apiKey = getSavedString(mActivity, localKeyAPIKey);
         }
-        if(apiKey == ""){
+        if(apiKey.equals("")){
             logFlow("Must set app id first!");
             return;
         }
 
-        if(refreshToken == ""){
+        if(refreshToken.equals("")){
             this.refreshToken = getRefreshToken(this.mActivity);
         }
 
-        if(refreshToken == ""){
+        if(refreshToken.equals("")){
             logFlow("Please login first!");
             return;
         }
 
         //Use this if login page updated
-//        doOpenWallet();
-        if(accessToken == ""){
-            logFlow("No access token,start get flow");
-            GetAccessToken(mActivity, new MirrorCallback() {
-                @Override
-                public void callback(String result) {
-                    accessToken = result;
-                    doOpenWallet();
-                }
-            });
-        }else {
-            doOpenWallet();
-        }
+        doOpenWallet();
+//        if(accessToken == ""){
+//            logFlow("No access token,start get flow");
+//            GetAccessToken(mActivity, new MirrorCallback() {
+//                @Override
+//                public void callback(String result) {
+//                    accessToken = result;
+//                    doOpenWallet();
+//                }
+//            },false);
+//        }else {
+//            doOpenWallet();
+//        }
     }
 
     private void doOpenWallet(){
@@ -1042,7 +1064,7 @@ public class MirrorSDK {
     }
 
     public void GetWallet(MirrorCallback mirrorCallback){
-        if(mWalletAddress == ""){
+        if(mWalletAddress.equals("")){
             mWalletAddress = getSavedString(mActivity,localKeyWalletAddress);
         }
         String url = GetSSORoot() + MirrorUrl.URL_ME;
@@ -1288,7 +1310,7 @@ public class MirrorSDK {
     }
 
     public void sdkSimpleCheck(OnCheckSDKUseable callback){
-        if(apiKey == ""){
+        if(apiKey.equals("")){
             if(mActivity == null){
                 logFlow("Must init sdk first!");
                 callback.OnUnUsable();
@@ -1296,7 +1318,7 @@ public class MirrorSDK {
             }
             apiKey = getSavedString(mActivity, localKeyAPIKey);
         }
-        if(apiKey == ""){
+        if(apiKey.equals("")){
             logFlow("Must set app id first!");
             callback.OnUnUsable();
             return;
@@ -1305,19 +1327,19 @@ public class MirrorSDK {
     }
 
     public void checkSDKInited(OnCheckSDKUseable callback){
-        if(apiKey == ""){
+        if(apiKey.equals("")){
             if(mActivity == null){
                 logFlow("Must init sdk first!");
                 return;
             }
             apiKey = getSavedString(mActivity, localKeyAPIKey);
         }
-        if(apiKey == ""){
+        if(apiKey.equals("")){
             logFlow("Must set app id first!");
             return;
         }
 
-        if(accessToken == ""){
+        if(accessToken.equals("")){
             logFlow("No access token,start get flow");
             GetAccessToken(mActivity, new MirrorCallback() {
                 @Override
@@ -1325,7 +1347,12 @@ public class MirrorSDK {
                     accessToken = result;
                     callback.OnChecked();
                 }
-            });
+            }, new MSimpleCallback() {
+                @Override
+                public void callback() {
+                    callback.OnUnUsable();
+                }
+            },false);
             return;
         }else{
             callback.OnChecked();
@@ -1364,19 +1391,22 @@ public class MirrorSDK {
     }
 
 
-    public void GetAccessToken(Activity activityContext, MirrorCallback mirrorCallback){
+    public void GetAccessToken(Activity activityContext, MirrorCallback mirrorCallback,MSimpleCallback failCallback ,boolean autoLogin){
         logFlow("ready to get access token,now refreshToken is:"+refreshToken);
-        if(refreshToken == ""){
+        if(refreshToken.equals("")){
             logFlow("No refresh token,jump to login page...");
-            autoOpenLogin(mirrorCallback);
+            if(autoLogin) autoOpenLogin(mirrorCallback);
+            else {
+                failCallback.callback();
+            }
             return;
         }
 
-        if(apiKey == ""){
+        if(apiKey.equals("")){
             apiKey = getSavedString(activityContext, localKeyAPIKey);
         }
 
-        if(apiKey == ""){
+        if(apiKey.equals("")){
             logFlow("Must set app id first!");
             return;
         }
@@ -1392,8 +1422,11 @@ public class MirrorSDK {
                         itJson = new JSONObject(result);
                         int code = (int) itJson.get("code");
                         if (code != 0){
-                            logFlow("You have no authorization to visit api,now popup login window."+result);
-                            autoOpenLogin(mirrorCallback);
+                            logFlow("You have no authorization to visit api."+result);
+                            if(autoLogin) autoOpenLogin(mirrorCallback);
+                            else {
+                                failCallback.callback();
+                            }
                         }else{
                             String accessToken = itJson.getJSONObject("data").getString("access_token");
                             String newRefreshToken = itJson.getJSONObject("data").getString("refresh_token");
@@ -1420,8 +1453,11 @@ public class MirrorSDK {
                                 itJson = new JSONObject(result);
                                 int code = (int) itJson.get("code");
                                 if (code != 0){
-                                    logFlow("You have no authorization to visit api,now popup login window."+result);
-                                    autoOpenLogin(mirrorCallback);
+                                    logFlow("You have no authorization to visit api."+result);
+                                    if(autoLogin) autoOpenLogin(mirrorCallback);
+                                    else {
+                                        failCallback.callback();
+                                    }
                                 }else{
                                     String accessToken = itJson.getJSONObject("data").getString("access_token");
                                     String newRefreshToken = itJson.getJSONObject("data").getString("refresh_token");
@@ -1470,7 +1506,7 @@ public class MirrorSDK {
         logFlow("post json:"+data);
         logFlow("accessToken:"+accessToken);
         logFlow("apiKey:"+apiKey);
-        logFlow("xAuthKey:"+xAuthToken);
+        if(xAuthToken != null && !xAuthToken.equals("")) logFlow("xAuthKey:"+xAuthToken);
 
         try {
             URL urll = new URL(url);
@@ -1504,7 +1540,7 @@ public class MirrorSDK {
                     }
                 }
 
-                logFlow(String.valueOf(textBuilder));
+                logFlow("result:"+String.valueOf(textBuilder));
                 if(mirrorCallback != null) mirrorCallback.callback(String.valueOf(textBuilder.toString()));
 
             }else{
@@ -1549,31 +1585,36 @@ public class MirrorSDK {
     }
 
     private void checkParamsAndGet(String url,  Map<String,String> params, MirrorCallback mirrorCallback){
-        if(apiKey == ""){
+        if(apiKey.equals("")){
             if(mActivity == null){
                 logFlow("Must init sdk first!");
                 return;
             }
             apiKey = getSavedString(mActivity, localKeyAPIKey);
         }
-        if(apiKey == ""){
+        if(apiKey.equals("")){
             logFlow("Must set app id first!");
             return;
         }
 
-        if(accessToken == ""){
+        if(accessToken.equals("")){
             logFlow("No access token,start get flow");
             GetAccessToken(mActivity, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     accessToken = result;
-                    doGet(url,params, mirrorCallback);
+                    doGet(url, params, mirrorCallback);
                 }
-            });
+            }, new MSimpleCallback() {
+                @Override
+                public void callback() {
+                    logFlow("SDK has not been inited!");
+                }
+            }, false);
         }else{
-            if(mWalletAddress == "" && null != mActivity){
+            if(mWalletAddress.equals("") && null != mActivity){
                 mWalletAddress = getSavedString(mActivity,localKeyWalletAddress);
-                if(mWalletAddress == ""){
+                if(mWalletAddress.equals("")){
                     logFlow("Must get mWalletAddress first!");
                 }
             }
@@ -1582,31 +1623,36 @@ public class MirrorSDK {
     }
 
     public void checkParamsAndPost(String url, String data, MirrorCallback mirrorCallback){
-        if(apiKey == ""){
+        if(apiKey.equals("")){
             if(mActivity == null){
                 logFlow("Must init sdk first!");
                 return;
             }
             apiKey = getSavedString(mActivity, localKeyAPIKey);
         }
-        if(apiKey == ""){
+        if(apiKey.equals("")){
             logFlow("Must set app id first!");
             return;
         }
 
-        if(accessToken == ""){
-            logFlow("No access token,start get flow");
+        if(accessToken.equals("")){
+            logFlow("Post:No access token,start get flow");
             GetAccessToken(mActivity, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     accessToken = result;
-                    doPost(url,data, mirrorCallback);
+                    doPost(url, data, mirrorCallback);
                 }
-            });
+            }, new MSimpleCallback() {
+                @Override
+                public void callback() {
+                    logFlow("SDK has not been inited yet!");
+                }
+            }, false);
         }else{
-            if(mWalletAddress == ""&& null != mActivity){
+            if(mWalletAddress.equals("")&& null != mActivity){
                 mWalletAddress = getSavedString(mActivity,localKeyWalletAddress);
-                if(mWalletAddress == ""){
+                if(mWalletAddress.equals("")){
                     logFlow("Must get mWalletAddress first!");
                 }
             }
@@ -1892,7 +1938,7 @@ public class MirrorSDK {
     }
 
     public void saveRefreshToken(String refreshToken){
-        if(refreshToken == "") return;
+        if(refreshToken.equals("")) return;
 
         logFlow("save refresh token to local:"+refreshToken);
         this.refreshToken = refreshToken;
