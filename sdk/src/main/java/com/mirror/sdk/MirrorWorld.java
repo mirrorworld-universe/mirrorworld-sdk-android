@@ -57,6 +57,14 @@ public class MirrorWorld {
     }
 
     /**
+     * Show the sdk flow in console if true.
+     * @param useDebugMode
+     */
+    final public static void setDebug(boolean useDebugMode){
+        MirrorSDK.getInstance().SetDebug(useDebugMode);
+    }
+
+    /**
      * Login.
      */
     final public static void startLogin(LoginListener loginListener){
@@ -400,6 +408,13 @@ public class MirrorWorld {
         MirrorSDK.getInstance().FetchNFTsByMintAddresses(mint_addresses, fetchByMintAddressListener);
     }
 
+    /**
+     * fetchNFTsByCreatorAddresses
+     * @param creators
+     * @param limit
+     * @param offset
+     * @param listener
+     */
     final public static void fetchNFTsByCreatorAddresses(List<String> creators, int limit, int offset, FetchNFTsListener listener){
         MirrorSDK.getInstance().FetchNFTsByCreatorAddresses(creators, limit, offset, listener);
     }
