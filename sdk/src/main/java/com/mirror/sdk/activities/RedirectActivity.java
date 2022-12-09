@@ -2,6 +2,7 @@ package com.mirror.sdk.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,7 +21,7 @@ import com.mirror.sdk.utils.MirrorGsonUtils;
 
 import java.util.Set;
 
-public class RedirectActivity extends AppCompatActivity {
+public class RedirectActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
