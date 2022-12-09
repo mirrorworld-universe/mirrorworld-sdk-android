@@ -44,6 +44,12 @@ public class MirrorSafeAPI {
             priceObj = requestParams.get("price");
         }
 
+        int decimals = -100;
+        if(requestParams.has("decimals")) {
+            Object decimalsObj = requestParams.get("decimals");
+            decimals = Integer.valueOf(String.valueOf(decimalsObj));
+        }
+
         BigDecimal valueValue = null;
         int valueCount = 0;
         if(amountObj != null){
@@ -64,12 +70,38 @@ public class MirrorSafeAPI {
             return;
         }
 
+        if(decimals == -100){
+            decimals = 9;
+        }
+
         String valueKey = "value";
         if(request.has(valueKey)) {
             request.remove(valueKey);
-            request.put(valueKey,valueValue.toString());
+            BigDecimal dec = new BigDecimal(Math.pow(10,decimals));
+            BigDecimal v = valueValue.divide(dec,decimals,BigDecimal.ROUND_HALF_UP);
+            request.put(valueKey,v.toPlainString());
         }else {
             Log.e("MirrorSDK","No value param when approving!");
+        }
+    }
+
+    final private static String getDecimalValue(int decimals,String value){
+        int offset = decimals - value.length();
+        if(offset > 0){
+            String finalStr = "0.";
+            for(int i=0;i<offset;i++){
+                finalStr += "0";
+            }
+            finalStr += value;
+
+            return finalStr;
+        }else if(offset == 0){
+            String finalStr = "0." + value;
+            return finalStr;
+        }else {
+            StringBuilder finalStr = new StringBuilder(value);
+            finalStr.insert(offset,".");
+            return finalStr.toString();
         }
     }
 
@@ -78,6 +110,7 @@ public class MirrorSafeAPI {
 //        try {
 //            jsonObject.put("mint_address", "1111");
 //            jsonObject.put("price", 1.2);
+//            jsonObject.put("decimals",4);
 //        } catch (JSONException e) {
 //            e.printStackTrace();
 //        }
@@ -100,7 +133,11 @@ public class MirrorSafeAPI {
 //        } catch (JSONException e) {
 //            e.printStackTrace();
 //        }
-//        Log.d("MirrorSDK","adfasdf");
+//        try {
+//            Log.d("MirrorSDK","adfasdf"+aaa.get("value"));
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("type", type);
