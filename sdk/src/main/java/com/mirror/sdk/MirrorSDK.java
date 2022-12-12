@@ -137,6 +137,7 @@ public class MirrorSDK {
     private MirrorCallback cbStringLogin = null;
     private MirrorCallback cbWalletLoginPassivity = null;
     public MirrorCallback safeFlowCb = null;
+    public MirrorCallback updateAuthTokenCb = null;
 
     //ui
     private WebView mLoginMainWebView = null;
@@ -166,7 +167,12 @@ public class MirrorSDK {
         }
         this.env = env;
         launchTab(mActivity);
-  }
+    }
+
+    public void setAuthTokenCallback(MirrorCallback callback){
+        logFlow("setAuthTokenCallback seted!");
+        updateAuthTokenCb = callback;
+    }
 
     public String GetRefreshTokenFromResponse(String response){
         String refreshToken = null;
@@ -848,7 +854,6 @@ public class MirrorSDK {
         try {
             jsonObject.put("mint_address", mint_address);
             jsonObject.put("price", price);
-            jsonObject.put("confirmation","finalized");
             jsonObject.put("confirmation",confirmation);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -1807,21 +1812,6 @@ public class MirrorSDK {
              }
         );
 
-        //尝试解决跨域问题
-//        try {
-//            Class<?> clazz = webView.getSettings().getClass();
-//            Method method = clazz.getMethod("setAllowUniversalAccessFromFileURLs", boolean.class);
-//            if (method != null) {
-//                method.invoke(webView.getSettings(), true);
-//            }
-//        } catch (NoSuchMethodException e) {
-//            e.printStackTrace();
-//        } catch (InvocationTargetException e) {
-//            e.printStackTrace();
-//        } catch (IllegalAccessException e) {
-//            e.printStackTrace();
-//        }
-
         WebSettings webSettings = webView.getSettings();
         //set autofit
         webSettings.setUseWideViewPort(true);
@@ -1868,6 +1858,10 @@ public class MirrorSDK {
         if(safeFlowCb != null){
             safeFlowCb.callback("");
             safeFlowCb = null;
+        }
+
+        if(updateAuthTokenCb != null){
+            updateAuthTokenCb.callback(xAuthToken);
         }
     }
 
@@ -1941,7 +1935,7 @@ public class MirrorSDK {
         if(refreshToken.equals("")) return;
 
         logFlow("save refresh token to local:"+refreshToken);
-        this.refreshToken = refreshToken;
+        SetRefreshToken(refreshToken);
         SharedPreferences sp = mActivity.getSharedPreferences(localFileKey, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString(localKeyRefreshToken, refreshToken);
