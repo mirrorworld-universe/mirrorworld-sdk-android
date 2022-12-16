@@ -14,11 +14,11 @@ import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.MirrorWorld;
 import com.mirror.sdk.constant.MirrorConstant;
 import com.mirror.sdk.response.CommonResponse;
-import com.mirror.sdk.response.action.ActionAuthResponse;
 import com.mirror.sdk.response.action.ApproveResponse;
 import com.mirror.sdk.response.market.ListingResponse;
 import com.mirror.sdk.utils.MirrorGsonUtils;
 
+import java.net.URLDecoder;
 import java.util.Set;
 
 public class RedirectActivity extends Activity {
@@ -29,8 +29,10 @@ public class RedirectActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        Log.d("MirrorSDK",intent.toURI());
+        MirrorSDK.getInstance().logFlow("Scheme origin:"+intent.toURI());
         Uri uri = intent.getData();
+        uri = Uri.parse(URLDecoder.decode(String.valueOf(uri)));
+        MirrorSDK.getInstance().logFlow("Scheme decoded:"+uri);
         parseScheme(uri);
     }
 

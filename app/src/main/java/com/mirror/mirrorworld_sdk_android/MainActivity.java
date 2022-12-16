@@ -19,7 +19,10 @@ import com.google.android.material.tabs.TabLayout;
 import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.MirrorSDK;
+import com.mirror.sdk.response.action.ApproveResponse;
+import com.mirror.sdk.utils.MirrorGsonUtils;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_main);
-        MirrorSDK.getInstance().InitSDK(this, MirrorEnv.StagingDevNet);
+        MirrorSDK.getInstance().InitSDK(this, MirrorEnv.DevNet);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         initViewPage();
     }

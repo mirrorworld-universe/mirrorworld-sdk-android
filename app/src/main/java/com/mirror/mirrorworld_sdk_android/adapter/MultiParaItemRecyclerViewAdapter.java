@@ -153,7 +153,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 showToast("Please input api key!");
                 return;
             }
-            MirrorWorld.initMirrorWorld(mContext,String.valueOf(holder.mEt1.getText()), MirrorEnv.StagingDevNet);
+            MirrorWorld.initMirrorWorld(mContext,String.valueOf(holder.mEt1.getText()), MirrorEnv.DevNet);
             holder.mResultView.setText("SDK has been inited!");
         }else if(apiId == DemoAPIID.SET_JWT){
             if(!checkEt(holder.mEt1)){

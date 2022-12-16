@@ -9,7 +9,7 @@ import com.mirror.sdk.constant.MirrorUrl;
 import com.mirror.sdk.listener.universal.MirrorCallback;
 import com.mirror.sdk.listener.universal.OnCheckSDKUseable;
 import com.mirror.sdk.response.CommonResponse;
-import com.mirror.sdk.response.action.ActionAuthResponse;
+import com.mirror.sdk.response.action.ActionDTO;
 import com.mirror.sdk.utils.MirrorGsonUtils;
 
 import org.json.JSONException;
@@ -156,7 +156,7 @@ public class MirrorSafeAPI {
             @Override
             public void callback(String result) {
                 MirrorSDK.getInstance().logFlow("requestActionAuthorization result:"+result);
-                CommonResponse<ActionAuthResponse> response = MirrorGsonUtils.getInstance().fromJson(result,new TypeToken<CommonResponse<ActionAuthResponse>>(){}.getType());
+                CommonResponse<ActionDTO> response = MirrorGsonUtils.getInstance().fromJson(result,new TypeToken<CommonResponse<ActionDTO>>(){}.getType());
                 if(response.code == MirrorResCode.SUCCESS){
                     openApprovePage(response.data.uuid);
                 }else {

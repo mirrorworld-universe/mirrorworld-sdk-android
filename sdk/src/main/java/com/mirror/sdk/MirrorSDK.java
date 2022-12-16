@@ -65,6 +65,7 @@ import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
 import com.mirror.sdk.listener.wallet.TransactionsDTO;
 import com.mirror.sdk.listener.wallet.TransferSOLListener;
 import com.mirror.sdk.response.CommonResponse;
+import com.mirror.sdk.response.action.ApproveResponse;
 import com.mirror.sdk.response.auth.LoginResponse;
 import com.mirror.sdk.response.auth.UserResponse;
 import com.mirror.sdk.response.market.ActivityOfSingleNftResponse;
@@ -96,6 +97,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -167,6 +169,17 @@ public class MirrorSDK {
         }
         this.env = env;
         launchTab(mActivity);
+
+
+
+
+//        String aaa = "{\"action\":{\"id\":394,\"uuid\":\"4ea3ad27-0add-49fc-ac94-d8349c13c165\",\"client_id\":\"2zdR55xFI4bLyax1Ok_43e4kWo6IOff1iuGA.MGbnynM3.mirrorworld.fun\",\"user_id\":5503,\"status\":\"verified\",\"type\":\"transfer_sol\",\"signature\":null,\"message\":\"Approve Transfer sol action from Google\",\"value\":1e-9,\"params\":{\"amount\":1,\"to_publickey\":\"HyMSC7JJ3skrcXNdmcNBN4XsVSQHLK7zgbPiZAD7faKd\"},\"origin\":\"UNKNOWN\",\"device\":{\"os\":null,\"bot\":null,\"client\":{\"name\":\"UnityPlayer\",\"type\":\"mobile app\",\"version\":\"2022.1\"},\"device\":null},\"started_at\":\"2022-12-15T02:55:49.000Z\",\"verified_at\":\"2022-12-15T02:55:58.614Z\",\"cancelled_at\":null,\"completed_at\":null,\"createdAt\":\"2022-12-15T02:55:49.000Z\",\"updatedAt\":\"2022-12-15T02:55:58.614Z\"},\"authorization_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo1NTAzLCJjbGllbnRfaWQiOiJiZGZiNGUzYS0yODJmLTExZWQtOWJjNS0wZTFiYTdhZjE5MmQuYmRmYjRlNDAubWlycm9yd29ybGQuZnVuIiwiYXBpX2tleSI6ImR2cmlOSmxHN0lUejFxMFM1N1pCT0FXYUR6QTNjZmpqY25VIiwiYWN0aW9uX3V1aWQiOiI0ZWEzYWQyNy0wYWRkLTQ5ZmMtYWM5NC1kODM0OWMxM2MxNjUiLCJhY3Rpb24iOnsiaWQiOjM5NCwidXVpZCI6IjRlYTNhZDI3LTBhZGQtNDlmYy1hYzk0LWQ4MzQ5YzEzYzE2NSIsImNsaWVudF9pZCI6IjJ6ZFI1NXhGSTRiTHlheDFPa180M2U0a1dvNklPZmYxaXVHQS5NR2JueW5NMy5taXJyb3J3b3JsZC5mdW4iLCJ1c2VyX2lkIjo1NTAzLCJzdGF0dXMiOiJ2ZXJpZmllZCIsInR5cGUiOiJ0cmFuc2Zlcl9zb2wiLCJzaWduYXR1cmUiOm51bGwsIm1lc3NhZ2UiOiJBcHByb3ZlIFRyYW5zZmVyIHNvbCBhY3Rpb24gZnJvbSBHb29nbGUiLCJ2YWx1ZSI6MWUtOSwicGFyYW1zIjp7ImFtb3VudCI6MSwidG9fcHVibGlja2V5IjoiSHlNU0M3Skozc2tyY1hOZG1jTkJONFhzVlNRSExLN3pnYlBpWkFEN2ZhS2QifSwib3JpZ2luIjoiVU5LTk9XTiIsImRldmljZSI6eyJvcyI6bnVsbCwiYm90IjpudWxsLCJjbGllbnQiOnsibmFtZSI6IlVuaXR5UGxheWVyIiwidHlwZSI6Im1vYmlsZSBhcHAiLCJ2ZXJzaW9uIjoiMjAyMi4xIn0sImRldmljZSI6bnVsbH0sInN0YXJ0ZWRfYXQiOiIyMDIyLTEyLTE1VDAyOjU1OjQ5LjAwMFoiLCJ2ZXJpZmllZF9hdCI6IjIwMjItMTItMTVUMDI6NTU6NTguNjE0WiIsImNhbmNlbGxlZF9hdCI6bnVsbCwiY29tcGxldGVkX2F0IjpudWxsLCJjcmVhdGVkQXQiOiIyMDIyLTEyLTE1VDAyOjU1OjQ5LjAwMFoiLCJ1cGRhdGVkQXQiOiIyMDIyLTEyLTE1VDAyOjU1OjU4LjYxNFoifSwiaWF0IjoxNjcxMDcyOTU4LCJleHAiOjE2NzEwNzMwMTgsImlzcyI6InNzbzpzdGFnaW5nIiwianRpIjoiYWN0aW9uOjU1MDM6NGVhM2FkMjctMGFkZC00OWZjLWFjOTQtZDgzNDljMTNjMTY1In0.-5b0OvCJC9rqKFx2WOpVqfqgLFGJHsI7cBzqGMo-SXE\"}";
+//        String bbb = URLDecoder.decode(aaa);
+//        Log.d("aaa", bbb);
+//
+//
+//        ApproveResponse response = MirrorGsonUtils.getInstance().fromJson(bbb,new TypeToken<ApproveResponse>(){}.getType());
+
     }
 
     public void setAuthTokenCallback(MirrorCallback callback){
@@ -509,13 +522,13 @@ public class MirrorSDK {
     }
 
     public String getAuthRoot(){
-        if(env == MirrorEnv.StagingMainNet){
+        if(env.equals(MirrorEnv.StagingMainNet)){
             return "https://auth-staging.mirrorworld.fun/";
-        }else if(env == MirrorEnv.StagingDevNet){
+        }else if(env.equals(MirrorEnv.StagingDevNet)){
             return "https://auth-staging.mirrorworld.fun/";
-        }else if(env == MirrorEnv.DevNet){
+        }else if(env.equals(MirrorEnv.DevNet)){
             return "https://auth.mirrorworld.fun/";
-        }else if(env == MirrorEnv.MainNet){
+        }else if(env.equals(MirrorEnv.MainNet)){
             return "https://auth.mirrorworld.fun/";
         }else {
             logFlow("Unknown env:"+env);
