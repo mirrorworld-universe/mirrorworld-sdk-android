@@ -167,6 +167,7 @@ public class MirrorSDK {
         if(this.mActivity != null){
             this.refreshToken = getRefreshToken(this.mActivity);
         }
+        logFlow("init sdk:"+env);
         this.env = env;
         launchTab(mActivity);
 
