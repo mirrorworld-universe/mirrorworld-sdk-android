@@ -18,9 +18,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mirror.mirrorworld_sdk_android.R;
 import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
+import com.mirror.sdk.MirrorMarket;
 import com.mirror.sdk.MirrorWorld;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.listener.auth.LoginListener;
+import com.mirror.sdk.listener.marketui.GetCollectionFilterInfoListener;
+import com.mirror.sdk.listener.marketui.GetCollectionInfoListener;
+import com.mirror.sdk.listener.marketui.GetNFTEventsListener;
+import com.mirror.sdk.listener.marketui.GetNFTRealPriceListener;
+import com.mirror.sdk.listener.marketui.SearchNFTsListener;
 import com.mirror.sdk.listener.universal.BoolListener;
 import com.mirror.sdk.listener.universal.MirrorCallback;
 import com.mirror.sdk.MirrorSDK;
@@ -50,11 +56,22 @@ import com.mirror.sdk.response.market.ListingResponse;
 import com.mirror.sdk.response.market.MintResponse;
 import com.mirror.sdk.response.market.MultipleNFTsResponse;
 import com.mirror.sdk.response.market.SingleNFTResponse;
+import com.mirror.sdk.response.marketui.FilterInfo;
+import com.mirror.sdk.response.marketui.GetCollectionFilterInfoRes;
+import com.mirror.sdk.response.marketui.GetCollectionInfoRes;
+import com.mirror.sdk.response.marketui.GetNFTRealPriceRes;
+import com.mirror.sdk.response.marketui.GetNFTsRes;
+import com.mirror.sdk.response.marketui.MirrorMarketNFTEvent;
+import com.mirror.sdk.response.marketui.MirrorMarketSearchNFTObj;
 import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
 import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
 import com.mirror.sdk.response.wallet.TransferResponse;
 import com.mirror.sdk.utils.MirrorGsonUtils;
 import com.mirror.sdk.utils.MirrorStringUtils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,11 +166,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
     private void handleClick(int apiId, MultiParaItemRecyclerViewAdapter.ViewHolder holder,View view){
 
         if(apiId == DemoAPIID.INIT_SDK){
-            if(!checkEt(holder.mEt1)){
-                showToast("Please input api key!");
-                return;
-            }
-            MirrorWorld.initMirrorWorld(mContext,String.valueOf(holder.mEt1.getText()), MirrorEnv.DevNet);
+            MirrorWorld.initMirrorWorld(mContext,String.valueOf(holder.mEt1.getText()), MirrorEnv.StagingDevNet);
             holder.mResultView.setText("SDK has been inited!");
         }else if(apiId == DemoAPIID.SET_JWT){
             if(!checkEt(holder.mEt1)){
@@ -180,8 +193,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             MirrorWorld.openWallet(new MirrorCallback() {
                 @Override
                 public void callback(String result) {
-                    MirrorSDK.getInstance().logFlow("Wallet logout callback runs!");
-                    showToast("Wallet logout callback runs!");
+                    Log.d("MirrorSDK","Wallet logout callback runs!");
                 }
             });
         }else if(apiId == DemoAPIID.OPEN_MARKET){
@@ -265,6 +277,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             MirrorWorld.mintNFT(collection_mint, name, symbol, detailUrl, new MintNFTListener() {
                 @Override
                 public void onMintSuccess(MintResponse userResponse) {
+                    MirrorSDK.getInstance().logFlow("Mint nft result:"+MirrorGsonUtils.getInstance().toJson(userResponse));
                     holder.mResultView.setText("Mint NFT result is:"+MirrorGsonUtils.getInstance().toJson(userResponse));
                 }
 
@@ -597,6 +610,167 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 @Override
                 public void onTransferFailed(long code, String message) {
                     holder.mResultView.setText("transfer sol failed!code:"+code+" message:"+message);
+                }
+            });
+        }else if(apiId == DemoAPIID.GET_COLLECTION_FILTER_INFO){
+            if(!checkEt(holder.mEt1)){
+                showToast("Please input!");
+                return;
+            }
+            String collection = String.valueOf(holder.mEt1.getText());
+            MirrorMarket.getCollectionFilterInfo(collection, new GetCollectionFilterInfoListener() {
+                @Override
+                public void onSuccess(GetCollectionFilterInfoRes result) {
+                    holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
+                }
+
+                @Override
+                public void onFail(long code, String message) {
+                    holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
+                }
+            });
+        }else if(apiId == DemoAPIID.GET_NFT_INFO){
+            if(!checkEt(holder.mEt1)){
+                showToast("Please input!");
+                return;
+            }
+            String mint_address = String.valueOf(holder.mEt1.getText());
+            MirrorMarket.getNFTInfo(mint_address, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    holder.mResultView.setText("Visiting result:"+MirrorGsonUtils.getInstance().toJson(result));
+                }
+            });
+        }else if(apiId == DemoAPIID.GET_COLLECTION_INFO){
+            if(!checkEt(holder.mEt1)){
+                showToast("Please input!");
+                return;
+            }
+            String collection = String.valueOf(holder.mEt1.getText());
+            List<String> collections = new ArrayList<>();
+            collections.add(collection);
+            MirrorMarket.getCollectionInfo(collections, new GetCollectionInfoListener() {
+                @Override
+                public void onSuccess(List<GetCollectionInfoRes> result) {
+                    holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
+                }
+
+                @Override
+                public void onFail(long code, String message) {
+                    holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
+                }
+            });
+        }else if(apiId == DemoAPIID.GET_NFT_EVENTS){
+            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3)){
+                showToast("Please input!");
+                return;
+            }
+            int page = 0;
+            int page_size = 0;
+            String mint_address = String.valueOf(holder.mEt1.getText());
+            String pageStr = String.valueOf(holder.mEt2.getText());
+            String pageSizeStr = String.valueOf(holder.mEt3.getText());
+            page = Integer.valueOf(pageStr);
+            page_size = Integer.valueOf(pageSizeStr);
+            MirrorMarket.getNFTEvents(mint_address,page,page_size, new GetNFTEventsListener() {
+                @Override
+                public void onSuccess(List<MirrorMarketNFTEvent> result) {
+                    holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
+                }
+
+                @Override
+                public void onFail(long code, String message) {
+                    holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
+                }
+            });
+        }else if(apiId == DemoAPIID.SEARCH_NFTS){
+            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
+                showToast("Please input!");
+                return;
+            }
+            String collection = String.valueOf(holder.mEt1.getText());
+            String searchString = String.valueOf(holder.mEt2.getText());
+            List<String> collections = new ArrayList<>();
+            collections.add(collection);
+            MirrorMarket.searchNFTs(collections,searchString, new SearchNFTsListener() {
+                @Override
+                public void onSuccess(GetNFTsRes result) {
+                    holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
+                }
+
+                @Override
+                public void onFail(long code, String message) {
+                    holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
+                }
+            });
+        }else if(apiId == DemoAPIID.RECOMMEND_SEARCH_NFT){
+            if(!checkEt(holder.mEt1)){
+                showToast("Please input!");
+                return;
+            }
+            String collection = String.valueOf(holder.mEt1.getText());
+            List<String> collections = new ArrayList<>();
+            collections.add(collection);
+            MirrorMarket.recommondSearchNFT(collections, new SearchNFTsListener() {
+                @Override
+                public void onSuccess(GetNFTsRes result) {
+                    holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
+                }
+
+                @Override
+                public void onFail(long code, String message) {
+                    holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
+                }
+            });
+        }else if(apiId == DemoAPIID.GET_NFTS){
+            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
+                showToast("Please input!");
+                return;
+            }
+            String collection = String.valueOf(holder.mEt1.getText());
+            Double sale = Double.valueOf(String.valueOf(holder.mEt2.getText()));
+
+            JSONObject filter = new JSONObject();
+            try {
+                filter.put("filter_name","Rarity");
+                filter.put("filter_type","enum");
+                JSONArray values = new JSONArray();
+                values.put("Common");
+                filter.put("filter_value",values);
+                filter.put("filter_type","enum");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            List<JSONObject> filters = new ArrayList<>();
+            filters.add(filter);
+            MirrorMarket.getNFTs(collection,1,10,"price",true,sale,filters, new SearchNFTsListener() {
+                @Override
+                public void onSuccess(GetNFTsRes result) {
+                    holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
+                }
+
+                @Override
+                public void onFail(long code, String message) {
+                    holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
+                }
+            });
+        }else if(apiId == DemoAPIID.GET_NFT_REAL_PRICE){
+            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
+                showToast("Please input!");
+                return;
+            }
+            int fee = Integer.parseInt(String.valueOf(holder.mEt2.getText()));
+            String price = String.valueOf(holder.mEt1.getText());
+            MirrorMarket.getNFTRealPrice(price,fee, new GetNFTRealPriceListener() {
+                @Override
+                public void onSuccess(GetNFTRealPriceRes result) {
+                    holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
+                }
+
+                @Override
+                public void onFail(long code, String message) {
+                    holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
                 }
             });
         }
