@@ -293,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
         items.add(new MultiItemData.MultiItem(
                 DemoAPIID.SEARCH_NFTS,"Search NFTs.","Get details of NFTs in market place.",
                 "Search",
-                "mint address 1","search string",null,null,null,null));
+                "collection address 1","search string",null,null,null,null));
         items.add(new MultiItemData.MultiItem(
                 DemoAPIID.RECOMMEND_SEARCH_NFT,"Recommend search NFT.","Get details in market of a NFT by recommend.",
                 "Get",
@@ -301,11 +301,11 @@ public class MainActivity extends AppCompatActivity {
         items.add(new MultiItemData.MultiItem(
                 DemoAPIID.GET_NFTS,"Get NFTs.","Get details of NFTs in market place.",
                 "Get",
-                "mint address 1","price",null,null,null,null));
+                "collection address 1","page","page size","order by","desc","sale"));
         items.add(new MultiItemData.MultiItem(
                 DemoAPIID.GET_NFT_REAL_PRICE,"Get NFT real price.","Get real price of a NFT.",
                 "Get",
-                "price","fee",null,null,null,null));
+                "price","price_fee",null,null,null,null));
         return items;
     }
 

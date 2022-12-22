@@ -725,28 +725,41 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 }
             });
         }else if(apiId == DemoAPIID.GET_NFTS){
-            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
+            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3)
+                    || !checkEt(holder.mEt4) || !checkEt(holder.mEt5) || !checkEt(holder.mEt6)){
                 showToast("Please input!");
                 return;
             }
             String collection = String.valueOf(holder.mEt1.getText());
-            Double sale = Double.valueOf(String.valueOf(holder.mEt2.getText()));
+            int page = 1;
+            int page_size = 10;
+            String order_by = String.valueOf(holder.mEt4.getText());
+            boolean desc = false;
+            Double sale = Double.valueOf(1);
+            try{
+                page = Integer.valueOf(String.valueOf(holder.mEt2.getText()));
+                page_size = Integer.valueOf(String.valueOf(holder.mEt3.getText()));
+                desc = Boolean.valueOf(String.valueOf(holder.mEt5.getText()));
+                sale = Double.valueOf(String.valueOf(holder.mEt6.getText()));
+            }catch(Exception e){
 
-            JSONObject filter = new JSONObject();
-            try {
-                filter.put("filter_name","Rarity");
-                filter.put("filter_type","enum");
-                JSONArray values = new JSONArray();
-                values.put("Common");
-                filter.put("filter_value",values);
-                filter.put("filter_type","enum");
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
 
-            List<JSONObject> filters = new ArrayList<>();
-            filters.add(filter);
-            MirrorMarket.getNFTs(collection,1,10,"price",true,sale,filters, new GetNFTsListener() {
+//            JSONObject filter = new JSONObject();
+//            try {
+//                filter.put("filter_name","Rarity");
+//                filter.put("filter_type","enum");
+//                JSONArray values = new JSONArray();
+//                values.put("Common");
+//                filter.put("filter_value",values);
+//                filter.put("filter_type","enum");
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//
+//            List<JSONObject> filters = new ArrayList<>();
+//            filters.add(filter);
+            MirrorMarket.getNFTs(collection,page,page_size,order_by,desc,sale,null, new GetNFTsListener() {
                 @Override
                 public void onSuccess(GetNFTsRes result) {
                     holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));

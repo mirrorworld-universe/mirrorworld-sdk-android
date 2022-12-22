@@ -139,7 +139,7 @@ public class MirrorSDK {
     private String refreshToken = "";
     private String accessToken = "";
     private String xAuthToken = "";
-    private String mWalletAddress = "";
+//    private String mWalletAddress = "";
 
     //run time
     private WebView webViewPopUp = null;
@@ -658,7 +658,7 @@ public class MirrorSDK {
         FetchUser(new FetchUserListener() {
             @Override
             public void onUserFetched(UserResponse userResponse) {
-                mWalletAddress = userResponse.sol_address;
+//                mWalletAddress = userResponse.sol_address;
                 listener.onBool(true);
             }
 
@@ -1125,9 +1125,9 @@ public class MirrorSDK {
     }
 
     public void GetWallet(MirrorCallback mirrorCallback){
-        if(mWalletAddress.equals("")){
-            mWalletAddress = getSavedString(mActivity,localKeyWalletAddress);
-        }
+//        if(mWalletAddress.equals("")){
+//            mWalletAddress = getSavedString(mActivity,localKeyWalletAddress);
+//        }
         String url = GetSSORoot() + MirrorUrl.URL_ME;
         checkParamsAndGet(url, null, new MirrorCallback() {
             @Override
@@ -1450,8 +1450,10 @@ public class MirrorSDK {
             jsonObject.put("sale", sale);
 
             JSONArray filters = new JSONArray();
-            for (JSONObject fi : filter) {
-                filters.put(fi);
+            if(filter != null){
+                for (JSONObject fi : filter) {
+                    filters.put(fi);
+                }
             }
             jsonObject.put("filter", filters);
         } catch (JSONException e) {
@@ -1676,7 +1678,7 @@ public class MirrorSDK {
                             saveRefreshToken(newRefreshToken);
                             saveString(localKeyWalletAddress,wallet);
                             accessToken = accessToken;
-                            mWalletAddress = wallet;
+//                            mWalletAddress = wallet;
                             logFlow("Access token success!"+accessToken);
                             logFlow("Wallet is:"+wallet);
                             if(mirrorCallback != null){
@@ -1707,7 +1709,7 @@ public class MirrorSDK {
                                     saveRefreshToken(newRefreshToken);
                                     saveString(localKeyWalletAddress,wallet);
                                     accessToken = accessToken;
-                                    mWalletAddress = wallet;
+//                                    mWalletAddress = wallet;
                                     logFlow("Access token success!"+accessToken);
                                     logFlow("Wallet is:"+wallet);
                                     if(mirrorCallback != null){
@@ -1855,12 +1857,12 @@ public class MirrorSDK {
                 }
             }, false);
         }else{
-            if(mWalletAddress.equals("") && null != mActivity){
-                mWalletAddress = getSavedString(mActivity,localKeyWalletAddress);
-                if(mWalletAddress.equals("")){
-                    logFlow("Must get mWalletAddress first!");
-                }
-            }
+//            if(mWalletAddress.equals("") && null != mActivity){
+//                mWalletAddress = getSavedString(mActivity,localKeyWalletAddress);
+//                if(mWalletAddress.equals("")){
+//                    logFlow("Must get mWalletAddress first!");
+//                }
+//            }
             doGet(url,params, mirrorCallback);
         }
     }
@@ -1893,12 +1895,12 @@ public class MirrorSDK {
                 }
             }, false);
         }else{
-            if(mWalletAddress.equals("")&& null != mActivity){
-                mWalletAddress = getSavedString(mActivity,localKeyWalletAddress);
-                if(mWalletAddress.equals("")){
-                    logFlow("Must get mWalletAddress first!");
-                }
-            }
+//            if(mWalletAddress.equals("")&& null != mActivity){
+//                mWalletAddress = getSavedString(mActivity,localKeyWalletAddress);
+//                if(mWalletAddress.equals("")){
+//                    logFlow("Must get mWalletAddress first!");
+//                }
+//            }
             doPost(url,data, mirrorCallback);
         }
     }
@@ -2124,7 +2126,7 @@ public class MirrorSDK {
                     LoginResponse aaa = MirrorGsonUtils.getInstance().fromJson(dataJsonStr,new TypeToken<LoginResponse>(){}.getType());
                     saveRefreshToken(aaa.refresh_token);
                     accessToken = aaa.access_token;
-                    mWalletAddress = aaa.user.sol_address;
+//                    mWalletAddress = aaa.user.sol_address;
 
 //            jsonObject = new JSONObject(dataJsonStr);
 //            String token = jsonObject.getString("refresh_token");
