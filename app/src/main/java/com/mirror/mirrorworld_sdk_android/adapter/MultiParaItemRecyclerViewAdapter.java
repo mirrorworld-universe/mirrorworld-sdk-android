@@ -26,6 +26,7 @@ import com.mirror.sdk.listener.marketui.GetCollectionFilterInfoListener;
 import com.mirror.sdk.listener.marketui.GetCollectionInfoListener;
 import com.mirror.sdk.listener.marketui.GetNFTEventsListener;
 import com.mirror.sdk.listener.marketui.GetNFTRealPriceListener;
+import com.mirror.sdk.listener.marketui.GetNFTsListener;
 import com.mirror.sdk.listener.marketui.SearchNFTsListener;
 import com.mirror.sdk.listener.universal.BoolListener;
 import com.mirror.sdk.listener.universal.MirrorCallback;
@@ -59,6 +60,7 @@ import com.mirror.sdk.response.market.SingleNFTResponse;
 import com.mirror.sdk.response.marketui.FilterInfo;
 import com.mirror.sdk.response.marketui.GetCollectionFilterInfoRes;
 import com.mirror.sdk.response.marketui.GetCollectionInfoRes;
+import com.mirror.sdk.response.marketui.GetNFTEventsRes;
 import com.mirror.sdk.response.marketui.GetNFTRealPriceRes;
 import com.mirror.sdk.response.marketui.GetNFTsRes;
 import com.mirror.sdk.response.marketui.MirrorMarketNFTEvent;
@@ -674,7 +676,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             page_size = Integer.valueOf(pageSizeStr);
             MirrorMarket.getNFTEvents(mint_address,page,page_size, new GetNFTEventsListener() {
                 @Override
-                public void onSuccess(List<MirrorMarketNFTEvent> result) {
+                public void onSuccess(GetNFTEventsRes result) {
                     holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
                 }
 
@@ -694,7 +696,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             collections.add(collection);
             MirrorMarket.searchNFTs(collections,searchString, new SearchNFTsListener() {
                 @Override
-                public void onSuccess(GetNFTsRes result) {
+                public void onSuccess(List<MirrorMarketSearchNFTObj> result) {
                     holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
                 }
 
@@ -713,7 +715,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             collections.add(collection);
             MirrorMarket.recommondSearchNFT(collections, new SearchNFTsListener() {
                 @Override
-                public void onSuccess(GetNFTsRes result) {
+                public void onSuccess(List<MirrorMarketSearchNFTObj> result) {
                     holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
                 }
 
@@ -744,7 +746,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
 
             List<JSONObject> filters = new ArrayList<>();
             filters.add(filter);
-            MirrorMarket.getNFTs(collection,1,10,"price",true,sale,filters, new SearchNFTsListener() {
+            MirrorMarket.getNFTs(collection,1,10,"price",true,sale,filters, new GetNFTsListener() {
                 @Override
                 public void onSuccess(GetNFTsRes result) {
                     holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));

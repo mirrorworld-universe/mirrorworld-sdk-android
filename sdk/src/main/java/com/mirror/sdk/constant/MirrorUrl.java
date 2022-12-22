@@ -50,7 +50,7 @@ public class MirrorUrl {
     public static final String URL_GET_COLLECTION_INFO = "marketplace/collections";
     public static final String URL_GET_NFT_EVENTS = "marketplace/nft/events";
     public static final String URL_SEARCH_NFTS = "marketplace/nft/search";
-    public static final String URL_RECOMMOND_SEARCH_NFT = "markatplace/nft/search/recommend";
+    public static final String URL_RECOMMOND_SEARCH_NFT = "marketplace/nft/search/recommend";
     public static final String URL_GET_NFTS = "marketplace/nfts";
     public static final String URL_GET_NFT_REAL_PRICE = "marketplace/nft/real_price";
 

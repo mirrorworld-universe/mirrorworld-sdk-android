@@ -297,7 +297,7 @@ public class MainActivity extends AppCompatActivity {
         items.add(new MultiItemData.MultiItem(
                 DemoAPIID.RECOMMEND_SEARCH_NFT,"Recommend search NFT.","Get details in market of a NFT by recommend.",
                 "Get",
-                "mint address 1",null,null,null,null,null));
+                "collection address 1",null,null,null,null,null));
         items.add(new MultiItemData.MultiItem(
                 DemoAPIID.GET_NFTS,"Get NFTs.","Get details of NFTs in market place.",
                 "Get",

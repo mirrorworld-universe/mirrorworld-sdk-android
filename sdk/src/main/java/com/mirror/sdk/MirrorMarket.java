@@ -4,6 +4,7 @@ import com.mirror.sdk.listener.marketui.GetCollectionFilterInfoListener;
 import com.mirror.sdk.listener.marketui.GetCollectionInfoListener;
 import com.mirror.sdk.listener.marketui.GetNFTEventsListener;
 import com.mirror.sdk.listener.marketui.GetNFTRealPriceListener;
+import com.mirror.sdk.listener.marketui.GetNFTsListener;
 import com.mirror.sdk.listener.marketui.SearchNFTsListener;
 import com.mirror.sdk.listener.universal.MirrorCallback;
 import com.mirror.sdk.response.marketui.FilterInfo;
@@ -37,7 +38,7 @@ public class MirrorMarket {
         MirrorSDK.getInstance().RecommondSearchNFT(collections, listener);
     }
 
-    final public static void getNFTs(String collection, int page, int page_size, String order_by, boolean desc, double sale, List<JSONObject> filter, SearchNFTsListener listener){
+    final public static void getNFTs(String collection, int page, int page_size, String order_by, boolean desc, double sale, List<JSONObject> filter, GetNFTsListener listener){
         MirrorSDK.getInstance().GetNFTs(collection, page, page_size, order_by, desc, sale, filter, listener);
     }
 

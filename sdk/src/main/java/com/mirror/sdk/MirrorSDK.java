@@ -55,6 +55,7 @@ import com.mirror.sdk.listener.marketui.GetCollectionInfoListener;
 import com.mirror.sdk.listener.marketui.GetMarketUINFTInfoListener;
 import com.mirror.sdk.listener.marketui.GetNFTEventsListener;
 import com.mirror.sdk.listener.marketui.GetNFTRealPriceListener;
+import com.mirror.sdk.listener.marketui.GetNFTsListener;
 import com.mirror.sdk.listener.marketui.MirrorMarketUINFTObject;
 import com.mirror.sdk.listener.marketui.SearchNFTsListener;
 import com.mirror.sdk.listener.universal.MSimpleCallback;
@@ -92,6 +93,7 @@ import com.mirror.sdk.response.market.SingleNFTResponse;
 import com.mirror.sdk.response.marketui.FilterInfo;
 import com.mirror.sdk.response.marketui.GetCollectionFilterInfoRes;
 import com.mirror.sdk.response.marketui.GetCollectionInfoRes;
+import com.mirror.sdk.response.marketui.GetNFTEventsRes;
 import com.mirror.sdk.response.marketui.GetNFTRealPriceRes;
 import com.mirror.sdk.response.marketui.GetNFTsRes;
 import com.mirror.sdk.response.marketui.MirrorMarketNFTEvent;
@@ -574,6 +576,21 @@ public class MirrorSDK {
         }else {
             logFlow("Unknown env:"+env);
             return "https://jump-devnet.mirrorworld.fun";
+        }
+    }
+
+    private String GetSSORootNoV(){
+        if(env == MirrorEnv.StagingMainNet){
+            return "https://api-staging.mirrorworld.fun/";
+        }else if(env == MirrorEnv.StagingDevNet){
+            return "https://api-staging.mirrorworld.fun/";
+        }else if(env == MirrorEnv.DevNet){
+            return "https://api.mirrorworld.fun/";
+        }else if(env == MirrorEnv.MainNet){
+            return "https://api.mirrorworld.fun/";
+        }else {
+            logFlow("Unknown env:"+env);
+            return "https://api-staging.mirrorworld.fun/";
         }
     }
 
@@ -1351,7 +1368,7 @@ public class MirrorSDK {
             @Override
             public void callback(String result) {
                 logFlow("GetNFTEvents result:"+result);
-                CommonResponse<List<MirrorMarketNFTEvent>> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<List<MirrorMarketNFTEvent>>>(){}.getType());
+                CommonResponse<GetNFTEventsRes> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<GetNFTEventsRes>>(){}.getType());
                 if(response.code == MirrorResCode.SUCCESS){
                     listener.onSuccess(response.data);
                 }else {
@@ -1379,7 +1396,7 @@ public class MirrorSDK {
         checkParamsAndPost(url, data, new MirrorCallback() {
             @Override
             public void callback(String result) {
-                CommonResponse<GetNFTsRes> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<GetNFTsRes>>(){}.getType());
+                CommonResponse<List<MirrorMarketSearchNFTObj>> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<List<MirrorMarketSearchNFTObj>>>(){}.getType());
                 if(response.code == MirrorResCode.SUCCESS){
                     listener.onSuccess(response.data);
                 }else {
@@ -1406,7 +1423,7 @@ public class MirrorSDK {
         checkParamsAndPost(url, data, new MirrorCallback() {
             @Override
             public void callback(String result) {
-                CommonResponse<GetNFTsRes> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<GetNFTsRes>>(){}.getType());
+                CommonResponse<List<MirrorMarketSearchNFTObj>> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<List<MirrorMarketSearchNFTObj>>>(){}.getType());
                 if(response.code == MirrorResCode.SUCCESS){
                     listener.onSuccess(response.data);
                 }else {
@@ -1416,7 +1433,7 @@ public class MirrorSDK {
         });
     }
 
-    public void GetNFTs(String collection, int page, int page_size, String order_by, boolean desc, double sale, List<JSONObject> filter, SearchNFTsListener listener){
+    public void GetNFTs(String collection, int page, int page_size, String order_by, boolean desc, double sale, List<JSONObject> filter, GetNFTsListener listener){
         String url = GetSSORoot() + URL_GET_NFTS;
 
         JSONObject jsonObject = new JSONObject();
