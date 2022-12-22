@@ -299,13 +299,13 @@ public class MainActivity extends AppCompatActivity {
                 "Get",
                 "collection address 1",null,null,null,null,null));
         items.add(new MultiItemData.MultiItem(
+                DemoAPIID.GET_NFT_REAL_PRICE,"Get NFT real price.","Get real price of a NFT.",
+                "Get",
+                "price","price fee",null,null,null,null));
+        items.add(new MultiItemData.MultiItem(
                 DemoAPIID.GET_NFTS,"Get NFTs.","Get details of NFTs in market place.",
                 "Get",
                 "collection address 1","page","page size","order by","desc","sale"));
-        items.add(new MultiItemData.MultiItem(
-                DemoAPIID.GET_NFT_REAL_PRICE,"Get NFT real price.","Get real price of a NFT.",
-                "Get",
-                "price","price_fee",null,null,null,null));
         return items;
     }
 
