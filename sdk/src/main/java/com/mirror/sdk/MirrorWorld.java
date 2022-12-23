@@ -53,8 +53,13 @@ public class MirrorWorld {
      * @param mirrorEnv
      */
     final public static void initMirrorWorld(Activity activity,String apiKey, MirrorEnv mirrorEnv){
-        MirrorSDK.getInstance().SetApiKey(apiKey);
         MirrorSDK.getInstance().InitSDK(activity,mirrorEnv);
+        MirrorSDK.getInstance().SetApiKey(apiKey);
+    }
+    final public static void initMirrorWorld(Activity activity,String apiKey, int env){
+        MirrorSDK.getInstance().SetApiKey(apiKey);
+        MirrorEnv data=MirrorEnv.values()[env];
+        MirrorSDK.getInstance().InitSDK(activity,data);
     }
 
     /**

@@ -19,7 +19,10 @@ import com.google.android.material.tabs.TabLayout;
 import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.MirrorSDK;
+import com.mirror.sdk.response.action.ApproveResponse;
+import com.mirror.sdk.utils.MirrorGsonUtils;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_main);
-        MirrorSDK.getInstance().InitSDK(this, MirrorEnv.StagingDevNet);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         initViewPage();
     }
@@ -55,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         titles.add("Market:Mint&List");
         titles.add("Market:other");
         titles.add("Wallet");
+        titles.add("MarketUI");
 
         for (int i = 0; i < titles.size(); i++) {
             mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(i)));
@@ -67,21 +70,18 @@ public class MainActivity extends AppCompatActivity {
         MultiParaItemFragment MarketMint = new MultiParaItemFragment(marketMintApis());
         MultiParaItemFragment MarketOther = new MultiParaItemFragment(marketOtherApis());
         MultiParaItemFragment Wallet = new MultiParaItemFragment(walletApis());
+        MultiParaItemFragment marketUI = new MultiParaItemFragment(marketUIAPIs());
 
         fragments.add(Auth);
         fragments.add(MarketMint);
         fragments.add(MarketOther);
         fragments.add(Wallet);
-
+        fragments.add(marketUI);
 
         FragmentAdapter mFragmentAdapteradapter =
                 new FragmentAdapter(getSupportFragmentManager(), fragments, titles);
-
         mViewPager.setAdapter(mFragmentAdapteradapter);
-
         mTabLayout.setupWithViewPager(mViewPager);
-
-
     }
 
     private List<MultiItemData.MultiItem> authApis() {
@@ -269,6 +269,43 @@ public class MainActivity extends AppCompatActivity {
                         null,null,null,null));
 
 
+        return items;
+    }
+
+    private List<MultiItemData.MultiItem> marketUIAPIs() {
+        List<MultiItemData.MultiItem> items = new ArrayList<>();
+        items.add(new MultiItemData.MultiItem(
+                DemoAPIID.GET_COLLECTION_FILTER_INFO,"Get collection filter info.","Get collection filter info.",
+                "Get",
+                "collection",null,null,null,null,null));
+        items.add(new MultiItemData.MultiItem(
+                DemoAPIID.GET_NFT_INFO,"Get NFT info.","Get details in market of a NFT.",
+                "Get",
+                "mint address",null,null,null,null,null));
+        items.add(new MultiItemData.MultiItem(
+                DemoAPIID.GET_COLLECTION_INFO,"Get collection info.","Get a collection's info.",
+                "Get",
+                "collection 1",null,null,null,null,null));
+        items.add(new MultiItemData.MultiItem(
+                DemoAPIID.GET_NFT_EVENTS,"Get NFT events.","Get events of NFTs in market.",
+                "Get",
+                "mint address","page","page size",null,null,null));
+        items.add(new MultiItemData.MultiItem(
+                DemoAPIID.SEARCH_NFTS,"Search NFTs.","Get details of NFTs in market place.",
+                "Search",
+                "collection address 1","search string",null,null,null,null));
+        items.add(new MultiItemData.MultiItem(
+                DemoAPIID.RECOMMEND_SEARCH_NFT,"Recommend search NFT.","Get details in market of a NFT by recommend.",
+                "Get",
+                "collection address 1",null,null,null,null,null));
+        items.add(new MultiItemData.MultiItem(
+                DemoAPIID.GET_NFT_REAL_PRICE,"Get NFT real price.","Get real price of a NFT.",
+                "Get",
+                "price","price fee",null,null,null,null));
+        items.add(new MultiItemData.MultiItem(
+                DemoAPIID.GET_NFTS,"Get NFTs.","Get details of NFTs in market place.",
+                "Get",
+                "collection address 1","page","page size","order by","desc","sale"));
         return items;
     }
 

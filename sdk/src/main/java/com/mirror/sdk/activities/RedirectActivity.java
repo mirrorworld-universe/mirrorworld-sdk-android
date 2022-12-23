@@ -2,6 +2,7 @@ package com.mirror.sdk.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,14 +14,14 @@ import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.MirrorWorld;
 import com.mirror.sdk.constant.MirrorConstant;
 import com.mirror.sdk.response.CommonResponse;
-import com.mirror.sdk.response.action.ActionAuthResponse;
 import com.mirror.sdk.response.action.ApproveResponse;
 import com.mirror.sdk.response.market.ListingResponse;
 import com.mirror.sdk.utils.MirrorGsonUtils;
 
+import java.net.URLDecoder;
 import java.util.Set;
 
-public class RedirectActivity extends AppCompatActivity {
+public class RedirectActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +29,10 @@ public class RedirectActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        Log.d("MirrorSDK",intent.toURI());
+        MirrorSDK.getInstance().logFlow("Scheme origin:"+intent.toURI());
         Uri uri = intent.getData();
+        uri = Uri.parse(URLDecoder.decode(String.valueOf(uri)));
+        MirrorSDK.getInstance().logFlow("Scheme decoded:"+uri);
         parseScheme(uri);
     }
 
