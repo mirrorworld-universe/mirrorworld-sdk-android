@@ -1007,6 +1007,27 @@ public class MirrorSDK {
         }));
     }
 
+    public void openMarketWithWholeUrl(String rootUrl){
+        checkSDKInited(new OnCheckSDKUseable() {
+            @Override
+            public void OnChecked() {
+                String urlPre = rootUrl + "&useSchemeRedirect=";
+                if(MirrorWebviewUtils.isSupportCustomTab(mActivity)){
+                    urlPre += "true";
+                }else {
+                    urlPre += "false";
+                }
+                logFlow("marekt url:"+urlPre);
+                openUrl(urlPre);
+            }
+
+            @Override
+            public void OnUnUsable() {
+                logFlow("openMarket:sdk not prepared.");
+            }
+        });
+    }
+
     public void openMarket(String rootUrl){
         checkSDKInited(new OnCheckSDKUseable() {
             @Override
@@ -1056,6 +1077,7 @@ public class MirrorSDK {
     public void OpenWallet(MirrorCallback loginCb){
         OpenWallet();
         cbWalletLoginPassivity = loginCb;
+        logFlow("Set open wallet callback" + cbWalletLoginPassivity);
     }
     //Wallet
     public void OpenWallet(){
@@ -2096,7 +2118,7 @@ public class MirrorSDK {
     public void walletLogout(){
         clearCache();
         if(cbWalletLoginPassivity != null){
-            logFlow("wallet passivity login success.");
+            logFlow("wallet passivity login success(js).");
             cbWalletLoginPassivity.callback("");
             cbWalletLoginPassivity = null;
         }
@@ -2141,11 +2163,14 @@ public class MirrorSDK {
                 }
                 if(cbStringLogin != null){
                     logFlow("login success and MirrorCallback callback called.");
+                    logFlow("login dataJsonStr is:"+dataJsonStr);
                     cbStringLogin.callback(dataJsonStr);
                     cbStringLogin = null;
                 }
                 if(cbWalletLoginPassivity != null){
                     logFlow("wallet passivity login success.");
+                    logFlow("wallet passivity use string:" + dataJsonStr);
+
                     cbWalletLoginPassivity.callback(dataJsonStr);
                     cbWalletLoginPassivity = null;
                 }
