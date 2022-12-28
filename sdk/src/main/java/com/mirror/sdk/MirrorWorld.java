@@ -292,24 +292,24 @@ public class MirrorWorld {
      * @param price
      * @param listener
      */
-    final public static void updateNFT(String mint_address, Double price, UpdateListListener listener){
-        MirrorSDK.getInstance().UpdateNFTListing(mint_address, price, MirrorConfirmation.Default, listener);
-    }
-
-    final public static void updateNFT(String mint_address, Double price,String confirmation, UpdateListListener listener){
-        ReqUpdateListingNFT req = new ReqUpdateListingNFT();
-        req.mint_address = mint_address;
-        req.price = price;
-        req.confirmation = confirmation;
-
-        JSONObject params = MirrorGsonUtils.getInstance().toJsonObj(req);
-        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.UpdateListing, "UpdateListing", 0, params, new MirrorCallback() {
-            @Override
-            public void callback(String nothing) {
-                MirrorSDK.getInstance().UpdateNFTListing(mint_address, price, confirmation, listener);
-            }
-        });
-    }
+//    final public static void updateNFT(String mint_address, Double price, UpdateListListener listener){
+//        MirrorSDK.getInstance().UpdateNFTListing(mint_address, price, MirrorConfirmation.Default, listener);
+//    }
+//
+//    final public static void updateNFT(String mint_address, Double price,String confirmation, UpdateListListener listener){
+//        ReqUpdateListingNFT req = new ReqUpdateListingNFT();
+//        req.mint_address = mint_address;
+//        req.price = price;
+//        req.confirmation = confirmation;
+//
+//        JSONObject params = MirrorGsonUtils.getInstance().toJsonObj(req);
+//        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.UpdateListing, "UpdateListing", 0, params, new MirrorCallback() {
+//            @Override
+//            public void callback(String nothing) {
+//                MirrorSDK.getInstance().UpdateNFTListing(mint_address, price, confirmation, listener);
+//            }
+//        });
+//    }
 
     /**
      *

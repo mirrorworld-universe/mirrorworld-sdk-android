@@ -680,7 +680,14 @@ public class MirrorSDK {
         String data = jsonObject.toString();
 
         String url = GetSSORoot() + MirrorUrl.URL_LOGIN_WITH_EMAIL;
-        LoginWithEmailPostRequest(url,data,mirrorCallback);
+        doPostRequest(url, data, new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                MirrorSDK.getInstance().SetAccessToken(MirrorSDK.getInstance().GetAccessTokenFromResponse(result));
+                MirrorSDK.getInstance().SetRefreshToken(MirrorSDK.getInstance().GetRefreshTokenFromResponse(result));
+                mirrorCallback.callback(result);
+            }
+        });
     }
 
     public void FetchUser(FetchUserListener fetchUserListener){
@@ -1603,10 +1610,6 @@ public class MirrorSDK {
         }else{
             callback.OnChecked();
         }
-    }
-
-    private void LoginWithEmailPostRequest(String url, String data, MirrorCallback mirrorCallback){
-        doPostRequest(url,data, mirrorCallback);
     }
 
     public void doPostRequest(String url, String data, MirrorCallback mirrorCallback){

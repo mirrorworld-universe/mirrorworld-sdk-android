@@ -212,8 +212,6 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 @Override
                 public void callback(String s) {
                     holder.mResultView.setText(s);
-                    MirrorSDK.getInstance().SetAccessToken(MirrorSDK.getInstance().GetAccessTokenFromResponse(s));
-                    MirrorSDK.getInstance().SetRefreshToken(MirrorSDK.getInstance().GetRefreshTokenFromResponse(s));
                 }
             });
         }else if(apiId == DemoAPIID.FETCH_USER){
@@ -328,7 +326,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             }catch (NumberFormatException e){
 
             }
-            MirrorWorld.updateNFT(mint_address, price, new UpdateListListener() {
+            MirrorWorld.updateNFTListing(mint_address, price, new UpdateListListener() {
                 @Override
                 public void onUpdateSuccess(ListingResponse listingResponse) {
                     holder.mResultView.setText("UpdateNFTListing success! New price:"+listingResponse.price);
