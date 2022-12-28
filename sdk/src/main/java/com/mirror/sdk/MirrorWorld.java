@@ -63,6 +63,14 @@ public class MirrorWorld {
     }
 
     /**
+     * Get now environment.
+     * @return
+     */
+    final public static MirrorEnv getEnvironment(){
+        return MirrorSDK.getInstance().env;
+    }
+
+    /**
      * Show the sdk flow in console if true.
      * @param useDebugMode
      */
@@ -106,8 +114,8 @@ public class MirrorWorld {
     /**
      * Open market of this app.
      */
-    final public static void openMarket(){
-        MirrorSDK.getInstance().openMarket();
+    final public static void openMarket(String marketUrl){
+        MirrorSDK.getInstance().openMarket(marketUrl);
     }
 
     /**

@@ -9,7 +9,7 @@ import static com.mirror.sdk.constant.MirrorUrl.URL_GET_NFTS;
 import static com.mirror.sdk.constant.MirrorUrl.URL_GET_NFT_EVENTS;
 import static com.mirror.sdk.constant.MirrorUrl.URL_GET_NFT_INFO;
 import static com.mirror.sdk.constant.MirrorUrl.URL_GET_NFT_REAL_PRICE;
-import static com.mirror.sdk.constant.MirrorUrl.URL_RECOMMOND_SEARCH_NFT;
+import static com.mirror.sdk.constant.MirrorUrl.URL_RECOMMEND_SEARCH_NFT;
 import static com.mirror.sdk.constant.MirrorUrl.URL_SEARCH_NFTS;
 
 import android.app.Activity;
@@ -52,11 +52,9 @@ import com.mirror.sdk.constant.MirrorResCode;
 import com.mirror.sdk.constant.MirrorUrl;
 import com.mirror.sdk.listener.marketui.GetCollectionFilterInfoListener;
 import com.mirror.sdk.listener.marketui.GetCollectionInfoListener;
-import com.mirror.sdk.listener.marketui.GetMarketUINFTInfoListener;
 import com.mirror.sdk.listener.marketui.GetNFTEventsListener;
 import com.mirror.sdk.listener.marketui.GetNFTRealPriceListener;
 import com.mirror.sdk.listener.marketui.GetNFTsListener;
-import com.mirror.sdk.listener.marketui.MirrorMarketUINFTObject;
 import com.mirror.sdk.listener.marketui.SearchNFTsListener;
 import com.mirror.sdk.listener.universal.MSimpleCallback;
 import com.mirror.sdk.listener.universal.OnCheckSDKUseable;
@@ -77,12 +75,10 @@ import com.mirror.sdk.listener.universal.BoolListener;
 import com.mirror.sdk.listener.universal.MirrorCallback;
 import com.mirror.sdk.listener.wallet.GetOneWalletTransactionBySigListener;
 import com.mirror.sdk.listener.wallet.GetWalletTokenListener;
-import com.mirror.sdk.listener.wallet.GetWalletTransactionBySigListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
 import com.mirror.sdk.listener.wallet.TransactionsDTO;
 import com.mirror.sdk.listener.wallet.TransferSOLListener;
 import com.mirror.sdk.response.CommonResponse;
-import com.mirror.sdk.response.action.ApproveResponse;
 import com.mirror.sdk.response.auth.LoginResponse;
 import com.mirror.sdk.response.auth.UserResponse;
 import com.mirror.sdk.response.market.ActivityOfSingleNftResponse;
@@ -90,13 +86,11 @@ import com.mirror.sdk.response.market.ListingResponse;
 import com.mirror.sdk.response.market.MintResponse;
 import com.mirror.sdk.response.market.MultipleNFTsResponse;
 import com.mirror.sdk.response.market.SingleNFTResponse;
-import com.mirror.sdk.response.marketui.FilterInfo;
 import com.mirror.sdk.response.marketui.GetCollectionFilterInfoRes;
 import com.mirror.sdk.response.marketui.GetCollectionInfoRes;
 import com.mirror.sdk.response.marketui.GetNFTEventsRes;
 import com.mirror.sdk.response.marketui.GetNFTRealPriceRes;
 import com.mirror.sdk.response.marketui.GetNFTsRes;
-import com.mirror.sdk.response.marketui.MirrorMarketNFTEvent;
 import com.mirror.sdk.response.marketui.MirrorMarketSearchNFTObj;
 import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
 import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
@@ -122,7 +116,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -561,21 +554,6 @@ public class MirrorSDK {
         }else {
             logFlow("Unknown env:"+env);
             return "https://auth-staging.mirrorworld.fun/";
-        }
-    }
-
-    private String getMarketRoot(){
-        if(env == MirrorEnv.StagingMainNet){
-            return "";//no url yet
-        }else if(env == MirrorEnv.StagingDevNet){
-            return "https://jump-devnet.mirrorworld.fun";
-        }else if(env == MirrorEnv.DevNet){
-            return "";//No url yet
-        }else if(env == MirrorEnv.MainNet){
-            return "https://jump.mirrorworld.fun/";
-        }else {
-            logFlow("Unknown env:"+env);
-            return "https://jump-devnet.mirrorworld.fun";
         }
     }
 
@@ -1029,11 +1007,11 @@ public class MirrorSDK {
         }));
     }
 
-    public void openMarket(){
+    public void openMarket(String rootUrl){
         checkSDKInited(new OnCheckSDKUseable() {
             @Override
             public void OnChecked() {
-                String urlPre = getMarketRoot()+ "?auth=" + accessToken + "&useSchemeRedirect=";
+                String urlPre = rootUrl + "?auth=" + accessToken + "&useSchemeRedirect=";
                 if(MirrorWebviewUtils.isSupportCustomTab(mActivity)){
                     urlPre += "true";
                 }else {
@@ -1413,8 +1391,14 @@ public class MirrorSDK {
         });
     }
 
-    public void RecommondSearchNFT(List<String> collections, SearchNFTsListener listener){
-        String url = GetSSORoot() + URL_RECOMMOND_SEARCH_NFT;
+    /**
+     * Will provide 10 NFT info at most as recommend NFT.
+     * Developer can use this API to fill some recommend blank when user trying search.
+     * @param collections
+     * @param listener
+     */
+    public void RecommendSearchNFT(List<String> collections, SearchNFTsListener listener){
+        String url = GetSSORoot() + URL_RECOMMEND_SEARCH_NFT;
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         for (String tag : collections) {
@@ -1440,7 +1424,7 @@ public class MirrorSDK {
         });
     }
 
-    public void GetNFTs(String collection, int page, int page_size, String order_by, boolean desc, double sale, List<JSONObject> filter, GetNFTsListener listener){
+    public void getNFTsByUnabridgedParams(String collection, int page, int page_size, String order_by, boolean desc, double sale, List<JSONObject> filter, GetNFTsListener listener){
         String url = GetSSORoot() + URL_GET_NFTS;
 
         JSONObject jsonObject = new JSONObject();
