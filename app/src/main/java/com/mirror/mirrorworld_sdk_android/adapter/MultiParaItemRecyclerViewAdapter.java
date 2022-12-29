@@ -21,7 +21,6 @@ import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
 import com.mirror.sdk.MirrorMarket;
 import com.mirror.sdk.MirrorWorld;
 import com.mirror.sdk.constant.MirrorEnv;
-import com.mirror.sdk.listener.auth.LoginListener;
 import com.mirror.sdk.listener.marketui.GetCollectionFilterInfoListener;
 import com.mirror.sdk.listener.marketui.GetCollectionInfoListener;
 import com.mirror.sdk.listener.marketui.GetNFTEventsListener;
@@ -31,7 +30,6 @@ import com.mirror.sdk.listener.marketui.SearchNFTsListener;
 import com.mirror.sdk.listener.universal.BoolListener;
 import com.mirror.sdk.listener.universal.MirrorCallback;
 import com.mirror.sdk.MirrorSDK;
-import com.mirror.sdk.constant.MirrorConfirmation;
 import com.mirror.mirrorworld_sdk_android.DemoAPIID;
 import com.mirror.sdk.listener.auth.FetchUserListener;
 import com.mirror.sdk.listener.market.BuyNFTListener;
@@ -47,7 +45,6 @@ import com.mirror.sdk.listener.market.TransferNFTListener;
 import com.mirror.sdk.listener.market.UpdateListListener;
 import com.mirror.sdk.listener.wallet.GetOneWalletTransactionBySigListener;
 import com.mirror.sdk.listener.wallet.GetWalletTokenListener;
-import com.mirror.sdk.listener.wallet.GetWalletTransactionBySigListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
 import com.mirror.sdk.listener.wallet.TransactionsDTO;
 import com.mirror.sdk.listener.wallet.TransferSOLListener;
@@ -57,23 +54,17 @@ import com.mirror.sdk.response.market.ListingResponse;
 import com.mirror.sdk.response.market.MintResponse;
 import com.mirror.sdk.response.market.MultipleNFTsResponse;
 import com.mirror.sdk.response.market.SingleNFTResponse;
-import com.mirror.sdk.response.marketui.FilterInfo;
 import com.mirror.sdk.response.marketui.GetCollectionFilterInfoRes;
 import com.mirror.sdk.response.marketui.GetCollectionInfoRes;
 import com.mirror.sdk.response.marketui.GetNFTEventsRes;
 import com.mirror.sdk.response.marketui.GetNFTRealPriceRes;
 import com.mirror.sdk.response.marketui.GetNFTsRes;
-import com.mirror.sdk.response.marketui.MirrorMarketNFTEvent;
 import com.mirror.sdk.response.marketui.MirrorMarketSearchNFTObj;
 import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
 import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
 import com.mirror.sdk.response.wallet.TransferResponse;
 import com.mirror.sdk.utils.MirrorGsonUtils;
 import com.mirror.sdk.utils.MirrorStringUtils;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -199,7 +190,21 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 }
             });
         }else if(apiId == DemoAPIID.OPEN_MARKET){
-            MirrorWorld.openMarket();
+            MirrorEnv env = MirrorWorld.getEnvironment();
+            String marketRoot;
+            if(MirrorSDK.getInstance().env == MirrorEnv.StagingMainNet){
+                marketRoot = "";//no url yet
+            }else if(env == MirrorEnv.StagingDevNet){
+                marketRoot = "https://jump-devnet.mirrorworld.fun";
+            }else if(env == MirrorEnv.DevNet){
+                marketRoot = "";//No url yet
+            }else if(env == MirrorEnv.MainNet){
+                marketRoot = "https://jump.mirrorworld.fun/";
+            }else {
+                MirrorSDK.getInstance().logFlow("Unknown env:"+env);
+                marketRoot = "https://jump-devnet.mirrorworld.fun";
+            }
+            MirrorWorld.openMarket(marketRoot);
         }else if(apiId == DemoAPIID.LOGIN_With_EMAIL){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
                 showToast("Please input!");
@@ -212,8 +217,6 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 @Override
                 public void callback(String s) {
                     holder.mResultView.setText(s);
-                    MirrorSDK.getInstance().SetAccessToken(MirrorSDK.getInstance().GetAccessTokenFromResponse(s));
-                    MirrorSDK.getInstance().SetRefreshToken(MirrorSDK.getInstance().GetRefreshTokenFromResponse(s));
                 }
             });
         }else if(apiId == DemoAPIID.FETCH_USER){
@@ -328,7 +331,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             }catch (NumberFormatException e){
 
             }
-            MirrorWorld.updateNFT(mint_address, price, new UpdateListListener() {
+            MirrorWorld.updateNFTListing(mint_address, price, new UpdateListListener() {
                 @Override
                 public void onUpdateSuccess(ListingResponse listingResponse) {
                     holder.mResultView.setText("UpdateNFTListing success! New price:"+listingResponse.price);
@@ -713,7 +716,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             String collection = String.valueOf(holder.mEt1.getText());
             List<String> collections = new ArrayList<>();
             collections.add(collection);
-            MirrorMarket.recommondSearchNFT(collections, new SearchNFTsListener() {
+            MirrorMarket.recommendSearchNFT(collections, new SearchNFTsListener() {
                 @Override
                 public void onSuccess(List<MirrorMarketSearchNFTObj> result) {
                     holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
@@ -759,7 +762,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
 //
 //            List<JSONObject> filters = new ArrayList<>();
 //            filters.add(filter);
-            MirrorMarket.getNFTs(collection,page,page_size,order_by,desc,sale,null, new GetNFTsListener() {
+            MirrorMarket.getNFTsByUnabridgedParams(collection,page,page_size,order_by,desc,sale,null, new GetNFTsListener() {
                 @Override
                 public void onSuccess(GetNFTsRes result) {
                     holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
