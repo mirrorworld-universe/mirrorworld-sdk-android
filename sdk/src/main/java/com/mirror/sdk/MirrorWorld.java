@@ -110,6 +110,9 @@ public class MirrorWorld {
     final public static void openWallet(MirrorCallback callback){
         MirrorSDK.getInstance().OpenWallet(callback);
     }
+    final public static void openWallet(String walletUrl,MirrorCallback callback){
+        MirrorSDK.getInstance().OpenWallet(callback);
+    }
 
     /**
      * Open market of this app.
