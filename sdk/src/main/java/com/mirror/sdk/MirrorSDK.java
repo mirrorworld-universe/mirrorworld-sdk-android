@@ -372,12 +372,7 @@ public class MirrorSDK {
         sdkSimpleCheck(new OnCheckSDKUseable() {
             @Override
             public void OnChecked() {
-                String urlPre = getAuthRoot() + apiKey + "?useSchemeRedirect=";
-                if(MirrorWebviewUtils.isSupportCustomTab(mActivity)){
-                    urlPre += "true";
-                }else {
-                    urlPre += "false";
-                }
+                String urlPre = getAuthRoot() + apiKey;
                 openUrl(urlPre);
                 cbStringLogin = loginCb;
             }
@@ -392,12 +387,7 @@ public class MirrorSDK {
         sdkSimpleCheck(new OnCheckSDKUseable() {
             @Override
             public void OnChecked() {
-                String urlPre = getAuthRoot() + apiKey + "?useSchemeRedirect=";
-                if(MirrorWebviewUtils.isSupportCustomTab(mActivity)){
-                    urlPre += "true";
-                }else {
-                    urlPre += "false";
-                }
+                String urlPre = getAuthRoot() + apiKey;
                 openUrl(urlPre);
                 cbLogin = loginCb;
             }
@@ -421,7 +411,19 @@ public class MirrorSDK {
     }
 
     public void openUrl(String url){
-        logFlow("Try to open url with custom tab:"+url);
+        String finalUrlPre = "";
+        if(url.contains("?")){
+            finalUrlPre = url + "&useSchemeRedirect=";
+        }else {
+            finalUrlPre = url + "?useSchemeRedirect=";
+        }
+        if(MirrorWebviewUtils.isSupportCustomTab(mActivity)){
+            finalUrlPre += "true";
+        }else {
+            finalUrlPre += "false";
+        }
+
+        logFlow("Try to open url with custom tab:"+finalUrlPre);
         if(apiKey.equals("")){
             if(mActivity == null){
                 logFlow("Must init sdk first!");
@@ -436,9 +438,9 @@ public class MirrorSDK {
 
         ArrayList<ResolveInfo> infos = MirrorWebviewUtils.getCustomTabsPackages(mActivity);
         if(infos.size() == 0){
-            openInnerUrlOnUIThread(url);
+            openInnerUrlOnUIThread(finalUrlPre);
         }else {
-            openWebPageWithCustomTab(url);
+            openWebPageWithCustomTab(finalUrlPre);
 //            launchTab(mActivity, Uri.parse("mwsdk://userinfo?data=userInfoJsonString&access_token=accesstokentest&refresh_token=refreshtokentest"));
         }
     }
@@ -1011,13 +1013,7 @@ public class MirrorSDK {
         checkSDKInited(new OnCheckSDKUseable() {
             @Override
             public void OnChecked() {
-                String urlPre = rootUrl + "&useSchemeRedirect=";
-                if(MirrorWebviewUtils.isSupportCustomTab(mActivity)){
-                    urlPre += "true";
-                }else {
-                    urlPre += "false";
-                }
-                logFlow("marekt url:"+urlPre);
+                String urlPre = rootUrl;
                 openUrl(urlPre);
             }
 
@@ -1032,13 +1028,7 @@ public class MirrorSDK {
         checkSDKInited(new OnCheckSDKUseable() {
             @Override
             public void OnChecked() {
-                String urlPre = rootUrl + "?auth=" + accessToken + "&useSchemeRedirect=";
-                if(MirrorWebviewUtils.isSupportCustomTab(mActivity)){
-                    urlPre += "true";
-                }else {
-                    urlPre += "false";
-                }
-                logFlow("marekt url:"+urlPre);
+                String urlPre = rootUrl + "?auth=" + accessToken ;
                 openUrl(urlPre);
             }
 
@@ -1104,28 +1094,10 @@ public class MirrorSDK {
 
         //Use this if login page updated
         doOpenWallet();
-//        if(accessToken == ""){
-//            logFlow("No access token,start get flow");
-//            GetAccessToken(mActivity, new MirrorCallback() {
-//                @Override
-//                public void callback(String result) {
-//                    accessToken = result;
-//                    doOpenWallet();
-//                }
-//            },false);
-//        }else {
-//            doOpenWallet();
-//        }
     }
 
     private void doOpenWallet(){
-        String finalUrlPre = getAuthRoot() + "jwt?key=" + accessToken + "&useSchemeRedirect=";
-        if(MirrorWebviewUtils.isSupportCustomTab(mActivity)){
-            finalUrlPre += "true";
-        }else {
-            finalUrlPre += "false";
-        }
-        logFlow("wallet url:"+finalUrlPre);
+        String finalUrlPre = getAuthRoot() + "jwt?key=" + accessToken;
         openUrl(finalUrlPre);
 
         loginPageMode = MirrorLoginPageMode.KeepIfLoginDone;

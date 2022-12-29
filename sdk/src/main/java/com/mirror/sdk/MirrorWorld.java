@@ -122,6 +122,13 @@ public class MirrorWorld {
     }
 
     /**
+     * Open any url
+     */
+    final public static void openUrl(String url){
+        MirrorSDK.getInstance().openUrl(url);
+    }
+
+    /**
      * Fetch details of a user.
      * @param listener
      */
