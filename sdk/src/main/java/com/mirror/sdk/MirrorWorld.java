@@ -108,10 +108,10 @@ public class MirrorWorld {
      * Open user's wallet page.
      */
     final public static void openWallet(MirrorCallback callback){
-        MirrorSDK.getInstance().OpenWallet(callback);
+        MirrorSDK.getInstance().OpenWallet("",callback);
     }
     final public static void openWallet(String walletUrl,MirrorCallback callback){
-        MirrorSDK.getInstance().OpenWallet(callback);
+        MirrorSDK.getInstance().OpenWallet(walletUrl,callback);
     }
 
     /**

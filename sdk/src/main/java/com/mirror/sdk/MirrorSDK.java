@@ -1064,42 +1064,25 @@ public class MirrorSDK {
         });
     }
 
-    public void OpenWallet(MirrorCallback loginCb){
-        OpenWallet();
+    /**
+     *
+     * @param walletUrl if is "" ,will use default url
+     * @param loginCb
+     */
+    public void OpenWallet(String walletUrl, MirrorCallback loginCb){
+        doOpenWallet(walletUrl);
         cbWalletLoginPassivity = loginCb;
+
         logFlow("Set open wallet callback" + cbWalletLoginPassivity);
     }
     //Wallet
-    public void OpenWallet(){
-        if(apiKey.equals("")){
-            if(mActivity == null){
-                logFlow("Must init sdk first!");
-                return;
-            }
-            apiKey = getSavedString(mActivity, localKeyAPIKey);
-        }
-        if(apiKey.equals("")){
-            logFlow("Must set app id first!");
-            return;
+    private void doOpenWallet(String walletUrl){
+        String finalUrlPre = walletUrl;
+        if(finalUrlPre == ""){
+            finalUrlPre = getAuthRoot() + "jwt?key=" + accessToken;
         }
 
-        if(refreshToken.equals("")){
-            this.refreshToken = getRefreshToken(this.mActivity);
-        }
-
-        if(refreshToken.equals("")){
-            logFlow("Please login first!");
-            return;
-        }
-
-        //Use this if login page updated
-        doOpenWallet();
-    }
-
-    private void doOpenWallet(){
-        String finalUrlPre = getAuthRoot() + "jwt?key=" + accessToken;
         openUrl(finalUrlPre);
-
         loginPageMode = MirrorLoginPageMode.KeepIfLoginDone;
     }
 
