@@ -117,9 +117,6 @@ public class MirrorWorld {
     final public static void openMarket(String marketUrl){
         MirrorSDK.getInstance().openMarket(marketUrl);
     }
-    final public static void openMarketWithWholeUrl(String marketUrl){
-        MirrorSDK.getInstance().openMarketWithWholeUrl(marketUrl);
-    }
 
     /**
      * Open any url
