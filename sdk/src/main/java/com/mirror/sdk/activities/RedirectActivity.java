@@ -10,6 +10,7 @@ import android.os.Debug;
 import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
 import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.MirrorWorld;
 import com.mirror.sdk.constant.MirrorConstant;
@@ -18,6 +19,7 @@ import com.mirror.sdk.response.action.ApproveResponse;
 import com.mirror.sdk.response.market.ListingResponse;
 import com.mirror.sdk.utils.MirrorGsonUtils;
 
+import java.net.URI;
 import java.net.URLDecoder;
 import java.util.Set;
 
@@ -78,8 +80,13 @@ public class RedirectActivity extends Activity {
     private void handleApprove(Uri data){
         String dataKey = "data";
         String dataValue = "";
+        String dataStr = data.toString();
+        dataStr = dataStr.replace("#","");
+        data = Uri.parse(dataStr);
 
         dataValue = data.getQueryParameter(dataKey);
+//        JsonReader jsonReader = MirrorGsonUtils.getInstance().tests(dataValue);
+        MirrorSDK.getInstance().logFlow("Handle Approve data:"+dataValue);
         ApproveResponse response = MirrorGsonUtils.getInstance().fromJson(dataValue,new TypeToken<ApproveResponse>(){}.getType());
 
         MirrorSDK.getInstance().logFlow("Scheme auth token:"+response.authorization_token);
