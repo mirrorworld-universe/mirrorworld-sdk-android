@@ -161,6 +161,12 @@ public class MirrorSDK {
     public MirrorCallback safeFlowCb = null;
     public MirrorCallback updateAuthTokenCb = null;
 
+    //for unity
+    /**
+     * Every update of login info will call this, and it will pass them to unity
+     */
+    private MirrorCallback cbConstantLoginString = null;
+
     //ui
     private WebView mLoginMainWebView = null;
 
@@ -190,13 +196,6 @@ public class MirrorSDK {
         logFlow("init sdk:"+env);
         this.env = env;
         launchTab(mActivity);
-
-
-
-//        String aaa = "{\"action\":{\"id\":638,\"uuid\":\"c304ef5b-ff63-40de-b02c-91375041a1ba\",\"client_id\":\"2zdR55xFI4bLyax1Ok_43e4kWo6IOff1iuGA.MGbnynM3.mirrorworld.fun\",\"user_id\":6891,\"status\":\"verified\",\"type\":\"mint_nft\",\"signature\":null,\"message\":\"Approve Mint nft action from Google\",\"value\":0,\"params\":{\"url\":\"https://metadata-assets.mirrorworld.fun/mirror_jump/metadata_test/2287.json\",\"name\":\"Mirrors Jump #2287\",\"symbol\":\"MJNFT\",\"confirmation\":\"confirmed\",\"collection_mint\":\"DUuMbpmH3oiREntViXfGZhrLMbVcYBwGeBa4Wn9X8QfM\"},\"origin\":\"UNKNOWN\",\"device\":{\"os\":null,\"bot\":null,\"client\":{\"name\":\"UnityPlayer\",\"type\":\"mobile app\",\"version\":\"2021.3\"},\"device\":null},\"started_at\":\"2022-12-29T13:41:03.000Z\",\"verified_at\":\"2022-12-29T13:41:16.611Z\",\"cancelled_at\":null,\"completed_at\":null,\"createdAt\":\"2022-12-29T13:41:03.000Z\",\"updatedAt\":\"2022-12-29T13:41:16.611Z\"},\"authorization_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo2ODkxLCJjbGllbnRfaWQiOiJiZGZiNGUzYS0yODJmLTExZWQtOWJjNS0wZTFiYTdhZjE5MmQuYmRmYjRlNDAubWlycm9yd29ybGQuZnVuIiwiYXBpX2tleSI6ImR2cmlOSmxHN0lUejFxMFM1N1pCT0FXYUR6QTNjZmpqY25VIiwiYWN0aW9uX3V1aWQiOiJjMzA0ZWY1Yi1mZjYzLTQwZGUtYjAyYy05MTM3NTA0MWExYmEiLCJhY3Rpb24iOnsiaWQiOjYzOCwidXVpZCI6ImMzMDRlZjViLWZmNjMtNDBkZS1iMDJjLTkxMzc1MDQxYTFiYSIsImNsaWVudF9pZCI6IjJ6ZFI1NXhGSTRiTHlheDFPa180M2U0a1dvNklPZmYxaXVHQS5NR2JueW5NMy5taXJyb3J3b3JsZC5mdW4iLCJ1c2VyX2lkIjo2ODkxLCJzdGF0dXMiOiJ2ZXJpZmllZCIsInR5cGUiOiJtaW50X25mdCIsInNpZ25hdHVyZSI6bnVsbCwibWVzc2FnZSI6IkFwcHJvdmUgTWludCBuZnQgYWN0aW9uIGZyb20gR29vZ2xlIiwidmFsdWUiOjAsInBhcmFtcyI6eyJ1cmwiOiJodHRwczovL21ldGFkYXRhLWFzc2V0cy5taXJyb3J3b3JsZC5mdW4vbWlycm9yX2p1bXAvbWV0YWRhdGFfdGVzdC8yMjg3Lmpzb24iLCJuYW1lIjoiTWlycm9ycyBKdW1wICMyMjg3Iiwic3ltYm9sIjoiTUpORlQiLCJjb25maXJtYXRpb24iOiJjb25maXJtZWQiLCJjb2xsZWN0aW9uX21pbnQiOiJEVXVNYnBtSDNvaVJFbnRWaVhmR1pockxNYlZjWUJ3R2VCYTRXbjlYOFFmTSJ9LCJvcmlnaW4iOiJVTktOT1dOIiwiZGV2aWNlIjp7Im9zIjpudWxsLCJib3QiOm51bGwsImNsaWVudCI6eyJuYW1lIjoiVW5pdHlQbGF5ZXIiLCJ0eXBlIjoibW9iaWxlIGFwcCIsInZlcnNpb24iOiIyMDIxLjMifSwiZGV2aWNlIjpudWxsfSwic3RhcnRlZF9hdCI6IjIwMjItMTItMjlUMTM6NDE6MDMuMDAwWiIsInZlcmlmaWVkX2F0IjoiMjAyMi0xMi0yOVQxMzo0MToxNi42MTFaIiwiY2FuY2VsbGVkX2F0IjpudWxsLCJjb21wbGV0ZWRfYXQiOm51bGwsImNyZWF0ZWRBdCI6IjIwMjItMTItMjlUMTM6NDE6MDMuMDAwWiIsInVwZGF0ZWRBdCI6IjIwMjItMTItMjlUMTM6NDE6MTYuNjExWiJ9LCJpYXQiOjE2NzIzMjEyNzYsImV4cCI6MTY3MjMyMTMzNiwiaXNzIjoic3NvOnN0YWdpbmciLCJqdGkiOiJhY3Rpb246Njg5MTpjMzA0ZWY1Yi1mZjYzLTQwZGUtYjAyYy05MTM3NTA0MWExYmEifQ.FNX1u5I-XmoQt9KfC9Vgps51uchleEw5KLG_nbLQtJc\"}";
-//        String example = "{\"action\":{\"id\":635,\"uuid\":\"133fdd37-4a5f-4249-974a-8b18ec17e5f2\",\"client_id\":\"2zdR55xFI4bLyax1Ok_43e4kWo6IOff1iuGA.MGbnynM3.mirrorworld.fun\",\"user_id\":6891,\"status\":\"verified\",\"type\":\"mint_nft\",\"signature\":null,\"message\":\"Approve Mint nft action from Google\",\"value\":0,\"params\":{\"url\":\"https://metadata-assets.mirrorworld.fun/mirror_jump/metadata_test/2287.json\",\"name\":\"Mirrors Jump #2287\",\"symbol\":\"MJNFT\",\"confirmation\":\"confirmed\",\"collection_mint\":\"DUuMbpmH3oiREntViXfGZhrLMbVcYBwGeBa4Wn9X8QfM\"},\"origin\":\"UNKNOWN\",\"device\":{\"os\":null,\"bot\":null,\"client\":{\"name\":\"UnityPlayer\",\"type\":\"mobile app\",\"version\":\"2021.3\"},\"device\":null},\"started_at\":\"2022-12-29T13:20:49.000Z\",\"verified_at\":\"2022-12-29T13:21:00.660Z\",\"cancelled_at\":null,\"completed_at\":null,\"createdAt\":\"2022-12-29T13:20:49.000Z\",\"updatedAt\":\"2022-12-29T13:21:00.660Z\"},\"authorization_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo2ODkxLCJjbGllbnRfaWQiOiJiZGZiNGUzYS0yODJmLTExZWQtOWJjNS0wZTFiYTdhZjE5MmQuYmRmYjRlNDAubWlycm9yd29ybGQuZnVuIiwiYXBpX2tleSI6ImR2cmlOSmxHN0lUejFxMFM1N1pCT0FXYUR6QTNjZmpqY25VIiwiYWN0aW9uX3V1aWQiOiIxMzNmZGQzNy00YTVmLTQyNDktOTc0YS04YjE4ZWMxN2U1ZjIiLCJhY3Rpb24iOnsiaWQiOjYzNSwidXVpZCI6IjEzM2ZkZDM3LTRhNWYtNDI0OS05NzRhLThiMThlYzE3ZTVmMiIsImNsaWVudF9pZCI6IjJ6ZFI1NXhGSTRiTHlheDFPa180M2U0a1dvNklPZmYxaXVHQS5NR2JueW5NMy5taXJyb3J3b3JsZC5mdW4iLCJ1c2VyX2lkIjo2ODkxLCJzdGF0dXMiOiJ2ZXJpZmllZCIsInR5cGUiOiJtaW50X25mdCIsInNpZ25hdHVyZSI6bnVsbCwibWVzc2FnZSI6IkFwcHJvdmUgTWludCBuZnQgYWN0aW9uIGZyb20gR29vZ2xlIiwidmFsdWUiOjAsInBhcmFtcyI6eyJ1cmwiOiJodHRwczovL21ldGFkYXRhLWFzc2V0cy5taXJyb3J3b3JsZC5mdW4vbWlycm9yX2p1bXAvbWV0YWRhdGFfdGVzdC8yMjg3Lmpzb24iLCJuYW1lIjoiTWlycm9ycyBKdW1wICMyMjg3Iiwic3ltYm9sIjoiTUpORlQiLCJjb25maXJtYXRpb24iOiJjb25maXJtZWQiLCJjb2xsZWN0aW9uX21pbnQiOiJEVXVNYnBtSDNvaVJFbnRWaVhmR1pockxNYlZjWUJ3R2VCYTRXbjlYOFFmTSJ9LCJvcmlnaW4iOiJVTktOT1dOIiwiZGV2aWNlIjp7Im9zIjpudWxsLCJib3QiOm51bGwsImNsaWVudCI6eyJuYW1lIjoiVW5pdHlQbGF5ZXIiLCJ0eXBlIjoibW9iaWxlIGFwcCIsInZlcnNpb24iOiIyMDIxLjMifSwiZGV2aWNlIjpudWxsfSwic3RhcnRlZF9hdCI6IjIwMjItMTItMjlUMTM6MjA6NDkuMDAwWiIsInZlcmlmaWVkX2F0IjoiMjAyMi0xMi0yOVQxMzoyMTowMC42NjBaIiwiY2FuY2VsbGVkX2F0IjpudWxsLCJjb21wbGV0ZWRfYXQiOm51bGwsImNyZWF0ZWRBdCI6IjIwMjItMTItMjlUMTM6MjA6NDkuMDAwWiIsInVwZGF0ZWRBdCI6IjIwMjItMTItMjlUMTM6MjE6MDAuNjYwWiJ9LCJpYXQiOjE2NzIzMjAwNjAsImV4cCI6MTY3MjMyMDEyMCwiaXNzIjoic3NvOnN0YWdpbmciLCJqdGkiOiJhY3Rpb246Njg5MToxMzNmZGQzNy00YTVmLTQyNDktOTc0YS04YjE4ZWMxN2U1ZjIifQ.vbHZyxScOzR3mHkJhZx2IvJoVa6BENxbRDhQ360PBTs\"}";
-//        ApproveResponse response = MirrorGsonUtils.getInstance().fromJson(aaa,new TypeToken<ApproveResponse>(){}.getType());
-//        Log.d("MirrorSDK","AAAAA:"+response.action.params.name);
     }
 
     public void setAuthTokenCallback(MirrorCallback callback){
@@ -349,31 +348,6 @@ public class MirrorSDK {
         }
     }
 
-    public void StartLogin(LoginListener loginListener){
-        checkSDKInited(new OnCheckSDKUseable() {
-            @Override
-            public void OnChecked() {
-                CheckAuthenticated(new BoolListener() {
-                    @Override
-                    public void onBool(boolean boolValue) {
-                        if(boolValue){
-                            loginListener.onLoginSuccess();
-                        }else {
-                            openStartPage();
-                            cbLogin = loginListener;
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void OnUnUsable() {
-                openStartPage();
-                cbLogin = loginListener;
-            }
-        });
-    }
-
     /**
      * Open login page with Custom Tab
      */
@@ -407,6 +381,12 @@ public class MirrorSDK {
             }
         });
     }
+    public void setConstantLoginStringCallback(MirrorCallback callback){
+        logFlow("Set constant login string callback result:" + (callback != null));
+        cbConstantLoginString = callback;
+    }
+
+
     private void autoOpenLogin(MirrorCallback jwtCb){
         openLoginPage(new MirrorCallback() {
             @Override
@@ -485,43 +465,6 @@ public class MirrorSDK {
                 logFlow("SDK not inited.");
             }
         });
-    }
-
-    public void StartLogin(MirrorCallback listener){
-        //not use Gson
-        openStartPage();
-        cbStringLogin = listener;
-        return;
-        //use Gson
-//        checkSDKInited(new OnCheckSDKUseable() {
-//            @Override
-//            public void OnChecked() {
-//                CheckAuthenticated(new BoolListener() {
-//                    @Override
-//                    public void onBool(boolean boolValue) {
-//                        if(boolValue){
-//                            LoginResponse fakeRes = new LoginResponse();
-//                            fakeRes.access_token = accessToken;
-//                            fakeRes.refresh_token = refreshToken;
-//                            fakeRes.user = new UserResponse();
-//                            fakeRes.user.sol_address = mWalletAddress;
-//                            fakeRes.user.id = mUserId;
-//
-//                            listener.callback(MirrorGsonUtils.getInstance().toJson(fakeRes));
-//                        }else {
-//                            openStartPage();
-//                            cbStringLogin = listener;
-//                        }
-//                    }
-//                });
-//            }
-//
-//            @Override
-//            public void OnUnUsable() {
-//                openStartPage();
-//                cbStringLogin = listener;
-//            }
-//        });
     }
 
     public void SetDebug(boolean debug){
@@ -2100,13 +2043,6 @@ public class MirrorSDK {
                     saveRefreshToken(aaa.refresh_token);
                     accessToken = aaa.access_token;
 //                    mWalletAddress = aaa.user.sol_address;
-
-//            jsonObject = new JSONObject(dataJsonStr);
-//            String token = jsonObject.getString("refresh_token");
-//            saveRefreshToken(token);
-//            accessToken = jsonObject.getString("access_token");
-//            mWalletAddress = jsonObject.getJSONObject("user").getString("sol_address");
-//            mUserId = Long.parseLong(jsonObject.getJSONObject("user").getString("id"));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -2127,16 +2063,17 @@ public class MirrorSDK {
                 }
                 if(cbStringLogin != null){
                     logFlow("login success and MirrorCallback callback called.");
-                    logFlow("login dataJsonStr is:"+dataJsonStr);
                     cbStringLogin.callback(dataJsonStr);
                     cbStringLogin = null;
                 }
                 if(cbWalletLoginPassivity != null){
                     logFlow("wallet passivity login success.");
-                    logFlow("wallet passivity use string:" + dataJsonStr);
-
                     cbWalletLoginPassivity.callback(dataJsonStr);
                     cbWalletLoginPassivity = null;
+                }
+                if(cbConstantLoginString != null){
+                    logFlow("constant login string callback called:"+dataJsonStr);
+                    cbConstantLoginString.callback(dataJsonStr);
                 }
             }
         });
