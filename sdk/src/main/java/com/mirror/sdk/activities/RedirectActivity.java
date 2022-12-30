@@ -97,6 +97,13 @@ public class RedirectActivity extends Activity {
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(intent);
 
+        String loginResult = "{\n" +
+                "        \"access_token\": \""+response.access_token+"\",\n" +
+                "        \"refresh_token\": \""+response.refresh_token+"\",\n" +
+                "        \"user\": "+dataValue+"\n" +
+                "    }";
+        MirrorSDK.getInstance().setLoginResponse(loginResult);
+
         finish();
     }
 
@@ -132,8 +139,6 @@ public class RedirectActivity extends Activity {
                 "        \"refresh_token\": \""+refreshTokenValue+"\",\n" +
                 "        \"user\": "+dataValue+"\n" +
                 "    }";
-        MirrorSDK.getInstance().logFlow("loginResult:"+loginResult);
-
         MirrorSDK.getInstance().setLoginResponse(loginResult);
 
         finish();
