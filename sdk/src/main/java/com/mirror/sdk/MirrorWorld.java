@@ -63,6 +63,14 @@ public class MirrorWorld {
     }
 
     /**
+     * Get now environment.
+     * @return
+     */
+    final public static MirrorEnv getEnvironment(){
+        return MirrorSDK.getInstance().env;
+    }
+
+    /**
      * Show the sdk flow in console if true.
      * @param useDebugMode
      */
@@ -106,8 +114,11 @@ public class MirrorWorld {
     /**
      * Open market of this app.
      */
-    final public static void openMarket(){
-        MirrorSDK.getInstance().openMarket();
+    final public static void openMarket(String marketUrl){
+        MirrorSDK.getInstance().openMarket(marketUrl);
+    }
+    final public static void openMarketWithWholeUrl(String marketUrl){
+        MirrorSDK.getInstance().openMarketWithWholeUrl(marketUrl);
     }
 
     /**
@@ -292,24 +303,24 @@ public class MirrorWorld {
      * @param price
      * @param listener
      */
-    final public static void updateNFT(String mint_address, Double price, UpdateListListener listener){
-        MirrorSDK.getInstance().UpdateNFTListing(mint_address, price, MirrorConfirmation.Default, listener);
-    }
-
-    final public static void updateNFT(String mint_address, Double price,String confirmation, UpdateListListener listener){
-        ReqUpdateListingNFT req = new ReqUpdateListingNFT();
-        req.mint_address = mint_address;
-        req.price = price;
-        req.confirmation = confirmation;
-
-        JSONObject params = MirrorGsonUtils.getInstance().toJsonObj(req);
-        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.UpdateListing, "UpdateListing", 0, params, new MirrorCallback() {
-            @Override
-            public void callback(String nothing) {
-                MirrorSDK.getInstance().UpdateNFTListing(mint_address, price, confirmation, listener);
-            }
-        });
-    }
+//    final public static void updateNFT(String mint_address, Double price, UpdateListListener listener){
+//        MirrorSDK.getInstance().UpdateNFTListing(mint_address, price, MirrorConfirmation.Default, listener);
+//    }
+//
+//    final public static void updateNFT(String mint_address, Double price,String confirmation, UpdateListListener listener){
+//        ReqUpdateListingNFT req = new ReqUpdateListingNFT();
+//        req.mint_address = mint_address;
+//        req.price = price;
+//        req.confirmation = confirmation;
+//
+//        JSONObject params = MirrorGsonUtils.getInstance().toJsonObj(req);
+//        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.UpdateListing, "UpdateListing", 0, params, new MirrorCallback() {
+//            @Override
+//            public void callback(String nothing) {
+//                MirrorSDK.getInstance().UpdateNFTListing(mint_address, price, confirmation, listener);
+//            }
+//        });
+//    }
 
     /**
      *

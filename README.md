@@ -13,8 +13,8 @@ Create a developer account on the [Developer dashboard](https://app.mirrorworld.
 >
 > *The minimum version that SDK requires is Android 4.4.*
 
-1.  Download and uncompress [Mirror World Android SDK](https://github.com/mirrorworld-universe/mirrorworld-sdk-android/releases/tag/v1.3.0).
-2.  Put the `mirrorsdk1.3.0.aar` under the 'libs' folder. You may create a 'libs' folder if it doesn't exist
+1.  Download and uncompress [Mirror World Android SDK](https://github.com/mirrorworld-universe/mirrorworld-sdk-android/releases/latest).
+2.  Put the `mirrorsdk.aar` under the 'libs' folder. You may create a 'libs' folder if it doesn't exist
     <img src="https://market-assets.mirrorworld.fun/docs/build.png" width="30%" height="30%" />
 
 3.  Add configeration to build.gradle:
@@ -26,9 +26,9 @@ dependencies {
 ```
 
 4. Config CustomTab!
-   If you want to use CustomTab to show content to users(Recommand), you need to config the following contents on your AndroidManifest.xml:
+   If you want to use CustomTab to show content to users (Recommended), you need to configure the following on your AndroidManifest.xml:
 
-**Add permission of internet.**
+**Add permission for internet**
 ```xml
 <uses-permission android:name="android.permission.INTERNET" />
 ```
@@ -48,7 +48,7 @@ dependencies {
 </activity>
 ```
 
-So, the finnaly file would looked as this:
+The final file would look like this:
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
@@ -96,18 +96,18 @@ So, the finnaly file would looked as this:
 </manifest>
 ```
 
-**Add dependence**
+**Add dependency**
 ```xml
 implementation 'androidx.browser:browser:1.4.0'
 ```
 
-And then, you will see CustomTab when you try to open our prepared web page.
+You should now see CustomTab when you try to open our prepared web page.
 
 
-*Tips:If you want to make your app has only one task, you can set your own activity to SingTast:*
-```xml
-android:launchMode="singleTask"
-```
+>*Tips: If you want your app to have only one task, you can set your own activity to SingTast:*
+>```xml
+>android:launchMode="singleTask"
+>```
 And finnaly,your activity config may like this:
 ```xml
 <activity
@@ -138,7 +138,7 @@ MirrorWorld.initMirrorWorld(activity,apiKey,MirrorEnv.DevNet);
 
 ### Guide user to login
 Users need to log in to use some MirrorSDK features (or APIs).
-If you want them to login(or again), you can use the following code:
+If you want them to login for the first time or once again, use the following code:
 
 ```java
 MirrorWorld.startLogin(new LoginListener() {
@@ -167,7 +167,7 @@ MirrorWorld.isLoggedIn(new BoolListener() {
 ```
 
 ### Open wallet
-Users may want to check their wallet in the app, you can use openWallet API:
+Users may want to check their wallet in the app, you can use the `openWallet` API for this:
 
 ```java
 MirrorWorld.openWallet();
@@ -193,14 +193,13 @@ MirrorWorld.fetchNFTsByOwnerAddresses(owners, new FetchByOwnerListener() {
     }
 });
 ```
-Or you can fetch NFTs by another parameter:
-
-- fetchNFTsByMintAddresses
-- fetchNFTsByOwnerAddresses
-- fetchNFTsByCreatorAddresses
-- fetchNFTsByUpdateAuthorities
-
-Refer to the documentation for the complete [API Reference](https://docs.mirrorworld.fun/android/android-APIReference).
+>Or you can fetch NFTs by another parameter:
+>- fetchNFTsByMintAddresses
+>- fetchNFTsByOwnerAddresses
+>- fetchNFTsByCreatorAddresses
+>- fetchNFTsByUpdateAuthorities
+>
+>Refer to the documentation for the complete [API Reference](https://docs.mirrorworld.fun/android/android-APIReference).
 
 ### Transfer & List
 #### Transfer NFT
