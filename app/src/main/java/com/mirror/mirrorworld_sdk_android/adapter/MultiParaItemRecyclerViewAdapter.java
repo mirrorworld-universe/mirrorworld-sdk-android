@@ -175,6 +175,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(result);
                 }
             });
+//            MirrorSDK.getInstance().openUrlByWebview("https://auth-staging.mirrorworld.fun/approve/53e3c3fc-0c35-49bf-a092-2da2daedae79?token=SOL&value=0.000000000&useSchemeRedirect=false");
         }else if(apiId == DemoAPIID.LOGOUT){
             MirrorWorld.logout(new BoolListener() {
                 @Override

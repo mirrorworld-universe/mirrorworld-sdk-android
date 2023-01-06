@@ -79,7 +79,6 @@ import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
 import com.mirror.sdk.listener.wallet.TransactionsDTO;
 import com.mirror.sdk.listener.wallet.TransferSOLListener;
 import com.mirror.sdk.response.CommonResponse;
-import com.mirror.sdk.response.action.ApproveResponse;
 import com.mirror.sdk.response.auth.LoginResponse;
 import com.mirror.sdk.response.auth.UserResponse;
 import com.mirror.sdk.response.market.ActivityOfSingleNftResponse;
@@ -122,7 +121,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class MirrorSDK {
     //user custom
@@ -260,13 +258,12 @@ public class MirrorSDK {
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                openInnerUrl(url);
+                openUrlByWebview(url);
             }
         });
     }
 
-    public boolean openInnerUrl(String url){
-        logFlow("try to open url:"+url);
+    public boolean openUrlByWebview(String url){
         MirrorDialog dialog = new MirrorDialog(mActivity);
         dialog.setCanceledOnTouchOutside(false);
         mLoginMainWebView = new CustomWebView(mActivity);
@@ -412,7 +409,6 @@ public class MirrorSDK {
             finalUrlPre += "false";
         }
 
-        logFlow("Try to open url with custom tab:"+finalUrlPre);
         if(apiKey.equals("")){
             if(mActivity == null){
                 logFlow("Must init sdk first!");
@@ -425,10 +421,11 @@ public class MirrorSDK {
             return;
         }
 
-        ArrayList<ResolveInfo> infos = MirrorWebviewUtils.getCustomTabsPackages(mActivity);
-        if(infos.size() == 0){
+        if(!MirrorWebviewUtils.isSupportCustomTab(mActivity)){
+            logFlow("try to open url with webview:"+url);
             openInnerUrlOnUIThread(finalUrlPre);
         }else {
+            logFlow("Try to open url with custom tab:" + finalUrlPre);
             openWebPageWithCustomTab(finalUrlPre);
 //            launchTab(mActivity, Uri.parse("mwsdk://userinfo?data=userInfoJsonString&access_token=accesstokentest&refresh_token=refreshtokentest"));
         }

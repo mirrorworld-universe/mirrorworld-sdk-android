@@ -16,6 +16,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Toast;
 
+import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.constant.MirrorConstant;
 
 import java.util.ArrayList;
@@ -66,8 +67,11 @@ public class MirrorWebviewUtils {
     }
 
     public static boolean isSupportCustomTab(Activity activity){
+        String nameToUse = MirrorWebviewUtils.getPackageNameToUse(activity);
+
+        MirrorSDK.getInstance().logFlow("Browser name to use:" + nameToUse);
         ArrayList<ResolveInfo> infos = MirrorWebviewUtils.getCustomTabsPackages(activity);
-        if(infos.size() == 0){
+        if(nameToUse == null){
             return false;
         }else {
             return true;
@@ -105,7 +109,7 @@ public class MirrorWebviewUtils {
 
         PackageManager pm = context.getPackageManager();
         // Get default VIEW intent handler.
-        Intent activityIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.example.com"));
+        Intent activityIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.example.com"));
         ResolveInfo defaultViewHandlerInfo = pm.resolveActivity(activityIntent, 0);
         String defaultViewHandlerPackageName = null;
         if (defaultViewHandlerInfo != null) {
