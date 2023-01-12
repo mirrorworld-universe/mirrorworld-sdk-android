@@ -18,7 +18,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Message;
@@ -50,6 +49,8 @@ import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.constant.MirrorLoginPageMode;
 import com.mirror.sdk.constant.MirrorResCode;
 import com.mirror.sdk.constant.MirrorUrl;
+import com.mirror.sdk.listener.confirmation.CheckStatusOfMintingListener;
+import com.mirror.sdk.listener.confirmation.CheckStatusOfMintingResponse;
 import com.mirror.sdk.listener.marketui.GetCollectionFilterInfoListener;
 import com.mirror.sdk.listener.marketui.GetCollectionInfoListener;
 import com.mirror.sdk.listener.marketui.GetNFTEventsListener;
@@ -117,7 +118,6 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -345,6 +345,35 @@ public class MirrorSDK {
         }
     }
 
+    public void guestLogin(LoginListener listener){
+        Map<String,String> map = new HashMap<>();
+
+        String url = GetSSORoot() + MirrorUrl.URL_GUEST_LOGIN;
+        sdkSimpleCheck(new OnCheckSDKUseable() {
+            @Override
+            public void OnChecked() {
+                doGet(url,map, new MirrorCallback() {
+                    @Override
+                    public void callback(String result) {
+                        logFlow("Guest login result:" + result);
+                        listener.onLoginSuccess();
+                        CommonResponse<LoginResponse> res = MirrorGsonUtils.getInstance().fromJson(result,new TypeToken<CommonResponse<LoginResponse>>(){}.getType());
+                        if(!res.data.access_token.isEmpty()){
+                            setLoginResponse(MirrorGsonUtils.getInstance().toJson(res.data));
+                            listener.onLoginSuccess();
+                        }else {
+                            listener.onLoginFail();
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void OnUnUsable() {
+                logFlow("Please init sdk first!");
+            }
+        });
+    }
     /**
      * Open login page with Custom Tab
      */
@@ -703,6 +732,89 @@ public class MirrorSDK {
 
     public void MintNFT(String collection_mint, String name, String symbol, String detailUrl, MintNFTListener mintNFTListener){
         MintNFT(collection_mint,name,symbol,detailUrl,MirrorConfirmation.Default,mintNFTListener);
+    }
+
+    public void updateNFTProperties(String mintAddress, String name, String symbol, String updateAuthority, String NFTJsonUrl,int seller_fee_basis_points, String confirmation, MintNFTListener listener){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("mint_address", mintAddress);
+            jsonObject.put("name", name);
+            jsonObject.put("symbol", symbol);
+            jsonObject.put("update_authority", updateAuthority);
+            jsonObject.put("url", NFTJsonUrl);
+            jsonObject.put("seller_fee_basis_points", seller_fee_basis_points);
+            jsonObject.put("confirmation", confirmation);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+
+        String url = GetAPIRoot() + MirrorUrl.URL_UPDATE_NFT_PROPERTIES;
+        checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<MintResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<MintResponse>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    listener.onMintSuccess(response.data);
+                }else{
+                    listener.onMintFailed(response.code,response.message);
+                }
+            }
+        }));
+    }
+
+    public void checkStatusOfMinting(List<String> mintAddresses, CheckStatusOfMintingListener listener){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            JSONArray jsonArray = new JSONArray();
+            for (String tag : mintAddresses) {
+                jsonArray.put(tag);
+            }
+            jsonObject.put("mint_addresses", jsonArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+
+        String url = GetAPIRoot() + MirrorUrl.URL_CHECK_STATUS_OF_MINTING;
+        checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<CheckStatusOfMintingResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<CheckStatusOfMintingResponse>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    listener.onSuccess(response.data);
+                }else{
+                    listener.onCheckFailed(response.code,response.message);
+                }
+            }
+        }));
+    }
+
+    public void checkStatusOfTransactions(List<String> signatures, CheckStatusOfMintingListener listener){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            JSONArray jsonArray = new JSONArray();
+            for (String tag : signatures) {
+                jsonArray.put(tag);
+            }
+            jsonObject.put("signatures", jsonArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+
+        String url = GetAPIRoot() + MirrorUrl.URL_CHECK_STATUS_OF_TRANSACTION;
+        checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<CheckStatusOfMintingResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<CheckStatusOfMintingResponse>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    listener.onSuccess(response.data);
+                }else{
+                    listener.onCheckFailed(response.code,response.message);
+                }
+            }
+        }));
     }
 
     public void CreateVerifiedCollection(String name, String symbol, String detailUrl,String confirmation, CreateTopCollectionListener createTopCollectionListener){

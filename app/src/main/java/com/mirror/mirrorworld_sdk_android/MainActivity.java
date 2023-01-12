@@ -108,6 +108,12 @@ public class MainActivity extends AppCompatActivity {
                 null,null,null,null,null,null));
 
         items.add(new MultiItemData.MultiItem(
+                DemoAPIID.GUEST_LOGIN,"Guest login",
+                "You can login as a guest",
+                "Login",
+                null,null,null,null,null,null));
+
+        items.add(new MultiItemData.MultiItem(
                 DemoAPIID.LOGIN_With_EMAIL,"Login with email",
                 "Logs in a user with their email address and password",
                 "LoginWithEmail",
@@ -162,11 +168,17 @@ public class MainActivity extends AppCompatActivity {
 //                        "symbol","detailUrl",null,null));
 
         items.add(
-
                 new MultiItemData.MultiItem(DemoAPIID.MINT_NFT,"Mint New NFT on Collection","This request is using API Key from collectionMirror World Mobile SDK",
                         "MINT_NFT","collection_mint","name",
                         "symbol","detailUrl",null,null));
-
+        items.add(
+                new MultiItemData.MultiItem(DemoAPIID.CHECK_STATUS_OFMINTING,"Check status of minting","Minting is not finish immediately, check its status use this API",
+                        "Check","mint address 1","mint address 2",
+                        null,null,null,null));
+        items.add(
+                new MultiItemData.MultiItem(DemoAPIID.UPDATE_NFT,"Update NFT on Collection","Update a minted NFT's info",
+                        "Update","mint address","NFT name",
+                        "NFT symbol","updateAuthority","NFTJsonUrl","seller fee basis points"));
         items.add(
 
                 new MultiItemData.MultiItem(DemoAPIID.LIST_NFT,"List NFT on the marketplace","List NFT on the marketplace by use mint address",
@@ -260,6 +272,10 @@ public class MainActivity extends AppCompatActivity {
         items.add(
                 new MultiItemData.MultiItem(DemoAPIID.WALLET_TRANSACTIONS_BY_SIGNATURE,"Get wallet transaction by signature","Get wallet transaction by signature",
                         "TRANSACTIONS_SIG","signature",null,
+                        null,null,null,null));
+        items.add(
+                new MultiItemData.MultiItem(DemoAPIID.CHECK_STATUS_TRANSACTION,"Get status of transaction by signature","Check status of transaction by sinature",
+                        "Check","signature 1","signature 2",
                         null,null,null,null));
 
         items.add(

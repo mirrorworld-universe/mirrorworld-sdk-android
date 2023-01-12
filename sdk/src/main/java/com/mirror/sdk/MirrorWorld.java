@@ -9,6 +9,7 @@ import com.mirror.sdk.constant.MirrorSafeOptType;
 import com.mirror.sdk.listener.auth.FetchUserListener;
 import com.mirror.sdk.listener.auth.LoginListener;
 import com.mirror.sdk.listener.auth.QueryUserListener;
+import com.mirror.sdk.listener.confirmation.CheckStatusOfMintingListener;
 import com.mirror.sdk.listener.market.BuyNFTListener;
 import com.mirror.sdk.listener.market.CancelListListener;
 import com.mirror.sdk.listener.market.CreateTopCollectionListener;
@@ -87,6 +88,13 @@ public class MirrorWorld {
 
     final public static void startLogin(MirrorCallback callback){
         MirrorSDK.getInstance().openLoginPage(callback);
+    }
+
+    /**
+     * Guest login
+     */
+    final public static void guestLogin(LoginListener listener){
+        MirrorSDK.getInstance().guestLogin(listener);
     }
 
     /**
@@ -302,6 +310,38 @@ public class MirrorWorld {
                 MirrorSDK.getInstance().MintNFT(collection_mint,name,symbol,detailUrl,confirmation,mintNFTListener);
             }
         });
+    }
+
+    /**
+     * Update a NFT's info
+     * @param mintAddress
+     * @param name
+     * @param symbol
+     * @param updateAuthority
+     * @param NFTJsonUrl
+     * @param seller_fee_basis_points
+     * @param confirmation
+     * @param mintNFTListener
+     */
+    final public static void updateNFTProperties(String mintAddress, String name, String symbol, String updateAuthority, String NFTJsonUrl,int seller_fee_basis_points, String confirmation, MintNFTListener mintNFTListener){
+        MirrorSDK.getInstance().updateNFTProperties(mintAddress, name, symbol, updateAuthority, NFTJsonUrl, seller_fee_basis_points, confirmation, mintNFTListener);
+    }
+
+    final public static void updateNFTProperties(String mintAddress, String name, String symbol, String updateAuthority, String NFTJsonUrl,int seller_fee_basis_points, MintNFTListener mintNFTListener){
+        MirrorSDK.getInstance().updateNFTProperties(mintAddress, name, symbol, updateAuthority, NFTJsonUrl, seller_fee_basis_points, MirrorConfirmation.Confirmed, mintNFTListener);
+    }
+
+    /**
+     * Check status of minting and transactions
+     * @param mintAddresses
+     * @param listener
+     */
+    final public static void checkStatusOfMinting(List<String> mintAddresses, CheckStatusOfMintingListener listener){
+        MirrorSDK.getInstance().checkStatusOfMinting(mintAddresses, listener);
+    }
+
+    final public static void checkStatusOfTransactions(List<String> signatures, CheckStatusOfMintingListener listener){
+        MirrorSDK.getInstance().checkStatusOfTransactions(signatures, listener);
     }
 
     /**
