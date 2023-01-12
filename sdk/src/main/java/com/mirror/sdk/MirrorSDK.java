@@ -155,7 +155,7 @@ public class MirrorSDK {
     private MirrorLoginPageMode loginPageMode = MirrorLoginPageMode.CloseIfLoginDone;
     private LoginListener cbLogin = null;
     private MirrorCallback cbStringLogin = null;
-    private MirrorCallback cbWalletLoginPassivity = null;
+    private MirrorCallback cbWalletLogout = null;
     public MirrorCallback safeFlowCb = null;
     public MirrorCallback updateAuthTokenCb = null;
 
@@ -1122,9 +1122,9 @@ public class MirrorSDK {
      */
     public void OpenWallet(String walletUrl, MirrorCallback loginCb){
         doOpenWallet(walletUrl);
-        cbWalletLoginPassivity = loginCb;
+        cbWalletLogout = loginCb;
 
-        logFlow("Set open wallet callback" + cbWalletLoginPassivity);
+        logFlow("Set open wallet callback" + cbWalletLogout);
     }
     //Wallet
     private void doOpenWallet(String walletUrl){
@@ -2123,10 +2123,10 @@ public class MirrorSDK {
     @JavascriptInterface
     public void walletLogout(){
         clearCache();
-        if(cbWalletLoginPassivity != null){
+        if(cbWalletLogout != null){
             logFlow("wallet passivity login success(js).");
-            cbWalletLoginPassivity.callback("");
-            cbWalletLoginPassivity = null;
+            cbWalletLogout.callback("");
+            cbWalletLogout = null;
         }
     }
 
@@ -2164,11 +2164,6 @@ public class MirrorSDK {
                     logFlow("login success and MirrorCallback callback called.");
                     cbStringLogin.callback(dataJsonStr);
                     cbStringLogin = null;
-                }
-                if(cbWalletLoginPassivity != null){
-                    logFlow("wallet passivity login success.");
-                    cbWalletLoginPassivity.callback(dataJsonStr);
-                    cbWalletLoginPassivity = null;
                 }
                 if(cbConstantLoginString != null){
                     logFlow("constant login string callback called:"+dataJsonStr);
