@@ -958,19 +958,9 @@ public class MirrorSDK {
         }));
     }
 
-    public void openMarketWithWholeUrl(String rootUrl){
-        checkSDKInited(new OnCheckSDKUseable() {
-            @Override
-            public void OnChecked() {
-                String urlPre = rootUrl;
-                openUrl(urlPre);
-            }
-
-            @Override
-            public void OnUnUsable() {
-                logFlow("openMarket:sdk not prepared.");
-            }
-        });
+    public void openApprovePage(String url){
+        url += "?key=" + accessToken;
+        openUrl(url);
     }
 
     public void openMarket(String rootUrl){
@@ -1585,12 +1575,12 @@ public class MirrorSDK {
                                 failCallback.callback();
                             }
                         }else{
-                            String accessToken = itJson.getJSONObject("data").getString("access_token");
+                            String jwt = itJson.getJSONObject("data").getString("access_token");
                             String newRefreshToken = itJson.getJSONObject("data").getString("refresh_token");
                             String wallet = itJson.getJSONObject("data").getJSONObject("user").getString("sol_address");
                             saveRefreshToken(newRefreshToken);
                             saveString(localKeyWalletAddress,wallet);
-                            accessToken = accessToken;
+                            accessToken = jwt;
 //                            mWalletAddress = wallet;
                             logFlow("Access token success!"+accessToken);
                             logFlow("Wallet is:"+wallet);

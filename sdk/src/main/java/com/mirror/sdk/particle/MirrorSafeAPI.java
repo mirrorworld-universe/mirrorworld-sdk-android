@@ -172,6 +172,6 @@ public class MirrorSafeAPI {
             return;
         }
         String url = MirrorSDK.getInstance().getActionRootWithoutVersion() + MirrorUrl.URL_ACTION_APPROVE + actionUUID;
-        MirrorSDK.getInstance().openUrl(url);
+        MirrorSDK.getInstance().openApprovePage(url);
     }
 }
