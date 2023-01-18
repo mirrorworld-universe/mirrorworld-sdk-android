@@ -21,6 +21,9 @@ import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
 import com.mirror.sdk.MirrorMarket;
 import com.mirror.sdk.MirrorWorld;
 import com.mirror.sdk.constant.MirrorEnv;
+import com.mirror.sdk.listener.auth.LoginListener;
+import com.mirror.sdk.listener.confirmation.CheckStatusOfMintingListener;
+import com.mirror.sdk.listener.confirmation.CheckStatusOfMintingResponse;
 import com.mirror.sdk.listener.marketui.GetCollectionFilterInfoListener;
 import com.mirror.sdk.listener.marketui.GetCollectionInfoListener;
 import com.mirror.sdk.listener.marketui.GetNFTEventsListener;
@@ -175,6 +178,18 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(result);
                 }
             });
+        }else if(apiId == DemoAPIID.GUEST_LOGIN){
+            MirrorWorld.guestLogin(new LoginListener() {
+                @Override
+                public void onLoginSuccess() {
+                    holder.mResultView.setText("Guest login success!");
+                }
+
+                @Override
+                public void onLoginFail() {
+                    holder.mResultView.setText("Guest login failed!");
+                }
+            });
         }else if(apiId == DemoAPIID.LOGOUT){
             MirrorWorld.logout(new BoolListener() {
                 @Override
@@ -289,6 +304,54 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 @Override
                 public void onMintFailed(long code, String message) {
                     holder.mResultView.setText(message);
+                }
+            });
+        }else if(apiId == DemoAPIID.UPDATE_NFT){
+            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3) || !checkEt(holder.mEt4) || !checkEt(holder.mEt5) || !checkEt(holder.mEt6)){
+                showToast("Please input all params!");
+                return;
+            }
+            String mintAddress = String.valueOf(holder.mEt1.getText());
+            String name = String.valueOf(holder.mEt2.getText());
+            String symbol = String.valueOf(holder.mEt3.getText());
+            String updateAuthority = String.valueOf(holder.mEt4.getText());
+            String NFTJsonUrl = String.valueOf(holder.mEt5.getText());
+            int seller_fee_basis_points = Integer.parseInt(String.valueOf(holder.mEt6.getText()));
+
+            MirrorWorld.updateNFTProperties(mintAddress, name, symbol, updateAuthority,NFTJsonUrl,seller_fee_basis_points, new MintNFTListener() {
+                @Override
+                public void onMintSuccess(MintResponse userResponse) {
+                    MirrorSDK.getInstance().logFlow("Update NFT result:"+MirrorGsonUtils.getInstance().toJson(userResponse));
+                    holder.mResultView.setText("Update NFT result is:"+MirrorGsonUtils.getInstance().toJson(userResponse));
+                }
+
+                @Override
+                public void onMintFailed(long code, String message) {
+                    holder.mResultView.setText(message);
+                }
+            });
+        }else if(apiId == DemoAPIID.CHECK_STATUS_OFMINTING){
+            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
+                showToast("Please input all params!");
+                return;
+            }
+            String mintAddress1 = String.valueOf(holder.mEt1.getText());
+            String mintAddress2 = String.valueOf(holder.mEt2.getText());
+
+            List<String> addresses = new ArrayList<>();
+            if(!mintAddress1.isEmpty()) addresses.add(mintAddress1);
+            if(!mintAddress2.isEmpty()) addresses.add(mintAddress2);
+
+            MirrorWorld.checkStatusOfMinting(addresses,new CheckStatusOfMintingListener() {
+
+                @Override
+                public void onSuccess(CheckStatusOfMintingResponse response) {
+                    holder.mResultView.setText("result is:" + MirrorGsonUtils.getInstance().toJson(response));
+                }
+
+                @Override
+                public void onCheckFailed(long code, String message) {
+                    holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("CHECK_STATUS_OFMINTING",code,message));
                 }
             });
         }else if(apiId == DemoAPIID.LIST_NFT){
@@ -591,6 +654,28 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 @Override
                 public void onFailed(long code, String message) {
                     holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("GetTransactionBySignature",code,message));
+                }
+            });
+        }else if(apiId == DemoAPIID.CHECK_STATUS_TRANSACTION){
+            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
+                showToast("Please input!");
+                return;
+            }
+            String sig1 = String.valueOf(holder.mEt1.getText());
+            String sig2 = String.valueOf(holder.mEt2.getText());
+            List<String> signatures = new ArrayList<>();
+            if(!sig1.isEmpty()) signatures.add(sig1);
+            if(!sig2.isEmpty()) signatures.add(sig2);
+            MirrorWorld.checkStatusOfTransactions(signatures, new CheckStatusOfMintingListener() {
+
+                @Override
+                public void onSuccess(CheckStatusOfMintingResponse response) {
+                    holder.mResultView.setText("checkStatusOfTransactions success!" + MirrorGsonUtils.getInstance().toJson(response));
+                }
+
+                @Override
+                public void onCheckFailed(long code, String message) {
+                    holder.mResultView.setText("checkStatusOfTransactions failed!code:"+code+" message:"+message);
                 }
             });
         }else if(apiId == DemoAPIID.TRANSFER_SQL){

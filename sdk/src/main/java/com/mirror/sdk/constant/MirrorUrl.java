@@ -7,6 +7,7 @@ public class MirrorUrl {
     public static final String URL_QUERY_USER = "auth/user";
     public static final String URL_IS_AUTHENTICATED = "auth/me";
     public static final String URL_LOGIN_WITH_EMAIL = "auth/login";
+    public static final String URL_GUEST_LOGIN = "auth/guest-login";
     public static final String URL_LOGOUT = "auth/logout";
     public static final String URL_ME = "auth/me";
 
@@ -20,6 +21,7 @@ public class MirrorUrl {
     public static final String URL_FETCH_MULTIPLE_NFTDATA_BY_CREATOR_ADDRESS = "solana/nft/creators";
     public static final String URL_FETCH_MULTIPLE_NFTDATA_BY_UPDATE_AUTHORITY_ADDRESS = "solana/nft/update-authorities";
     public static final String URL_MINT_NFT_COLLECTION = "solana/mint/nft";
+    public static final String URL_UPDATE_NFT_PROPERTIES = "solana/mint/update";
     public static final String URL_MINT_TOP_LEVEL_COLLECTION = "solana/mint/collection";
     public static final String URL_MINT_LOWER_LEVEL_COLLECTION = "solana/mint/sub-collection";
     public static final String URL_FETCH_MULTIPLE_NFT = "solana/nft/owners";
@@ -33,9 +35,12 @@ public class MirrorUrl {
     //wallet
     public static final String URL_TRANSFER_SQL = "wallet/transfer-sol";
     public static final String URL_TRANSFER_TOKEN = "wallet/transfer-token";
-    public static  final String URL_GET_WALLET_TOKEN = "wallet/tokens";
+    public static final String URL_GET_WALLET_TOKEN = "wallet/tokens";
     public static final String URL_GET_WALLET_TRANSACTIONS = "wallet/transactions";
 
+    //Confirmation
+    public static final String URL_CHECK_STATUS_OF_TRANSACTION = "solana/confirmation/transactions-status";
+    public static final String URL_CHECK_STATUS_OF_MINTING = "solana/confirmation/mints-status";
 
     // new apis
     public static final String URL_CREATE_NEW_MARKET_PLACE = "solana/marketplaces/create";

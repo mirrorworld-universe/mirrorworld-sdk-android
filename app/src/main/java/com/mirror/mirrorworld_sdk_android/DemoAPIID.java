@@ -5,6 +5,7 @@ public class DemoAPIID {
     public static final int INIT_SDK = 0;
     public static final int SET_JWT = 104;
     public static final int START_LOGIN = 101;
+    public static final int GUEST_LOGIN = 106;
     public static final int LOGOUT = 105;
     public static final int LOGIN_With_EMAIL = 1;
     public static final int OPEN_WALLET = 102;
@@ -14,9 +15,14 @@ public class DemoAPIID {
 
     public static final int CREATE_VERIFIED_COLLECTION =4;
     public static final int MINT_NFT =6;
+    public static final int UPDATE_NFT = 201;
     public static final int LIST_NFT = 7;
     public static final int UPDATE_NFT_LISTING =8;
     public static final int CANCEL_NFT_LISTING =9;
+
+    //Confirmation
+    public static final int CHECK_STATUS_OFMINTING = 301;
+    public static final int CHECK_STATUS_TRANSACTION = 302;
 
     public static final int FETCH_NFT_BY_OWNER_ADDRESSES =10;
     public static final int FETCH_NFT_BY_MINT_ADDRESSES = 11;

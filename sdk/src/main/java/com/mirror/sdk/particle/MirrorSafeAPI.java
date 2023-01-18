@@ -171,7 +171,7 @@ public class MirrorSafeAPI {
             MirrorSDK.logError("uuid from server is null!");
             return;
         }
-        String url = MirrorSDK.getInstance().getActionRootWithoutVersion() + MirrorUrl.URL_ACTION_APPROVE + actionUUID + "?useSchemeRedirect=true";
-        MirrorSDK.getInstance().openUrl(url);
+        String url = MirrorSDK.getInstance().getActionRootWithoutVersion() + MirrorUrl.URL_ACTION_APPROVE + actionUUID;
+        MirrorSDK.getInstance().openApprovePage(url);
     }
 }

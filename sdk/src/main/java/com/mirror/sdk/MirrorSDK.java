@@ -18,7 +18,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Message;
@@ -50,6 +49,8 @@ import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.constant.MirrorLoginPageMode;
 import com.mirror.sdk.constant.MirrorResCode;
 import com.mirror.sdk.constant.MirrorUrl;
+import com.mirror.sdk.listener.confirmation.CheckStatusOfMintingListener;
+import com.mirror.sdk.listener.confirmation.CheckStatusOfMintingResponse;
 import com.mirror.sdk.listener.marketui.GetCollectionFilterInfoListener;
 import com.mirror.sdk.listener.marketui.GetCollectionInfoListener;
 import com.mirror.sdk.listener.marketui.GetNFTEventsListener;
@@ -117,7 +118,6 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -155,9 +155,15 @@ public class MirrorSDK {
     private MirrorLoginPageMode loginPageMode = MirrorLoginPageMode.CloseIfLoginDone;
     private LoginListener cbLogin = null;
     private MirrorCallback cbStringLogin = null;
-    private MirrorCallback cbWalletLoginPassivity = null;
+    private MirrorCallback cbWalletLogout = null;
     public MirrorCallback safeFlowCb = null;
     public MirrorCallback updateAuthTokenCb = null;
+
+    //for unity
+    /**
+     * Every update of login info will call this, and it will pass them to unity
+     */
+    private MirrorCallback cbConstantLoginString = null;
 
     //ui
     private WebView mLoginMainWebView = null;
@@ -252,13 +258,12 @@ public class MirrorSDK {
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                openInnerUrl(url);
+                openUrlByWebview(url);
             }
         });
     }
 
-    public boolean openInnerUrl(String url){
-        logFlow("try to open url:"+url);
+    public boolean openUrlByWebview(String url){
         MirrorDialog dialog = new MirrorDialog(mActivity);
         dialog.setCanceledOnTouchOutside(false);
         mLoginMainWebView = new CustomWebView(mActivity);
@@ -340,18 +345,22 @@ public class MirrorSDK {
         }
     }
 
-    public void StartLogin(LoginListener loginListener){
-        checkSDKInited(new OnCheckSDKUseable() {
+    public void guestLogin(LoginListener listener){
+        String url = GetSSORoot() + MirrorUrl.URL_GUEST_LOGIN;
+        sdkSimpleCheck(new OnCheckSDKUseable() {
             @Override
             public void OnChecked() {
-                CheckAuthenticated(new BoolListener() {
+                doGet(url,null, new MirrorCallback() {
                     @Override
-                    public void onBool(boolean boolValue) {
-                        if(boolValue){
-                            loginListener.onLoginSuccess();
+                    public void callback(String result) {
+                        logFlow("Guest login result:" + result);
+                        listener.onLoginSuccess();
+                        CommonResponse<LoginResponse> res = MirrorGsonUtils.getInstance().fromJson(result,new TypeToken<CommonResponse<LoginResponse>>(){}.getType());
+                        if(!res.data.access_token.isEmpty()){
+                            setLoginResponse(MirrorGsonUtils.getInstance().toJson(res.data));
+                            listener.onLoginSuccess();
                         }else {
-                            openStartPage();
-                            cbLogin = loginListener;
+                            listener.onLoginFail();
                         }
                     }
                 });
@@ -359,12 +368,10 @@ public class MirrorSDK {
 
             @Override
             public void OnUnUsable() {
-                openStartPage();
-                cbLogin = loginListener;
+                logFlow("Please init sdk first!");
             }
         });
     }
-
     /**
      * Open login page with Custom Tab
      */
@@ -372,12 +379,7 @@ public class MirrorSDK {
         sdkSimpleCheck(new OnCheckSDKUseable() {
             @Override
             public void OnChecked() {
-                String urlPre = getAuthRoot() + apiKey + "?useSchemeRedirect=";
-                if(MirrorWebviewUtils.isSupportCustomTab(mActivity)){
-                    urlPre += "true";
-                }else {
-                    urlPre += "false";
-                }
+                String urlPre = getAuthRoot() + apiKey;
                 openUrl(urlPre);
                 cbStringLogin = loginCb;
             }
@@ -392,12 +394,7 @@ public class MirrorSDK {
         sdkSimpleCheck(new OnCheckSDKUseable() {
             @Override
             public void OnChecked() {
-                String urlPre = getAuthRoot() + apiKey + "?useSchemeRedirect=";
-                if(MirrorWebviewUtils.isSupportCustomTab(mActivity)){
-                    urlPre += "true";
-                }else {
-                    urlPre += "false";
-                }
+                String urlPre = getAuthRoot() + apiKey;
                 openUrl(urlPre);
                 cbLogin = loginCb;
             }
@@ -408,6 +405,12 @@ public class MirrorSDK {
             }
         });
     }
+    public void setConstantLoginStringCallback(MirrorCallback callback){
+        logFlow("Set constant login string callback result:" + (callback != null));
+        cbConstantLoginString = callback;
+    }
+
+
     private void autoOpenLogin(MirrorCallback jwtCb){
         openLoginPage(new MirrorCallback() {
             @Override
@@ -421,7 +424,18 @@ public class MirrorSDK {
     }
 
     public void openUrl(String url){
-        logFlow("Try to open url with custom tab:"+url);
+        String finalUrlPre = "";
+        if(url.contains("?")){
+            finalUrlPre = url + "&useSchemeRedirect=";
+        }else {
+            finalUrlPre = url + "?useSchemeRedirect=";
+        }
+        if(MirrorWebviewUtils.isSupportCustomTab(mActivity)){
+            finalUrlPre += "true";
+        }else {
+            finalUrlPre += "false";
+        }
+
         if(apiKey.equals("")){
             if(mActivity == null){
                 logFlow("Must init sdk first!");
@@ -434,11 +448,12 @@ public class MirrorSDK {
             return;
         }
 
-        ArrayList<ResolveInfo> infos = MirrorWebviewUtils.getCustomTabsPackages(mActivity);
-        if(infos.size() == 0){
-            openInnerUrlOnUIThread(url);
+        if(!MirrorWebviewUtils.isSupportCustomTab(mActivity)){
+            logFlow("try to open url with webview:"+url);
+            openInnerUrlOnUIThread(finalUrlPre);
         }else {
-            openWebPageWithCustomTab(url);
+            logFlow("Try to open url with custom tab:" + finalUrlPre);
+            openWebPageWithCustomTab(finalUrlPre);
 //            launchTab(mActivity, Uri.parse("mwsdk://userinfo?data=userInfoJsonString&access_token=accesstokentest&refresh_token=refreshtokentest"));
         }
     }
@@ -474,43 +489,6 @@ public class MirrorSDK {
                 logFlow("SDK not inited.");
             }
         });
-    }
-
-    public void StartLogin(MirrorCallback listener){
-        //not use Gson
-        openStartPage();
-        cbStringLogin = listener;
-        return;
-        //use Gson
-//        checkSDKInited(new OnCheckSDKUseable() {
-//            @Override
-//            public void OnChecked() {
-//                CheckAuthenticated(new BoolListener() {
-//                    @Override
-//                    public void onBool(boolean boolValue) {
-//                        if(boolValue){
-//                            LoginResponse fakeRes = new LoginResponse();
-//                            fakeRes.access_token = accessToken;
-//                            fakeRes.refresh_token = refreshToken;
-//                            fakeRes.user = new UserResponse();
-//                            fakeRes.user.sol_address = mWalletAddress;
-//                            fakeRes.user.id = mUserId;
-//
-//                            listener.callback(MirrorGsonUtils.getInstance().toJson(fakeRes));
-//                        }else {
-//                            openStartPage();
-//                            cbStringLogin = listener;
-//                        }
-//                    }
-//                });
-//            }
-//
-//            @Override
-//            public void OnUnUsable() {
-//                openStartPage();
-//                cbStringLogin = listener;
-//            }
-//        });
     }
 
     public void SetDebug(boolean debug){
@@ -752,6 +730,89 @@ public class MirrorSDK {
 
     public void MintNFT(String collection_mint, String name, String symbol, String detailUrl, MintNFTListener mintNFTListener){
         MintNFT(collection_mint,name,symbol,detailUrl,MirrorConfirmation.Default,mintNFTListener);
+    }
+
+    public void updateNFTProperties(String mintAddress, String name, String symbol, String updateAuthority, String NFTJsonUrl,int seller_fee_basis_points, String confirmation, MintNFTListener listener){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("mint_address", mintAddress);
+            jsonObject.put("name", name);
+            jsonObject.put("symbol", symbol);
+            jsonObject.put("update_authority", updateAuthority);
+            jsonObject.put("url", NFTJsonUrl);
+            jsonObject.put("seller_fee_basis_points", seller_fee_basis_points);
+            jsonObject.put("confirmation", confirmation);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+
+        String url = GetAPIRoot() + MirrorUrl.URL_UPDATE_NFT_PROPERTIES;
+        checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<MintResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<MintResponse>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    listener.onMintSuccess(response.data);
+                }else{
+                    listener.onMintFailed(response.code,response.message);
+                }
+            }
+        }));
+    }
+
+    public void checkStatusOfMinting(List<String> mintAddresses, CheckStatusOfMintingListener listener){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            JSONArray jsonArray = new JSONArray();
+            for (String tag : mintAddresses) {
+                jsonArray.put(tag);
+            }
+            jsonObject.put("mint_addresses", jsonArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+
+        String url = GetAPIRoot() + MirrorUrl.URL_CHECK_STATUS_OF_MINTING;
+        checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<CheckStatusOfMintingResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<CheckStatusOfMintingResponse>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    listener.onSuccess(response.data);
+                }else{
+                    listener.onCheckFailed(response.code,response.message);
+                }
+            }
+        }));
+    }
+
+    public void checkStatusOfTransactions(List<String> signatures, CheckStatusOfMintingListener listener){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            JSONArray jsonArray = new JSONArray();
+            for (String tag : signatures) {
+                jsonArray.put(tag);
+            }
+            jsonObject.put("signatures", jsonArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+
+        String url = GetAPIRoot() + MirrorUrl.URL_CHECK_STATUS_OF_TRANSACTION;
+        checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<CheckStatusOfMintingResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<CheckStatusOfMintingResponse>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    listener.onSuccess(response.data);
+                }else{
+                    listener.onCheckFailed(response.code,response.message);
+                }
+            }
+        }));
     }
 
     public void CreateVerifiedCollection(String name, String symbol, String detailUrl,String confirmation, CreateTopCollectionListener createTopCollectionListener){
@@ -1007,38 +1068,16 @@ public class MirrorSDK {
         }));
     }
 
-    public void openMarketWithWholeUrl(String rootUrl){
-        checkSDKInited(new OnCheckSDKUseable() {
-            @Override
-            public void OnChecked() {
-                String urlPre = rootUrl + "&useSchemeRedirect=";
-                if(MirrorWebviewUtils.isSupportCustomTab(mActivity)){
-                    urlPre += "true";
-                }else {
-                    urlPre += "false";
-                }
-                logFlow("marekt url:"+urlPre);
-                openUrl(urlPre);
-            }
-
-            @Override
-            public void OnUnUsable() {
-                logFlow("openMarket:sdk not prepared.");
-            }
-        });
+    public void openApprovePage(String url){
+        url += "?key=" + accessToken;
+        openUrl(url);
     }
 
     public void openMarket(String rootUrl){
         checkSDKInited(new OnCheckSDKUseable() {
             @Override
             public void OnChecked() {
-                String urlPre = rootUrl + "?auth=" + accessToken + "&useSchemeRedirect=";
-                if(MirrorWebviewUtils.isSupportCustomTab(mActivity)){
-                    urlPre += "true";
-                }else {
-                    urlPre += "false";
-                }
-                logFlow("marekt url:"+urlPre);
+                String urlPre = rootUrl + "?auth=" + accessToken ;
                 openUrl(urlPre);
             }
 
@@ -1074,60 +1113,25 @@ public class MirrorSDK {
         });
     }
 
-    public void OpenWallet(MirrorCallback loginCb){
-        OpenWallet();
-        cbWalletLoginPassivity = loginCb;
-        logFlow("Set open wallet callback" + cbWalletLoginPassivity);
+    /**
+     *
+     * @param walletUrl if is "" ,will use default url
+     * @param loginCb
+     */
+    public void OpenWallet(String walletUrl, MirrorCallback loginCb){
+        doOpenWallet(walletUrl);
+        cbWalletLogout = loginCb;
+
+        logFlow("Set open wallet callback" + cbWalletLogout);
     }
     //Wallet
-    public void OpenWallet(){
-        if(apiKey.equals("")){
-            if(mActivity == null){
-                logFlow("Must init sdk first!");
-                return;
-            }
-            apiKey = getSavedString(mActivity, localKeyAPIKey);
-        }
-        if(apiKey.equals("")){
-            logFlow("Must set app id first!");
-            return;
+    private void doOpenWallet(String walletUrl){
+        String finalUrlPre = walletUrl;
+        if(finalUrlPre == ""){
+            finalUrlPre = getAuthRoot() + "jwt?key=" + accessToken;
         }
 
-        if(refreshToken.equals("")){
-            this.refreshToken = getRefreshToken(this.mActivity);
-        }
-
-        if(refreshToken.equals("")){
-            logFlow("Please login first!");
-            return;
-        }
-
-        //Use this if login page updated
-        doOpenWallet();
-//        if(accessToken == ""){
-//            logFlow("No access token,start get flow");
-//            GetAccessToken(mActivity, new MirrorCallback() {
-//                @Override
-//                public void callback(String result) {
-//                    accessToken = result;
-//                    doOpenWallet();
-//                }
-//            },false);
-//        }else {
-//            doOpenWallet();
-//        }
-    }
-
-    private void doOpenWallet(){
-        String finalUrlPre = getAuthRoot() + "jwt?key=" + accessToken + "&useSchemeRedirect=";
-        if(MirrorWebviewUtils.isSupportCustomTab(mActivity)){
-            finalUrlPre += "true";
-        }else {
-            finalUrlPre += "false";
-        }
-        logFlow("wallet url:"+finalUrlPre);
         openUrl(finalUrlPre);
-
         loginPageMode = MirrorLoginPageMode.KeepIfLoginDone;
     }
 
@@ -1681,12 +1685,12 @@ public class MirrorSDK {
                                 failCallback.callback();
                             }
                         }else{
-                            String accessToken = itJson.getJSONObject("data").getString("access_token");
+                            String jwt = itJson.getJSONObject("data").getString("access_token");
                             String newRefreshToken = itJson.getJSONObject("data").getString("refresh_token");
                             String wallet = itJson.getJSONObject("data").getJSONObject("user").getString("sol_address");
                             saveRefreshToken(newRefreshToken);
                             saveString(localKeyWalletAddress,wallet);
-                            accessToken = accessToken;
+                            accessToken = jwt;
 //                            mWalletAddress = wallet;
                             logFlow("Access token success!"+accessToken);
                             logFlow("Wallet is:"+wallet);
@@ -1746,7 +1750,7 @@ public class MirrorSDK {
                     mActivity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            logFlow("Get Result is:"+resultStr);
+                            logFlow("   Get Result is:"+resultStr);
                             mirrorCallback.callback(resultStr);
                         }
                     });
@@ -1990,7 +1994,7 @@ public class MirrorSDK {
             urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             urlConn.setRequestProperty("Accept","application/json");
             urlConn.setRequestProperty("x-api-key", apiKey);
-            urlConn.setRequestProperty("Authorization","Bearer "+accessToken);
+            if(accessToken != null && accessToken != "") urlConn.setRequestProperty("Authorization","Bearer "+accessToken);
             urlConn.setRequestMethod("GET");
 
             logFlow("http get code:"+urlConn.getResponseCode());
@@ -2117,10 +2121,10 @@ public class MirrorSDK {
     @JavascriptInterface
     public void walletLogout(){
         clearCache();
-        if(cbWalletLoginPassivity != null){
+        if(cbWalletLogout != null){
             logFlow("wallet passivity login success(js).");
-            cbWalletLoginPassivity.callback("");
-            cbWalletLoginPassivity = null;
+            cbWalletLogout.callback("");
+            cbWalletLogout = null;
         }
     }
 
@@ -2136,13 +2140,6 @@ public class MirrorSDK {
                     saveRefreshToken(aaa.refresh_token);
                     accessToken = aaa.access_token;
 //                    mWalletAddress = aaa.user.sol_address;
-
-//            jsonObject = new JSONObject(dataJsonStr);
-//            String token = jsonObject.getString("refresh_token");
-//            saveRefreshToken(token);
-//            accessToken = jsonObject.getString("access_token");
-//            mWalletAddress = jsonObject.getJSONObject("user").getString("sol_address");
-//            mUserId = Long.parseLong(jsonObject.getJSONObject("user").getString("id"));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -2163,16 +2160,12 @@ public class MirrorSDK {
                 }
                 if(cbStringLogin != null){
                     logFlow("login success and MirrorCallback callback called.");
-                    logFlow("login dataJsonStr is:"+dataJsonStr);
                     cbStringLogin.callback(dataJsonStr);
                     cbStringLogin = null;
                 }
-                if(cbWalletLoginPassivity != null){
-                    logFlow("wallet passivity login success.");
-                    logFlow("wallet passivity use string:" + dataJsonStr);
-
-                    cbWalletLoginPassivity.callback(dataJsonStr);
-                    cbWalletLoginPassivity = null;
+                if(cbConstantLoginString != null){
+                    logFlow("constant login string callback called:"+dataJsonStr);
+                    cbConstantLoginString.callback(dataJsonStr);
                 }
             }
         });

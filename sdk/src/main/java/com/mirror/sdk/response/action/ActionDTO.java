@@ -21,8 +21,13 @@ public class ActionDTO {
     public String updatedAt;
 
     public static class ParamsDTO {
-        public int amount;
-        public String to_publickey;
+//        public int amount;
+//        public String to_publickey;
+        public String url;
+        public String name;
+        public String symbol;
+        public String confirmation;
+        public String collection_mint;
     }
 
     public static class DeviceDTO {
