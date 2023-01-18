@@ -346,13 +346,11 @@ public class MirrorSDK {
     }
 
     public void guestLogin(LoginListener listener){
-        Map<String,String> map = new HashMap<>();
-
         String url = GetSSORoot() + MirrorUrl.URL_GUEST_LOGIN;
         sdkSimpleCheck(new OnCheckSDKUseable() {
             @Override
             public void OnChecked() {
-                doGet(url,map, new MirrorCallback() {
+                doGet(url,null, new MirrorCallback() {
                     @Override
                     public void callback(String result) {
                         logFlow("Guest login result:" + result);
@@ -1752,7 +1750,7 @@ public class MirrorSDK {
                     mActivity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            logFlow("Get Result is:"+resultStr);
+                            logFlow("   Get Result is:"+resultStr);
                             mirrorCallback.callback(resultStr);
                         }
                     });
@@ -1996,7 +1994,7 @@ public class MirrorSDK {
             urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             urlConn.setRequestProperty("Accept","application/json");
             urlConn.setRequestProperty("x-api-key", apiKey);
-            urlConn.setRequestProperty("Authorization","Bearer "+accessToken);
+            if(accessToken != null && accessToken != "") urlConn.setRequestProperty("Authorization","Bearer "+accessToken);
             urlConn.setRequestMethod("GET");
 
             logFlow("http get code:"+urlConn.getResponseCode());
