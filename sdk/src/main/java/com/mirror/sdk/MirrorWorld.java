@@ -30,6 +30,7 @@ import com.mirror.sdk.listener.wallet.GetWalletTransactionBySigListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
 import com.mirror.sdk.listener.wallet.TransferSOLListener;
 import com.mirror.sdk.particle.MirrorSafeAPI;
+import com.mirror.sdk.request.ApproveReqUpdateNFTProperties;
 import com.mirror.sdk.request.ReqBuyNFT;
 import com.mirror.sdk.request.ReqCancelListing;
 import com.mirror.sdk.request.ReqCreateCollection;
@@ -324,11 +325,39 @@ public class MirrorWorld {
      * @param mintNFTListener
      */
     final public static void updateNFTProperties(String mintAddress, String name, String symbol, String updateAuthority, String NFTJsonUrl,int seller_fee_basis_points, String confirmation, MintNFTListener mintNFTListener){
-        MirrorSDK.getInstance().updateNFTProperties(mintAddress, name, symbol, updateAuthority, NFTJsonUrl, seller_fee_basis_points, confirmation, mintNFTListener);
+        ApproveReqUpdateNFTProperties req = new ApproveReqUpdateNFTProperties();
+        req.mint_address = mintAddress;
+        req.name = name;
+        req.symbol = symbol;
+        req.update_authority = updateAuthority;
+        req.seller_fee_basis_points = seller_fee_basis_points;
+        req.confirmation = confirmation;
+
+        JSONObject params = MirrorGsonUtils.getInstance().toJsonObj(req);
+        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.UpdateNFT, "Update NFT", 0, params, new MirrorCallback() {
+            @Override
+            public void callback(String nothing) {
+                MirrorSDK.getInstance().updateNFTProperties(mintAddress, name, symbol, updateAuthority, NFTJsonUrl, seller_fee_basis_points, confirmation, mintNFTListener);
+            }
+        });
     }
 
     final public static void updateNFTProperties(String mintAddress, String name, String symbol, String updateAuthority, String NFTJsonUrl,int seller_fee_basis_points, MintNFTListener mintNFTListener){
-        MirrorSDK.getInstance().updateNFTProperties(mintAddress, name, symbol, updateAuthority, NFTJsonUrl, seller_fee_basis_points, MirrorConfirmation.Confirmed, mintNFTListener);
+        ApproveReqUpdateNFTProperties req = new ApproveReqUpdateNFTProperties();
+        req.mint_address = mintAddress;
+        req.name = name;
+        req.symbol = symbol;
+        req.update_authority = updateAuthority;
+        req.seller_fee_basis_points = seller_fee_basis_points;
+        req.confirmation = MirrorConfirmation.Confirmed;
+
+        JSONObject params = MirrorGsonUtils.getInstance().toJsonObj(req);
+        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.UpdateNFT, "Update NFT", 0, params, new MirrorCallback() {
+            @Override
+            public void callback(String nothing) {
+                MirrorSDK.getInstance().updateNFTProperties(mintAddress, name, symbol, updateAuthority, NFTJsonUrl, seller_fee_basis_points, MirrorConfirmation.Confirmed, mintNFTListener);
+            }
+        });
     }
 
     /**
