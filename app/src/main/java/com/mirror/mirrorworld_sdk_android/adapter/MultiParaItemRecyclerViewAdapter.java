@@ -369,7 +369,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             }catch (NumberFormatException e){
 
             }
-            MirrorWorld.listingNFT(mint_address, price, new ListNFTListener() {
+            MirrorWorld.listNFT(mint_address, price, new ListNFTListener() {
                 @Override
                 public void onListSuccess(ListingResponse listingResponse) {
                     holder.mResultView.setText("ListNFT success! price is:"+listingResponse.price);

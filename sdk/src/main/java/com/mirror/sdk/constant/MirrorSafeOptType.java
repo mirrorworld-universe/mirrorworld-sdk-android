@@ -2,6 +2,7 @@ package com.mirror.sdk.constant;
 
 public class MirrorSafeOptType {
     public static String MintNFT = "mint_nft";
+    public static String UpdateNFT = "update_nft";
     public static String TransferSol = "transfer_sol";
     public static String TransferSPLToken = "transfer_spl_token";
     public static String CreateCollection = "create_collection";
