@@ -404,10 +404,10 @@ public class MirrorWorld {
      * @param price
      * @param listener
      */
-    final public static void listingNFT(String mint_address, Double price,ListNFTListener listener){
+    final public static void listNFT(String mint_address, Double price, ListNFTListener listener){
         MirrorSDK.getInstance().ListNFT(mint_address, price, MirrorConfirmation.Default, listener);
     }
-    final public static void listingNFT(String mint_address, Double price, String confirmation,String auction_house, ListNFTListener listener){
+    final public static void listNFT(String mint_address, Double price, String confirmation, String auction_house, ListNFTListener listener){
         ReqListingNFT req = new ReqListingNFT();
         req.mint_address = mint_address;
         req.price = price;
