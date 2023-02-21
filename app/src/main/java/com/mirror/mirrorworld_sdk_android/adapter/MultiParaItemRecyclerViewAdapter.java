@@ -162,7 +162,15 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
     private void handleClick(int apiId, MultiParaItemRecyclerViewAdapter.ViewHolder holder,View view){
 
         if(apiId == DemoAPIID.INIT_SDK){
-            MirrorWorld.initMirrorWorld(mContext,String.valueOf(holder.mEt1.getText()), MirrorEnv.StagingDevNet);
+            //Prepare params
+            String APIKey = String.valueOf(holder.mEt1.getText());
+            MirrorEnv environment = MirrorEnv.MainNet;
+            Activity context = mContext;
+
+            //Call API:initMirrorWorld
+            MirrorWorld.initMirrorWorld(context, APIKey, environment);
+
+            //Show result
             holder.mResultView.setText("SDK has been inited!");
         }else if(apiId == DemoAPIID.SET_JWT){
             if(!checkEt(holder.mEt1)){
@@ -172,9 +180,11 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             MirrorSDK.getInstance().SetAccessToken(String.valueOf(holder.mEt1.getText()));
             holder.mResultView.setText("JWT has been set!");
         }else if(apiId == DemoAPIID.START_LOGIN){
+            //Call API:startLogin
             MirrorWorld.startLogin(new MirrorCallback() {
                 @Override
                 public void callback(String result) {
+                    //todo: Show result
                     holder.mResultView.setText(result);
                 }
             });
@@ -205,6 +215,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 }
             });
         }else if(apiId == DemoAPIID.OPEN_MARKET){
+            //Choice market url by environment
             MirrorEnv env = MirrorWorld.getEnvironment();
             String marketRoot;
             if(MirrorSDK.getInstance().env == MirrorEnv.StagingMainNet){
@@ -219,6 +230,8 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 MirrorSDK.getInstance().logFlow("Unknown env:"+env);
                 marketRoot = "https://jump-devnet.mirrorworld.fun";
             }
+
+            //Call API:openMarket
             MirrorWorld.openMarket(marketRoot);
         }else if(apiId == DemoAPIID.LOGIN_With_EMAIL){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){

@@ -535,21 +535,6 @@ public class MirrorSDK {
         }
     }
 
-    private String GetSSORootNoV(){
-        if(env == MirrorEnv.StagingMainNet){
-            return "https://api-staging.mirrorworld.fun/";
-        }else if(env == MirrorEnv.StagingDevNet){
-            return "https://api-staging.mirrorworld.fun/";
-        }else if(env == MirrorEnv.DevNet){
-            return "https://api.mirrorworld.fun/";
-        }else if(env == MirrorEnv.MainNet){
-            return "https://api.mirrorworld.fun/";
-        }else {
-            logFlow("Unknown env:"+env);
-            return "https://api-staging.mirrorworld.fun/";
-        }
-    }
-
     private String GetSSORoot(){
         if(env == MirrorEnv.StagingMainNet){
             return "https://api-staging.mirrorworld.fun/v1/";
