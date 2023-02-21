@@ -3,6 +3,7 @@ package com.mirror.sdk;
 import android.app.Activity;
 import android.util.Log;
 
+import com.mirror.sdk.constant.MirrorChains;
 import com.mirror.sdk.constant.MirrorConfirmation;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.constant.MirrorSafeOptType;
@@ -54,14 +55,18 @@ public class MirrorWorld {
      * @param activity
      * @param mirrorEnv
      */
-    final public static void initMirrorWorld(Activity activity,String apiKey, MirrorEnv mirrorEnv){
-        MirrorSDK.getInstance().InitSDK(activity,mirrorEnv);
+    final public static void initMirrorWorld(Activity activity, String apiKey, MirrorChains chain, MirrorEnv mirrorEnv){
+        if(apiKey.isEmpty()){
+            MirrorSDK.logError("APIKey is invalid!");
+            return;
+        }
+        MirrorSDK.getInstance().InitSDK(activity,mirrorEnv,chain);
         MirrorSDK.getInstance().SetApiKey(apiKey);
     }
-    final public static void initMirrorWorld(Activity activity,String apiKey, int env){
+    final public static void initMirrorWorld(Activity activity,String apiKey,MirrorChains chain, int env){
         MirrorSDK.getInstance().SetApiKey(apiKey);
         MirrorEnv data=MirrorEnv.values()[env];
-        MirrorSDK.getInstance().InitSDK(activity,data);
+        MirrorSDK.getInstance().InitSDK(activity,data,chain);
     }
 
     /**
@@ -232,6 +237,13 @@ public class MirrorWorld {
         });
     }
 
+    final public static void getTransactionOfTransferSOL(String toPublickey,float amount,GetWalletTransactionListener listener){
+        MirrorSDK.getInstance().getTransactionOfTransferSOL(toPublickey, amount, listener);
+    }
+
+    final public static void getTransactionsOfTransferToken(String toPublickey,float amount,String tokenMint,int decimals,GetWalletTransactionListener listener){
+        MirrorSDK.getInstance().getTransactionOfTransferToken(toPublickey, amount, tokenMint, decimals, listener);
+    }
     /**
      * Transfer SPL token to a recipient
      * @param toPublickey

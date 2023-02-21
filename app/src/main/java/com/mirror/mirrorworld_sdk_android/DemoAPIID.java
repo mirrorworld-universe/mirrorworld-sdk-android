@@ -33,10 +33,13 @@ public class DemoAPIID {
     public static final int TRANSFER_SPL_TOKEN = 201;
     public static final int BUY_NFT = 21;
 
-    public static final int GET_WALLET_TOKEN =16;
-    public static final int WALLET_TRANSACTIONS = 17;
-    public static final int WALLET_TRANSACTIONS_BY_SIGNATURE =18;
-    public static final int TRANSFER_SQL = 19;
+    //wallet
+    public static final int GET_WALLET_TOKEN = 2001;
+    public static final int WALLET_TRANSACTIONS = 2002;
+    public static final int WALLET_TRANSACTIONS_BY_SIGNATURE = 2003;
+    public static final int TRANSFER_SOL = 2004;
+    public static final int WALLET_GET_TRANSACTION_OF_TRANSFER_SOL = 2005;
+    public static final int WALLET_GET_TRANSACTION_OF_TRANSFER_TOKEN = 2006;
 
     public static final int GET_COLLECTION_FILTER_INFO = 1001;
     public static final int GET_NFT_INFO = 1002;

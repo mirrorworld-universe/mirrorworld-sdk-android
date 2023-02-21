@@ -17,12 +17,7 @@ import android.view.WindowManager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
-import com.mirror.sdk.constant.MirrorEnv;
-import com.mirror.sdk.MirrorSDK;
-import com.mirror.sdk.response.action.ApproveResponse;
-import com.mirror.sdk.utils.MirrorGsonUtils;
 
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -280,9 +275,19 @@ public class MainActivity extends AppCompatActivity {
 
         items.add(
 
-                new MultiItemData.MultiItem(DemoAPIID.TRANSFER_SQL,"Transfer SOL to another address","Transfer SOL to another address",
+                new MultiItemData.MultiItem(DemoAPIID.TRANSFER_SOL,"Transfer SOL to another address","Transfer SOL to another address",
                         "TRANSFER_SQL","to_publickey","amount",
                         null,null,null,null));
+        items.add(
+
+                new MultiItemData.MultiItem(DemoAPIID.WALLET_GET_TRANSACTION_OF_TRANSFER_SOL,"Get transaction of trans-sol","Get transaction of transfering sol",
+                        "Fetch","to_publickey","amount",
+                        null,null,null,null));
+        items.add(
+
+                new MultiItemData.MultiItem(DemoAPIID.WALLET_GET_TRANSACTION_OF_TRANSFER_TOKEN,"Get transaction of trans-token","Get transaction of transfering token",
+                        "Fetch","to_publickey","amount",
+                        "token mint","decimals",null,null));
 
 
         return items;

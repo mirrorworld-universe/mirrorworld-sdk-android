@@ -20,6 +20,7 @@ import com.mirror.mirrorworld_sdk_android.R;
 import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
 import com.mirror.sdk.MirrorMarket;
 import com.mirror.sdk.MirrorWorld;
+import com.mirror.sdk.constant.MirrorChains;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.listener.auth.LoginListener;
 import com.mirror.sdk.listener.confirmation.CheckStatusOfMintingListener;
@@ -164,11 +165,12 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
         if(apiId == DemoAPIID.INIT_SDK){
             //Prepare params
             String APIKey = String.valueOf(holder.mEt1.getText());
-            MirrorEnv environment = MirrorEnv.MainNet;
             Activity context = mContext;
+            MirrorEnv environment = MirrorEnv.MainNet;
+            MirrorChains chain = MirrorChains.SOLANA;
 
             //Call API:initMirrorWorld
-            MirrorWorld.initMirrorWorld(context, APIKey, environment);
+            MirrorWorld.initMirrorWorld(context, APIKey, chain, environment);
 
             //Show result
             holder.mResultView.setText("SDK has been inited!");
@@ -691,7 +693,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText("checkStatusOfTransactions failed!code:"+code+" message:"+message);
                 }
             });
-        }else if(apiId == DemoAPIID.TRANSFER_SQL){
+        }else if(apiId == DemoAPIID.TRANSFER_SOL){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
                 showToast("Please input!");
                 return;
