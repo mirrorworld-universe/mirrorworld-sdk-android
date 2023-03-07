@@ -1,8 +1,6 @@
-package com.mirror.sdk.listener.marketui;
+package com.mirror.sdk.listener.metadata;
 
-import com.mirror.sdk.response.marketui.GetNFTRealPriceRes;
-
-import java.util.List;
+import com.mirror.sdk.response.metadata.GetNFTRealPriceRes;
 
 public interface GetNFTRealPriceListener {
     void onSuccess(GetNFTRealPriceRes result);

@@ -19,14 +19,15 @@ public class MirrorUrl {
     public static final String URL_ACTION_APPROVE = "approve/";
 
     //market
-    public static final String URL_QUERY_NFT_DETAIL = "nft/";
-    public static final String URL_FETCH_MULTIPLE_NFTDATA_BY_MINT_ADDRESS = "nft/mints";
+    public static final String URL_FETCH_MULTIPLE_NFTDATA_BY_MINT_ADDRESS = "mints";
     public static final String URL_FETCH_MULTIPLE_NFTDATA_BY_CREATOR_ADDRESS = "nft/creators";
     public static final String URL_FETCH_MULTIPLE_NFTDATA_BY_UPDATE_AUTHORITY_ADDRESS = "nft/update-authorities";
-    public static final String URL_MINT_NFT_COLLECTION = "mint/nft";
+    public static final String URL_MINT_NFT_COLLECTION = "nft";
     public static final String URL_UPDATE_NFT_PROPERTIES = "mint/update";
-    public static final String URL_MINT_TOP_LEVEL_COLLECTION = "mint/collection";
-    public static final String URL_FETCH_MULTIPLE_NFT = "nft/owners";
+    public static final String URL_MINT_TOP_LEVEL_COLLECTION = "collection";
+    //Asset search
+    public static final String URL_FETCH_MULTIPLE_NFT = "owners";
+    public static final String URL_QUERY_NFT_DETAIL = "nft";
     public static final String URL_FETCH_ACTIVITY = "nft/activity/";
     public static final String URL_LIST_NFT_ON_THE_MARKETPLACE = "list";
     public static final String URL_UPDATE_LISTING_OF_NFT_ON_THE_MARKETPLACE = "marketplace/update";
@@ -35,16 +36,17 @@ public class MirrorUrl {
     public static final String URL_TRANSFER_NFT_TO_ANOTHER_SOLANA_WALLET = "transfer";
 
     //wallet
+    public static final String URL_GET_WALLET_TRANSACTIONS = "transactions";
+    public static final String URL_GET_WALLET_TRANSFER_ETH = "transfer-eth";
     public static final String URL_TRANSFER_SQL = "transfer-sol";
     public static final String URL_GET_TRANSFER_SOL_TRANSACTION = "transaction/transfer-sol";
     public static final String URL_TRANSFER_TOKEN = "transfer-token";
     public static final String URL_GET_WALLET_TOKEN = "tokens";
     public static final String URL_GET_TRANSFER_TOKEN_TRANSACTION = "transaction/transfer-token";
-    public static final String URL_GET_WALLET_TRANSACTIONS = "transactions";
 
     //Confirmation
-    public static final String URL_CHECK_STATUS_OF_TRANSACTION = "confirmation/transactions-status";
-    public static final String URL_CHECK_STATUS_OF_MINTING = "confirmation/mints-status";
+    public static final String URL_CHECK_STATUS_OF_TRANSACTION = "transaction-status";
+    public static final String URL_CHECK_STATUS_OF_MINTING = "mints-status";
 
     // new apis
     public static final String URL_CREATE_NEW_MARKET_PLACE = "solana/marketplaces/create";
@@ -54,13 +56,15 @@ public class MirrorUrl {
     /**
      * Market Place
      */
-    public static final String URL_GET_COLLECTION_FILTER_INFO = "marketplace/collection/filter_info";
-    public static final String URL_GET_NFT_INFO = "marketplace/nft/";
-    public static final String URL_GET_COLLECTION_INFO = "marketplace/collections";
-    public static final String URL_GET_NFT_EVENTS = "marketplace/nft/events";
-    public static final String URL_SEARCH_NFTS = "marketplace/nft/search";
-    public static final String URL_RECOMMEND_SEARCH_NFT = "marketplace/nft/search/recommend";
-    public static final String URL_GET_NFTS = "marketplace/nfts";
+    public static final String URL_GET_COLLECTION_INFO = "collections";
+    public static final String URL_GET_COLLECTION_FILTER_INFO = "filter_info";
+    public static final String URL_GET_COLLECTION_SUMMARY = "summary";
+    public static final String URL_GET_NFT_INFO = "nft";
+    public static final String URL_GET_NFTS = "nfts";
+    public static final String URL_GET_NFT_EVENTS = "events";
+    public static final String URL_SEARCH_NFTS = "search";
+    public static final String URL_RECOMMEND_SEARCH_NFT = "recommend";
+
     public static final String URL_GET_NFT_REAL_PRICE = "marketplace/nft/real_price";
 
     /**
@@ -72,8 +76,13 @@ public class MirrorUrl {
     public static final String NETWORK_MAINNET = "mainnet";
     public static final String NETWORK_DEVNET = "devnet";
 
-    public static final String SERVICE_MARKET = "marketplaces";
-    public static final String SERVICE_WALLET = "wallet";
+    public static final String SERVICE_ASSET_AUCTION = "asset/auction";
+    public static final String SERVICE_ASSET_MINT = "asset/mint";
+    public static final String SERVICE_ASSET_NFT = "asset/nft";
+    public static final String SERVICE_CONFIRMATION = "confirmation";
+    public static final String SERVICE_METADATA = "metadata";
+    public static final String SERVICE_METADATA_COLLECTION = "metadata/collection";
+    public static final String SERVICE_METADATA_NFT = "metadata/nft";
 
 
     public static final MirrorEnv getEnv(){
@@ -110,7 +119,8 @@ public class MirrorUrl {
         }
     }
 
-    public static final String getMirrorUrl(MirrorAPIVersion APIVersion,MirrorService serviceEnum,String APIPath){
+    public static final String getMirrorUrl(MirrorService serviceEnum,String APIPath){
+        MirrorAPIVersion APIVersion = MirrorAPIVersion.V2;
         MirrorEnv env = getEnv();
         MirrorChains chainEnum = getChain();
         String host = getUrlHost();
@@ -123,18 +133,48 @@ public class MirrorUrl {
         return finalUrl;
     }
 
-    public static final String getServiceString(MirrorService serviceEnum){
+    public static final String getGetMirrorUrl(MirrorService serviceEnum){
+        MirrorAPIVersion APIVersion = MirrorAPIVersion.V2;
+        MirrorEnv env = getEnv();
+        MirrorChains chainEnum = getChain();
+        String host = getUrlHost();
+        String version = getVersionString(APIVersion);
+        String chain = getChainString(chainEnum);
+        String network = getNetworkString(env);
+        String service = getServiceString(serviceEnum);
+
+        String finalUrl = host + "/" + version + "/" + chain + "/" + network + "/" + service + "/";
+        return finalUrl;
+    }
+
+    private static final String getServiceString(MirrorService serviceEnum){
         if(serviceEnum.equals(MirrorService.Marketplace)){
-            return SERVICE_MARKET;
+            return "marketplaces";
         }else if(serviceEnum.equals(MirrorService.Wallet)){
-            return SERVICE_WALLET;
+            return "wallet";
+        }else if(serviceEnum.equals(MirrorService.AssetAuction)){
+            return SERVICE_ASSET_AUCTION;
+        }else if(serviceEnum.equals(MirrorService.AssetMint)){
+            return SERVICE_ASSET_MINT;
+        }else if(serviceEnum.equals(MirrorService.AssetNFT)){
+            return SERVICE_ASSET_NFT;
+        }else if(serviceEnum.equals(MirrorService.Confirmation)){
+            return SERVICE_CONFIRMATION;
+        }else if(serviceEnum.equals(MirrorService.Metadata)){
+            return SERVICE_METADATA;
+        }else if(serviceEnum.equals(MirrorService.MetadataCollection)){
+            return SERVICE_METADATA_COLLECTION;
+        }else if(serviceEnum.equals(MirrorService.MetadataNFT)){
+            return SERVICE_METADATA_NFT;
+        }else if(serviceEnum.equals(MirrorService.MetadataNFTSearch)){
+            return "metadata/nft/search";
         }else {
             MirrorSDK.logError("Unknown service:"+serviceEnum);
             return "";
         }
     }
 
-    public static final String getNetworkString(MirrorEnv env){
+    private static final String getNetworkString(MirrorEnv env){
         if(env.equals(MirrorEnv.StagingMainNet)){
             return NETWORK_MAINNET;
         }else if(env.equals(MirrorEnv.StagingDevNet)){
@@ -149,7 +189,7 @@ public class MirrorUrl {
         }
     }
 
-    public static final String getChainString(MirrorChains chain){
+    private static final String getChainString(MirrorChains chain){
         if(chain.equals(MirrorChains.SOLANA)){
             return "solana";
         }else {
@@ -158,7 +198,7 @@ public class MirrorUrl {
         }
     }
 
-    public static final String getVersionString(MirrorAPIVersion APIVersion){
+    private static final String getVersionString(MirrorAPIVersion APIVersion){
         if(APIVersion.equals(MirrorAPIVersion.V1)){
             return "v1";
         }else if(APIVersion.equals(MirrorAPIVersion.V2)){

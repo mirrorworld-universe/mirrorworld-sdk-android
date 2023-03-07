@@ -1,6 +1,6 @@
-package com.mirror.sdk.listener.marketui;
+package com.mirror.sdk.listener.metadata;
 
-import com.mirror.sdk.response.marketui.MirrorMarketSearchNFTObj;
+import com.mirror.sdk.response.metadata.MirrorMarketSearchNFTObj;
 
 import java.util.List;
 

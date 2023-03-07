@@ -1,4 +1,4 @@
-package com.mirror.sdk.response.marketui;
+package com.mirror.sdk.response.metadata;
 
 import java.util.List;
 

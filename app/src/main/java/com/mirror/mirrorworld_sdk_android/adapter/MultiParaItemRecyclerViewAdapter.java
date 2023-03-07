@@ -16,25 +16,24 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.mirror.mirrorworld_sdk_android.DemoAPI;
 import com.mirror.mirrorworld_sdk_android.R;
 import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
-import com.mirror.sdk.MirrorMarket;
 import com.mirror.sdk.MirrorWorld;
 import com.mirror.sdk.constant.MirrorChains;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.listener.auth.LoginListener;
 import com.mirror.sdk.listener.confirmation.CheckStatusOfMintingListener;
 import com.mirror.sdk.listener.confirmation.CheckStatusOfMintingResponse;
-import com.mirror.sdk.listener.marketui.GetCollectionFilterInfoListener;
-import com.mirror.sdk.listener.marketui.GetCollectionInfoListener;
-import com.mirror.sdk.listener.marketui.GetNFTEventsListener;
-import com.mirror.sdk.listener.marketui.GetNFTRealPriceListener;
-import com.mirror.sdk.listener.marketui.GetNFTsListener;
-import com.mirror.sdk.listener.marketui.SearchNFTsListener;
+import com.mirror.sdk.listener.metadata.GetCollectionFilterInfoListener;
+import com.mirror.sdk.listener.metadata.GetCollectionInfoListener;
+import com.mirror.sdk.listener.metadata.GetNFTEventsListener;
+import com.mirror.sdk.listener.metadata.GetNFTRealPriceListener;
+import com.mirror.sdk.listener.metadata.GetNFTsListener;
+import com.mirror.sdk.listener.metadata.SearchNFTsListener;
 import com.mirror.sdk.listener.universal.BoolListener;
 import com.mirror.sdk.listener.universal.MirrorCallback;
 import com.mirror.sdk.MirrorSDK;
-import com.mirror.mirrorworld_sdk_android.DemoAPIID;
 import com.mirror.sdk.listener.auth.FetchUserListener;
 import com.mirror.sdk.listener.market.BuyNFTListener;
 import com.mirror.sdk.listener.market.CancelListListener;
@@ -58,12 +57,12 @@ import com.mirror.sdk.response.market.ListingResponse;
 import com.mirror.sdk.response.market.MintResponse;
 import com.mirror.sdk.response.market.MultipleNFTsResponse;
 import com.mirror.sdk.response.market.SingleNFTResponse;
-import com.mirror.sdk.response.marketui.GetCollectionFilterInfoRes;
-import com.mirror.sdk.response.marketui.GetCollectionInfoRes;
-import com.mirror.sdk.response.marketui.GetNFTEventsRes;
-import com.mirror.sdk.response.marketui.GetNFTRealPriceRes;
-import com.mirror.sdk.response.marketui.GetNFTsRes;
-import com.mirror.sdk.response.marketui.MirrorMarketSearchNFTObj;
+import com.mirror.sdk.response.metadata.GetCollectionFilterInfoRes;
+import com.mirror.sdk.response.metadata.GetCollectionInfoRes;
+import com.mirror.sdk.response.metadata.GetNFTEventsRes;
+import com.mirror.sdk.response.metadata.GetNFTRealPriceRes;
+import com.mirror.sdk.response.metadata.GetNFTsRes;
+import com.mirror.sdk.response.metadata.MirrorMarketSearchNFTObj;
 import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
 import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
 import com.mirror.sdk.response.wallet.TransferResponse;
@@ -148,7 +147,6 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
         holder.mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 handleClick(mValues.get(position).id,holder,view);
             }
         });
@@ -160,9 +158,9 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
         return mValues.size();
     }
 
-    private void handleClick(int apiId, MultiParaItemRecyclerViewAdapter.ViewHolder holder,View view){
+    private void handleClick(DemoAPI apiId, MultiParaItemRecyclerViewAdapter.ViewHolder holder,View view){
 
-        if(apiId == DemoAPIID.INIT_SDK){
+        if(apiId == DemoAPI.INIT_SDK){
             //Prepare params
             String APIKey = String.valueOf(holder.mEt1.getText());
             Activity context = mContext;
@@ -174,14 +172,16 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
 
             //Show result
             holder.mResultView.setText("SDK has been inited!");
-        }else if(apiId == DemoAPIID.SET_JWT){
+        }else if(apiId == DemoAPI.GET_ENVIRONMENT){
+            holder.mResultView.setText("Environment is:" + MirrorWorld.getEnvironment());
+        }else if(apiId == DemoAPI.SET_JWT){
             if(!checkEt(holder.mEt1)){
                 showToast("Please input!");
                 return;
             }
             MirrorSDK.getInstance().SetAccessToken(String.valueOf(holder.mEt1.getText()));
             holder.mResultView.setText("JWT has been set!");
-        }else if(apiId == DemoAPIID.START_LOGIN){
+        }else if(apiId == DemoAPI.START_LOGIN){
             //Call API:startLogin
             MirrorWorld.startLogin(new MirrorCallback() {
                 @Override
@@ -190,7 +190,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(result);
                 }
             });
-        }else if(apiId == DemoAPIID.GUEST_LOGIN){
+        }else if(apiId == DemoAPI.GUEST_LOGIN){
             MirrorWorld.guestLogin(new LoginListener() {
                 @Override
                 public void onLoginSuccess() {
@@ -202,21 +202,21 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText("Guest login failed!");
                 }
             });
-        }else if(apiId == DemoAPIID.LOGOUT){
+        }else if(apiId == DemoAPI.LOGOUT){
             MirrorWorld.logout(new BoolListener() {
                 @Override
                 public void onBool(boolean boolValue) {
                     holder.mResultView.setText("Logout result:"+boolValue);
                 }
             });
-        }else if(apiId == DemoAPIID.OPEN_WALLET){
+        }else if(apiId == DemoAPI.OPEN_WALLET){
             MirrorWorld.openWallet(new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     Log.d("MirrorSDK","Wallet logout callback runs!");
                 }
             });
-        }else if(apiId == DemoAPIID.OPEN_MARKET){
+        }else if(apiId == DemoAPI.OPEN_MARKET){
             //Choice market url by environment
             MirrorEnv env = MirrorWorld.getEnvironment();
             String marketRoot;
@@ -235,7 +235,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
 
             //Call API:openMarket
             MirrorWorld.openMarket(marketRoot);
-        }else if(apiId == DemoAPIID.LOGIN_With_EMAIL){
+        }else if(apiId == DemoAPI.LOGIN_With_EMAIL){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
                 showToast("Please input!");
                 return;
@@ -249,7 +249,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(s);
                 }
             });
-        }else if(apiId == DemoAPIID.FETCH_USER){
+        }else if(apiId == DemoAPI.FETCH_USER){
             MirrorWorld.fetchUser(new FetchUserListener() {
                 @Override
                 public void onUserFetched(UserResponse userResponse) {
@@ -261,7 +261,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(message);
                 }
             });
-        }else if(apiId == DemoAPIID.QUERY_USER){
+        }else if(apiId == DemoAPI.QUERY_USER){
             if(!checkEt(holder.mEt1)){
                 showToast("Please input!");
                 return;
@@ -279,7 +279,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
 
                 }
             });
-        }else if(apiId == DemoAPIID.CREATE_VERIFIED_COLLECTION){
+        }else if(apiId == DemoAPI.CREATE_VERIFIED_COLLECTION){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3)){
                 showToast("Please input!");
                 return;
@@ -299,7 +299,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(message);
                 }
             });
-        }else if(apiId == DemoAPIID.MINT_NFT){
+        }else if(apiId == DemoAPI.MINT_NFT){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3) || !checkEt(holder.mEt4)){
                 showToast("Please input!");
                 return;
@@ -321,7 +321,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(message);
                 }
             });
-        }else if(apiId == DemoAPIID.UPDATE_NFT){
+        }else if(apiId == DemoAPI.UPDATE_NFT){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3) || !checkEt(holder.mEt4) || !checkEt(holder.mEt5) || !checkEt(holder.mEt6)){
                 showToast("Please input all params!");
                 return;
@@ -345,7 +345,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(message);
                 }
             });
-        }else if(apiId == DemoAPIID.CHECK_STATUS_OFMINTING){
+        }else if(apiId == DemoAPI.CHECK_STATUS_OFMINTING){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
                 showToast("Please input all params!");
                 return;
@@ -369,7 +369,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("CHECK_STATUS_OFMINTING",code,message));
                 }
             });
-        }else if(apiId == DemoAPIID.LIST_NFT){
+        }else if(apiId == DemoAPI.LIST_NFT){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
                 showToast("Please input!");
                 return;
@@ -395,7 +395,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("ListNFT",code,message));
                 }
             });
-        }else if(apiId == DemoAPIID.UPDATE_NFT_LISTING){
+        }else if(apiId == DemoAPI.UPDATE_NFT_LISTING){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
                 showToast("Please input!");
                 return;
@@ -420,7 +420,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("UpdateNFTListing",code,message));
                 }
             });
-        }else if(apiId == DemoAPIID.CANCEL_NFT_LISTING){
+        }else if(apiId == DemoAPI.CANCEL_NFT_LISTING){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
                 showToast("Please input!");
                 return;
@@ -444,7 +444,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("CancelNFTListing",code,message));
                 }
             });
-        }else if(apiId == DemoAPIID.FETCH_NFT_BY_OWNER_ADDRESSES){
+        }else if(apiId == DemoAPI.FETCH_NFT_BY_OWNER_ADDRESSES){
             if(!checkEt(holder.mEt1)){
                 showToast("Please input!");
                 return;
@@ -473,7 +473,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(message);
                 }
             });
-        }else if(apiId == DemoAPIID.FETCH_NFT_BY_MINT_ADDRESSES){
+        }else if(apiId == DemoAPI.FETCH_NFT_BY_MINT_ADDRESSES){
             if(!checkEt(holder.mEt1)){
                 showToast("Please input!");
                 return;
@@ -492,7 +492,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(message);
                 }
             });
-        }else if(apiId == DemoAPIID.FETCH_NFT_BY_UPDATE_AUTHORITIES){
+        }else if(apiId == DemoAPI.FETCH_NFT_BY_UPDATE_AUTHORITIES){
             if(!checkEt(holder.mEt1)){
                 showToast("Please input!");
                 return;
@@ -519,13 +519,13 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("FetchNFTsByUpdateAuthorities",code,message));
                 }
             });
-        }else if(apiId == DemoAPIID.FETCH_SINGLE_NFT_DETAILS){
+        }else if(apiId == DemoAPI.FETCH_SINGLE_NFT_DETAILS){
             if(!checkEt(holder.mEt1)){
                 showToast("Please input!");
                 return;
             }
             String mint_address =String.valueOf(holder.mEt1.getText());
-            MirrorWorld.getNFTDetails(mint_address, new FetchSingleNFTListener() {
+            MirrorWorld.getNFTDetails(mint_address,"temp_id", new FetchSingleNFTListener() {
                 @Override
                 public void onFetchSuccess(SingleNFTResponse nftObject) {
                     holder.mResultView.setText("NFT details is:"+MirrorGsonUtils.getInstance().toJson(nftObject));
@@ -536,7 +536,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
 
                 }
             });
-        }else if(apiId == DemoAPIID.FETCH_NFT_MARKETPLACE_ACTIVITY){
+        }else if(apiId == DemoAPI.FETCH_NFT_MARKETPLACE_ACTIVITY){
             if(!checkEt(holder.mEt1)){
                 showToast("Please input!");
                 return;
@@ -553,7 +553,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(message);
                 }
             });
-        }else if(apiId == DemoAPIID.TRANSFER_NFT_TO_ANOTHER_SOLANA_WALLET){
+        }else if(apiId == DemoAPI.TRANSFER_NFT_TO_ANOTHER_SOLANA_WALLET){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
                 showToast("Please input!");
                 return;
@@ -571,7 +571,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(message);
                 }
             });
-        }else if(apiId == DemoAPIID.TRANSFER_SPL_TOKEN){
+        }else if(apiId == DemoAPI.TRANSFER_SPL_TOKEN){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3) || !checkEt(holder.mEt4)){
                 showToast("Please input!");
                 return;
@@ -596,7 +596,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 }
             });
         }
-        else if(apiId == DemoAPIID.BUY_NFT){
+        else if(apiId == DemoAPI.BUY_NFT){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
                 showToast("Please input!");
                 return;
@@ -619,7 +619,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(message);
                 }
             });
-        }else if(apiId == DemoAPIID.GET_WALLET_TOKEN){
+        }else if(apiId == DemoAPI.GET_WALLET_TOKEN){
             MirrorWorld.getTokens(new GetWalletTokenListener() {
                 @Override
                 public void onSuccess(GetWalletTokenResponse walletTokenResponse) {
@@ -631,7 +631,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("GetWalletToken",code,message));
                 }
             });
-        }else if(apiId == DemoAPIID.WALLET_TRANSACTIONS){
+        }else if(apiId == DemoAPI.WALLET_TRANSACTIONS){
             if(!checkEt(holder.mEt2)){
                 showToast("Please input!");
                 return;
@@ -643,7 +643,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 e.printStackTrace();
             }
             String before = String.valueOf(holder.mEt2.getText());
-            MirrorWorld.getTransactions(limit, before, new GetWalletTransactionListener() {
+            MirrorWorld.getTransactionsOfLoggedUser(limit, before, new GetWalletTransactionListener() {
                 @Override
                 public void onSuccess(GetWalletTransactionsResponse walletTransactionsResponse) {
                     holder.mResultView.setText("GetTransactions success! count is "+walletTransactionsResponse.count);
@@ -654,13 +654,13 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("Transactions",code,message));
                 }
             });
-        }else if(apiId == DemoAPIID.WALLET_TRANSACTIONS_BY_SIGNATURE){
+        }else if(apiId == DemoAPI.WALLET_TRANSACTIONS_BY_SIGNATURE){
             if(!checkEt(holder.mEt1)){
                 showToast("Please input!");
                 return;
             }
             String sig = String.valueOf(holder.mEt1.getText());
-            MirrorWorld.getTransaction(sig, new GetOneWalletTransactionBySigListener() {
+            MirrorWorld.getTransactionBySignature(sig, new GetOneWalletTransactionBySigListener() {
                 @Override
                 public void onSuccess(TransactionsDTO walletTransactions) {
                     holder.mResultView.setText("GetTransactionBySignature success!" + MirrorGsonUtils.getInstance().toJson(walletTransactions));
@@ -671,7 +671,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("GetTransactionBySignature",code,message));
                 }
             });
-        }else if(apiId == DemoAPIID.CHECK_STATUS_TRANSACTION){
+        }else if(apiId == DemoAPI.CHECK_STATUS_TRANSACTION){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
                 showToast("Please input!");
                 return;
@@ -693,7 +693,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText("checkStatusOfTransactions failed!code:"+code+" message:"+message);
                 }
             });
-        }else if(apiId == DemoAPIID.TRANSFER_SOL){
+        }else if(apiId == DemoAPI.TRANSFER_SOL){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
                 showToast("Please input!");
                 return;
@@ -717,13 +717,13 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText("transfer sol failed!code:"+code+" message:"+message);
                 }
             });
-        }else if(apiId == DemoAPIID.GET_COLLECTION_FILTER_INFO){
+        }else if(apiId == DemoAPI.GET_COLLECTION_FILTER_INFO){
             if(!checkEt(holder.mEt1)){
                 showToast("Please input!");
                 return;
             }
             String collection = String.valueOf(holder.mEt1.getText());
-            MirrorMarket.getCollectionFilterInfo(collection, new GetCollectionFilterInfoListener() {
+            MirrorWorld.getCollectionFilterInfo(collection, new GetCollectionFilterInfoListener() {
                 @Override
                 public void onSuccess(GetCollectionFilterInfoRes result) {
                     holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
@@ -734,19 +734,19 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
                 }
             });
-        }else if(apiId == DemoAPIID.GET_NFT_INFO){
+        }else if(apiId == DemoAPI.GET_NFT_INFO){
             if(!checkEt(holder.mEt1)){
                 showToast("Please input!");
                 return;
             }
             String mint_address = String.valueOf(holder.mEt1.getText());
-            MirrorMarket.getNFTInfo(mint_address, new MirrorCallback() {
+            MirrorWorld.getNFTInfoOnSolana(mint_address, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     holder.mResultView.setText("Visiting result:"+MirrorGsonUtils.getInstance().toJson(result));
                 }
             });
-        }else if(apiId == DemoAPIID.GET_COLLECTION_INFO){
+        }else if(apiId == DemoAPI.GET_COLLECTION_INFO){
             if(!checkEt(holder.mEt1)){
                 showToast("Please input!");
                 return;
@@ -754,7 +754,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             String collection = String.valueOf(holder.mEt1.getText());
             List<String> collections = new ArrayList<>();
             collections.add(collection);
-            MirrorMarket.getCollectionInfo(collections, new GetCollectionInfoListener() {
+            MirrorWorld.getCollectionInfo(collections, new GetCollectionInfoListener() {
                 @Override
                 public void onSuccess(List<GetCollectionInfoRes> result) {
                     holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
@@ -765,7 +765,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
                 }
             });
-        }else if(apiId == DemoAPIID.GET_NFT_EVENTS){
+        }else if(apiId == DemoAPI.GET_NFT_EVENTS){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3)){
                 showToast("Please input!");
                 return;
@@ -777,7 +777,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             String pageSizeStr = String.valueOf(holder.mEt3.getText());
             page = Integer.valueOf(pageStr);
             page_size = Integer.valueOf(pageSizeStr);
-            MirrorMarket.getNFTEvents(mint_address,page,page_size, new GetNFTEventsListener() {
+            MirrorWorld.getNFTEventsOnSolana(mint_address,page,page_size, new GetNFTEventsListener() {
                 @Override
                 public void onSuccess(GetNFTEventsRes result) {
                     holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
@@ -788,7 +788,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
                 }
             });
-        }else if(apiId == DemoAPIID.SEARCH_NFTS){
+        }else if(apiId == DemoAPI.SEARCH_NFTS){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
                 showToast("Please input!");
                 return;
@@ -797,7 +797,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             String searchString = String.valueOf(holder.mEt2.getText());
             List<String> collections = new ArrayList<>();
             collections.add(collection);
-            MirrorMarket.searchNFTs(collections,searchString, new SearchNFTsListener() {
+            MirrorWorld.searchNFTs(collections,searchString, new SearchNFTsListener() {
                 @Override
                 public void onSuccess(List<MirrorMarketSearchNFTObj> result) {
                     holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
@@ -808,7 +808,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
                 }
             });
-        }else if(apiId == DemoAPIID.RECOMMEND_SEARCH_NFT){
+        }else if(apiId == DemoAPI.RECOMMEND_SEARCH_NFT){
             if(!checkEt(holder.mEt1)){
                 showToast("Please input!");
                 return;
@@ -816,7 +816,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             String collection = String.valueOf(holder.mEt1.getText());
             List<String> collections = new ArrayList<>();
             collections.add(collection);
-            MirrorMarket.recommendSearchNFT(collections, new SearchNFTsListener() {
+            MirrorWorld.recommendSearchNFT(collections, new SearchNFTsListener() {
                 @Override
                 public void onSuccess(List<MirrorMarketSearchNFTObj> result) {
                     holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
@@ -827,7 +827,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
                 }
             });
-        }else if(apiId == DemoAPIID.GET_NFTS){
+        }else if(apiId == DemoAPI.GET_NFTS){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3)
                     || !checkEt(holder.mEt4) || !checkEt(holder.mEt5) || !checkEt(holder.mEt6)){
                 showToast("Please input!");
@@ -862,7 +862,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
 //
 //            List<JSONObject> filters = new ArrayList<>();
 //            filters.add(filter);
-            MirrorMarket.getNFTsByUnabridgedParams(collection,page,page_size,order_by,desc,sale,null, new GetNFTsListener() {
+            MirrorWorld.getNFTsByUnabridgedParamsOnSolana(collection,page,page_size,order_by,desc,sale,null, new GetNFTsListener() {
                 @Override
                 public void onSuccess(GetNFTsRes result) {
                     holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
@@ -873,14 +873,14 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
                 }
             });
-        }else if(apiId == DemoAPIID.GET_NFT_REAL_PRICE){
+        }else if(apiId == DemoAPI.GET_NFT_REAL_PRICE){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
                 showToast("Please input!");
                 return;
             }
             int fee = Integer.parseInt(String.valueOf(holder.mEt2.getText()));
             String price = String.valueOf(holder.mEt1.getText());
-            MirrorMarket.getNFTRealPrice(price,fee, new GetNFTRealPriceListener() {
+            MirrorWorld.getNFTRealPrice(price,fee, new GetNFTRealPriceListener() {
                 @Override
                 public void onSuccess(GetNFTRealPriceRes result) {
                     holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));

@@ -1,6 +1,6 @@
-package com.mirror.sdk.listener.marketui;
+package com.mirror.sdk.listener.metadata;
 
-import com.mirror.sdk.response.marketui.GetCollectionInfoRes;
+import com.mirror.sdk.response.metadata.GetCollectionInfoRes;
 
 import java.util.List;
 

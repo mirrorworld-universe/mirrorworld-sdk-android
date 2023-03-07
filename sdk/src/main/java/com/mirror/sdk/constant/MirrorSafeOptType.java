@@ -5,6 +5,7 @@ public class MirrorSafeOptType {
     public static String UpdateNFT = "update_nft";
     public static String TransferSol = "transfer_sol";
     public static String TransferSPLToken = "transfer_spl_token";
+    public static String TransferETH = "transfer_eth_token";
     public static String CreateCollection = "create_collection";
     public static String ListNFT = "list_nft";
     public static String BuyNFT = "buy_nft";

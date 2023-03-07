@@ -48,11 +48,11 @@ public class MainActivity extends AppCompatActivity {
     private void initViewPage(){
         mTabLayout = (TabLayout) findViewById(R.id.tabs);
         List<String> titles = new ArrayList<>();
-        titles.add("Auth");
-        titles.add("Market:Mint&List");
-        titles.add("Market:other");
+        titles.add("Client");
+        titles.add("Asset");
+        titles.add("Asset:other");
         titles.add("Wallet");
-        titles.add("MarketUI");
+        titles.add("Metadata");
 
         for (int i = 0; i < titles.size(); i++) {
             mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(i)));
@@ -80,65 +80,65 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private List<MultiItemData.MultiItem> authApis() {
-
         List<MultiItemData.MultiItem> items = new ArrayList<>();
-
         items.add(new MultiItemData.MultiItem(
-                DemoAPIID.INIT_SDK,"Init SDK",
+                DemoAPI.INIT_SDK,"Init SDK",
                 "Set app id and init sdk",
                 "Init",
                 "APIKey",null,null,null,null,null));
-
         items.add(new MultiItemData.MultiItem(
-                DemoAPIID.SET_JWT,"Set JWT",
+                DemoAPI.GET_ENVIRONMENT,"Get environment",
+                "Get now environment as a number",
+                "Get",
+                null,null,null,null,null,null));
+        items.add(new MultiItemData.MultiItem(
+                DemoAPI.SET_JWT,"Set JWT",
                 "Set jwt",
                 "Set It",
                 "jwt",null,null,null,null,null));
-
-
         items.add(new MultiItemData.MultiItem(
-                DemoAPIID.START_LOGIN,"Start login",
+                DemoAPI.START_LOGIN,"Start login",
                 "Open the login page",
                 "Login",
                 null,null,null,null,null,null));
 
         items.add(new MultiItemData.MultiItem(
-                DemoAPIID.GUEST_LOGIN,"Guest login",
+                DemoAPI.GUEST_LOGIN,"Guest login",
                 "You can login as a guest",
                 "Login",
                 null,null,null,null,null,null));
 
         items.add(new MultiItemData.MultiItem(
-                DemoAPIID.LOGIN_With_EMAIL,"Login with email",
+                DemoAPI.LOGIN_With_EMAIL,"Login with email",
                 "Logs in a user with their email address and password",
                 "LoginWithEmail",
                 "email","passWord",null,null,null,null));
 
         items.add(new MultiItemData.MultiItem(
-                DemoAPIID.LOGOUT,"logout",
+                DemoAPI.LOGOUT,"logout",
                 "Try to logout current user,cache will be all cleared.",
                 "Logout",
                 null,null,null,null,null,null));
 
         items.add(new MultiItemData.MultiItem(
-                DemoAPIID.OPEN_WALLET,"Open wallet",
+                DemoAPI.OPEN_WALLET,"Open wallet",
                 "Open user's wallet after login.",
                 "OpenWallet",
                 null,null,null,null,null,null));
         items.add(new MultiItemData.MultiItem(
-                DemoAPIID.OPEN_MARKET,"Open market",
+                DemoAPI.OPEN_MARKET,"Open market",
                 "Open market after login.",
                 "OpenMarket",
                 null,null,null,null,null,null));
 
 
         items.add(
-                new MultiItemData.MultiItem(DemoAPIID.FETCH_USER,"FetchUser","Checks whether is authenticated or not and returns the user object if true",
+                new MultiItemData.MultiItem(DemoAPI.FETCH_USER,"FetchUser","Checks whether is authenticated or not and returns the user object if true",
                         "FetchUser",null,null,
                         null,null,null,null));
 
         items.add(
-                new MultiItemData.MultiItem(DemoAPIID.QUERY_USER,"QueryUser","this request is using API Key from collectionMirror World Mobile SDK",
+                new MultiItemData.MultiItem(DemoAPI.QUERY_USER,"QueryUser","this request is using API Key from collectionMirror World Mobile SDK",
                         "QueryUser","email",null,
                         null,null,null,null));
 
@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         List<MultiItemData.MultiItem> items = new ArrayList<>();
 
         items.add(new MultiItemData.MultiItem(
-                DemoAPIID.CREATE_VERIFIED_COLLECTION,"Mint New Top-level Collection",
+                DemoAPI.CREATE_VERIFIED_COLLECTION,"Mint New Top-level Collection",
                 "This request is using API Key from collectionMirror World Mobile SDK",
                 "TOP_COLLECTION",
                 "name","symbol","detailUrl",null,null,null));
@@ -158,38 +158,38 @@ public class MainActivity extends AppCompatActivity {
 
 //        items.add(
 //
-//                new MultiItemData.MultiItem(DemoAPIID.CREATE_VERIFIED_SUB_COLLECTION,"Mint New Lower-level Collection","This request is using API Key from collectionMirror World Mobile SDK",
+//                new MultiItemData.MultiItem(DemoAPI.CREATE_VERIFIED_SUB_COLLECTION,"Mint New Lower-level Collection","This request is using API Key from collectionMirror World Mobile SDK",
 //                        "LOW_COLLECTION","collection_mint","name",
 //                        "symbol","detailUrl",null,null));
 
         items.add(
-                new MultiItemData.MultiItem(DemoAPIID.MINT_NFT,"Mint New NFT on Collection","This request is using API Key from collectionMirror World Mobile SDK",
+                new MultiItemData.MultiItem(DemoAPI.MINT_NFT,"Mint New NFT on Collection","This request is using API Key from collectionMirror World Mobile SDK",
                         "MINT_NFT","collection_mint","name",
                         "symbol","detailUrl",null,null));
         items.add(
-                new MultiItemData.MultiItem(DemoAPIID.CHECK_STATUS_OFMINTING,"Check status of minting","Minting is not finish immediately, check its status use this API",
+                new MultiItemData.MultiItem(DemoAPI.CHECK_STATUS_OFMINTING,"Check status of minting","Minting is not finish immediately, check its status use this API",
                         "Check","mint address 1","mint address 2",
                         null,null,null,null));
         items.add(
-                new MultiItemData.MultiItem(DemoAPIID.UPDATE_NFT,"Update NFT on Collection","Update a minted NFT's info",
+                new MultiItemData.MultiItem(DemoAPI.UPDATE_NFT,"Update NFT on Collection","Update a minted NFT's info",
                         "Update","mint address","NFT name",
                         "NFT symbol","updateAuthority","NFTJsonUrl","seller fee basis points"));
         items.add(
 
-                new MultiItemData.MultiItem(DemoAPIID.LIST_NFT,"List NFT on the marketplace","List NFT on the marketplace by use mint address",
+                new MultiItemData.MultiItem(DemoAPI.LIST_NFT,"List NFT on the marketplace","List NFT on the marketplace by use mint address",
                         "LIST_NFT","mint_address","price",
                         null,null,null,null));
 
 
         items.add(
 
-                new MultiItemData.MultiItem(DemoAPIID.UPDATE_NFT_LISTING,"Update Listing of NFT on the marketplace","Update Listing of NFT on the marketplace",
+                new MultiItemData.MultiItem(DemoAPI.UPDATE_NFT_LISTING,"Update Listing of NFT on the marketplace","Update Listing of NFT on the marketplace",
                         "UPDATE_NFT_LISTING","mint_address","price",
                         null,null,null,null));
 
         items.add(
 
-                new MultiItemData.MultiItem(DemoAPIID.CANCEL_NFT_LISTING,"Cancel listing of NFT on the marketplace","Cancel listing of NFT on the marketplace",
+                new MultiItemData.MultiItem(DemoAPI.CANCEL_NFT_LISTING,"Cancel listing of NFT on the marketplace","Cancel listing of NFT on the marketplace",
                         "CANCEL_NFT_LISTING","mint_address","price",
                         null,null,null,null));
         return items;
@@ -201,42 +201,42 @@ public class MainActivity extends AppCompatActivity {
 
         items.add(new MultiItemData.MultiItem(
 
-                DemoAPIID.FETCH_NFT_BY_OWNER_ADDRESSES,"Fetch multiple NFTs data by owner addresses",
+                DemoAPI.FETCH_NFT_BY_OWNER_ADDRESSES,"Fetch multiple NFTs data by owner addresses",
                 "Fetch multiple NFTs data by owner addresses",
                 "FETCH_BY_OWNER",
                 "owner_address","limit","offset",null,null,null));
 
 
         items.add(
-                new MultiItemData.MultiItem(DemoAPIID.FETCH_NFT_BY_MINT_ADDRESSES,"Fetch multiple NFTs data by mint addresses","Fetch multiple NFTs data by mint addresses",
+                new MultiItemData.MultiItem(DemoAPI.FETCH_NFT_BY_MINT_ADDRESSES,"Fetch multiple NFTs data by mint addresses","Fetch multiple NFTs data by mint addresses",
                         "FETCH_BY_MINT","mint_address",null,
                         null,null,null,null));
 
         items.add(
 
-                new MultiItemData.MultiItem(DemoAPIID.FETCH_NFT_BY_UPDATE_AUTHORITIES,"Fetch multiple NFTs data by update authority addresses","Fetch multiple NFTs data by update authority addresses",
+                new MultiItemData.MultiItem(DemoAPI.FETCH_NFT_BY_UPDATE_AUTHORITIES,"Fetch multiple NFTs data by update authority addresses","Fetch multiple NFTs data by update authority addresses",
                         "FETCH_BY_AUTHORITIES","update_authorities","limit",
                         "offset",null,null,null));
 
         items.add(
-                new MultiItemData.MultiItem(DemoAPIID.FETCH_SINGLE_NFT_DETAILS,"Fetch single NFT details","Fetch single NFT details",
+                new MultiItemData.MultiItem(DemoAPI.FETCH_SINGLE_NFT_DETAILS,"Fetch single NFT details","Fetch single NFT details",
                         "FETCH_SINGLE_NFT","mint_address",null,
                         null,null,null,null));
 
 
         items.add(
 
-                new MultiItemData.MultiItem(DemoAPIID.FETCH_NFT_MARKETPLACE_ACTIVITY,"Fetch activity of a single NFT","Fetch activity of a single NFT",
+                new MultiItemData.MultiItem(DemoAPI.FETCH_NFT_MARKETPLACE_ACTIVITY,"Fetch activity of a single NFT","Fetch activity of a single NFT",
                         "FETCH_NFT_ACTIVITY","mint_address",null,
                         null,null,null,null));
         items.add(
 
-                new MultiItemData.MultiItem(DemoAPIID.TRANSFER_NFT_TO_ANOTHER_SOLANA_WALLET,"Transfer NFT to another solana wallet","Transfer NFT to another solana wallet",
+                new MultiItemData.MultiItem(DemoAPI.TRANSFER_NFT_TO_ANOTHER_SOLANA_WALLET,"Transfer NFT to another solana wallet","Transfer NFT to another solana wallet",
                         "TRANSFER_NFT","mint_address","to_wallet_address",
                         null,null,null,null));
         items.add(
 
-                new MultiItemData.MultiItem(DemoAPIID.BUY_NFT,"Buy NFT on the marketplace","Buy NFT on the marketplace",
+                new MultiItemData.MultiItem(DemoAPI.BUY_NFT,"Buy NFT on the marketplace","Buy NFT on the marketplace",
                         "Buy_NFT","mint_address","price",
                         null,null,null,null));
 
@@ -248,44 +248,44 @@ public class MainActivity extends AppCompatActivity {
 
         List<MultiItemData.MultiItem> items = new ArrayList<>();
         items.add(new MultiItemData.MultiItem(
-                DemoAPIID.GET_WALLET_TOKEN,"Get wallet tokens.","Get wallet tokens.",
+                DemoAPI.GET_WALLET_TOKEN,"Get wallet tokens.","Get wallet tokens.",
                 "Get_Wallet_Token",
                 null,null,null,null,null,null));
 
         items.add(
 
-                new MultiItemData.MultiItem(DemoAPIID.TRANSFER_SPL_TOKEN,"Transfer SPL Token","Transfer SPL Token to another wallet.",
+                new MultiItemData.MultiItem(DemoAPI.TRANSFER_SPL_TOKEN,"Transfer SPL Token","Transfer SPL Token to another wallet.",
                         "TRANSFER","toPublicKey","amount",
                         "token_mint","decimals",null,null));
 
         items.add(
 
-                new MultiItemData.MultiItem(DemoAPIID.WALLET_TRANSACTIONS,"Get wallet transactions.","Get wallet transactions.",
+                new MultiItemData.MultiItem(DemoAPI.WALLET_TRANSACTIONS,"Get wallet transactions.","Get wallet transactions.",
                         "WALLET_TRANSACTIONS","limit","before",
                         null,null,null,null));
 
         items.add(
-                new MultiItemData.MultiItem(DemoAPIID.WALLET_TRANSACTIONS_BY_SIGNATURE,"Get wallet transaction by signature","Get wallet transaction by signature",
+                new MultiItemData.MultiItem(DemoAPI.WALLET_TRANSACTIONS_BY_SIGNATURE,"Get wallet transaction by signature","Get wallet transaction by signature",
                         "TRANSACTIONS_SIG","signature",null,
                         null,null,null,null));
         items.add(
-                new MultiItemData.MultiItem(DemoAPIID.CHECK_STATUS_TRANSACTION,"Get status of transaction by signature","Check status of transaction by sinature",
+                new MultiItemData.MultiItem(DemoAPI.CHECK_STATUS_TRANSACTION,"Get status of transaction by signature","Check status of transaction by sinature",
                         "Check","signature 1","signature 2",
                         null,null,null,null));
 
         items.add(
 
-                new MultiItemData.MultiItem(DemoAPIID.TRANSFER_SOL,"Transfer SOL to another address","Transfer SOL to another address",
+                new MultiItemData.MultiItem(DemoAPI.TRANSFER_SOL,"Transfer SOL to another address","Transfer SOL to another address",
                         "TRANSFER_SQL","to_publickey","amount",
                         null,null,null,null));
         items.add(
 
-                new MultiItemData.MultiItem(DemoAPIID.WALLET_GET_TRANSACTION_OF_TRANSFER_SOL,"Get transaction of trans-sol","Get transaction of transfering sol",
+                new MultiItemData.MultiItem(DemoAPI.WALLET_GET_TRANSACTION_OF_TRANSFER_SOL,"Get transaction of trans-sol","Get transaction of transfering sol",
                         "Fetch","to_publickey","amount",
                         null,null,null,null));
         items.add(
 
-                new MultiItemData.MultiItem(DemoAPIID.WALLET_GET_TRANSACTION_OF_TRANSFER_TOKEN,"Get transaction of trans-token","Get transaction of transfering token",
+                new MultiItemData.MultiItem(DemoAPI.WALLET_GET_TRANSACTION_OF_TRANSFER_TOKEN,"Get transaction of trans-token","Get transaction of transfering token",
                         "Fetch","to_publickey","amount",
                         "token mint","decimals",null,null));
 
@@ -296,35 +296,35 @@ public class MainActivity extends AppCompatActivity {
     private List<MultiItemData.MultiItem> marketUIAPIs() {
         List<MultiItemData.MultiItem> items = new ArrayList<>();
         items.add(new MultiItemData.MultiItem(
-                DemoAPIID.GET_COLLECTION_FILTER_INFO,"Get collection filter info.","Get collection filter info.",
+                DemoAPI.GET_COLLECTION_FILTER_INFO,"Get collection filter info.","Get collection filter info.",
                 "Get",
                 "collection",null,null,null,null,null));
         items.add(new MultiItemData.MultiItem(
-                DemoAPIID.GET_NFT_INFO,"Get NFT info.","Get details in market of a NFT.",
+                DemoAPI.GET_NFT_INFO,"Get NFT info.","Get details in market of a NFT.",
                 "Get",
                 "mint address",null,null,null,null,null));
         items.add(new MultiItemData.MultiItem(
-                DemoAPIID.GET_COLLECTION_INFO,"Get collection info.","Get a collection's info.",
+                DemoAPI.GET_COLLECTION_INFO,"Get collection info.","Get a collection's info.",
                 "Get",
                 "collection 1",null,null,null,null,null));
         items.add(new MultiItemData.MultiItem(
-                DemoAPIID.GET_NFT_EVENTS,"Get NFT events.","Get events of NFTs in market.",
+                DemoAPI.GET_NFT_EVENTS,"Get NFT events.","Get events of NFTs in market.",
                 "Get",
                 "mint address","page","page size",null,null,null));
         items.add(new MultiItemData.MultiItem(
-                DemoAPIID.SEARCH_NFTS,"Search NFTs.","Get details of NFTs in market place.",
+                DemoAPI.SEARCH_NFTS,"Search NFTs.","Get details of NFTs in market place.",
                 "Search",
                 "collection address 1","search string",null,null,null,null));
         items.add(new MultiItemData.MultiItem(
-                DemoAPIID.RECOMMEND_SEARCH_NFT,"Recommend search NFT.","Get details in market of a NFT by recommend.",
+                DemoAPI.RECOMMEND_SEARCH_NFT,"Recommend search NFT.","Get details in market of a NFT by recommend.",
                 "Get",
                 "collection address 1",null,null,null,null,null));
         items.add(new MultiItemData.MultiItem(
-                DemoAPIID.GET_NFT_REAL_PRICE,"Get NFT real price.","Get real price of a NFT.",
+                DemoAPI.GET_NFT_REAL_PRICE,"Get NFT real price.","Get real price of a NFT.",
                 "Get",
                 "price","price fee",null,null,null,null));
         items.add(new MultiItemData.MultiItem(
-                DemoAPIID.GET_NFTS,"Get NFTs.","Get details of NFTs in market place.",
+                DemoAPI.GET_NFTS,"Get NFTs.","Get details of NFTs in market place.",
                 "Get",
                 "collection address 1","page","page size","order by","desc","sale"));
         return items;
