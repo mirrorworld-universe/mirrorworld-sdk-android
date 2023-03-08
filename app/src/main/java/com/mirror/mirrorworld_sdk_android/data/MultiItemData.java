@@ -1,11 +1,9 @@
 package com.mirror.mirrorworld_sdk_android.data;
 
 import com.mirror.mirrorworld_sdk_android.DemoAPI;
+import com.mirror.sdk.listener.universal.MSimpleCallback;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Helper class for providing sample content for user interfaces created by
@@ -28,7 +26,25 @@ public class MultiItemData {
         public final String et4Hint;
         public final String et5Hint;
         public final String et6Hint;
+        public MultiItemSpinnerData spinnerData;
+        public MultiItemSpinnerData spinnerData2;
 
+
+        public MultiItem(DemoAPI id, String name, String details, String buttonText, String et1Hint
+                , String et2Hint, String et3Hint, String et4Hint, String et5Hint, String et6Hint, MultiItemSpinnerData spinnerItems, MultiItemSpinnerData spinnerItems2) {
+            this.id = id;
+            this.name = name;
+            this.resultDefault = details;
+            this.buttonText = buttonText;
+            this.et1Hint = et1Hint;
+            this.et2Hint = et2Hint;
+            this.et3Hint = et3Hint;
+            this.et4Hint = et4Hint;
+            this.et5Hint = et5Hint;
+            this.et6Hint = et6Hint;
+            this.spinnerData = spinnerItems;
+            this.spinnerData2 = spinnerItems2;
+        }
 
         public MultiItem(DemoAPI id, String name, String details, String buttonText, String et1Hint
                 , String et2Hint, String et3Hint, String et4Hint, String et5Hint, String et6Hint) {
@@ -47,6 +63,21 @@ public class MultiItemData {
         @Override
         public String toString() {
             return name;
+        }
+    }
+
+    public static class MultiItemSpinnerData {
+        public List<MultiItemSpinnerItem> items;
+        public MultiItemSpinnerData(List<MultiItemSpinnerItem> items){
+            this.items = items;
+        }
+    }
+    public static class MultiItemSpinnerItem {
+        public String ItemName;
+        public int number;
+        public MultiItemSpinnerItem(String ItemName, int number){
+            this.ItemName = ItemName;
+            this.number = number;
         }
     }
 }

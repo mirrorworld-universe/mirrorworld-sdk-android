@@ -219,7 +219,7 @@ public class MirrorSDK {
         mChain = chain;
         logFlow("init sdk,chain is:"+mChain);
         this.env = env;
-        logFlow("init sdk:"+this.env);
+        logFlow("init sdk,environment is:"+this.env);
         launchTab(mActivity);
     }
 

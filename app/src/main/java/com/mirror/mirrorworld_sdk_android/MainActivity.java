@@ -17,6 +17,8 @@ import android.view.WindowManager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
+import com.mirror.sdk.constant.MirrorEnv;
+import com.mirror.sdk.listener.universal.MSimpleCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,11 +83,21 @@ public class MainActivity extends AppCompatActivity {
 
     private List<MultiItemData.MultiItem> authApis() {
         List<MultiItemData.MultiItem> items = new ArrayList<>();
+        List<MultiItemData.MultiItemSpinnerItem> initSDKItems = new ArrayList<>();
+        initSDKItems.add(new MultiItemData.MultiItemSpinnerItem("ProMain", 4));
+        initSDKItems.add(new MultiItemData.MultiItemSpinnerItem("ProDev", 3));
+        initSDKItems.add(new MultiItemData.MultiItemSpinnerItem("StgDev", 1));
+        initSDKItems.add(new MultiItemData.MultiItemSpinnerItem("StgMain", 2));
+        MultiItemData.MultiItemSpinnerData spinnerData = new MultiItemData.MultiItemSpinnerData(initSDKItems);
+        List<MultiItemData.MultiItemSpinnerItem> initSDKItems2 = new ArrayList<>();
+        initSDKItems2.add(new MultiItemData.MultiItemSpinnerItem("Solana", 1));
+        initSDKItems2.add(new MultiItemData.MultiItemSpinnerItem("EVM", 2));
+        MultiItemData.MultiItemSpinnerData spinnerData2 = new MultiItemData.MultiItemSpinnerData(initSDKItems2);
         items.add(new MultiItemData.MultiItem(
                 DemoAPI.INIT_SDK,"Init SDK",
                 "Set app id and init sdk",
                 "Init",
-                "APIKey",null,null,null,null,null));
+                "APIKey",null,null,null,null,null,spinnerData,spinnerData2));
         items.add(new MultiItemData.MultiItem(
                 DemoAPI.GET_ENVIRONMENT,"Get environment",
                 "Get now environment as a number",

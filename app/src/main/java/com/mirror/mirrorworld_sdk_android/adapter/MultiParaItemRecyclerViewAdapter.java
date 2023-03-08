@@ -8,17 +8,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mirror.mirrorworld_sdk_android.DemoAPI;
 import com.mirror.mirrorworld_sdk_android.R;
 import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
+import com.mirror.mirrorworld_sdk_android.data.SpinnerBean;
 import com.mirror.sdk.MirrorWorld;
 import com.mirror.sdk.constant.MirrorChains;
 import com.mirror.sdk.constant.MirrorEnv;
@@ -80,9 +83,10 @@ import java.util.List;
  */
 public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<MultiParaItemRecyclerViewAdapter.ViewHolder>{
 
-    private  List<MultiItemData.MultiItem> mValues;
-
+    private List<MultiItemData.MultiItem> mValues;
     private Activity mContext;
+    private MultiItemData.MultiItemSpinnerItem mSelectedSpinnerItem;
+    private MultiItemData.MultiItemSpinnerItem mSelectedSpinnerItem2;
 
     public MultiParaItemRecyclerViewAdapter(List<MultiItemData.MultiItem> items) {
         if(null == mValues){
@@ -143,6 +147,16 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
         }else {
             holder.mEt6.setHint(hintPre+mValues.get(position).et6Hint);
         }
+        if(mValues.get(position).spinnerData == null){
+            holder.mSpinner.setVisibility(View.GONE);
+        }else {
+            initAPIItemSpinner(holder.mSpinner,holder.mItem);
+        }
+        if(mValues.get(position).spinnerData2 == null){
+            holder.mSpinner2.setVisibility(View.GONE);
+        }else {
+            initAPIItemSpinner2(holder.mSpinner2,holder.mItem);
+        }
 
         holder.mButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,7 +164,63 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 handleClick(mValues.get(position).id,holder,view);
             }
         });
+    }
 
+    private void initAPIItemSpinner(ConstraintLayout layout,MultiItemData.MultiItem mItem){
+        List<SpinnerBean> mData = new ArrayList<>();
+        MultiItemData.MultiItemSpinnerData data = mItem.spinnerData;
+        for(int i=0;i<data.items.size();i++){
+            MultiItemData.MultiItemSpinnerItem item = data.items.get(i);
+            mData.add(new SpinnerBean(item.number,item.ItemName));
+        }
+        mSelectedSpinnerItem = data.items.get(0);
+        ItemSpinnerAdapter adapter = new ItemSpinnerAdapter(mData, mContext);//实例化适配器
+
+        AdapterView adapterView = layout.findViewById(R.id.item_spinner_spinner);
+        adapterView.setAdapter(adapter);
+
+
+        //给选择英雄的spinner添加监听
+        adapterView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override //选中的时候执行的方法
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(mContext, mData.get(i).name, Toast.LENGTH_SHORT).show();
+                mSelectedSpinnerItem = data.items.get(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+    private void initAPIItemSpinner2(ConstraintLayout layout,MultiItemData.MultiItem mItem){
+        List<SpinnerBean> mData = new ArrayList<>();
+        MultiItemData.MultiItemSpinnerData data = mItem.spinnerData2;
+        for(int i=0;i<data.items.size();i++){
+            MultiItemData.MultiItemSpinnerItem item = data.items.get(i);
+            mData.add(new SpinnerBean(item.number,item.ItemName));
+        }
+        mSelectedSpinnerItem2 = data.items.get(0);
+        ItemSpinnerAdapter adapter = new ItemSpinnerAdapter(mData, mContext);//实例化适配器
+
+        AdapterView adapterView = layout.findViewById(R.id.item_spinner2_spinner);
+        adapterView.setAdapter(adapter);
+
+
+        //给选择英雄的spinner添加监听
+        adapterView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override //选中的时候执行的方法
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(mContext, mData.get(i).name, Toast.LENGTH_SHORT).show();
+                mSelectedSpinnerItem2 = data.items.get(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     @Override
@@ -165,13 +235,35 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             String APIKey = String.valueOf(holder.mEt1.getText());
             Activity context = mContext;
             MirrorEnv environment = MirrorEnv.MainNet;
+            if(mSelectedSpinnerItem == null){
+                environment = MirrorEnv.MainNet;
+            }else if(mSelectedSpinnerItem.number == 1){
+                environment = MirrorEnv.StagingDevNet;
+            }else if(mSelectedSpinnerItem.number == 2){
+                environment = MirrorEnv.StagingMainNet;
+            }else if(mSelectedSpinnerItem.number == 3){
+                environment = MirrorEnv.MainNet;
+            }else if(mSelectedSpinnerItem.number == 4){
+                environment = MirrorEnv.DevNet;
+            }else {
+                Log.e("MirrorSDK","Unknwon select environment:"+environment);
+            }
             MirrorChains chain = MirrorChains.SOLANA;
+            if(mSelectedSpinnerItem2 == null){
+                chain = MirrorChains.SOLANA;
+            }else if(mSelectedSpinnerItem2.number == 1){
+                chain = MirrorChains.SOLANA;
+            }else if(mSelectedSpinnerItem2.number == 2){
+                chain = MirrorChains.EVM;
+            }else {
+                Log.e("MirrorSDK","Unknwon select chain:"+chain);
+            }
 
             //Call API:initMirrorWorld
             MirrorWorld.initMirrorWorld(context, APIKey, chain, environment);
 
             //Show result
-            holder.mResultView.setText("SDK has been inited!");
+            holder.mResultView.setText("SDK has been inited\napikey:"+APIKey+"\n"+"chain:"+chain+"\n"+"environment:"+MirrorWorld.getEnvironment());
         }else if(apiId == DemoAPI.GET_ENVIRONMENT){
             holder.mResultView.setText("Environment is:" + MirrorWorld.getEnvironment());
         }else if(apiId == DemoAPI.SET_JWT){
@@ -917,6 +1009,8 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
         public final EditText mEt4;
         public final EditText mEt5;
         public final EditText mEt6;
+        public ConstraintLayout mSpinner;
+        public ConstraintLayout mSpinner2;
         public MultiItemData.MultiItem mItem;
 
         public ViewHolder(View view) {
@@ -931,6 +1025,8 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             mEt4 = (EditText) view.findViewById(R.id.multiapi_item_paramet4);
             mEt5 = (EditText) view.findViewById(R.id.multiapi_item_paramet5);
             mEt6 = (EditText) view.findViewById(R.id.multiapi_item_paramet6);
+            mSpinner = (ConstraintLayout) view.findViewById(R.id.api_item_spinner);
+            mSpinner2 = (ConstraintLayout) view.findViewById(R.id.api_item_spinner2);
         }
         @Override
         public String toString() {
