@@ -22,13 +22,13 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:textAppearance="?attr/textAppearanceListItem" />
-                <TextView
-                    android:id="@+id/multiapi_item_name"
-                    android:text="name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:textAppearance="?attr/textAppearanceListItem" />
+<!--                <TextView-->
+<!--                    android:id="@+id/multiapi_item_name"-->
+<!--                    android:text="name"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_margin="16dp"-->
+<!--                    android:textAppearance="?attr/textAppearanceListItem" />-->
             </LinearLayout>
 
             <LinearLayout

@@ -20,17 +20,17 @@ public class MirrorUrl {
 
     //market
     public static final String URL_FETCH_MULTIPLE_NFTDATA_BY_MINT_ADDRESS = "mints";
-    public static final String URL_FETCH_MULTIPLE_NFTDATA_BY_CREATOR_ADDRESS = "nft/creators";
-    public static final String URL_FETCH_MULTIPLE_NFTDATA_BY_UPDATE_AUTHORITY_ADDRESS = "nft/update-authorities";
+    public static final String URL_FETCH_MULTIPLE_NFTDATA_BY_CREATOR_ADDRESS = "creators";
+    public static final String URL_FETCH_MULTIPLE_NFTDATA_BY_UPDATE_AUTHORITY_ADDRESS = "update-authorities";
     public static final String URL_MINT_NFT_COLLECTION = "nft";
-    public static final String URL_UPDATE_NFT_PROPERTIES = "mint/update";
+    public static final String URL_UPDATE_NFT_PROPERTIES = "update";
     public static final String URL_MINT_TOP_LEVEL_COLLECTION = "collection";
     //Asset search
     public static final String URL_FETCH_MULTIPLE_NFT = "owners";
     public static final String URL_QUERY_NFT_DETAIL = "nft";
-    public static final String URL_FETCH_ACTIVITY = "nft/activity/";
+    public static final String URL_FETCH_ACTIVITY = "activity/";
     public static final String URL_LIST_NFT_ON_THE_MARKETPLACE = "list";
-    public static final String URL_UPDATE_LISTING_OF_NFT_ON_THE_MARKETPLACE = "marketplace/update";
+    public static final String URL_UPDATE_LISTING_OF_NFT_ON_THE_MARKETPLACE = "update";
     public static final String URL_BUY_NFT_ON_THE_MARKETPLACE = "buy";
     public static final String URL_CANCEL_LISTING_OF_NFT_ON_THE_MARKETPLACE = "cancel";
     public static final String URL_TRANSFER_NFT_TO_ANOTHER_SOLANA_WALLET = "transfer";
@@ -49,9 +49,9 @@ public class MirrorUrl {
     public static final String URL_CHECK_STATUS_OF_MINTING = "mints-status";
 
     // new apis
-    public static final String URL_CREATE_NEW_MARKET_PLACE = "solana/marketplaces/create";
-    public static final String URL_UPDATE_MARKET_PLACE = "solana/marketplaces/update";
-    public static final String URL_QUERY_MARKET_PLACE = "solana/marketplaces";
+    public static final String URL_CREATE_NEW_MARKET_PLACE = "marketplaces/create";
+    public static final String URL_UPDATE_MARKET_PLACE = "marketplaces/update";
+    public static final String URL_QUERY_MARKET_PLACE = "marketplaces";
 
     /**
      * Market Place
@@ -66,24 +66,6 @@ public class MirrorUrl {
     public static final String URL_RECOMMEND_SEARCH_NFT = "recommend";
 
     public static final String URL_GET_NFT_REAL_PRICE = "marketplace/nft/real_price";
-
-    /**
-     * Hosts
-     */
-    public static final String HOST_STAGING = "https://auth-staging.mirrorworld.fun";
-    public static final String HOST_PRODUCTION = "https://auth.mirrorworld.fun";
-
-    public static final String NETWORK_MAINNET = "mainnet";
-    public static final String NETWORK_DEVNET = "devnet";
-
-    public static final String SERVICE_ASSET_AUCTION = "asset/auction";
-    public static final String SERVICE_ASSET_MINT = "asset/mint";
-    public static final String SERVICE_ASSET_NFT = "asset/nft";
-    public static final String SERVICE_CONFIRMATION = "confirmation";
-    public static final String SERVICE_METADATA = "metadata";
-    public static final String SERVICE_METADATA_COLLECTION = "metadata/collection";
-    public static final String SERVICE_METADATA_NFT = "metadata/nft";
-
 
     public static final MirrorEnv getEnv(){
         if (!MirrorSDK.getInstance().getInited()){
@@ -103,19 +85,35 @@ public class MirrorUrl {
         return chain;
     }
 
-    public static final String getUrlHost(){
+    public static final String getUrlHost(MirrorService service){
         MirrorEnv env = getEnv();
-        if(env.equals(MirrorEnv.StagingMainNet)){
-            return HOST_STAGING;
-        }else if(env.equals(MirrorEnv.StagingDevNet)){
-            return HOST_STAGING;
-        }else if(env.equals(MirrorEnv.DevNet)){
-            return HOST_PRODUCTION;
-        }else if(env.equals(MirrorEnv.MainNet)){
-            return HOST_PRODUCTION;
+        if(service == MirrorService.Wallet || belongToAsset(service) || belongToMetadata(service)
+        || service == MirrorService.Confirmation){
+            if(env == MirrorEnv.StagingMainNet){
+                return "https://api-staging.mirrorworld.fun";
+            }else if(env == MirrorEnv.StagingDevNet){
+                return "https://api-staging.mirrorworld.fun";
+            }else if(env == MirrorEnv.DevNet){
+                return "https://api.mirrorworld.fun";
+            }else if(env == MirrorEnv.MainNet){
+                return "https://api.mirrorworld.fun";
+            }else {
+                MirrorSDK.logError("Unknown env:"+env);
+                return "https://api-staging.mirrorworld.fun";
+            }
         }else {
-            MirrorSDK.logError("Unknown env:"+env+".Will use production host.");
-            return HOST_PRODUCTION;
+            if(env.equals(MirrorEnv.StagingMainNet)){
+                return "https://auth-staging.mirrorworld.fun";
+            }else if(env.equals(MirrorEnv.StagingDevNet)){
+                return "https://auth-staging.mirrorworld.fun";
+            }else if(env.equals(MirrorEnv.DevNet)){
+                return "https://auth.mirrorworld.fun";
+            }else if(env.equals(MirrorEnv.MainNet)){
+                return "https://auth.mirrorworld.fun";
+            }else {
+                MirrorSDK.logError("Unknown env:"+env+".Will use production host.");
+                return "https://auth.mirrorworld.fun";
+            }
         }
     }
 
@@ -123,11 +121,11 @@ public class MirrorUrl {
         MirrorAPIVersion APIVersion = MirrorAPIVersion.V2;
         MirrorEnv env = getEnv();
         MirrorChains chainEnum = getChain();
-        String host = getUrlHost();
+        String service = getServiceString(serviceEnum);
+        String host = getUrlHost(serviceEnum);
         String version = getVersionString(APIVersion);
         String chain = getChainString(chainEnum);
         String network = getNetworkString(env);
-        String service = getServiceString(serviceEnum);
 
         String finalUrl = host + "/" + version + "/" + chain + "/" + network + "/" + service + "/" + APIPath;
         return finalUrl;
@@ -137,7 +135,7 @@ public class MirrorUrl {
         MirrorAPIVersion APIVersion = MirrorAPIVersion.V2;
         MirrorEnv env = getEnv();
         MirrorChains chainEnum = getChain();
-        String host = getUrlHost();
+        String host = getUrlHost(serviceEnum);
         String version = getVersionString(APIVersion);
         String chain = getChainString(chainEnum);
         String network = getNetworkString(env);
@@ -147,25 +145,43 @@ public class MirrorUrl {
         return finalUrl;
     }
 
+    public static final String getActionRoot(){
+        MirrorEnv env = getEnv();
+        MirrorAPIVersion APIVersion = MirrorAPIVersion.V2;
+        String version = getVersionString(APIVersion);
+        if(env == MirrorEnv.StagingMainNet){
+            return "https://api-staging.mirrorworld.fun/"+version+"/";
+        }else if(env == MirrorEnv.StagingDevNet){
+            return "https://api-staging.mirrorworld.fun/"+version+"/";
+        }else if(env == MirrorEnv.DevNet){
+            return "https://api.mirrorworld.fun/"+version+"/";
+        }else if(env == MirrorEnv.MainNet){
+            return "https://api.mirrorworld.fun/"+version+"/";
+        }else {
+            MirrorSDK.logWarn("Unknown env:"+env);
+            return "https://api.mirrorworld.fun/v1/";
+        }
+    }
+
     private static final String getServiceString(MirrorService serviceEnum){
         if(serviceEnum.equals(MirrorService.Marketplace)){
             return "marketplaces";
         }else if(serviceEnum.equals(MirrorService.Wallet)){
             return "wallet";
         }else if(serviceEnum.equals(MirrorService.AssetAuction)){
-            return SERVICE_ASSET_AUCTION;
+            return "asset/auction";
         }else if(serviceEnum.equals(MirrorService.AssetMint)){
-            return SERVICE_ASSET_MINT;
+            return "asset/mint";
         }else if(serviceEnum.equals(MirrorService.AssetNFT)){
-            return SERVICE_ASSET_NFT;
+            return "asset/nft";
         }else if(serviceEnum.equals(MirrorService.Confirmation)){
-            return SERVICE_CONFIRMATION;
+            return "asset/confirmation";
         }else if(serviceEnum.equals(MirrorService.Metadata)){
-            return SERVICE_METADATA;
+            return "metadata";
         }else if(serviceEnum.equals(MirrorService.MetadataCollection)){
-            return SERVICE_METADATA_COLLECTION;
+            return "metadata/collection";
         }else if(serviceEnum.equals(MirrorService.MetadataNFT)){
-            return SERVICE_METADATA_NFT;
+            return "metadata/nft";
         }else if(serviceEnum.equals(MirrorService.MetadataNFTSearch)){
             return "metadata/nft/search";
         }else {
@@ -176,16 +192,16 @@ public class MirrorUrl {
 
     private static final String getNetworkString(MirrorEnv env){
         if(env.equals(MirrorEnv.StagingMainNet)){
-            return NETWORK_MAINNET;
+            return "mainnet";
         }else if(env.equals(MirrorEnv.StagingDevNet)){
-            return NETWORK_DEVNET;
+            return "devnet";
         }else if(env.equals(MirrorEnv.MainNet)){
-            return NETWORK_MAINNET;
+            return "mainnet";
         }else if(env.equals(MirrorEnv.DevNet)){
-            return NETWORK_DEVNET;
+            return "devnet";
         }else {
             MirrorSDK.logError("Unknown env:"+env+".Will use mainnet.");
-            return NETWORK_DEVNET;
+            return "devnet";
         }
     }
 
@@ -207,5 +223,14 @@ public class MirrorUrl {
             MirrorSDK.logError("Invalida api version:"+APIVersion);
             return "v0";
         }
+    }
+
+    private static final boolean belongToAsset(MirrorService service){
+        return service == MirrorService.AssetAuction || service == MirrorService.AssetMint || service == MirrorService.AssetNFT;
+    }
+
+    private static final boolean belongToMetadata(MirrorService service){
+        return service == MirrorService.Metadata || service == MirrorService.MetadataNFT
+                || service == MirrorService.MetadataCollection || service == MirrorService.MetadataNFTSearch;
     }
 }

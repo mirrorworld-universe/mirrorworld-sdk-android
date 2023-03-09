@@ -383,7 +383,7 @@ public class MirrorSDK {
                         logFlow("Guest login result:" + result);
                         listener.onLoginSuccess();
                         CommonResponse<LoginResponse> res = MirrorGsonUtils.getInstance().fromJson(result,new TypeToken<CommonResponse<LoginResponse>>(){}.getType());
-                        if(!res.data.access_token.isEmpty()){
+                        if(res.code == MirrorResCode.SUCCESS){
                             setLoginResponse(MirrorGsonUtils.getInstance().toJson(res.data));
                             listener.onLoginSuccess();
                         }else {
@@ -577,21 +577,6 @@ public class MirrorSDK {
         }
     }
 
-    public String getActionRoot(){
-        if(env == MirrorEnv.StagingMainNet){
-            return "https://api-staging.mirrorworld.fun/v1/";
-        }else if(env == MirrorEnv.StagingDevNet){
-            return "https://api-staging.mirrorworld.fun/v1/";
-        }else if(env == MirrorEnv.DevNet){
-            return "https://api.mirrorworld.fun/v1/";
-        }else if(env == MirrorEnv.MainNet){
-            return "https://api.mirrorworld.fun/v1/";
-        }else {
-            logFlow("Unknown env:"+env);
-            return "https://api.mirrorworld.fun/v1/";
-        }
-    }
-
     public String getActionRootWithoutVersion(){
         if(env == MirrorEnv.StagingMainNet){
             return "https://auth-staging.mirrorworld.fun/";
@@ -759,7 +744,7 @@ public class MirrorSDK {
         }
         String data = jsonObject.toString();
 
-        String url = getMirrorUrl(MirrorService.AssetAuction,MirrorUrl.URL_UPDATE_NFT_PROPERTIES);//GetAPIRoot() + MirrorUrl.URL_UPDATE_NFT_PROPERTIES;
+        String url = getMirrorUrl(MirrorService.AssetNFT,MirrorUrl.URL_UPDATE_NFT_PROPERTIES);//GetAPIRoot() + MirrorUrl.URL_UPDATE_NFT_PROPERTIES;
         checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
             @Override
             public void callback(String result) {
@@ -918,7 +903,7 @@ public class MirrorSDK {
     }
 
     public void FetchNFTMarketplaceActivity(String mint_address, FetchSingleNFTActivityListener fetchSingleNFTActivityListener){
-        String url = getMirrorUrl(MirrorService.Marketplace,MirrorUrl.URL_FETCH_ACTIVITY) + mint_address;//GetAPIRoot() + MirrorUrl.URL_FETCH_ACTIVITY + mint_address;
+        String url = getMirrorUrl(MirrorService.AssetNFT,MirrorUrl.URL_FETCH_ACTIVITY) + mint_address;//GetAPIRoot() + MirrorUrl.URL_FETCH_ACTIVITY + mint_address;
         checkParamsAndGet(url, null, new MirrorCallback() {
             @Override
             public void callback(String result) {
@@ -974,7 +959,7 @@ public class MirrorSDK {
         }
         String  data = jsonObject.toString();
 
-        String url = getMirrorUrl(MirrorService.Marketplace,MirrorUrl.URL_UPDATE_LISTING_OF_NFT_ON_THE_MARKETPLACE);//GetAPIRoot() + MirrorUrl.URL_UPDATE_LISTING_OF_NFT_ON_THE_MARKETPLACE;
+        String url = getMirrorUrl(MirrorService.AssetAuction,MirrorUrl.URL_UPDATE_LISTING_OF_NFT_ON_THE_MARKETPLACE);//GetAPIRoot() + MirrorUrl.URL_UPDATE_LISTING_OF_NFT_ON_THE_MARKETPLACE;
         checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
             @Override
             public void callback(String result) {
@@ -1007,7 +992,7 @@ public class MirrorSDK {
         }
         String data = jsonObject.toString();
 
-        String url = getMirrorUrl(MirrorService.Marketplace,MirrorUrl.URL_LIST_NFT_ON_THE_MARKETPLACE);//GetAPIRoot() + MirrorUrl.URL_LIST_NFT_ON_THE_MARKETPLACE;
+        String url = getMirrorUrl(MirrorService.AssetAuction,MirrorUrl.URL_LIST_NFT_ON_THE_MARKETPLACE);//GetAPIRoot() + MirrorUrl.URL_LIST_NFT_ON_THE_MARKETPLACE;
         checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
             @Override
             public void callback(String result) {
@@ -1206,6 +1191,7 @@ public class MirrorSDK {
         checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
             @Override
             public void callback(String result) {
+                logFlow("getTransactionOfTransferSOL result:" + result);
                 CommonResponse<GetWalletTransactionsResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<GetWalletTransactionsResponse>>(){}.getType());
                 if(response.code == MirrorResCode.SUCCESS){
                     listener.onSuccess(response.data);
@@ -1232,6 +1218,7 @@ public class MirrorSDK {
         checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
             @Override
             public void callback(String result) {
+                logFlow("getTransactionOfTransferToken result:" + result);
                 CommonResponse<GetWalletTransactionsResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<GetWalletTransactionsResponse>>(){}.getType());
                 if(response.code == MirrorResCode.SUCCESS){
                     listener.onSuccess(response.data);
@@ -1325,6 +1312,10 @@ public class MirrorSDK {
     }
 
     public void FetchNFTsByUpdateAuthorities(List<String> update_authorities, int limit, int offset, FetchNFTsListener listener){
+        if(getEnv() == MirrorEnv.DevNet || getEnv() == MirrorEnv.StagingDevNet){
+            logWarn("FetchNFTsByUpdateAuthorities API can only run on MAINNET.");
+            return;
+        }
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         for (String tag : update_authorities) {
@@ -1339,7 +1330,7 @@ public class MirrorSDK {
         }
         String data = jsonObject.toString();
 
-        String url = getMirrorUrl(MirrorService.Marketplace,MirrorUrl.URL_FETCH_MULTIPLE_NFTDATA_BY_UPDATE_AUTHORITY_ADDRESS);
+        String url = getMirrorUrl(MirrorService.AssetNFT,MirrorUrl.URL_FETCH_MULTIPLE_NFTDATA_BY_UPDATE_AUTHORITY_ADDRESS);
         checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
             @Override
             public void callback(String result) {
@@ -1355,6 +1346,10 @@ public class MirrorSDK {
     }
 
     public void FetchNFTsByCreatorAddresses(List<String> creators, int limit, int offset, FetchNFTsListener listener){
+        if(getEnv() == MirrorEnv.DevNet || getEnv() == MirrorEnv.StagingDevNet){
+            logWarn("FetchNFTsByCreatorAddresses API can only run on MAINNET.");
+            return;
+        }
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         for (String tag : creators) {
@@ -1369,7 +1364,7 @@ public class MirrorSDK {
         }
         String  data = jsonObject.toString();
 
-        String url = getMirrorUrl(MirrorService.Marketplace,MirrorUrl.URL_FETCH_MULTIPLE_NFTDATA_BY_CREATOR_ADDRESS);
+        String url = getMirrorUrl(MirrorService.AssetNFT,MirrorUrl.URL_FETCH_MULTIPLE_NFTDATA_BY_CREATOR_ADDRESS);
         checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
             @Override
             public void callback(String result) {
@@ -1384,6 +1379,10 @@ public class MirrorSDK {
     }
 
     public void TransferETH(String nonce, String gasPrice, String gasLimit, String to,int amount, MirrorCallback mirrorCallback){
+        if(!mChain.equals(MirrorChains.EVM)){
+            logWarn("This API support only EVM chain.");
+            return;
+        }
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("nonce", nonce);
@@ -1400,7 +1399,7 @@ public class MirrorSDK {
         checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
     }
 
-    public void TransferToken(String toPublickey, float amount, String token_mint, float decimals, MirrorCallback mirrorCallback){
+    public void TransferToken(String toPublickey, float amount, String token_mint, int decimals, MirrorCallback mirrorCallback){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("to_publickey", toPublickey);
@@ -1991,7 +1990,7 @@ public class MirrorSDK {
                     mActivity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            logFlow("   Get Result is:"+resultStr);
+                            logFlow("Get Result is:"+resultStr);
                             mirrorCallback.callback(resultStr);
                         }
                     });
@@ -2001,10 +2000,11 @@ public class MirrorSDK {
     }
 
     private void post(String url, String data, MirrorCallback mirrorCallback) {
-        logFlow("post json:"+data);
-        logFlow("accessToken:"+accessToken);
-        logFlow("apiKey:"+apiKey);
-        if(xAuthToken != null && !xAuthToken.equals("")) logFlow("xAuthKey:"+xAuthToken);
+        logFlow("==>Post url:"+url);
+        logFlow("==>Post json:"+data);
+        logFlow("==>Post accessToken:"+accessToken);
+        logFlow("==>Post apiKey:"+apiKey);
+        logFlow("==>Post xAuthKey:"+xAuthToken);
 
         try {
             URL urll = new URL(url);
@@ -2244,6 +2244,11 @@ public class MirrorSDK {
                 res.code = MirrorResCode.NO_RESOURCES;
                 urlConn.disconnect();
                 return MirrorGsonUtils.getInstance().toJson(res);
+            }else if(urlConn.getResponseCode() == MirrorResCode.FORBIDDEN){
+                CommonResponse res = new CommonResponse();
+                res.code = MirrorResCode.FORBIDDEN;
+                urlConn.disconnect();
+                return MirrorGsonUtils.getInstance().toJson(res);
             }else {
                 InputStreamReader in = new InputStreamReader(urlConn.getInputStream());
 
@@ -2347,7 +2352,6 @@ public class MirrorSDK {
 
     @JavascriptInterface
     public void setActionApprovalToken(String xAuthToken){
-        Log.d("MirrorSDK world",xAuthToken);
         SetXAuthToken(xAuthToken);
         if(safeFlowCb != null){
             safeFlowCb.callback("");

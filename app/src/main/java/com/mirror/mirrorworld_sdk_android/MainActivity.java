@@ -55,11 +55,11 @@ public class MainActivity extends AppCompatActivity {
         titles.add("Asset:other");
         titles.add("Wallet");
         titles.add("Metadata");
+        titles.add("Confirmation");
 
         for (int i = 0; i < titles.size(); i++) {
             mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(i)));
         }
-
 
         List<Fragment> fragments = new ArrayList<>();
 
@@ -68,12 +68,14 @@ public class MainActivity extends AppCompatActivity {
         MultiParaItemFragment MarketOther = new MultiParaItemFragment(marketOtherApis());
         MultiParaItemFragment Wallet = new MultiParaItemFragment(walletApis());
         MultiParaItemFragment marketUI = new MultiParaItemFragment(marketUIAPIs());
+        MultiParaItemFragment confirmation = new MultiParaItemFragment(confirmationAPIs());
 
         fragments.add(Auth);
         fragments.add(MarketMint);
         fragments.add(MarketOther);
         fragments.add(Wallet);
         fragments.add(marketUI);
+        fragments.add(confirmation);
 
         FragmentAdapter mFragmentAdapteradapter =
                 new FragmentAdapter(getSupportFragmentManager(), fragments, titles);
@@ -113,7 +115,11 @@ public class MainActivity extends AppCompatActivity {
                 "Open the login page",
                 "Login",
                 null,null,null,null,null,null));
-
+        items.add(new MultiItemData.MultiItem(
+                DemoAPI.IS_LOGGED,"",
+                "Check current user's login state.",
+                "Check",
+                null,null,null,null,null,null));
         items.add(new MultiItemData.MultiItem(
                 DemoAPI.GUEST_LOGIN,"Guest login",
                 "You can login as a guest",
@@ -179,10 +185,6 @@ public class MainActivity extends AppCompatActivity {
                         "MINT_NFT","collection_mint","name",
                         "symbol","detailUrl",null,null));
         items.add(
-                new MultiItemData.MultiItem(DemoAPI.CHECK_STATUS_OFMINTING,"Check status of minting","Minting is not finish immediately, check its status use this API",
-                        "Check","mint address 1","mint address 2",
-                        null,null,null,null));
-        items.add(
                 new MultiItemData.MultiItem(DemoAPI.UPDATE_NFT,"Update NFT on Collection","Update a minted NFT's info",
                         "Update","mint address","NFT name",
                         "NFT symbol","updateAuthority","NFTJsonUrl","seller fee basis points"));
@@ -212,7 +214,11 @@ public class MainActivity extends AppCompatActivity {
         List<MultiItemData.MultiItem> items = new ArrayList<>();
 
         items.add(new MultiItemData.MultiItem(
-
+                DemoAPI.FETCH_NFT_BY_CREATOR,"Fetch NFTs data by creator addresses",
+                "Fetch NFTs data by creator addresses",
+                "Fetch",
+                "crator","limit","offset",null,null,null));
+        items.add(new MultiItemData.MultiItem(
                 DemoAPI.FETCH_NFT_BY_OWNER_ADDRESSES,"Fetch multiple NFTs data by owner addresses",
                 "Fetch multiple NFTs data by owner addresses",
                 "FETCH_BY_OWNER",
@@ -257,50 +263,47 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private List<MultiItemData.MultiItem> walletApis() {
-
         List<MultiItemData.MultiItem> items = new ArrayList<>();
         items.add(new MultiItemData.MultiItem(
                 DemoAPI.GET_WALLET_TOKEN,"Get wallet tokens.","Get wallet tokens.",
                 "Get_Wallet_Token",
                 null,null,null,null,null,null));
-
+        items.add(new MultiItemData.MultiItem(
+                DemoAPI.GET_TOKENS_BY_WALLET,"Get tokens by wallet.","Get tokens by wallet.",
+                "Get tokens",
+                "wallet address",null,null,null,null,null));
         items.add(
-
-                new MultiItemData.MultiItem(DemoAPI.TRANSFER_SPL_TOKEN,"Transfer SPL Token","Transfer SPL Token to another wallet.",
-                        "TRANSFER","toPublicKey","amount",
-                        "token_mint","decimals",null,null));
-
-        items.add(
-
                 new MultiItemData.MultiItem(DemoAPI.WALLET_TRANSACTIONS,"Get wallet transactions.","Get wallet transactions.",
-                        "WALLET_TRANSACTIONS","limit","before",
+                        "GetTransactions","limit","before",
                         null,null,null,null));
-
+        items.add(
+                new MultiItemData.MultiItem(DemoAPI.WALLET_TRANSACTIONS_BY_WALLET,"Get wallet transactions by wallet.","Get wallet transactions by wallet address.",
+                        "GetTransactions","limit","before",
+                        null,null,null,null));
         items.add(
                 new MultiItemData.MultiItem(DemoAPI.WALLET_TRANSACTIONS_BY_SIGNATURE,"Get wallet transaction by signature","Get wallet transaction by signature",
                         "TRANSACTIONS_SIG","signature",null,
                         null,null,null,null));
         items.add(
-                new MultiItemData.MultiItem(DemoAPI.CHECK_STATUS_TRANSACTION,"Get status of transaction by signature","Check status of transaction by sinature",
-                        "Check","signature 1","signature 2",
-                        null,null,null,null));
-
+                new MultiItemData.MultiItem(DemoAPI.TRANSFER_SPL_TOKEN,"Transfer SPL Token","Transfer SPL Token to another wallet.",
+                        "TRANSFER","toPublicKey","amount",
+                        "token_mint","decimals",null,null));
         items.add(
-
+                new MultiItemData.MultiItem(DemoAPI.WALLET_TRANSFER_ETH,"Transfer ETH","Transfer ETH to another wallet.",
+                        "TRANSFER","nonce","gasPrice",
+                        "gasLimit","to","amount",null));
+        items.add(
                 new MultiItemData.MultiItem(DemoAPI.TRANSFER_SOL,"Transfer SOL to another address","Transfer SOL to another address",
                         "TRANSFER_SQL","to_publickey","amount",
                         null,null,null,null));
-        items.add(
-
-                new MultiItemData.MultiItem(DemoAPI.WALLET_GET_TRANSACTION_OF_TRANSFER_SOL,"Get transaction of trans-sol","Get transaction of transfering sol",
-                        "Fetch","to_publickey","amount",
-                        null,null,null,null));
-        items.add(
-
-                new MultiItemData.MultiItem(DemoAPI.WALLET_GET_TRANSACTION_OF_TRANSFER_TOKEN,"Get transaction of trans-token","Get transaction of transfering token",
-                        "Fetch","to_publickey","amount",
-                        "token mint","decimals",null,null));
-
+//        items.add(
+//                new MultiItemData.MultiItem(DemoAPI.WALLET_GET_TRANSACTION_OF_TRANSFER_SOL,"Get transaction of trans-sol","Get transaction of transfering sol",
+//                        "GetTransaction","to_publickey","amount",
+//                        null,null,null,null));
+//        items.add(
+//                new MultiItemData.MultiItem(DemoAPI.WALLET_GET_TRANSACTION_OF_TRANSFER_TOKEN,"Get transaction of trans-token","Get transaction of transfering token",
+//                        "GetTransaction","to_publickey","amount",
+//                        "token mint","decimals",null,null));
 
         return items;
     }
@@ -339,6 +342,18 @@ public class MainActivity extends AppCompatActivity {
                 DemoAPI.GET_NFTS,"Get NFTs.","Get details of NFTs in market place.",
                 "Get",
                 "collection address 1","page","page size","order by","desc","sale"));
+        return items;
+    }
+    private List<MultiItemData.MultiItem> confirmationAPIs() {
+        List<MultiItemData.MultiItem> items = new ArrayList<>();
+        items.add(
+                new MultiItemData.MultiItem(DemoAPI.CHECK_STATUS_OFMINTING,"Check status of minting","Minting is not finish immediately, check its status use this API",
+                        "Check","mint address 1","mint address 2",
+                        null,null,null,null));
+        items.add(
+                new MultiItemData.MultiItem(DemoAPI.CHECK_STATUS_TRANSACTION,"Get status of transaction by signature","Check status of transaction by sinature",
+                        "Check","signature 1","signature 2",
+                        null,null,null,null));
         return items;
     }
 

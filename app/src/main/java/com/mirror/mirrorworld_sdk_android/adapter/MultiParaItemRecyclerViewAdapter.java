@@ -1,9 +1,11 @@
 package com.mirror.mirrorworld_sdk_android.adapter;
 
+import static android.content.Context.MODE_PRIVATE;
 import static org.junit.Assert.assertEquals;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -114,47 +116,55 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
         String hintPre = "Param:";
         holder.mItem = mValues.get(position);
         holder.mIdView.setText("No."+mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).name);
+//        holder.mContentView.setText(mValues.get(position).name);
         holder.mButton.setText(mValues.get(position).buttonText);
         holder.mResultView.setText(mValues.get(position).resultDefault);
         if(mValues.get(position).et1Hint == null){
             holder.mEt1.setVisibility(View.GONE);
         }else {
+            holder.mEt1.setVisibility(View.VISIBLE);
             holder.mEt1.setHint(hintPre+mValues.get(position).et1Hint);
         }
         if(mValues.get(position).et2Hint == null){
             holder.mEt2.setVisibility(View.GONE);
         }else {
+            holder.mEt2.setVisibility(View.VISIBLE);
             holder.mEt2.setHint(hintPre+mValues.get(position).et2Hint);
         }
         if(mValues.get(position).et3Hint == null){
             holder.mEt3.setVisibility(View.GONE);
         }else {
+            holder.mEt3.setVisibility(View.VISIBLE);
             holder.mEt3.setHint(hintPre+mValues.get(position).et3Hint);
         }
         if(mValues.get(position).et4Hint == null){
             holder.mEt4.setVisibility(View.GONE);
         }else {
+            holder.mEt4.setVisibility(View.VISIBLE);
             holder.mEt4.setHint(hintPre+mValues.get(position).et4Hint);
         }
         if(mValues.get(position).et5Hint == null){
             holder.mEt5.setVisibility(View.GONE);
         }else {
+            holder.mEt5.setVisibility(View.VISIBLE);
             holder.mEt5.setHint(hintPre+mValues.get(position).et5Hint);
         }
         if(mValues.get(position).et6Hint == null){
             holder.mEt6.setVisibility(View.GONE);
         }else {
+            holder.mEt6.setVisibility(View.VISIBLE);
             holder.mEt6.setHint(hintPre+mValues.get(position).et6Hint);
         }
         if(mValues.get(position).spinnerData == null){
             holder.mSpinner.setVisibility(View.GONE);
         }else {
+            holder.mSpinner.setVisibility(View.VISIBLE);
             initAPIItemSpinner(holder.mSpinner,holder.mItem);
         }
         if(mValues.get(position).spinnerData2 == null){
             holder.mSpinner2.setVisibility(View.GONE);
         }else {
+            holder.mSpinner2.setVisibility(View.VISIBLE);
             initAPIItemSpinner2(holder.mSpinner2,holder.mItem);
         }
 
@@ -184,7 +194,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
         adapterView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override //选中的时候执行的方法
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(mContext, mData.get(i).name, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mContext, mData.get(i).name, Toast.LENGTH_SHORT).show();
                 mSelectedSpinnerItem = data.items.get(i);
             }
 
@@ -212,7 +222,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
         adapterView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override //选中的时候执行的方法
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(mContext, mData.get(i).name, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mContext, mData.get(i).name, Toast.LENGTH_SHORT).show();
                 mSelectedSpinnerItem2 = data.items.get(i);
             }
 
@@ -259,6 +269,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 Log.e("MirrorSDK","Unknwon select chain:"+chain);
             }
 
+
             //Call API:initMirrorWorld
             MirrorWorld.initMirrorWorld(context, APIKey, chain, environment);
 
@@ -280,6 +291,14 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 public void callback(String result) {
                     //todo: Show result
                     holder.mResultView.setText(result);
+                }
+            });
+        }else if(apiId == DemoAPI.IS_LOGGED){
+            //Call API:startLogin
+            MirrorWorld.isLoggedIn(new BoolListener() {
+                @Override
+                public void onBool(boolean boolValue) {
+                    holder.mResultView.setText("Current user login state:"+boolValue);
                 }
             });
         }else if(apiId == DemoAPI.GUEST_LOGIN){
@@ -565,6 +584,35 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(message);
                 }
             });
+        }else if(apiId == DemoAPI.FETCH_NFT_BY_CREATOR){
+            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3)){
+                showToast("Please input!");
+                return;
+            }
+            List<String>  owners = new ArrayList<>();
+            owners.add(String.valueOf(holder.mEt1.getText()));
+
+            int limit = 0;
+            int offset = 0;
+            try{
+                limit =  Integer.valueOf(String.valueOf(holder.mEt2.getText()));
+                offset = Integer.valueOf(String.valueOf(holder.mEt3.getText()));
+            }catch (NumberFormatException E){
+
+            }
+            MirrorWorld.fetchNFTsByCreatorAddresses(owners, limit, offset, new FetchNFTsListener() {
+                @Override
+                public void onFetchSuccess(MultipleNFTsResponse multipleNFTsResponse) {
+                    int count = multipleNFTsResponse.nfts.size();
+                    String countStr = "You have " + count + " NFTs";
+                    holder.mResultView.setText(countStr);
+                }
+
+                @Override
+                public void onFetchFailed(long code, String message) {
+                    holder.mResultView.setText(message);
+                }
+            });
         }else if(apiId == DemoAPI.FETCH_NFT_BY_MINT_ADDRESSES){
             if(!checkEt(holder.mEt1)){
                 showToast("Please input!");
@@ -674,14 +722,37 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             String decimalsStr = String.valueOf(holder.mEt4.getText());
 
             float amount = 0.0f;
-            float decimals = 0.0f;
+            int decimals = 0;
             try{
                 amount =  Float.valueOf(amountStr);
-                decimals =  Float.valueOf(decimalsStr);
+                decimals =  Integer.valueOf(decimalsStr);
             }catch (NumberFormatException E){
             }
 
             MirrorWorld.transferSPLToken(toPublicKey, amount, tokenMint, decimals, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    holder.mResultView.setText(result);
+                }
+            });
+        }else if(apiId == DemoAPI.WALLET_TRANSFER_ETH){
+            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3) || !checkEt(holder.mEt4) || !checkEt(holder.mEt5)){
+                showToast("Please input!");
+                return;
+            }
+            String nonce = String.valueOf(holder.mEt1.getText());
+            String gasPrice = String.valueOf(holder.mEt2.getText());
+            String gasLimit = String.valueOf(holder.mEt3.getText());
+            String to = String.valueOf(holder.mEt4.getText());
+            String amountStr = String.valueOf(holder.mEt5.getText());
+
+            int amount = 0;
+            try{
+                amount =  Integer.valueOf(amountStr);
+            }catch (NumberFormatException E){
+            }
+
+            MirrorWorld.transferETH(nonce, gasPrice, gasLimit, to, amount, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     holder.mResultView.setText(result);
@@ -723,6 +794,23 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("GetWalletToken",code,message));
                 }
             });
+        }else if(apiId == DemoAPI.GET_TOKENS_BY_WALLET){
+            if(!checkEt(holder.mEt1)){
+                showToast("Please input!");
+                return;
+            }
+            String walletAddress = getStringFromEditText(holder.mEt1);
+            MirrorWorld.getTokensByWallet(walletAddress, new GetWalletTokenListener() {
+                @Override
+                public void onSuccess(GetWalletTokenResponse walletTokenResponse) {
+                    holder.mResultView.setText("Get wallet token success!");
+                }
+
+                @Override
+                public void onFailed(long code, String message) {
+                    holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("GetWalletToken",code,message));
+                }
+            });
         }else if(apiId == DemoAPI.WALLET_TRANSACTIONS){
             if(!checkEt(holder.mEt2)){
                 showToast("Please input!");
@@ -744,6 +832,24 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                 @Override
                 public void onFailed(long code, String message) {
                     holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("Transactions",code,message));
+                }
+            });
+        }else if(apiId == DemoAPI.WALLET_TRANSACTIONS_BY_WALLET){
+            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
+                showToast("Please input!");
+                return;
+            }
+            int limit = 0;
+            try{
+                limit = Integer.valueOf(String.valueOf(holder.mEt2.getText()));
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+            String walletAddress = getStringFromEditText(holder.mEt1);
+            MirrorWorld.getTransactionsByWallet(walletAddress, limit, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    holder.mResultView.setText("GetTransactions success! result is "+result);
                 }
             });
         }else if(apiId == DemoAPI.WALLET_TRANSACTIONS_BY_SIGNATURE){
@@ -794,7 +900,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             String amountStr = String.valueOf(holder.mEt2.getText());
             float amount = 0;
             try{
-               amount = Integer.valueOf(amountStr);
+                amount = Integer.valueOf(amountStr);
             }catch (NumberFormatException e){
 
             }
@@ -809,7 +915,64 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText("transfer sol failed!code:"+code+" message:"+message);
                 }
             });
-        }else if(apiId == DemoAPI.GET_COLLECTION_FILTER_INFO){
+        }
+//        else if(apiId == DemoAPI.WALLET_GET_TRANSACTION_OF_TRANSFER_SOL){
+//            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
+//                showToast("Please input!");
+//                return;
+//            }
+//            String public_key = String.valueOf(holder.mEt1.getText());
+//            String amountStr = String.valueOf(holder.mEt2.getText());
+//            float amount = 0;
+//            try{
+//                amount = Integer.valueOf(amountStr);
+//            }catch (NumberFormatException e){
+//
+//            }
+//            MirrorWorld.getTransactionOfTransferSOL(public_key, amount, new GetWalletTransactionListener() {
+//                @Override
+//                public void onSuccess(GetWalletTransactionsResponse walletTransactionsResponse) {
+//                    holder.mResultView.setText("getTransactionOfTransferSOL success!" + MirrorGsonUtils.getInstance().toJson(walletTransactionsResponse));
+//                }
+//
+//                @Override
+//                public void onFailed(long code, String message) {
+//                    holder.mResultView.setText("transfer sol failed!code:"+code+" message:"+message);
+//                }
+//            });
+//        }else if(apiId == DemoAPI.WALLET_GET_TRANSACTION_OF_TRANSFER_TOKEN){
+//            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3) || !checkEt(holder.mEt4)){
+//                showToast("Please input!");
+//                return;
+//            }
+//            String public_key = String.valueOf(holder.mEt1.getText());
+//            String amountStr = String.valueOf(holder.mEt2.getText());
+//            float amount = 0;
+//            try{
+//                amount = Integer.valueOf(amountStr);
+//            }catch (NumberFormatException e){
+//
+//            }
+//            String tokenMint = getStringFromEditText(holder.mEt3);
+//            int decimals = 0;
+//            try{
+//                decimals = Integer.valueOf(getStringFromEditText(holder.mEt4));
+//            }catch (NumberFormatException e){
+//
+//            }
+//            MirrorWorld.getTransactionsOfTransferToken(public_key, amount,tokenMint,decimals, new GetWalletTransactionListener() {
+//                @Override
+//                public void onSuccess(GetWalletTransactionsResponse walletTransactionsResponse) {
+//                    holder.mResultView.setText("getTransactionOfTransferSOL success!" + MirrorGsonUtils.getInstance().toJson(walletTransactionsResponse));
+//                }
+//
+//                @Override
+//                public void onFailed(long code, String message) {
+//                    holder.mResultView.setText("transfer sol failed!code:"+code+" message:"+message);
+//                }
+//            });
+//        }
+        else if(apiId == DemoAPI.GET_COLLECTION_FILTER_INFO){
             if(!checkEt(holder.mEt1)){
                 showToast("Please input!");
                 return;
@@ -1000,7 +1163,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final TextView mIdView;
-        public final TextView mContentView;
+//        public final TextView mContentView;
         public final Button mButton;
         public final TextView mResultView;
         public final EditText mEt1;
@@ -1016,7 +1179,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
         public ViewHolder(View view) {
             super(view);
             mIdView = (TextView) view.findViewById(R.id.multiapi_item_number);
-            mContentView = (TextView) view.findViewById(R.id.multiapi_item_name);
+//            mContentView = (TextView) view.findViewById(R.id.multiapi_item_name);
             mButton = (Button) view.findViewById(R.id.multiapi_item_button);
             mResultView = (TextView) view.findViewById(R.id.multiapi_item_result);
             mEt1 = (EditText) view.findViewById(R.id.multiapi_item_paramet1);
@@ -1028,10 +1191,28 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             mSpinner = (ConstraintLayout) view.findViewById(R.id.api_item_spinner);
             mSpinner2 = (ConstraintLayout) view.findViewById(R.id.api_item_spinner2);
         }
-        @Override
-        public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
-        }
+//        @Override
+//        public String toString() {
+//            return super.toString() + " '" + mContentView.getText() + "'";
+//        }
     }
 
+    private String getStringFromEditText(EditText editText){
+        return String.valueOf(editText.getText());
+    }
+
+//    private void saveSDKInitParams(String APIKey,MirrorEnv env,MirrorChains chain){
+//        SharedPreferences.Editor edt = mContext.getSharedPreferences("initdata",MODE_PRIVATE).edit();
+//        edt.putString("apikey",APIKey);
+//        edt.putInt("env", Integer.valueOf(String.valueOf(env)));
+//        edt.putInt("chain", Integer.parseInt(String.valueOf(chain)));
+//        edt.commit();
+//    }
+//
+//    private void getSDKInitParams(){
+//        SharedPreferences pref = mContext.getSharedPreferences("initdata",MODE_PRIVATE);
+//        String imei = pref.getString("apikey",null);
+//        MirrorEnv env = (MirrorEnv) pref.getInt("env",0);
+//        boolean isMarried = pref.getString("chain");
+//    }
 }

@@ -258,13 +258,20 @@ public class MirrorWorld {
         });
     }
 
-    final public static void getTransactionOfTransferSOL(String toPublickey,float amount,GetWalletTransactionListener listener){
-        MirrorSDK.getInstance().getTransactionOfTransferSOL(toPublickey, amount, listener);
-    }
-
-    final public static void getTransactionsOfTransferToken(String toPublickey,float amount,String tokenMint,int decimals,GetWalletTransactionListener listener){
-        MirrorSDK.getInstance().getTransactionOfTransferToken(toPublickey, amount, tokenMint, decimals, listener);
-    }
+    /**
+     * Type: Wallet
+     * Function: Get transaction of sol transfering
+     * @param toPublickey
+     * @param amount
+     * @param listener
+     */
+//    final public static void getTransactionOfTransferSOL(String toPublickey,float amount,GetWalletTransactionListener listener){
+//        MirrorSDK.getInstance().getTransactionOfTransferSOL(toPublickey, amount, listener);
+//    }
+//
+//    final public static void getTransactionsOfTransferToken(String toPublickey,float amount,String tokenMint,int decimals,GetWalletTransactionListener listener){
+//        MirrorSDK.getInstance().getTransactionOfTransferToken(toPublickey, amount, tokenMint, decimals, listener);
+//    }
     /**
      * Type: Wallet
      * Function: Transfer SPL token to a recipient
@@ -274,7 +281,7 @@ public class MirrorWorld {
      * @param decimals
      * @param mirrorCallback
      */
-    final public static void transferSPLToken(String toPublickey, float amount, String token_mint, float decimals, MirrorCallback mirrorCallback){
+    final public static void transferSPLToken(String toPublickey, float amount, String token_mint, int decimals, MirrorCallback mirrorCallback){
 
         ReqTransSPLToken req = new ReqTransSPLToken();
         req.toPublickey = toPublickey;
@@ -299,27 +306,10 @@ public class MirrorWorld {
      * @param gasLimit
      * @param to
      * @param amount
-     * @param contract
      * @param mirrorCallback
      */
-    final public static void transferETH(String nonce, String gasPrice, String gasLimit, String to,int amount,String contract, MirrorCallback mirrorCallback){
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("nonce", nonce);
-            jsonObject.put("gasPrice", gasPrice);
-            jsonObject.put("gasLimit", gasLimit);
-            jsonObject.put("to", to);
-            jsonObject.put("amount", amount);
-            jsonObject.put("contract", contract);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.TransferETH, "TransferETH", 0, jsonObject, new MirrorCallback() {
-            @Override
-            public void callback(String result) {
-                MirrorSDK.getInstance().TransferETH(nonce, gasPrice, gasLimit, to, amount, mirrorCallback);
-            }
-        });
+    final public static void transferETH(String nonce, String gasPrice, String gasLimit, String to,int amount, MirrorCallback mirrorCallback){
+        MirrorSDK.getInstance().TransferETH(nonce, gasPrice, gasLimit, to, amount, mirrorCallback);
     }
 
 
@@ -461,6 +451,28 @@ public class MirrorWorld {
         });
     }
 
+
+    /**
+     * Type: Asset/Auction
+     * Function: Buy a NFT from marketplace.
+     * @param mint_address
+     * @param price
+     * @param buyNFTListener
+     */
+    final public static void buyNFT(String mint_address, Double price, BuyNFTListener buyNFTListener){
+        ReqBuyNFT req = new ReqBuyNFT();
+        req.mint_address = mint_address;
+        req.price = price;
+
+        JSONObject params = MirrorGsonUtils.getInstance().toJsonObj(req);
+        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.BuyNFT, "BuyNFT", 0, params, new MirrorCallback() {
+            @Override
+            public void callback(String nothing) {
+                MirrorSDK.getInstance().BuyNFT(mint_address, price, buyNFTListener);
+            }
+        });
+    }
+
     /**
      * Type: Asset/Auction
      * Function: List a NFT to marketplace.
@@ -483,26 +495,6 @@ public class MirrorWorld {
             @Override
             public void callback(String nothing) {
                 MirrorSDK.getInstance().ListNFT(mint_address, price, confirmation, auction_house, listener);
-            }
-        });
-    }
-
-    /**
-     * Type: Asset/Auction
-     * Function: Buy a NFT from marketplace.
-     * @param mint_address
-     * @param price
-     * @param buyNFTListener
-     */
-    final public static void buyNFT(String mint_address, Double price, BuyNFTListener buyNFTListener){
-        ReqBuyNFT req = new ReqBuyNFT();
-        req.mint_address = mint_address;
-        req.price = price;
-
-        JSONObject params = MirrorGsonUtils.getInstance().toJsonObj(req);
-        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.BuyNFT, "BuyNFT", 0, params, new MirrorCallback() {
-            @Override
-            public void callback(String nothing) {MirrorSDK.getInstance().BuyNFT(mint_address, price, buyNFTListener);
             }
         });
     }

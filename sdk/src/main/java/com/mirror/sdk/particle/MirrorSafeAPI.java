@@ -151,7 +151,7 @@ public class MirrorSafeAPI {
         String data = jsonObject.toString();
         MirrorSDK.getInstance().logFlow("request auth data"+data);
 
-        String url = MirrorSDK.getInstance().getActionRoot() + MirrorUrl.URL_ACTION_REQUEST;
+        String url = MirrorUrl.getActionRoot() + MirrorUrl.URL_ACTION_REQUEST;
         MirrorSDK.getInstance().checkParamsAndPost(url,data,MirrorSDK.getInstance().getHandlerCallback(new MirrorCallback() {
             @Override
             public void callback(String result) {
