@@ -1,11 +1,9 @@
 package com.mirror.mirrorworld_sdk_android.adapter;
 
-import static android.content.Context.MODE_PRIVATE;
 import static org.junit.Assert.assertEquals;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +30,7 @@ import com.mirror.sdk.listener.confirmation.CheckStatusOfMintingListener;
 import com.mirror.sdk.listener.confirmation.CheckStatusOfMintingResponse;
 import com.mirror.sdk.listener.metadata.GetCollectionFilterInfoListener;
 import com.mirror.sdk.listener.metadata.GetCollectionInfoListener;
+import com.mirror.sdk.listener.metadata.GetCollectionSummaryListener;
 import com.mirror.sdk.listener.metadata.GetNFTEventsListener;
 import com.mirror.sdk.listener.metadata.GetNFTRealPriceListener;
 import com.mirror.sdk.listener.metadata.GetNFTsListener;
@@ -64,6 +63,7 @@ import com.mirror.sdk.response.market.MultipleNFTsResponse;
 import com.mirror.sdk.response.market.SingleNFTResponse;
 import com.mirror.sdk.response.metadata.GetCollectionFilterInfoRes;
 import com.mirror.sdk.response.metadata.GetCollectionInfoRes;
+import com.mirror.sdk.response.metadata.GetCollectionSummaryRes;
 import com.mirror.sdk.response.metadata.GetNFTEventsRes;
 import com.mirror.sdk.response.metadata.GetNFTRealPriceRes;
 import com.mirror.sdk.response.metadata.GetNFTsRes;
@@ -989,13 +989,25 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
                 }
             });
-        }else if(apiId == DemoAPI.GET_NFT_INFO){
+        }else if(apiId == DemoAPI.GET_NFT_INFO_SOLANA){
             if(!checkEt(holder.mEt1)){
                 showToast("Please input!");
                 return;
             }
             String mint_address = String.valueOf(holder.mEt1.getText());
             MirrorWorld.getNFTInfoOnSolana(mint_address, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    holder.mResultView.setText("Visiting result:"+MirrorGsonUtils.getInstance().toJson(result));
+                }
+            });
+        }else if(apiId == DemoAPI.WALLET_NFT_INFO_MULCHAIN){
+            if(!checkEt(holder.mEt1)){
+                showToast("Please input!");
+                return;
+            }
+            String mint_address = String.valueOf(holder.mEt1.getText());
+            MirrorWorld.getNFTInfoOnMultiChain(mint_address, "testid", new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     holder.mResultView.setText("Visiting result:"+MirrorGsonUtils.getInstance().toJson(result));
@@ -1020,7 +1032,28 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
                 }
             });
-        }else if(apiId == DemoAPI.GET_NFT_EVENTS){
+        }else if(apiId == DemoAPI.METADATA_GET_COLLECTION_SUMMARY){
+            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
+                showToast("Please input!");
+                return;
+            }
+            String collection = String.valueOf(holder.mEt1.getText());
+            String collection2 = String.valueOf(holder.mEt2.getText());
+            List<String> collections = new ArrayList<>();
+            collections.add(collection);
+            collections.add(collection2);
+            MirrorWorld.getCollectionSummary(collections, new GetCollectionSummaryListener() {
+                @Override
+                public void onSuccess(List<GetCollectionSummaryRes> res) {
+                    holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(res));
+                }
+
+                @Override
+                public void onFailed(long code, String message) {
+                    holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
+                }
+            });
+        }else if(apiId == DemoAPI.GET_NFT_EVENTS_SOLANA){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3)){
                 showToast("Please input!");
                 return;
@@ -1033,6 +1066,29 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             page = Integer.valueOf(pageStr);
             page_size = Integer.valueOf(pageSizeStr);
             MirrorWorld.getNFTEventsOnSolana(mint_address,page,page_size, new GetNFTEventsListener() {
+                @Override
+                public void onSuccess(GetNFTEventsRes result) {
+                    holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
+                }
+
+                @Override
+                public void onFail(long code, String message) {
+                    holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
+                }
+            });
+        }else if(apiId == DemoAPI.GET_NFT_EVENTS_MULCHAIN){
+            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3)){
+                showToast("Please input!");
+                return;
+            }
+            int page = 0;
+            int page_size = 0;
+            String mint_address = String.valueOf(holder.mEt1.getText());
+            String pageStr = String.valueOf(holder.mEt2.getText());
+            String pageSizeStr = String.valueOf(holder.mEt3.getText());
+            page = Integer.valueOf(pageStr);
+            page_size = Integer.valueOf(pageSizeStr);
+            MirrorWorld.getNFTEventsOnMultiChain(mint_address,page,page_size, new GetNFTEventsListener() {
                 @Override
                 public void onSuccess(GetNFTEventsRes result) {
                     holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
@@ -1082,7 +1138,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
                     holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
                 }
             });
-        }else if(apiId == DemoAPI.GET_NFTS){
+        }else if(apiId == DemoAPI.GET_NFTS_SOLANA){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3)
                     || !checkEt(holder.mEt4) || !checkEt(holder.mEt5) || !checkEt(holder.mEt6)){
                 showToast("Please input!");
@@ -1118,6 +1174,52 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
 //            List<JSONObject> filters = new ArrayList<>();
 //            filters.add(filter);
             MirrorWorld.getNFTsByUnabridgedParamsOnSolana(collection,page,page_size,order_by,desc,sale,null, new GetNFTsListener() {
+                @Override
+                public void onSuccess(GetNFTsRes result) {
+                    holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
+                }
+
+                @Override
+                public void onFail(long code, String message) {
+                    holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
+                }
+            });
+        }else if(apiId == DemoAPI.GET_NFTS_MULCHAIN){
+            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3)
+                    || !checkEt(holder.mEt4) || !checkEt(holder.mEt5) || !checkEt(holder.mEt6)){
+                showToast("Please input!");
+                return;
+            }
+            String collection = String.valueOf(holder.mEt1.getText());
+            int page = 1;
+            int page_size = 10;
+            String order_by = String.valueOf(holder.mEt4.getText());
+            boolean desc = false;
+            Double sale = Double.valueOf(1);
+            try{
+                page = Integer.valueOf(String.valueOf(holder.mEt2.getText()));
+                page_size = Integer.valueOf(String.valueOf(holder.mEt3.getText()));
+                desc = Boolean.valueOf(String.valueOf(holder.mEt5.getText()));
+                sale = Double.valueOf(String.valueOf(holder.mEt6.getText()));
+            }catch(Exception e){
+
+            }
+
+//            JSONObject filter = new JSONObject();
+//            try {
+//                filter.put("filter_name","Rarity");
+//                filter.put("filter_type","enum");
+//                JSONArray values = new JSONArray();
+//                values.put("Common");
+//                filter.put("filter_value",values);
+//                filter.put("filter_type","enum");
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//
+//            List<JSONObject> filters = new ArrayList<>();
+//            filters.add(filter);
+            MirrorWorld.getNFTsByUnabridgedParamsOnMultiChain(collection,page,page_size,order_by,desc,sale,null, new GetNFTsListener() {
                 @Override
                 public void onSuccess(GetNFTsRes result) {
                     holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));

@@ -373,7 +373,7 @@ public class MirrorSDK {
     }
 
     public void guestLogin(LoginListener listener){
-        String url = GetSSORoot() + MirrorUrl.URL_GUEST_LOGIN;
+        String url = MirrorUrl.getActionRoot() + MirrorUrl.URL_GUEST_LOGIN;
         sdkSimpleCheck(new OnCheckSDKUseable() {
             @Override
             public void OnChecked() {
@@ -632,7 +632,7 @@ public class MirrorSDK {
         }
         String data = jsonObject.toString();
 
-        String url = GetSSORoot() + MirrorUrl.URL_LOGIN_WITH_EMAIL;
+        String url = MirrorUrl.getActionRoot() + MirrorUrl.URL_LOGIN_WITH_EMAIL;
         doPostRequest(url, data, new MirrorCallback() {
             @Override
             public void callback(String result) {
@@ -646,7 +646,7 @@ public class MirrorSDK {
     public void FetchUser(FetchUserListener fetchUserListener){
         Map<String,String> map = new HashMap<>();
 
-        String url = GetSSORoot() + MirrorUrl.URL_IS_AUTHENTICATED;
+        String url = MirrorUrl.getActionRoot() + MirrorUrl.URL_IS_AUTHENTICATED;
         checkParamsAndGet(url, map, new MirrorCallback() {
             @Override
             public void callback(String result) {
@@ -665,7 +665,7 @@ public class MirrorSDK {
         Map<String,String> map = new HashMap<>();
         map.put("email",userEmail);
 
-        String url = GetSSORoot() + MirrorUrl.URL_QUERY_USER;
+        String url = MirrorUrl.getActionRoot() + MirrorUrl.URL_QUERY_USER;
         checkParamsAndGet(url, map, new MirrorCallback() {
             @Override
             public void callback(String result) {
@@ -1091,7 +1091,7 @@ public class MirrorSDK {
             public void OnChecked() {
                 logFlow("User logout,clear cache.");
 
-                String urlPre = GetSSORoot() + MirrorUrl.URL_LOGOUT;
+                String urlPre = MirrorUrl.getActionRoot() + MirrorUrl.URL_LOGOUT;
                 checkParamsAndPost(urlPre, null, new MirrorCallback() {
                     @Override
                     public void callback(String result) {
@@ -1450,7 +1450,7 @@ public class MirrorSDK {
             @Override
             public void callback(String result) {
                 logFlow("getCollectionsSummary result:"+result);
-                CommonResponse<GetCollectionSummaryRes> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<GetCollectionSummaryRes>>(){}.getType());
+                CommonResponse<List<GetCollectionSummaryRes>> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<List<GetCollectionSummaryRes>>>(){}.getType());
                 if(response.code == MirrorResCode.SUCCESS){
                     listener.onSuccess(response.data);
                 }else {
@@ -1522,7 +1522,7 @@ public class MirrorSDK {
         String url = getGetMirrorUrl(MirrorService.MetadataNFT) + URL_GET_NFT_EVENTS;
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("collections", mint_address);
+            jsonObject.put("mint_address", mint_address);
             jsonObject.put("page", page);
             jsonObject.put("page_size", page_size);
         } catch (JSONException e) {
@@ -1908,7 +1908,7 @@ public class MirrorSDK {
             return;
         }
 
-        String url = GetSSORoot() + MirrorUrl.URL_REFRESH_TOKEN;
+        String url = MirrorUrl.getActionRoot() + MirrorUrl.URL_REFRESH_TOKEN;
         new Thread(httpGetRunnableWithRefreshToken(url,refreshToken, new MirrorCallback() {
             @Override
             public void callback(String result) {
@@ -2235,7 +2235,7 @@ public class MirrorSDK {
             urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             urlConn.setRequestProperty("Accept","application/json");
             urlConn.setRequestProperty("x-api-key", apiKey);
-            if(accessToken != null && accessToken != "") urlConn.setRequestProperty("Authorization","Bearer "+accessToken);
+            if(accessToken != null && accessToken != "" && accessToken != "undefined") urlConn.setRequestProperty("Authorization","Bearer "+accessToken);
             urlConn.setRequestMethod("GET");
 
             logFlow("http get code:"+urlConn.getResponseCode());

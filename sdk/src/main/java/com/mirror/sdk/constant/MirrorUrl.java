@@ -12,8 +12,6 @@ public class MirrorUrl {
     public static final String URL_LOGIN_WITH_EMAIL = "auth/login";
     public static final String URL_GUEST_LOGIN = "auth/guest-login";
     public static final String URL_LOGOUT = "auth/logout";
-    public static final String URL_ME = "auth/me";
-
     //Action Authorization
     public static final String URL_ACTION_REQUEST = "auth/actions/request";
     public static final String URL_ACTION_APPROVE = "approve/";

@@ -17,8 +17,6 @@ import android.view.WindowManager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
-import com.mirror.sdk.constant.MirrorEnv;
-import com.mirror.sdk.listener.universal.MSimpleCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -315,15 +313,27 @@ public class MainActivity extends AppCompatActivity {
                 "Get",
                 "collection",null,null,null,null,null));
         items.add(new MultiItemData.MultiItem(
-                DemoAPI.GET_NFT_INFO,"Get NFT info.","Get details in market of a NFT.",
-                "Get",
-                "mint address",null,null,null,null,null));
-        items.add(new MultiItemData.MultiItem(
                 DemoAPI.GET_COLLECTION_INFO,"Get collection info.","Get a collection's info.",
                 "Get",
                 "collection 1",null,null,null,null,null));
         items.add(new MultiItemData.MultiItem(
-                DemoAPI.GET_NFT_EVENTS,"Get NFT events.","Get events of NFTs in market.",
+                DemoAPI.METADATA_GET_COLLECTION_SUMMARY,"Get collection summary.","Get the collection summary info.",
+                "Get",
+                "collection 1","collection 2",null,null,null,null));
+        items.add(new MultiItemData.MultiItem(
+                DemoAPI.GET_NFT_INFO_SOLANA,"Get NFT info.","Get details in market of a NFT.",
+                "Get",
+                "mint address",null,null,null,null,null));
+        items.add(new MultiItemData.MultiItem(
+                DemoAPI.WALLET_NFT_INFO_MULCHAIN,"Get NFT info.","Get details in market of a NFT.",
+                "Get",
+                "mint address",null,null,null,null,null));
+        items.add(new MultiItemData.MultiItem(
+                DemoAPI.GET_NFT_EVENTS_SOLANA,"Get NFT events.","Get events of NFTs in market.",
+                "Get",
+                "mint address","page","page size",null,null,null));
+        items.add(new MultiItemData.MultiItem(
+                DemoAPI.GET_NFT_EVENTS_MULCHAIN,"Get NFT events.","Get events of NFTs in market.",
                 "Get",
                 "mint address","page","page size",null,null,null));
         items.add(new MultiItemData.MultiItem(
@@ -339,7 +349,11 @@ public class MainActivity extends AppCompatActivity {
                 "Get",
                 "price","price fee",null,null,null,null));
         items.add(new MultiItemData.MultiItem(
-                DemoAPI.GET_NFTS,"Get NFTs.","Get details of NFTs in market place.",
+                DemoAPI.GET_NFTS_SOLANA,"Get NFTs.","Get details of NFTs in market place.",
+                "Get",
+                "collection address 1","page","page size","order by","desc","sale"));
+        items.add(new MultiItemData.MultiItem(
+                DemoAPI.GET_NFTS_MULCHAIN,"Get NFTs.","Get details of NFTs in market place.",
                 "Get",
                 "collection address 1","page","page size","order by","desc","sale"));
         return items;
