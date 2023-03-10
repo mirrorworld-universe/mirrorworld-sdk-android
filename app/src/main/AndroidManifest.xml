@@ -27,6 +27,11 @@
             android:name=".MainActivity"
             android:launchMode="singleTask"
             android:exported="true">
+        </activity>
+        <activity
+            android:name=".EntranceActivity"
+            android:launchMode="singleTask"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
