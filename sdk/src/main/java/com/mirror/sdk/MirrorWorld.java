@@ -2,13 +2,16 @@ package com.mirror.sdk;
 
 import android.app.Activity;
 
+import com.google.gson.reflect.TypeToken;
 import com.mirror.sdk.constant.MirrorChains;
 import com.mirror.sdk.constant.MirrorConfirmation;
 import com.mirror.sdk.constant.MirrorEnv;
+import com.mirror.sdk.constant.MirrorResCode;
 import com.mirror.sdk.constant.MirrorSafeOptType;
 import com.mirror.sdk.listener.auth.FetchUserListener;
 import com.mirror.sdk.listener.auth.LoginListener;
 import com.mirror.sdk.listener.confirmation.CheckStatusOfMintingListener;
+import com.mirror.sdk.listener.confirmation.CheckStatusOfMintingResponse;
 import com.mirror.sdk.listener.market.BuyNFTListener;
 import com.mirror.sdk.listener.market.CancelListListener;
 import com.mirror.sdk.listener.market.CreateTopCollectionListener;
@@ -26,30 +29,32 @@ import com.mirror.sdk.listener.metadata.GetCollectionSummaryListener;
 import com.mirror.sdk.listener.metadata.GetNFTEventsListener;
 import com.mirror.sdk.listener.metadata.GetNFTRealPriceListener;
 import com.mirror.sdk.listener.metadata.GetNFTsListener;
-import com.mirror.sdk.listener.metadata.SearchNFTsListener;
+import com.mirror.sdk.listener.metadata.SOLSearchNFTsListener;
 import com.mirror.sdk.listener.universal.BoolListener;
 import com.mirror.sdk.listener.universal.MirrorCallback;
 import com.mirror.sdk.listener.wallet.GetOneWalletTransactionBySigListener;
 import com.mirror.sdk.listener.wallet.GetWalletTokenListener;
 import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
+import com.mirror.sdk.listener.wallet.TransactionsDTO;
 import com.mirror.sdk.listener.wallet.TransferSOLListener;
 import com.mirror.sdk.particle.MirrorSafeAPI;
 import com.mirror.sdk.request.ApproveReqUpdateNFTProperties;
-import com.mirror.sdk.request.ReqBuyNFT;
-import com.mirror.sdk.request.ReqCancelListing;
-import com.mirror.sdk.request.ReqCreateCollection;
-import com.mirror.sdk.request.ReqListingNFT;
-import com.mirror.sdk.request.ReqMintNFT;
-import com.mirror.sdk.request.ReqTransNFT;
 import com.mirror.sdk.request.ReqTransSOL;
 import com.mirror.sdk.request.ReqTransSPLToken;
+import com.mirror.sdk.response.CommonResponse;
+import com.mirror.sdk.response.market.ActivityOfSingleNftResponse;
+import com.mirror.sdk.response.market.ListingResponse;
+import com.mirror.sdk.response.market.MintResponse;
+import com.mirror.sdk.response.market.MultipleNFTsResponse;
+import com.mirror.sdk.response.metadata.MirrorMarketSearchNFTObj;
+import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
 import com.mirror.sdk.utils.MirrorGsonUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MirrorWorld {
@@ -190,7 +195,17 @@ public class MirrorWorld {
      * @param listener
      */
     final public static void getTokens(GetWalletTokenListener listener){
-        MirrorSDK.getInstance().GetWalletTokens(listener);
+        MirrorSDK.getInstance().getWalletTokens(new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<GetWalletTokenResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<GetWalletTokenResponse>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    listener.onSuccess(response.data);
+                }else{
+                    listener.onFailed(response.code,response.message);
+                }
+            }
+        });
     }
 
     /**
@@ -200,7 +215,17 @@ public class MirrorWorld {
      * @param walletTokenListener
      */
     final public static void getTokensByWallet(String walletAddress, GetWalletTokenListener walletTokenListener){
-        MirrorSDK.getInstance().GetWalletTokensByWallet(walletAddress, walletTokenListener);
+        MirrorSDK.getInstance().GetWalletTokensByWallet(walletAddress, new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<GetWalletTokenResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<GetWalletTokenResponse>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    walletTokenListener.onSuccess(response.data);
+                }else{
+                    walletTokenListener.onFailed(response.code,response.message);
+                }
+            }
+        });
     }
 
     /**
@@ -209,11 +234,16 @@ public class MirrorWorld {
      * @param before
      * @param walletTransactionListener
      */
-    final public static void getTransactionsOfLoggedUser(String before, GetWalletTransactionListener walletTransactionListener){
-        MirrorSDK.getInstance().Transactions(0, before, walletTransactionListener);
-    }
     final public static void getTransactionsOfLoggedUser(int limit, String before, GetWalletTransactionListener walletTransactionListener){
-        MirrorSDK.getInstance().Transactions(limit, before, walletTransactionListener);
+        HashMap<String,String> map = new HashMap<String,String>();
+        if(limit != 0) map.put("limit", String.valueOf(limit));
+        map.put("next_before",before);
+        MirrorSDK.getInstance().transactions(map, new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                MirrorSDK.logWarn(result);
+            }
+        });
     }
 
     /**
@@ -223,7 +253,9 @@ public class MirrorWorld {
      * @param limit
      */
     final public static void getTransactionsByWallet(String walletAddress, int limit, MirrorCallback callback){
-        MirrorSDK.getInstance().getTransactionsByWallet(walletAddress,limit,callback);
+        HashMap<String,String> map = new HashMap<String,String>();
+        if(limit != 0) map.put("limit", String.valueOf(limit));
+        MirrorSDK.getInstance().getTransactionsByWalletOnSolana(walletAddress,map,callback);
     }
 
     /**
@@ -233,9 +265,20 @@ public class MirrorWorld {
      * @param listener
      */
     final public static void getTransactionBySignature(String signature, GetOneWalletTransactionBySigListener listener){
-        MirrorSDK.getInstance().GetTransactionBySignature(signature, listener);
+        MirrorSDK.getInstance().getTransactionBySignatureOnSolana(signature, new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<TransactionsDTO> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<TransactionsDTO>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    listener.onSuccess(response.data);
+                }else if(response.code == MirrorResCode.NO_RESOURCES){
+                    listener.onFailed(response.code,"No this transaction.");
+                }else{
+                    listener.onFailed(response.code,response.message);
+                }
+            }
+        });
     }
-
 
     /**
      * Type: Wallet
@@ -258,20 +301,6 @@ public class MirrorWorld {
         });
     }
 
-    /**
-     * Type: Wallet
-     * Function: Get transaction of sol transfering
-     * @param toPublickey
-     * @param amount
-     * @param listener
-     */
-//    final public static void getTransactionOfTransferSOL(String toPublickey,float amount,GetWalletTransactionListener listener){
-//        MirrorSDK.getInstance().getTransactionOfTransferSOL(toPublickey, amount, listener);
-//    }
-//
-//    final public static void getTransactionsOfTransferToken(String toPublickey,float amount,String tokenMint,int decimals,GetWalletTransactionListener listener){
-//        MirrorSDK.getInstance().getTransactionOfTransferToken(toPublickey, amount, tokenMint, decimals, listener);
-//    }
     /**
      * Type: Wallet
      * Function: Transfer SPL token to a recipient
@@ -320,7 +349,28 @@ public class MirrorWorld {
      * @param fetchByMintAddressListener
      */
     final public static void fetchNFTsByMintAddresses(List<String> mint_addresses, FetchNFTsListener fetchByMintAddressListener){
-        MirrorSDK.getInstance().FetchNFTsByMintAddresses(mint_addresses, fetchByMintAddressListener);
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        for (String tag : mint_addresses) {
+            jsonArray.put(tag);
+        }
+        try {
+            jsonObject.put("mint_addresses", jsonArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+        MirrorSDK.getInstance().fetchNFTsByMintAddresses(data, new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<MultipleNFTsResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<MultipleNFTsResponse>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    fetchByMintAddressListener.onFetchSuccess(response.data);
+                }else{
+                    fetchByMintAddressListener.onFetchFailed(response.code,response.message);
+                }
+            }
+        });
     }
 
     /**
@@ -339,11 +389,11 @@ public class MirrorWorld {
      * @param ownerWalletAddress
      * @param listener
      */
-    final public static void getNFTsOwnedByAddress(String ownerWalletAddress, FetchNFTsListener listener){
-        List<String> wallets = new ArrayList<>();
-        wallets.add(ownerWalletAddress);
-        MirrorSDK.getInstance().FetchNFTsByMintAddresses(wallets,listener);
-    }
+//    final public static void getNFTsOwnedByAddress(String ownerWalletAddress, FetchNFTsListener listener){
+//        List<String> wallets = new ArrayList<>();
+//        wallets.add(ownerWalletAddress);
+//        MirrorSDK.getInstance().FetchNFTsByMintAddresses(wallets,listener);
+//    }
 
     /**
      * Type: Asset/Mint
@@ -358,17 +408,30 @@ public class MirrorWorld {
     }
 
     final public static void createVerifiedCollection(String name, String symbol, String detailUrl,String confirmation, CreateTopCollectionListener createTopCollectionListener){
-        ReqCreateCollection req = new ReqCreateCollection();
-        req.name = name;
-        req.symbol = symbol;
-        req.detailUrl = detailUrl;
-        req.confirmation = confirmation;
-
-        JSONObject params = MirrorGsonUtils.getInstance().toJsonObj(req);
-        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.CreateCollection, "CreateCollection", 0, params, new MirrorCallback() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("name", name);
+            jsonObject.put("symbol", symbol);
+            jsonObject.put("url", detailUrl);
+            jsonObject.put("confirmation", confirmation);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.CreateCollection, "CreateCollection", 0, jsonObject, new MirrorCallback() {
             @Override
             public void callback(String nothing) {
-                MirrorSDK.getInstance().CreateVerifiedCollection(name, symbol, detailUrl, confirmation, createTopCollectionListener);
+                MirrorSDK.getInstance().CreateVerifiedCollection(data, new MirrorCallback() {
+                    @Override
+                    public void callback(String result) {
+                        CommonResponse<MintResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<MintResponse>>(){}.getType());
+                        if(response.code == MirrorResCode.SUCCESS){
+                            createTopCollectionListener.onCreateSuccess(response.data);
+                        }else{
+                            createTopCollectionListener.onCreateFailed(response.code,response.message);
+                        }
+                    }
+                });
             }
         });
     }
@@ -387,18 +450,31 @@ public class MirrorWorld {
     }
 
     final public static void mintNFT(String collection_mint, String name, String symbol, String detailUrl, String confirmation,MintNFTListener mintNFTListener){
-        ReqMintNFT requestMintNFT = new ReqMintNFT();
-        requestMintNFT.collection_mint = collection_mint;
-        requestMintNFT.name = name;
-        requestMintNFT.symbol = symbol;
-        requestMintNFT.url = detailUrl;
-        requestMintNFT.confirmation = confirmation;
-
-        JSONObject params = MirrorGsonUtils.getInstance().toJsonObj(requestMintNFT);
-        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.MintNFT, "mint nft", 0, params, new MirrorCallback() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("collection_mint", collection_mint);
+            jsonObject.put("name", name);
+            jsonObject.put("symbol", symbol);
+            jsonObject.put("url", detailUrl);
+            jsonObject.put("confirmation", confirmation);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.MintNFT, "mint nft", 0, jsonObject, new MirrorCallback() {
             @Override
             public void callback(String nothing) {
-                MirrorSDK.getInstance().MintNFT(collection_mint,name,symbol,detailUrl,confirmation,mintNFTListener);
+                MirrorSDK.getInstance().mintNFT(data, new MirrorCallback() {
+                    @Override
+                    public void callback(String result) {
+                        CommonResponse<MintResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<MintResponse>>(){}.getType());
+                        if(response.code == MirrorResCode.SUCCESS){
+                            mintNFTListener.onMintSuccess(response.data);
+                        }else{
+                            mintNFTListener.onMintFailed(response.code,response.message);
+                        }
+                    }
+                });
             }
         });
     }
@@ -460,15 +536,28 @@ public class MirrorWorld {
      * @param buyNFTListener
      */
     final public static void buyNFT(String mint_address, Double price, BuyNFTListener buyNFTListener){
-        ReqBuyNFT req = new ReqBuyNFT();
-        req.mint_address = mint_address;
-        req.price = price;
-
-        JSONObject params = MirrorGsonUtils.getInstance().toJsonObj(req);
-        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.BuyNFT, "BuyNFT", 0, params, new MirrorCallback() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("mint_address", mint_address);
+            jsonObject.put("price", price);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.BuyNFT, "BuyNFT", 0, jsonObject, new MirrorCallback() {
             @Override
             public void callback(String nothing) {
-                MirrorSDK.getInstance().BuyNFT(mint_address, price, buyNFTListener);
+                MirrorSDK.getInstance().BuyNFT(data, new MirrorCallback() {
+                    @Override
+                    public void callback(String result) {
+                        CommonResponse<ListingResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<ListingResponse>>(){}.getType());
+                        if(response.code == MirrorResCode.SUCCESS){
+                            buyNFTListener.onBuySuccess(response.data);
+                        }else{
+                            buyNFTListener.onBuyFailed(response.code,response.message);
+                        }
+                    }
+                });
             }
         });
     }
@@ -481,20 +570,33 @@ public class MirrorWorld {
      * @param listener
      */
     final public static void listNFT(String mint_address, Double price, ListNFTListener listener){
-        MirrorSDK.getInstance().ListNFT(mint_address, price, MirrorConfirmation.Default, listener);
+        listNFT(mint_address, price, MirrorConfirmation.Default,null, listener);
     }
     final public static void listNFT(String mint_address, Double price, String confirmation, String auction_house, ListNFTListener listener){
-        ReqListingNFT req = new ReqListingNFT();
-        req.mint_address = mint_address;
-        req.price = price;
-        req.confirmation = confirmation;
-        req.auction_house = auction_house;
-
-        JSONObject params = MirrorGsonUtils.getInstance().toJsonObj(req);
-        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.ListNFT, "ListNFT", 0, params, new MirrorCallback() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("mint_address", mint_address);
+            jsonObject.put("price", price);
+            jsonObject.put("confirmation",confirmation);
+            if(auction_house != null && auction_house != "") jsonObject.put("auction_house",auction_house);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.ListNFT, "ListNFT", 0, jsonObject, new MirrorCallback() {
             @Override
             public void callback(String nothing) {
-                MirrorSDK.getInstance().ListNFT(mint_address, price, confirmation, auction_house, listener);
+                MirrorSDK.getInstance().ListNFT(data, new MirrorCallback() {
+                    @Override
+                    public void callback(String result) {
+                        CommonResponse<ListingResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<ListingResponse>>(){}.getType());
+                        if(response.code == MirrorResCode.SUCCESS){
+                            listener.onListSuccess(response.data);
+                        }else{
+                            listener.onListFailed(response.code,response.message);
+                        }
+                    }
+                });
             }
         });
     }
@@ -521,20 +623,33 @@ public class MirrorWorld {
      * @param listener
      */
     final public static void cancelNFTListing(String mint_address, Double price, CancelListListener listener){
-        MirrorSDK.getInstance().CancelNFTListing(mint_address, price, MirrorConfirmation.Default, listener);
+        cancelNFTListing(mint_address, price, MirrorConfirmation.Default, listener);
     }
 
     final public static void cancelNFTListing(String mint_address, Double price,String confirmation, CancelListListener listener){
-        ReqCancelListing req = new ReqCancelListing();
-        req.mint_address = mint_address;
-        req.price = price;
-        req.confirmation = confirmation;
-
-        JSONObject params = MirrorGsonUtils.getInstance().toJsonObj(req);
-        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.CancelListing, "CancelListing", 0, params, new MirrorCallback() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("mint_address", mint_address);
+            jsonObject.put("price", price);
+            jsonObject.put("confirmation",confirmation);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.CancelListing, "CancelListing", 0, jsonObject, new MirrorCallback() {
             @Override
             public void callback(String nothing) {
-                MirrorSDK.getInstance().CancelNFTListing(mint_address, price, confirmation, listener);
+                MirrorSDK.getInstance().CancelNFTListing(data, new MirrorCallback() {
+                    @Override
+                    public void callback(String result) {
+                        CommonResponse<ListingResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<ListingResponse>>(){}.getType());
+                        if(response.code == MirrorResCode.SUCCESS){
+                            listener.onCancelSuccess(response.data);
+                        }else{
+                            listener.onCancelFailed(response.code,response.message);
+                        }
+                    }
+                });
             }
         });
     }
@@ -547,15 +662,28 @@ public class MirrorWorld {
      * @param transferNFTListener
      */
     final public static void transferNFT(String mint_address, String to_wallet_address, TransferNFTListener transferNFTListener){
-        ReqTransNFT req = new ReqTransNFT();
-        req.mint_address = mint_address;
-        req.to_wallet_address = to_wallet_address;
-
-        JSONObject params = MirrorGsonUtils.getInstance().toJsonObj(req);
-        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.TransferNFT, "TransferNFT", 0, params, new MirrorCallback() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("mint_address", mint_address);
+            jsonObject.put("to_wallet_address", to_wallet_address);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.TransferNFT, "TransferNFT", 0, jsonObject, new MirrorCallback() {
             @Override
             public void callback(String nothing) {
-                MirrorSDK.getInstance().TransferNFTToAnotherSolanaWallet(mint_address, to_wallet_address, transferNFTListener);
+                MirrorSDK.getInstance().TransferNFTToAnotherSolanaWallet(data, new MirrorCallback() {
+                    @Override
+                    public void callback(String result) {
+                        CommonResponse<ListingResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<ListingResponse>>(){}.getType());
+                        if(response.code == MirrorResCode.SUCCESS){
+                            transferNFTListener.onTransferSuccess(response.data);
+                        }else{
+                            transferNFTListener.onTransferFailed(response.code,response.message);
+                        }
+                    }
+                });
             }
         });
     }
@@ -567,7 +695,28 @@ public class MirrorWorld {
      * @param listener
      */
     final public static void checkStatusOfMinting(List<String> mintAddresses, CheckStatusOfMintingListener listener){
-        MirrorSDK.getInstance().checkStatusOfMinting(mintAddresses, listener);
+        JSONObject jsonObject = new JSONObject();
+        try {
+            JSONArray jsonArray = new JSONArray();
+            for (String tag : mintAddresses) {
+                jsonArray.put(tag);
+            }
+            jsonObject.put("mint_addresses", jsonArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+        MirrorSDK.getInstance().checkStatusOfMinting(data, new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<CheckStatusOfMintingResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<CheckStatusOfMintingResponse>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    listener.onSuccess(response.data);
+                }else{
+                    listener.onCheckFailed(response.code,response.message);
+                }
+            }
+        });
     }
 
     /**
@@ -577,7 +726,28 @@ public class MirrorWorld {
      * @param listener
      */
     final public static void checkStatusOfTransactions(List<String> signatures, CheckStatusOfMintingListener listener){
-        MirrorSDK.getInstance().checkStatusOfTransactions(signatures, listener);
+        JSONObject jsonObject = new JSONObject();
+        try {
+            JSONArray jsonArray = new JSONArray();
+            for (String tag : signatures) {
+                jsonArray.put(tag);
+            }
+            jsonObject.put("signatures", jsonArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+        MirrorSDK.getInstance().checkStatusOfTransactions(data, new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<CheckStatusOfMintingResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<CheckStatusOfMintingResponse>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    listener.onSuccess(response.data);
+                }else{
+                    listener.onCheckFailed(response.code,response.message);
+                }
+            }
+        });
     }
 
     /**
@@ -589,7 +759,30 @@ public class MirrorWorld {
      * @param listener
      */
     final public static void fetchNFTsByCreatorAddresses(List<String> creators, int limit, int offset, FetchNFTsListener listener){
-        MirrorSDK.getInstance().FetchNFTsByCreatorAddresses(creators, limit, offset, listener);
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        for (String tag : creators) {
+            jsonArray.put(tag);
+        }
+        try {
+            jsonObject.put("creators", jsonArray);
+            jsonObject.put("limit", limit);
+            jsonObject.put("offset", offset);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String  data = jsonObject.toString();
+        MirrorSDK.getInstance().FetchNFTsByCreatorAddresses(data, new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<MultipleNFTsResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<MultipleNFTsResponse>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    listener.onFetchSuccess(response.data);
+                }else{
+                    listener.onFetchFailed(response.code,response.message);
+                }
+            }
+        });
     }
 
     /**
@@ -598,11 +791,31 @@ public class MirrorWorld {
      * @param update_authorities
      * @param listener
      */
-    final public static void fetchNFTsByUpdateAuthorities(List<String> update_authorities,FetchNFTsListener listener){
-        MirrorSDK.getInstance().FetchNFTsByUpdateAuthorities(update_authorities, listener);
-    }
     final public static void fetchNFTsByUpdateAuthorities(List<String> update_authorities, int limit, int offset, FetchNFTsListener listener){
-        MirrorSDK.getInstance().FetchNFTsByUpdateAuthorities(update_authorities, limit, offset, listener);
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        for (String tag : update_authorities) {
+            jsonArray.put(tag);
+        }
+        try {
+            jsonObject.put("update_authorities", jsonArray);
+            if(limit != 0) jsonObject.put("limit", limit);
+            if(offset != 0) jsonObject.put("offset", offset);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+        MirrorSDK.getInstance().FetchNFTsByUpdateAuthorities(data, new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<MultipleNFTsResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<MultipleNFTsResponse>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    listener.onFetchSuccess(response.data);
+                }else{
+                    listener.onFetchFailed(response.code,response.message);
+                }
+            }
+        });
     }
 
     /**
@@ -611,11 +824,33 @@ public class MirrorWorld {
      * @param owners
      * @param fetchByOwnerListener
      */
-    final public static void fetchNFTsByOwnerAddresses(List<String> owners, FetchByOwnerListener fetchByOwnerListener){
-        MirrorSDK.getInstance().FetchNFTsByOwnerAddresses(owners, fetchByOwnerListener);
-    }
     final public static void fetchNFTsByOwnerAddresses(List<String> owners, int limit, int offset, FetchByOwnerListener fetchByOwnerListener){
-        MirrorSDK.getInstance().FetchNFTsByOwnerAddresses(owners, limit, offset, fetchByOwnerListener);
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        for (String tag : owners) {
+            jsonArray.put(tag);
+        }
+        try {
+            jsonObject.put("owners", jsonArray);
+            if(limit != 0) jsonObject.put("limit", limit);
+            if(offset != 0) jsonObject.put("offset", offset);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+
+        MirrorSDK.getInstance().fetchNFTsByOwnerAddresses(data, new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<MultipleNFTsResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<MultipleNFTsResponse>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    fetchByOwnerListener.onFetchSuccess(response.data);
+                }else{
+                    fetchByOwnerListener.onFetchFailed(response.code,response.message);
+                }
+
+            }
+        });
     }
 
     /**
@@ -625,7 +860,17 @@ public class MirrorWorld {
      * @param fetchSingleNFTActivityListener
      */
     final public static void fetchNFTMarketplaceActivity(String mint_address, FetchSingleNFTActivityListener fetchSingleNFTActivityListener){
-        MirrorSDK.getInstance().FetchNFTMarketplaceActivity(mint_address, fetchSingleNFTActivityListener);
+        MirrorSDK.getInstance().fetchNFTMarketplaceActivity(mint_address, new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<ActivityOfSingleNftResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<ActivityOfSingleNftResponse>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    fetchSingleNFTActivityListener.onFetchSuccess(response.data);
+                }else{
+                    fetchSingleNFTActivityListener.onFetchFailed(response.code,response.message);
+                }
+            }
+        });
     }
 
     /**
@@ -635,7 +880,18 @@ public class MirrorWorld {
      * @param listener
      */
     final public static void getCollectionInfo(List<String> collections, GetCollectionInfoListener listener){
-        MirrorSDK.getInstance().GetCollectionInfo(collections, listener);
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        for (String tag : collections) {
+            jsonArray.put(tag);
+        }
+        try {
+            jsonObject.put("collections", jsonArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+        MirrorSDK.getInstance().getCollectionInfo(data, listener);
     }
 
     /**
@@ -645,7 +901,7 @@ public class MirrorWorld {
      * @param listener
      */
     final public static void getCollectionFilterInfo(String collectionAddress, GetCollectionFilterInfoListener listener){
-        MirrorSDK.getInstance().GetCollectionFilterInfo(collectionAddress, listener);
+        MirrorSDK.getInstance().getCollectionFilterInfo(collectionAddress, listener);
     }
 
     /**
@@ -655,7 +911,18 @@ public class MirrorWorld {
      * @param listener
      */
     final public static void getCollectionSummary(List<String> collections, GetCollectionSummaryListener listener){
-        MirrorSDK.getInstance().getCollectionsSummary(collections, listener);
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        for (String tag : collections) {
+            jsonArray.put(tag);
+        }
+        try {
+            jsonObject.put("collections", jsonArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+        MirrorSDK.getInstance().getCollectionsSummary(data, listener);
     }
 
     /**
@@ -669,7 +936,7 @@ public class MirrorWorld {
     }
 
     final public static void getNFTInfoOnMultiChain(String mintAddress, String tokenID, MirrorCallback listener){
-        MirrorSDK.getInstance().GetNFTInfoOnMultiChain(mintAddress, tokenID, listener);
+        MirrorSDK.getInstance().GetNFTInfoOnEVM(mintAddress, tokenID, listener);
     }
 
     /**
@@ -689,7 +956,12 @@ public class MirrorWorld {
     }
 
     final public static void getNFTsByUnabridgedParamsOnMultiChain(String collection, int page, int page_size, String order_by, boolean desc, double sale, List<JSONObject> filter, GetNFTsListener listener){
-        MirrorSDK.getInstance().getNFTsByUnabridgedParamsOnMultiChain(collection, page, page_size, order_by, desc, sale, filter, listener);
+        MirrorSDK.getInstance().getNFTsByUnabridgedParamsOnEVM(collection, page, page_size, order_by, desc, sale, filter, new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                MirrorSDK.logWarn(result);
+            }
+        });
     }
 
     /**
@@ -705,7 +977,12 @@ public class MirrorWorld {
     }
 
     final public static void getNFTEventsOnMultiChain(String contract, int page, int page_size, GetNFTEventsListener listener){
-        MirrorSDK.getInstance().GetNFTEventsOnMultiChain(contract, page, page_size, listener);
+        MirrorSDK.getInstance().GetNFTEventsOnEVM(contract, page, page_size, new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                MirrorSDK.logWarn(result);
+            }
+        });
     }
 
     /**
@@ -715,8 +992,30 @@ public class MirrorWorld {
      * @param searchStr
      * @param listener
      */
-    final public static void searchNFTs(List<String> collections, String searchStr, SearchNFTsListener listener){
-        MirrorSDK.getInstance().SearchNFTs(collections, searchStr, listener);
+    final public static void searchNFTs(List<String> collections, String searchStr, SOLSearchNFTsListener listener){
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        for (String tag : collections) {
+            jsonArray.put(tag);
+        }
+        try {
+            jsonObject.put("collections", jsonArray);
+            jsonObject.put("search", searchStr);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+        MirrorSDK.getInstance().searchNFTs(data, new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<List<MirrorMarketSearchNFTObj>> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<List<MirrorMarketSearchNFTObj>>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    listener.onSuccess(response.data);
+                }else {
+                    listener.onFail(response.code, response.message);
+                }
+            }
+        });
     }
 
     /**
@@ -725,8 +1024,29 @@ public class MirrorWorld {
      * @param collections
      * @param listener
      */
-    final public static void recommendSearchNFT(List<String> collections, SearchNFTsListener listener){
-        MirrorSDK.getInstance().RecommendSearchNFT(collections, listener);
+    final public static void recommendSearchNFT(List<String> collections, SOLSearchNFTsListener listener){
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        for (String tag : collections) {
+            jsonArray.put(tag);
+        }
+        try {
+            jsonObject.put("collections", jsonArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+        MirrorSDK.getInstance().RecommendSearchNFT(data, new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                CommonResponse<List<MirrorMarketSearchNFTObj>> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<List<MirrorMarketSearchNFTObj>>>(){}.getType());
+                if(response.code == MirrorResCode.SUCCESS){
+                    listener.onSuccess(response.data);
+                }else {
+                    listener.onFail(response.code, response.message);
+                }
+            }
+        });
     }
 
     /**

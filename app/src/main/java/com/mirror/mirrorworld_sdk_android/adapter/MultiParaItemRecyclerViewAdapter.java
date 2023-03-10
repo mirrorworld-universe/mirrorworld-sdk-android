@@ -34,7 +34,7 @@ import com.mirror.sdk.listener.metadata.GetCollectionSummaryListener;
 import com.mirror.sdk.listener.metadata.GetNFTEventsListener;
 import com.mirror.sdk.listener.metadata.GetNFTRealPriceListener;
 import com.mirror.sdk.listener.metadata.GetNFTsListener;
-import com.mirror.sdk.listener.metadata.SearchNFTsListener;
+import com.mirror.sdk.listener.metadata.SOLSearchNFTsListener;
 import com.mirror.sdk.listener.universal.BoolListener;
 import com.mirror.sdk.listener.universal.MirrorCallback;
 import com.mirror.sdk.MirrorSDK;
@@ -1108,7 +1108,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             String searchString = String.valueOf(holder.mEt2.getText());
             List<String> collections = new ArrayList<>();
             collections.add(collection);
-            MirrorWorld.searchNFTs(collections,searchString, new SearchNFTsListener() {
+            MirrorWorld.searchNFTs(collections,searchString, new SOLSearchNFTsListener() {
                 @Override
                 public void onSuccess(List<MirrorMarketSearchNFTObj> result) {
                     holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
@@ -1127,7 +1127,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             String collection = String.valueOf(holder.mEt1.getText());
             List<String> collections = new ArrayList<>();
             collections.add(collection);
-            MirrorWorld.recommendSearchNFT(collections, new SearchNFTsListener() {
+            MirrorWorld.recommendSearchNFT(collections, new SOLSearchNFTsListener() {
                 @Override
                 public void onSuccess(List<MirrorMarketSearchNFTObj> result) {
                     holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
