@@ -42,7 +42,7 @@
 
         <Spinner
             android:textColor="#CCFF00"
-            android:id="@+id/spinner"
+            android:id="@+id/entrance_line2_spinner"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="3" />

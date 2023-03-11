@@ -27,9 +27,7 @@ public class MultiParaItemFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
 
-
     public List<MultiItemData.MultiItem> apiItems;
-
 
     public MultiParaItemFragment(List<MultiItemData.MultiItem> items) {
 
@@ -41,8 +39,6 @@ public class MultiParaItemFragment extends Fragment {
         this.apiItems.addAll(items);
        // this.mColumnCount =columnCount;
     }
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,10 +58,4 @@ public class MultiParaItemFragment extends Fragment {
 
         return view;
     }
-
-
-
-
-
-
 }
