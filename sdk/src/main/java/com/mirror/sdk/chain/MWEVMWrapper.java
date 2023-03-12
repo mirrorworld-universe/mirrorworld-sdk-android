@@ -1,38 +1,26 @@
 package com.mirror.sdk.chain;
 
-import android.app.Activity;
+import android.content.Context;
 
 import com.google.gson.reflect.TypeToken;
 import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.constant.MirrorChains;
+import com.mirror.sdk.constant.MirrorConfirmation;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.constant.MirrorResCode;
 import com.mirror.sdk.constant.MirrorSafeOptType;
-import com.mirror.sdk.listener.confirmation.CheckStatusOfMintingListener;
-import com.mirror.sdk.listener.confirmation.CheckStatusOfMintingResponse;
-import com.mirror.sdk.listener.market.BuyNFTListener;
-import com.mirror.sdk.listener.market.CancelListListener;
-import com.mirror.sdk.listener.market.CreateTopCollectionListener;
-import com.mirror.sdk.listener.market.FetchByOwnerListener;
-import com.mirror.sdk.listener.market.FetchNFTsListener;
-import com.mirror.sdk.listener.market.FetchSingleNFTActivityListener;
-import com.mirror.sdk.listener.market.ListNFTListener;
-import com.mirror.sdk.listener.market.TransferNFTListener;
+import com.mirror.sdk.listener.market.MintNFTListener;
+import com.mirror.sdk.listener.market.UpdateListListener;
 import com.mirror.sdk.listener.metadata.GetCollectionFilterInfoListener;
 import com.mirror.sdk.listener.metadata.GetCollectionInfoListener;
 import com.mirror.sdk.listener.metadata.GetCollectionSummaryListener;
-import com.mirror.sdk.listener.metadata.GetNFTEventsListener;
-import com.mirror.sdk.listener.metadata.GetNFTsListener;
-import com.mirror.sdk.listener.metadata.SOLSearchNFTsListener;
+import com.mirror.sdk.listener.metadata.GetNFTRealPriceListener;
 import com.mirror.sdk.listener.universal.MirrorCallback;
 import com.mirror.sdk.listener.wallet.TransferSOLListener;
 import com.mirror.sdk.particle.MirrorSafeAPI;
+import com.mirror.sdk.request.ApproveReqUpdateNFTProperties;
 import com.mirror.sdk.response.CommonResponse;
-import com.mirror.sdk.response.market.ActivityOfSingleNftResponse;
-import com.mirror.sdk.response.market.ListingResponse;
 import com.mirror.sdk.response.market.MintResponse;
-import com.mirror.sdk.response.market.MultipleNFTsResponse;
-import com.mirror.sdk.response.metadata.MirrorMarketSearchNFTObj;
 import com.mirror.sdk.utils.MirrorGsonUtils;
 
 import org.json.JSONArray;
@@ -44,9 +32,14 @@ import java.util.List;
 
 public class MWEVMWrapper extends MWBaseWrapper{
     //SDK
-    public final static void initSDK(Activity activityContext, MirrorEnv env){
-        MirrorChains chain = MirrorChains.EVM;
+    public final static void initSDK(Context activityContext,String apiKey, MirrorEnv env){
+        if(apiKey == ""){
+            MirrorSDK.logWarn("Please input API key");
+            return;
+        }
+        MirrorChains chain = MirrorChains.Ethereum;
         MirrorSDK.getInstance().InitSDK(activityContext,env,chain);
+        MirrorSDK.getInstance().SetApiKey(apiKey);
     }
 
     //Wallet
@@ -119,6 +112,14 @@ public class MWEVMWrapper extends MWBaseWrapper{
     }
 
     //Metadata
+    final public static void getNFTRealPrice(String price, int fee, GetNFTRealPriceListener listener){
+        MirrorSDK.getInstance().GetNFTRealPrice(price, fee, listener);
+    }
+
+    final public static void getNFTInfo(String mintAddress,String tokenID, MirrorCallback listener){
+        MirrorSDK.getInstance().GetNFTInfoOnEVM(mintAddress,tokenID, listener);
+    }
+
     final public static void getCollectionInfo(List<String> collections, GetCollectionInfoListener listener){
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
@@ -151,10 +152,6 @@ public class MWEVMWrapper extends MWBaseWrapper{
         }
         String data = jsonObject.toString();
         MirrorSDK.getInstance().getCollectionsSummary(data, listener);
-    }
-
-    final public static void getNFTInfo(String contractAddress, String tokenID , MirrorCallback listener){
-        MirrorSDK.getInstance().GetNFTInfoOnEVM(contractAddress,tokenID,listener);
     }
 
     final public static void getNFTsByUnabridgedParams(String collection, int page, int page_size, String order_by, boolean desc, double sale, List<JSONObject> filter, MirrorCallback listener){
@@ -195,8 +192,54 @@ public class MWEVMWrapper extends MWBaseWrapper{
         String data = jsonObject.toString();
         MirrorSDK.getInstance().RecommendSearchNFT(data, listener);
     }
+    //Asset/Mint
+    final public static void mintNFT(String collection_mint,String detailUrl, String confirmation,String to_wallet_address, MintNFTListener mintNFTListener){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("collection_mint", collection_mint);
+            jsonObject.put("url", detailUrl);
+            jsonObject.put("confirmation", confirmation);
+            jsonObject.put("to_wallet_address", to_wallet_address);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.MintNFT, "mint nft", 0, jsonObject, new MirrorCallback() {
+            @Override
+            public void callback(String nothing) {
+                MirrorSDK.getInstance().mintNFT(data, new MirrorCallback() {
+                    @Override
+                    public void callback(String result) {
+                        CommonResponse<MintResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<MintResponse>>(){}.getType());
+                        if(response.code == MirrorResCode.SUCCESS){
+                            mintNFTListener.onMintSuccess(response.data);
+                        }else{
+                            mintNFTListener.onMintFailed(response.code,response.message);
+                        }
+                    }
+                });
+            }
+        });
+    }
 
     //Asset/NFT
+    final public static void updateNFTProperties(String mintAddress, String name, String symbol, String updateAuthority, String NFTJsonUrl,int seller_fee_basis_points, MintNFTListener mintNFTListener){
+        ApproveReqUpdateNFTProperties req = new ApproveReqUpdateNFTProperties();
+        req.mint_address = mintAddress;
+        req.name = name;
+        req.symbol = symbol;
+        req.update_authority = updateAuthority;
+        req.seller_fee_basis_points = seller_fee_basis_points;
+        req.confirmation = MirrorConfirmation.Confirmed;
+
+        JSONObject params = MirrorGsonUtils.getInstance().toJsonObj(req);
+        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.UpdateNFT, "Update NFT", 0, params, new MirrorCallback() {
+            @Override
+            public void callback(String nothing) {
+                MirrorSDK.getInstance().updateNFTProperties(mintAddress, name, symbol, updateAuthority, NFTJsonUrl, seller_fee_basis_points, MirrorConfirmation.Confirmed, mintNFTListener);
+            }
+        });
+    }
     final public static void fetchNFTsByOwnerAddresses(List<String> owners, int limit, MirrorCallback fetchByOwnerListener){
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
@@ -267,10 +310,10 @@ public class MWEVMWrapper extends MWBaseWrapper{
         MirrorSDK.getInstance().fetchNFTMarketplaceActivity(mint_address, fetchSingleNFTActivityListener);
     }
 
-    final public static void createVerifiedCollection(String name, String symbol, String detailUrl,String confirmation, MirrorCallback createTopCollectionListener){
+    final public static void createVerifiedCollection(String contract_type, String detailUrl,String confirmation, MirrorCallback createTopCollectionListener){
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("contract_type", symbol);
+            jsonObject.put("contract_type", contract_type);
             jsonObject.put("url", detailUrl);
             jsonObject.put("confirmation", confirmation);
         } catch (JSONException e) {
@@ -303,13 +346,13 @@ public class MWEVMWrapper extends MWBaseWrapper{
         });
     }
 
-    final public static void listNFT(String collection_address, String token_id, float price, String auction_house, MirrorCallback listener){
+    final public static void listNFT(String collection_address, String token_id, float price, String marketplace_address, MirrorCallback listener){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("collection_address", collection_address);
             jsonObject.put("token_id", token_id);
             jsonObject.put("price",price);
-            jsonObject.put("auction_house",auction_house);
+            jsonObject.put("marketplace_address",marketplace_address);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -320,6 +363,9 @@ public class MWEVMWrapper extends MWBaseWrapper{
                 MirrorSDK.getInstance().ListNFT(data, listener);
             }
         });
+    }
+    final public static void updateNFTListing(String mint_address, Double price,String confirmation, UpdateListListener listener){
+        MirrorSDK.getInstance().UpdateNFTListing(mint_address, price, confirmation, listener);
     }
 
     final public static void cancelNFTListing(String collection_address, String token_id,String marketplace_address, MirrorCallback listener){

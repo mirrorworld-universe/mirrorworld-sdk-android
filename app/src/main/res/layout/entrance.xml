@@ -85,9 +85,10 @@
         android:layout_marginTop="20dp"
         android:layout_weight="1"
         android:ems="10"
+
         android:inputType="textPersonName"
         android:backgroundTint="@color/white"
-        android:textColorHint="@color/white"
+        android:textColorHint="#808080"
         android:hint="Type your API Key here."
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -100,12 +100,9 @@ public class MirrorWorld {
      * Type: SDK
      * Function: Login.
      */
-    final public static void startLogin(LoginListener loginListener){
-        MirrorSDK.getInstance().openLoginPage(loginListener);
-    }
 
-    final public static void startLogin(MirrorCallback callback){
-        MirrorSDK.getInstance().openLoginPage(callback);
+    final public static void startLogin(MirrorCallback callback,Activity activity){
+        MirrorSDK.getInstance().openLoginPage(callback,activity);
     }
 
     /**
@@ -371,16 +368,6 @@ public class MirrorWorld {
                 }
             }
         });
-    }
-
-    /**
-     * Type: Asset/NFT
-     * Function: Get details of a single NFT.
-     * @param mint_address
-     * @param fetchSingleNFT
-     */
-    final public static void getNFTDetails(String mint_address, String mint_id, FetchSingleNFTListener fetchSingleNFT){
-        MirrorSDK.getInstance().GetNFTDetails(mint_address, mint_id, fetchSingleNFT);
     }
 
     /**

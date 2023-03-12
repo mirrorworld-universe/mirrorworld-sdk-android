@@ -24,7 +24,7 @@ import java.util.List;
 
 public class MirrorWebviewUtils {
     private static String customPackageName = "";
-    public static boolean isWebviewSupport(Activity activity, WebView webView,String notice,boolean isDebug){
+    public static boolean isWebviewSupport(Context activity, WebView webView,String notice,boolean isDebug){
         String ua = webView.getSettings().getUserAgentString();
         if(isDebug){
             Log.d("UA: ",ua);
@@ -66,7 +66,7 @@ public class MirrorWebviewUtils {
         return ua;
     }
 
-    public static boolean isSupportCustomTab(Activity activity){
+    public static boolean isSupportCustomTab(Context activity){
         String nameToUse = MirrorWebviewUtils.getPackageNameToUse(activity);
 
         MirrorSDK.getInstance().logFlow("Browser name to use:" + nameToUse);

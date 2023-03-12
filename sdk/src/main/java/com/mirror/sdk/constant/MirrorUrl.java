@@ -77,7 +77,7 @@ public class MirrorUrl {
     public static final MirrorChains getChain(){
         if (!MirrorSDK.getInstance().getInited()){
             MirrorSDK.logError("SDK not inited!");
-            return MirrorChains.SOLANA;
+            return MirrorChains.Solana;
         }
         MirrorChains chain = MirrorSDK.getInstance().getChain();
         return chain;
@@ -204,7 +204,7 @@ public class MirrorUrl {
     }
 
     private static final String getChainString(MirrorChains chain){
-        if(chain.equals(MirrorChains.SOLANA)){
+        if(chain.equals(MirrorChains.Solana)){
             return "solana";
         }else {
             MirrorSDK.logError("Invalida chain enum:"+chain);

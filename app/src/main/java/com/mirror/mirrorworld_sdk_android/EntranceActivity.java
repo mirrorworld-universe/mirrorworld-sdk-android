@@ -1,6 +1,8 @@
 package com.mirror.mirrorworld_sdk_android;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,10 +16,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.mirror.mirrorworld_sdk_android.adapter.EntranceChainSpinnerAdapter;
 import com.mirror.mirrorworld_sdk_android.adapter.EntranceEnvironmentSpinnerAdapter;
 import com.mirror.mirrorworld_sdk_android.data.SpinnerBean;
-import com.mirror.mirrorworld_sdk_android.enums.DemoChain;
-import com.mirror.mirrorworld_sdk_android.enums.DemoEnv;
 import com.mirror.sdk.MWEVM;
 import com.mirror.sdk.MWSolana;
+import com.mirror.sdk.constant.MirrorChains;
 import com.mirror.sdk.constant.MirrorEnv;
 
 import java.util.ArrayList;
@@ -25,8 +26,8 @@ import java.util.List;
 
 public class EntranceActivity extends AppCompatActivity {
 
-    private DemoChain mChain;
-    private DemoEnv mEnv;
+    private MirrorChains mChain;
+    private MirrorEnv mEnv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,14 +52,14 @@ public class EntranceActivity extends AppCompatActivity {
         spinnerChain.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if(i == 1){
-                    mChain = DemoChain.Solana;
+                if(i == 0){
+                    mChain = MirrorChains.Solana;
+                }else if(i == 1){
+                    mChain = MirrorChains.Ethereum;
                 }else if(i == 2){
-                    mChain = DemoChain.Ethereum;
+                    mChain = MirrorChains.Polygon;
                 }else if(i == 3){
-                    mChain = DemoChain.Polygon;
-                }else if(i == 4){
-                    mChain = DemoChain.BNB;
+                    mChain = MirrorChains.BNB;
                 }else {
                     Log.e("MirrorSDK","Unknown index");
                 }
@@ -78,10 +79,11 @@ public class EntranceActivity extends AppCompatActivity {
         spinnerEnv.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if(i == 1){
-                    mEnv = DemoEnv.MainNet;
-                }else if(i == 2){
-                    mEnv = DemoEnv.DevNet;
+                Log.i("MirrorSDK","Select"+i);
+                if(i == 0){
+                    mEnv = MirrorEnv.MainNet;
+                }else if(i == 1){
+                    mEnv = MirrorEnv.DevNet;
                 }else {
                     Log.e("MirrorSDK","Unknown index");
                 }
@@ -93,32 +95,41 @@ public class EntranceActivity extends AppCompatActivity {
             }
         });
 
-        Activity activity = this;
+        Context activity = this;
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String APIKey = editText.getText().toString();
                 MirrorEnv env = MirrorEnv.DevNet;
-                if(mEnv == DemoEnv.MainNet){
+                if(mEnv == MirrorEnv.MainNet){
                     env = MirrorEnv.MainNet;
-                }else if(mEnv == DemoEnv.DevNet){
+                }else if(mEnv == MirrorEnv.DevNet){
                     env = MirrorEnv.DevNet;
                 }else {
                     Log.e("MirrorSDK","Unknwon mEnv");
                 }
 
-                if(mChain == DemoChain.Solana){
-                    MWSolana.initSDK(activity,env);
-                }else if(mChain == DemoChain.Ethereum){
-                    MWEVM.initSDK(activity,env);
-                }else if(mChain == DemoChain.Polygon){
-                    MWEVM.initSDK(activity,env);
-                }else if(mChain == DemoChain.BNB){
-                    MWEVM.initSDK(activity,env);
+                Intent intent = new Intent(activity, MainActivity.class);
+                if(mChain == MirrorChains.Solana){
+                    MWSolana.initSDK(activity,APIKey,env);
+                    intent.putExtra("chain", MirrorChains.Solana.getNumber());
+                }else if(mChain == MirrorChains.Ethereum){
+                    MWEVM.initSDK(activity,APIKey,env);
+                    intent.putExtra("chain",MirrorChains.Ethereum.getNumber());
+                }else if(mChain == MirrorChains.Polygon){
+                    MWEVM.initSDK(activity,APIKey,env);
+                    intent.putExtra("chain",MirrorChains.Polygon.getNumber());
+                }else if(mChain == MirrorChains.BNB){
+                    MWEVM.initSDK(activity,APIKey,env);
+                    intent.putExtra("chain",MirrorChains.BNB.getNumber());
                 }else {
                     Log.e("MirrorSDK","Unknwon mChain");
                 }
+                startActivity(intent);
             }
         });
+
+        mChain = MirrorChains.Solana;
+        mEnv = MirrorEnv.MainNet;
     }
 }

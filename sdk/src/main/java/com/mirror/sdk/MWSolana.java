@@ -1,10 +1,12 @@
 package com.mirror.sdk;
 
 import android.app.Activity;
+import android.content.Context;
 
 import com.google.gson.reflect.TypeToken;
 import com.mirror.sdk.chain.MWSolanaWrapper;
 import com.mirror.sdk.constant.MirrorChains;
+import com.mirror.sdk.constant.MirrorConfirmation;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.constant.MirrorResCode;
 import com.mirror.sdk.constant.MirrorSafeOptType;
@@ -18,12 +20,16 @@ import com.mirror.sdk.listener.market.CreateTopCollectionListener;
 import com.mirror.sdk.listener.market.FetchByOwnerListener;
 import com.mirror.sdk.listener.market.FetchNFTsListener;
 import com.mirror.sdk.listener.market.FetchSingleNFTActivityListener;
+import com.mirror.sdk.listener.market.FetchSingleNFTListener;
 import com.mirror.sdk.listener.market.ListNFTListener;
+import com.mirror.sdk.listener.market.MintNFTListener;
 import com.mirror.sdk.listener.market.TransferNFTListener;
+import com.mirror.sdk.listener.market.UpdateListListener;
 import com.mirror.sdk.listener.metadata.GetCollectionFilterInfoListener;
 import com.mirror.sdk.listener.metadata.GetCollectionInfoListener;
 import com.mirror.sdk.listener.metadata.GetCollectionSummaryListener;
 import com.mirror.sdk.listener.metadata.GetNFTEventsListener;
+import com.mirror.sdk.listener.metadata.GetNFTRealPriceListener;
 import com.mirror.sdk.listener.metadata.GetNFTsListener;
 import com.mirror.sdk.listener.metadata.SOLSearchNFTsListener;
 import com.mirror.sdk.listener.universal.BoolListener;
@@ -34,6 +40,7 @@ import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
 import com.mirror.sdk.listener.wallet.TransactionsDTO;
 import com.mirror.sdk.listener.wallet.TransferSOLListener;
 import com.mirror.sdk.particle.MirrorSafeAPI;
+import com.mirror.sdk.request.ApproveReqUpdateNFTProperties;
 import com.mirror.sdk.response.CommonResponse;
 import com.mirror.sdk.response.market.ActivityOfSingleNftResponse;
 import com.mirror.sdk.response.market.ListingResponse;
@@ -57,8 +64,17 @@ public class MWSolana {
      * Type: SDK
      * Function: Init SDK
      */
-    public final static void initSDK(Activity activityContext, MirrorEnv env){
-        MWSolanaWrapper.initSDK(activityContext, env);
+    public final static void initSDK(Context activityContext, String APIKey, MirrorEnv env){
+        MWSolanaWrapper.initSDK(activityContext,APIKey, env);
+    }
+
+    /**
+     * Type: SDK
+     * Function: Get now environment.
+     * @return
+     */
+    final public static MirrorEnv getEnvironment(){
+        return MWSolanaWrapper.getEnvironment();
     }
 
     /**
@@ -74,12 +90,12 @@ public class MWSolana {
      * Type: SDK
      * Function: Login.
      */
-    final public static void startLogin(LoginListener loginListener){
-        MWSolanaWrapper.startLogin(loginListener);
+    final public static void startLogin(LoginListener loginListener,Activity currentActivity){
+        MWSolanaWrapper.startLogin(loginListener,currentActivity);
     }
 
-    final public static void startLogin(MirrorCallback callback){
-        MWSolanaWrapper.startLogin(callback);
+    final public static void startLogin(MirrorCallback callback,Activity currentActivity){
+        MWSolanaWrapper.startLogin(callback,currentActivity);
     }
 
     /**
@@ -193,6 +209,10 @@ public class MWSolana {
     }
 
     //Metadata
+    final public static void getNFTRealPrice(String price, int fee, GetNFTRealPriceListener listener){
+        MWSolanaWrapper.getNFTRealPrice(price, fee, listener);
+    }
+
     final public static void getCollectionInfo(List<String> collections, GetCollectionInfoListener listener){
         MWSolanaWrapper.getCollectionInfo(collections, listener);
     }
@@ -250,6 +270,10 @@ public class MWSolana {
         MWSolanaWrapper.createVerifiedCollection(name, symbol, detailUrl, confirmation, createTopCollectionListener);
     }
 
+    final public static void mintNFT(String collection_mint, String detailUrl, String confirmation, MintNFTListener mintNFTListener){
+        MWSolanaWrapper.mintNFT(collection_mint, detailUrl, confirmation, mintNFTListener);
+    }
+
     //Confirmation
     final public static void checkStatusOfMinting(List<String> mintAddresses, CheckStatusOfMintingListener listener){
         MWSolanaWrapper.checkStatusOfMinting(mintAddresses, listener);
@@ -263,12 +287,23 @@ public class MWSolana {
         MWSolanaWrapper.transferNFT(mint_address, to_wallet_address, transferNFTListener);
     }
 
-    final public static void listNFT(String mint_address, Double price, String confirmation, String auction_house, ListNFTListener listener){
-        MWSolanaWrapper.listNFT(mint_address, price, confirmation, auction_house, listener);
+    final public static void updateNFTListing(String mint_address, Double price,String confirmation, UpdateListListener listener){
+        MWSolanaWrapper.updateNFTListing(mint_address, price, confirmation, listener);
+    }
+
+    final public static void updateNFTProperties(String mintAddress, String name, String symbol, String updateAuthority, String NFTJsonUrl,int seller_fee_basis_points, MintNFTListener mintNFTListener){
+        MWSolanaWrapper.updateNFTProperties(mintAddress, name, symbol, updateAuthority, NFTJsonUrl, seller_fee_basis_points, mintNFTListener);
+    }
+    final public static void listNFT(String mint_address, Double price, String confirmation, ListNFTListener listener){
+        MWSolanaWrapper.listNFT(mint_address, price, confirmation, listener);
     }
 
     final public static void cancelNFTListing(String mint_address, Double price,String confirmation, CancelListListener listener){
         MWSolanaWrapper.cancelNFTListing(mint_address, price, confirmation, listener);
+    }
+
+    final public static void getNFTDetails(String mint_address, FetchSingleNFTListener fetchSingleNFT){
+        MWSolanaWrapper.getNFTDetails(mint_address, fetchSingleNFT);
     }
 
     final public static void buyNFT(String mint_address, Double price, BuyNFTListener buyNFTListener){

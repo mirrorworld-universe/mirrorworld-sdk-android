@@ -130,7 +130,7 @@ public class RedirectActivity extends Activity {
         MirrorSDK.getInstance().SetRefreshToken(refreshTokenValue);
         MirrorSDK.getInstance().saveRefreshToken(refreshTokenValue);
 
-        Intent intent = new Intent(this,MirrorSDK.getInstance().mActivity.getClass());
+        Intent intent = new Intent(this,MirrorSDK.getInstance().returnActivity.getClass());
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(intent);
 

@@ -34,12 +34,12 @@ public class MWBaseWrapper {
      * Type: SDK
      * Function: Login.
      */
-    final public static void startLogin(LoginListener loginListener){
-        MirrorSDK.getInstance().openLoginPage(loginListener);
+    final public static void startLogin(LoginListener loginListener,Activity returnActivity){
+        MirrorSDK.getInstance().openLoginPage(loginListener,returnActivity);
     }
 
-    final public static void startLogin(MirrorCallback callback){
-        MirrorSDK.getInstance().openLoginPage(callback);
+    final public static void startLogin(MirrorCallback callback,Activity returnActivity){
+        MirrorSDK.getInstance().openLoginPage(callback,returnActivity);
     }
 
     /**

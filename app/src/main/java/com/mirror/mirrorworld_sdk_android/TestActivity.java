@@ -20,7 +20,7 @@ public class TestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
 
-        MirrorSDK.getInstance().InitSDK(this, MirrorEnv.StagingDevNet, MirrorChains.SOLANA);
+        MirrorSDK.getInstance().InitSDK(this, MirrorEnv.StagingDevNet, MirrorChains.Solana);
 
         EditText et = findViewById(R.id.et);
         Button bt = findViewById(R.id.bt);
