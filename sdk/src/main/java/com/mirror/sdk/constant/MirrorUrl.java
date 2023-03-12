@@ -1,5 +1,7 @@
 package com.mirror.sdk.constant;
 
+import android.util.Log;
+
 import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.MirrorWorld;
 
@@ -123,7 +125,7 @@ public class MirrorUrl {
         String host = getUrlHost(serviceEnum);
         String version = getVersionString(APIVersion);
         String chain = getChainString(chainEnum);
-        String network = getNetworkString(env);
+        String network = getNetworkString(chainEnum,env);
 
         String finalUrl = host + "/" + version + "/" + chain + "/" + network + "/" + service + "/" + APIPath;
         return finalUrl;
@@ -136,7 +138,7 @@ public class MirrorUrl {
         String host = getUrlHost(serviceEnum);
         String version = getVersionString(APIVersion);
         String chain = getChainString(chainEnum);
-        String network = getNetworkString(env);
+        String network = getNetworkString(chainEnum,env);
         String service = getServiceString(serviceEnum);
 
         String finalUrl = host + "/" + version + "/" + chain + "/" + network + "/" + service + "/";
@@ -188,24 +190,77 @@ public class MirrorUrl {
         }
     }
 
-    private static final String getNetworkString(MirrorEnv env){
-        if(env.equals(MirrorEnv.StagingMainNet)){
-            return "mainnet";
-        }else if(env.equals(MirrorEnv.StagingDevNet)){
-            return "devnet";
-        }else if(env.equals(MirrorEnv.MainNet)){
-            return "mainnet";
-        }else if(env.equals(MirrorEnv.DevNet)){
-            return "devnet";
-        }else {
-            MirrorSDK.logError("Unknown env:"+env+".Will use mainnet.");
-            return "devnet";
+    private static final String getNetworkString(MirrorChains chain, MirrorEnv env){
+        if(chain == MirrorChains.Solana){
+            if(env.equals(MirrorEnv.StagingMainNet)){
+                return "mainnet";
+            }else if(env.equals(MirrorEnv.StagingDevNet)){
+                return "devnet";
+            }else if(env.equals(MirrorEnv.MainNet)){
+                return "mainnet";
+            }else if(env.equals(MirrorEnv.DevNet)){
+                return "devnet";
+            }else {
+                MirrorSDK.logError("Unknown env:"+env+".Will use mainnet.");
+                return "devnet";
+            }
+        }else if(chain == MirrorChains.Ethereum){
+            if(env.equals(MirrorEnv.StagingMainNet)){
+                return "mainnet";
+            }else if(env.equals(MirrorEnv.StagingDevNet)){
+                return "goerli";
+            }else if(env.equals(MirrorEnv.MainNet)){
+                return "mainnet";
+            }else if(env.equals(MirrorEnv.DevNet)){
+                return "goerli";
+            }else {
+                MirrorSDK.logError("Unknown env:"+env+".Will use mainnet.");
+                return "goerli";
+            }
+        }else if(chain == MirrorChains.Polygon){
+            if(env.equals(MirrorEnv.StagingMainNet)){
+                return "mumbai-mainnet";
+            }else if(env.equals(MirrorEnv.StagingDevNet)){
+                return "mumbai-testnet";
+            }else if(env.equals(MirrorEnv.MainNet)){
+                return "mumbai-mainnet";
+            }else if(env.equals(MirrorEnv.DevNet)){
+                return "mumbai-testnet";
+            }else {
+                MirrorSDK.logError("Unknown env:"+env+".Will use mainnet.");
+                return "mumbai-testnet";
+            }
+        }else if(chain == MirrorChains.BNB){
+            if(env.equals(MirrorEnv.StagingMainNet)){
+                return "bnb-mainnet";
+            }else if(env.equals(MirrorEnv.StagingDevNet)){
+                return "bnb-testnet";
+            }else if(env.equals(MirrorEnv.MainNet)){
+                return "bnb-mainnet";
+            }else if(env.equals(MirrorEnv.DevNet)){
+                return "bnb-testnet";
+            }else {
+                MirrorSDK.logError("Unknown env:"+env+".Will use mainnet.");
+                return "bnb-testnet";
+            }
+        }
+        else {
+            Log.e("MirrorSDK","Unknwon chain"+chain);
+            return "unknwon-net";
         }
     }
 
     private static final String getChainString(MirrorChains chain){
         if(chain.equals(MirrorChains.Solana)){
             return "solana";
+        }else if(chain.equals(MirrorChains.Ethereum)){
+            return "ethereum";
+        }else if(chain.equals(MirrorChains.Polygon)){
+            return "polygon";
+        }else if(chain.equals(MirrorChains.BNB)){
+            return "bnb";
+        }else if(chain.equals(MirrorChains.SUI)){
+            return "sui";
         }else {
             MirrorSDK.logError("Invalida chain enum:"+chain);
             return "solana";

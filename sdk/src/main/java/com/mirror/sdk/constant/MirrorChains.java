@@ -4,7 +4,8 @@ public enum MirrorChains {
     Solana(101),
     Ethereum(201),
     Polygon(202),
-    BNB(203);
+    BNB(203),
+    SUI(204);
 
     private int number;
     MirrorChains(int number){
