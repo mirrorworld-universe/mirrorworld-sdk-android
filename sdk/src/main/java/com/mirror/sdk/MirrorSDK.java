@@ -19,6 +19,7 @@ import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
@@ -207,8 +208,14 @@ public class MirrorSDK {
         }
         mIsInited = true;
 
+
         Log.d("MirrorSDK Version",MirrorConstant.Version);
         this.mActivity = activityContext;
+        if(activityContext == null){
+            return;
+        }else {
+            logFlow("init sdk,context is not null:"+mActivity.toString());
+        }
         if(this.mActivity != null){
             this.refreshToken = getRefreshToken(this.mActivity);
         }
@@ -490,6 +497,8 @@ public class MirrorSDK {
                 CustomTabsIntent customTabsIntent = builder.build();
                 String packageName = MirrorWebviewUtils.getPackageNameToUse(activity);
                 customTabsIntent.intent.setPackage(packageName);
+                //27version need this
+//                customTabsIntent.intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
 //                customTabsIntent.intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 //                customTabsIntent.intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 customTabsIntent.launchUrl(activity, Uri.parse(url));
@@ -2000,7 +2009,7 @@ public class MirrorSDK {
     public void saveRefreshToken(String refreshToken){
         if(refreshToken.equals("")) return;
 
-        logFlow("save refresh token to local:"+refreshToken);
+        logFlow("save refresh token to local:"+refreshToken+mActivity);
         SetRefreshToken(refreshToken);
         SharedPreferences sp = mActivity.getSharedPreferences(localFileKey, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
