@@ -1,8 +1,6 @@
 package com.mirror.mirrorworld_sdk_android.adapter;
 
 import android.app.Activity;
-import android.content.Context;
-import android.util.Log;
 import android.view.View;
 
 import com.mirror.mirrorworld_sdk_android.DemoAPI;
@@ -468,7 +466,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
                 @Override
                 public void onFetchSuccess(SingleNFTResponse nftObject) {
                     String result = "NFT details is:"+MirrorGsonUtils.getInstance().toJson(nftObject);
-                    holder.mResultView.setText(result);
+                    runInUIThread(holder,result);
                 }
 
                 @Override
@@ -495,7 +493,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
                     runInUIThread(holder,message);
                 }
             });
-        }else if(apiId == DemoAPI.TRANSFER_NFT_TO_ANOTHER_SOLANA_WALLET){
+        }else if(apiId == DemoAPI.TRANSFER_NFT_TO_ANOTHER_WALLET){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
                 showToast("Please input!");
                 return;

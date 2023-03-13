@@ -127,16 +127,12 @@ public class PageIniterEVM extends APIPageIniterBase{
                 "contract_type","json_url",null,null,null,null));
         items.add(
                 new MultiItemData.MultiItem(DemoAPI.MINT_NFT,"Mint New NFT on Collection","This request is using API Key from collectionMirror World Mobile SDK",
-                        "MINT_NFT","collection_mint","detailUrl",
+                        "MINT_NFT","collection_address","token_id",
                         "to_wallet_address",null,null,null));
         items.add(
-                new MultiItemData.MultiItem(DemoAPI.UPDATE_NFT,"Update NFT on Collection","Update a minted NFT's info",
-                        "Update","mint address","NFT name",
-                        "NFT symbol","updateAuthority","NFTJsonUrl","seller fee basis points"));
-        items.add(
                 new MultiItemData.MultiItem(DemoAPI.LIST_NFT,"List NFT on the marketplace","List NFT on the marketplace by use mint address",
-                        "LIST_NFT","mint_address","price",
-                        "marketplace_address",null,null,null));
+                        "LIST_NFT","collection_address","token_id",
+                        "price","marketplace_address",null,null));
         items.add(
 
                 new MultiItemData.MultiItem(DemoAPI.UPDATE_NFT_LISTING,"Update Listing of NFT on the marketplace","Update Listing of NFT on the marketplace",
@@ -159,11 +155,11 @@ public class PageIniterEVM extends APIPageIniterBase{
                 DemoAPI.FETCH_NFT_BY_OWNER_ADDRESSES,"Fetch multiple NFTs data by owner addresses",
                 "Fetch multiple NFTs data by owner addresses",
                 "FETCH_BY_OWNER",
-                "collection_address","limit",null,null,null,null));
+                "owner_address","limit",null,null,null,null));
         items.add(
                 new MultiItemData.MultiItem(DemoAPI.FETCH_NFT_BY_MINT_ADDRESSES,"Fetch multiple NFTs data by mint addresses","Fetch multiple NFTs data by mint addresses",
-                        "FETCH_BY_MINT","mint_address",null,
-                        null,null,null,null));
+                        "FETCH_BY_MINT","token_address_1","token_id_1",
+                        "token_address_2","token_id_2",null,null));
         items.add(
 
                 new MultiItemData.MultiItem(DemoAPI.FETCH_NFT_BY_UPDATE_AUTHORITIES,"Fetch multiple NFTs data by update authority addresses","Fetch multiple NFTs data by update authority addresses",
@@ -171,14 +167,14 @@ public class PageIniterEVM extends APIPageIniterBase{
                         "offset",null,null,null));
         items.add(
                 new MultiItemData.MultiItem(DemoAPI.FETCH_SINGLE_NFT_DETAILS,"Fetch single NFT details","Fetch single NFT details",
-                        "FETCH_SINGLE_NFT","mint_address",null,
+                        "FETCH_SINGLE_NFT","token_address","token_id",
                         null,null,null,null));
         items.add(
                 new MultiItemData.MultiItem(DemoAPI.FETCH_NFT_MARKETPLACE_ACTIVITY,"Fetch activity of a single NFT","Fetch activity of a single NFT",
                         "FETCH_NFT_ACTIVITY","mint_address",null,
                         null,null,null,null));
         items.add(
-                new MultiItemData.MultiItem(DemoAPI.TRANSFER_NFT_TO_ANOTHER_SOLANA_WALLET,"Transfer NFT to another solana wallet","Transfer NFT to another solana wallet",
+                new MultiItemData.MultiItem(DemoAPI.TRANSFER_NFT_TO_ANOTHER_WALLET,"Transfer NFT to another solana wallet","Transfer NFT to another solana wallet",
                         "TRANSFER_NFT","collection_address","token_id",
                         "to_wallet_address",null,null,null));
         items.add(

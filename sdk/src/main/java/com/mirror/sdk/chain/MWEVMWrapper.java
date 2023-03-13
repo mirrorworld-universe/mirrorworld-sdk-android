@@ -19,6 +19,7 @@ import com.mirror.sdk.listener.universal.MirrorCallback;
 import com.mirror.sdk.listener.wallet.TransferSOLListener;
 import com.mirror.sdk.particle.MirrorSafeAPI;
 import com.mirror.sdk.request.ApproveReqUpdateNFTProperties;
+import com.mirror.sdk.request.ReqEVMFetchNFTsToken;
 import com.mirror.sdk.response.CommonResponse;
 import com.mirror.sdk.response.market.MintResponse;
 import com.mirror.sdk.utils.MirrorGsonUtils;
@@ -193,11 +194,11 @@ public class MWEVMWrapper extends MWBaseWrapper{
         MirrorSDK.getInstance().RecommendSearchNFT(data, listener);
     }
     //Asset/Mint
-    final public static void mintNFT(String collection_mint,String detailUrl, String confirmation,String to_wallet_address, MintNFTListener mintNFTListener){
+    final public static void mintNFT(String collection_address,String token_id, String confirmation,String to_wallet_address, MintNFTListener mintNFTListener){
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("collection_mint", collection_mint);
-            jsonObject.put("url", detailUrl);
+            jsonObject.put("collection_address", collection_address);
+            jsonObject.put("token_id", token_id);
             jsonObject.put("confirmation", confirmation);
             jsonObject.put("to_wallet_address", to_wallet_address);
         } catch (JSONException e) {
@@ -240,27 +241,27 @@ public class MWEVMWrapper extends MWBaseWrapper{
             }
         });
     }
-    final public static void fetchNFTsByOwnerAddresses(List<String> owners, int limit, MirrorCallback fetchByOwnerListener){
+    final public static void fetchNFTsByOwnerAddresses(String owner, int limit, MirrorCallback fetchByOwnerListener){
         JSONObject jsonObject = new JSONObject();
-        JSONArray jsonArray = new JSONArray();
-        for (String tag : owners) {
-            jsonArray.put(tag);
-        }
+//        JSONArray jsonArray = new JSONArray();
+//        for (String tag : owners) {
+//            jsonArray.put(tag);
+//        }
         try {
-            jsonObject.put("owners", jsonArray);
+//            jsonObject.put("owners", jsonArray);
+            jsonObject.put("owner_address", owner);
             if(limit != 0) jsonObject.put("limit", limit);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         String data = jsonObject.toString();
-
         MirrorSDK.getInstance().fetchNFTsByOwnerAddresses(data,fetchByOwnerListener);
     }
 
-    final public static void fetchNFTsByMintAddresses(List<String> tokens, MirrorCallback fetchByMintAddressListener){
+    final public static void fetchNFTsByMintAddresses(List<ReqEVMFetchNFTsToken> tokens, MirrorCallback fetchByMintAddressListener){
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
-        for (String tag : tokens) {
+        for (ReqEVMFetchNFTsToken tag : tokens) {
             jsonArray.put(tag);
         }
         try {

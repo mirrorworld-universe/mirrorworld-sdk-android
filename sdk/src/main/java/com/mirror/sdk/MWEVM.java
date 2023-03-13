@@ -20,6 +20,7 @@ import com.mirror.sdk.listener.universal.BoolListener;
 import com.mirror.sdk.listener.universal.MirrorCallback;
 import com.mirror.sdk.listener.wallet.TransferSOLListener;
 import com.mirror.sdk.particle.MirrorSafeAPI;
+import com.mirror.sdk.request.ReqEVMFetchNFTsToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -215,19 +216,16 @@ public class MWEVM {
     }
 
     //Asset/mint
-    final public static void mintNFT(String collection_mint,String detailUrl, String confirmation,String to_wallet_address, MintNFTListener mintNFTListener) {
-        MWEVMWrapper.mintNFT(collection_mint, detailUrl, confirmation, to_wallet_address, mintNFTListener);
-    }
-    //Asset/NFT
-    final public static void updateNFTProperties(String mintAddress, String name, String symbol, String updateAuthority, String NFTJsonUrl,int seller_fee_basis_points, MintNFTListener mintNFTListener) {
-        MWEVMWrapper.updateNFTProperties(mintAddress, name, symbol, updateAuthority, NFTJsonUrl, seller_fee_basis_points, mintNFTListener);
+    final public static void mintNFT(String collection_address,String token_id, String confirmation,String to_wallet_address, MintNFTListener mintNFTListener) {
+        MWEVMWrapper.mintNFT(collection_address, token_id, confirmation, to_wallet_address, mintNFTListener);
     }
 
-    final public static void fetchNFTsByOwnerAddresses(List<String> owners, int limit, MirrorCallback fetchByOwnerListener){
+    //Asset/NFT
+    final public static void fetchNFTsByOwnerAddresses(String owners, int limit, MirrorCallback fetchByOwnerListener){
         MWEVMWrapper.fetchNFTsByOwnerAddresses(owners, limit, fetchByOwnerListener);
     }
 
-    final public static void fetchNFTsByMintAddresses(List<String> tokens, MirrorCallback fetchByMintAddressListener){
+    final public static void fetchNFTsByMintAddresses(List<ReqEVMFetchNFTsToken> tokens, MirrorCallback fetchByMintAddressListener){
         MWEVMWrapper.fetchNFTsByMintAddresses(tokens, fetchByMintAddressListener);
     }
 

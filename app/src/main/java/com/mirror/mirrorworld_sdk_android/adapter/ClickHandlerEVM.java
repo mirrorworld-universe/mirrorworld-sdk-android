@@ -1,7 +1,6 @@
 package com.mirror.mirrorworld_sdk_android.adapter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.util.Log;
 import android.view.View;
 
@@ -12,49 +11,22 @@ import com.mirror.sdk.constant.MirrorConfirmation;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.listener.auth.FetchUserListener;
 import com.mirror.sdk.listener.auth.LoginListener;
-import com.mirror.sdk.listener.confirmation.CheckStatusOfMintingListener;
-import com.mirror.sdk.listener.confirmation.CheckStatusOfMintingResponse;
-import com.mirror.sdk.listener.market.BuyNFTListener;
-import com.mirror.sdk.listener.market.CancelListListener;
-import com.mirror.sdk.listener.market.CreateTopCollectionListener;
-import com.mirror.sdk.listener.market.FetchByOwnerListener;
-import com.mirror.sdk.listener.market.FetchNFTsListener;
-import com.mirror.sdk.listener.market.FetchSingleNFTActivityListener;
-import com.mirror.sdk.listener.market.FetchSingleNFTListener;
-import com.mirror.sdk.listener.market.ListNFTListener;
 import com.mirror.sdk.listener.market.MintNFTListener;
-import com.mirror.sdk.listener.market.TransferNFTListener;
 import com.mirror.sdk.listener.market.UpdateListListener;
 import com.mirror.sdk.listener.metadata.GetCollectionFilterInfoListener;
 import com.mirror.sdk.listener.metadata.GetCollectionInfoListener;
 import com.mirror.sdk.listener.metadata.GetCollectionSummaryListener;
-import com.mirror.sdk.listener.metadata.GetNFTEventsListener;
 import com.mirror.sdk.listener.metadata.GetNFTRealPriceListener;
-import com.mirror.sdk.listener.metadata.GetNFTsListener;
-import com.mirror.sdk.listener.metadata.SOLSearchNFTsListener;
 import com.mirror.sdk.listener.universal.BoolListener;
 import com.mirror.sdk.listener.universal.MirrorCallback;
-import com.mirror.sdk.listener.wallet.GetOneWalletTransactionBySigListener;
-import com.mirror.sdk.listener.wallet.GetWalletTokenListener;
-import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
-import com.mirror.sdk.listener.wallet.TransactionsDTO;
-import com.mirror.sdk.listener.wallet.TransferSOLListener;
+import com.mirror.sdk.request.ReqEVMFetchNFTsToken;
 import com.mirror.sdk.response.auth.UserResponse;
-import com.mirror.sdk.response.market.ActivityOfSingleNftResponse;
 import com.mirror.sdk.response.market.ListingResponse;
 import com.mirror.sdk.response.market.MintResponse;
-import com.mirror.sdk.response.market.MultipleNFTsResponse;
-import com.mirror.sdk.response.market.SingleNFTResponse;
 import com.mirror.sdk.response.metadata.GetCollectionFilterInfoRes;
 import com.mirror.sdk.response.metadata.GetCollectionInfoRes;
 import com.mirror.sdk.response.metadata.GetCollectionSummaryRes;
-import com.mirror.sdk.response.metadata.GetNFTEventsRes;
 import com.mirror.sdk.response.metadata.GetNFTRealPriceRes;
-import com.mirror.sdk.response.metadata.GetNFTsRes;
-import com.mirror.sdk.response.metadata.MirrorMarketSearchNFTObj;
-import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
-import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
-import com.mirror.sdk.response.wallet.TransferResponse;
 import com.mirror.sdk.utils.MirrorGsonUtils;
 import com.mirror.sdk.utils.MirrorStringUtils;
 
@@ -213,11 +185,11 @@ public class ClickHandlerEVM extends ClickHandlerBase{
                 return;
             }
 
-            String collection_mint = String.valueOf(holder.mEt1.getText());
-            String detailUrl = String.valueOf(holder.mEt2.getText());
+            String collection_address = String.valueOf(holder.mEt1.getText());
+            String token_id = String.valueOf(holder.mEt2.getText());
             String to_wallet_address = String.valueOf(holder.mEt3.getText());
 
-            MWEVM.mintNFT(collection_mint, detailUrl,MirrorConfirmation.Default,to_wallet_address, new MintNFTListener() {
+            MWEVM.mintNFT(collection_address, token_id, MirrorConfirmation.Default, to_wallet_address, new MintNFTListener() {
                 @Override
                 public void onMintSuccess(MintResponse userResponse) {
                     MirrorSDK.getInstance().logFlow("Mint nft result:"+MirrorGsonUtils.getInstance().toJson(userResponse));
@@ -231,40 +203,15 @@ public class ClickHandlerEVM extends ClickHandlerBase{
                     runInUIThread(holder,r);
                 }
             });
-        }else if(apiId == DemoAPI.UPDATE_NFT){
-            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3) || !checkEt(holder.mEt4) || !checkEt(holder.mEt5) || !checkEt(holder.mEt6)){
-                showToast("Please input all params!");
-                return;
-            }
-            String mintAddress = String.valueOf(holder.mEt1.getText());
-            String name = String.valueOf(holder.mEt2.getText());
-            String symbol = String.valueOf(holder.mEt3.getText());
-            String updateAuthority = String.valueOf(holder.mEt4.getText());
-            String NFTJsonUrl = String.valueOf(holder.mEt5.getText());
-            int seller_fee_basis_points = Integer.parseInt(String.valueOf(holder.mEt6.getText()));
-
-            MWEVM.updateNFTProperties(mintAddress, name, symbol, updateAuthority,NFTJsonUrl,seller_fee_basis_points, new MintNFTListener() {
-                @Override
-                public void onMintSuccess(MintResponse userResponse) {
-                    MirrorSDK.getInstance().logFlow("Update NFT result:"+MirrorGsonUtils.getInstance().toJson(userResponse));
-                    String r = ("Update NFT result is:"+MirrorGsonUtils.getInstance().toJson(userResponse));
-                    runInUIThread(holder,r);
-                }
-
-                @Override
-                public void onMintFailed(long code, String message) {
-                    String r = (message);
-                    runInUIThread(holder,r);
-                }
-            });
         }else if(apiId == DemoAPI.LIST_NFT){
-            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3)){
+            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3) || !checkEt(holder.mEt4)){
                 showToast("Please input!");
                 return;
             }
             String mint_address = String.valueOf(holder.mEt1.getText());
-            String priceStr = String.valueOf(holder.mEt2.getText());
-            String marketplace_address = String.valueOf(holder.mEt3.getText());
+            String token_id = String.valueOf(holder.mEt2.getText());
+            String priceStr = String.valueOf(holder.mEt3.getText());
+            String marketplace_address = String.valueOf(holder.mEt4.getText());
 
             float price = 0.0f;
 
@@ -273,7 +220,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             }catch (NumberFormatException e){
 
             }
-            MWEVM.listNFT(mint_address, "test_id", price, marketplace_address, new MirrorCallback() {
+            MWEVM.listNFT(mint_address, token_id, price, marketplace_address, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("result is:"+result);
@@ -327,16 +274,17 @@ public class ClickHandlerEVM extends ClickHandlerBase{
                 showToast("Please input!");
                 return;
             }
-            List<String>  owners = new ArrayList<>();
-            owners.add(String.valueOf(holder.mEt1.getText()));
+//            List<String> owners = new ArrayList<>();
+//            owners.add(String.valueOf(holder.mEt1.getText()));
+            String owner = String.valueOf(holder.mEt1.getText());
 
             int limit = 0;
             try{
-                limit =  Integer.valueOf(String.valueOf(holder.mEt2.getText()));
+                limit = Integer.valueOf(String.valueOf(holder.mEt2.getText()));
             }catch (NumberFormatException E){
 
             }
-            MWEVM.fetchNFTsByOwnerAddresses(owners, limit, new MirrorCallback() {
+            MWEVM.fetchNFTsByOwnerAddresses(owner, limit, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("result is:\n"+result);
@@ -367,13 +315,18 @@ public class ClickHandlerEVM extends ClickHandlerBase{
                 }
             });
         }else if(apiId == DemoAPI.FETCH_NFT_BY_MINT_ADDRESSES){
-            if(!checkEt(holder.mEt1)){
+            if(!checkEt(holder.mEt1)||!checkEt(holder.mEt2)||!checkEt(holder.mEt3)||!checkEt(holder.mEt4)){
                 showToast("Please input!");
                 return;
             }
-            List<String> mint_address = new ArrayList<>();
-            mint_address.add(String.valueOf(holder.mEt1.getText()));
-            MWEVM.fetchNFTsByMintAddresses(mint_address, new MirrorCallback() {
+            String token_address_1 = String.valueOf(holder.mEt1.getText());
+            String token_id_1 = String.valueOf(holder.mEt2.getText());
+            String token_address_2 = String.valueOf(holder.mEt3.getText());
+            String token_id_2 = String.valueOf(holder.mEt4.getText());
+            List<ReqEVMFetchNFTsToken> tokens = new ArrayList<>();
+            tokens.add(new ReqEVMFetchNFTsToken(token_address_1,token_id_1));
+            tokens.add(new ReqEVMFetchNFTsToken(token_address_2,token_id_2));
+            MWEVM.fetchNFTsByMintAddresses(tokens, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("result is:\n" + result);
@@ -404,12 +357,13 @@ public class ClickHandlerEVM extends ClickHandlerBase{
                 }
             });
         }else if(apiId == DemoAPI.FETCH_SINGLE_NFT_DETAILS){
-            if(!checkEt(holder.mEt1)){
+            if(!checkEt(holder.mEt1)||!checkEt(holder.mEt2)){
                 showToast("Please input!");
                 return;
             }
-            String mint_address =String.valueOf(holder.mEt1.getText());
-            MWEVM.getNFTInfo(mint_address, "temp_id", new MirrorCallback() {
+            String token_address =String.valueOf(holder.mEt1.getText());
+            String token_id =String.valueOf(holder.mEt2.getText());
+            MWEVM.getNFTInfo(token_address, token_id, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("NFT details is:"+result);
@@ -429,13 +383,13 @@ public class ClickHandlerEVM extends ClickHandlerBase{
                     runInUIThread(holder,r);
                 }
             });
-        }else if(apiId == DemoAPI.TRANSFER_NFT_TO_ANOTHER_SOLANA_WALLET){
+        }else if(apiId == DemoAPI.TRANSFER_NFT_TO_ANOTHER_WALLET){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3)){
                 showToast("Please input!");
                 return;
             }
-            String token_id = String.valueOf(holder.mEt1.getText());
-            String collection_address = String.valueOf(holder.mEt2.getText());
+            String collection_address = String.valueOf(holder.mEt1.getText());
+            String token_id = String.valueOf(holder.mEt2.getText());
             String to_wallet_address = String.valueOf(holder.mEt3.getText());
             MWEVM.transferNFT(collection_address, token_id, to_wallet_address, new MirrorCallback() {
                 @Override

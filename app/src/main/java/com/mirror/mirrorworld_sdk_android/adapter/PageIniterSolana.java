@@ -1,15 +1,11 @@
 package com.mirror.mirrorworld_sdk_android.adapter;
 
-import android.app.Activity;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.tabs.TabLayout;
 import com.mirror.mirrorworld_sdk_android.DemoAPI;
 import com.mirror.mirrorworld_sdk_android.FragmentAdapter;
 import com.mirror.mirrorworld_sdk_android.MultiParaItemFragment;
-import com.mirror.mirrorworld_sdk_android.R;
 import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
 import com.mirror.sdk.constant.MirrorChains;
 
@@ -182,7 +178,7 @@ public class PageIniterSolana extends APIPageIniterBase{
                         "FETCH_NFT_ACTIVITY","mint_address",null,
                         null,null,null,null));
         items.add(
-                new MultiItemData.MultiItem(DemoAPI.TRANSFER_NFT_TO_ANOTHER_SOLANA_WALLET,"Transfer NFT to another solana wallet","Transfer NFT to another solana wallet",
+                new MultiItemData.MultiItem(DemoAPI.TRANSFER_NFT_TO_ANOTHER_WALLET,"Transfer NFT to another solana wallet","Transfer NFT to another solana wallet",
                         "TRANSFER_NFT","mint_address","to_wallet_address",
                         null,null,null,null));
         items.add(
