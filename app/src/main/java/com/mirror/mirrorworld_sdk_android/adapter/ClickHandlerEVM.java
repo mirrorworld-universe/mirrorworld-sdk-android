@@ -254,6 +254,20 @@ public class ClickHandlerEVM extends ClickHandlerBase{
                     runInUIThread(holder,r);
                 }
             });
+        }else if(apiId == DemoAPI.GET_NFT_INFO){
+            if(!checkEt(holder.mEt1)||!checkEt(holder.mEt2)){
+                showToast("Please input!");
+                return;
+            }
+            String contract = String.valueOf(holder.mEt1.getText());
+            String token_id = String.valueOf(holder.mEt2.getText());
+            MWEVM.getNFTInfo(contract,token_id, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    String r = "Visiting result:"+MirrorGsonUtils.getInstance().toJson(result);
+                    runInUIThread(holder,r);
+                }
+            });
         }else if(apiId == DemoAPI.CANCEL_NFT_LISTING){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3)){
                 showToast("Please input!");
@@ -274,8 +288,6 @@ public class ClickHandlerEVM extends ClickHandlerBase{
                 showToast("Please input!");
                 return;
             }
-//            List<String> owners = new ArrayList<>();
-//            owners.add(String.valueOf(holder.mEt1.getText()));
             String owner = String.valueOf(holder.mEt1.getText());
 
             int limit = 0;
@@ -398,8 +410,8 @@ public class ClickHandlerEVM extends ClickHandlerBase{
                     runInUIThread(holder,r);
                 }
             });
-        }else if(apiId == DemoAPI.TRANSFER_SPL_TOKEN){
-            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3) || !checkEt(holder.mEt4)){
+        }else if(apiId == DemoAPI.TRANSFER_TOKEN){
+            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3) || !checkEt(holder.mEt4) || !checkEt(holder.mEt5) || !checkEt(holder.mEt6)){
                 showToast("Please input!");
                 return;
             }
@@ -416,7 +428,31 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             }catch (NumberFormatException E){
             }
 
-            MWEVM.transferSPLToken(nonce, gasPrice, gasLimit, to, decimals,contract, new MirrorCallback() {
+            MWEVM.transferToken(nonce, gasPrice, gasLimit, to, decimals,contract, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    String r = (result);
+                    runInUIThread(holder,r);
+                }
+            });
+        }else if(apiId == DemoAPI.TRANSFER_ETH){
+            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3) || !checkEt(holder.mEt4) || !checkEt(holder.mEt5)){
+                showToast("Please input!");
+                return;
+            }
+            String nonce = String.valueOf(holder.mEt1.getText());
+            String gasPrice = String.valueOf(holder.mEt2.getText());
+            String gasLimit = String.valueOf(holder.mEt3.getText());
+            String to = String.valueOf(holder.mEt4.getText());
+            String amountStr = String.valueOf(holder.mEt5.getText());
+
+            int decimals = 0;
+            try{
+                decimals =  Integer.valueOf(amountStr);
+            }catch (NumberFormatException E){
+            }
+
+            MWEVM.transferETH(nonce, gasPrice, gasLimit, to, decimals, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = (result);
@@ -560,15 +596,15 @@ public class ClickHandlerEVM extends ClickHandlerBase{
                 }
             });
         }else if(apiId == DemoAPI.METADATA_GET_COLLECTION_SUMMARY){
-            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
+            if(!checkEt(holder.mEt1) && !checkEt(holder.mEt2)){
                 showToast("Please input!");
                 return;
             }
             String collection = String.valueOf(holder.mEt1.getText());
             String collection2 = String.valueOf(holder.mEt2.getText());
             List<String> collections = new ArrayList<>();
-            collections.add(collection);
-            collections.add(collection2);
+            if(!collection.isEmpty()) collections.add(collection);
+            if(!collection2.isEmpty()) collections.add(collection2);
             MWEVM.getCollectionSummary(collections, new GetCollectionSummaryListener() {
                 @Override
                 public void onSuccess(List<GetCollectionSummaryRes> res) {

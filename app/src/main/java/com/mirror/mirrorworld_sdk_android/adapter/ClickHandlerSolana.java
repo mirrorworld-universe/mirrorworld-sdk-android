@@ -511,7 +511,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
                     runInUIThread(holder,message);
                 }
             });
-        }else if(apiId == DemoAPI.TRANSFER_SPL_TOKEN){
+        }else if(apiId == DemoAPI.TRANSFER_TOKEN){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3) || !checkEt(holder.mEt4)){
                 showToast("Please input!");
                 return;
@@ -721,7 +721,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
                     runInUIThread(holder,result);
                 }
             });
-        }else if(apiId == DemoAPI.GET_NFT_INFO_SOLANA){
+        }else if(apiId == DemoAPI.GET_NFT_INFO){
             if(!checkEt(holder.mEt1)){
                 showToast("Please input!");
                 return;

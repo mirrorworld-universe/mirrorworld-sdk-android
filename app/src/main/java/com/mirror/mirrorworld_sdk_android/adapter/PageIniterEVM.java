@@ -152,7 +152,7 @@ public class PageIniterEVM extends APIPageIniterBase{
                 "Fetch",
                 "crator","limit","offset",null,null,null));
         items.add(new MultiItemData.MultiItem(
-                DemoAPI.FETCH_NFT_BY_OWNER_ADDRESSES,"Fetch multiple NFTs data by owner addresses",
+                DemoAPI.FETCH_NFT_BY_OWNER_ADDRESSES,"Fetch NFT by owner addresses",
                 "Fetch multiple NFTs data by owner addresses",
                 "FETCH_BY_OWNER",
                 "owner_address","limit",null,null,null,null));
@@ -199,16 +199,20 @@ public class PageIniterEVM extends APIPageIniterBase{
                         null,null,null,null));
         items.add(
                 new MultiItemData.MultiItem(DemoAPI.WALLET_TRANSACTIONS_BY_WALLET,"Get wallet transactions by wallet.","Get wallet transactions by wallet address.",
-                        "GetTransactions","limit","before",
+                        "GetTransactions","wallet_address","limit",
                         null,null,null,null));
         items.add(
                 new MultiItemData.MultiItem(DemoAPI.WALLET_TRANSACTIONS_BY_SIGNATURE,"Get wallet transaction by signature","Get wallet transaction by signature",
                         "TRANSACTIONS_SIG","signature",null,
                         null,null,null,null));
         items.add(
-                new MultiItemData.MultiItem(DemoAPI.TRANSFER_SPL_TOKEN,"Transfer SPL Token","Transfer SPL Token to another wallet.",
-                        "TRANSFER","toPublicKey","amount",
-                        "token_mint","decimals",null,null));
+                new MultiItemData.MultiItem(DemoAPI.TRANSFER_TOKEN,"Transfer Token","Transfer SPL Token to another wallet.",
+                        "TRANSFER","nonce","gasPrice",
+                        "gasLimit","to","amount","contract"));
+        items.add(
+                new MultiItemData.MultiItem(DemoAPI.TRANSFER_ETH,"Transfer ETH","Transfer ETH to another wallet.",
+                        "TRANSFER","nonce","gasPrice",
+                        "gasLimit","to","amount",null));
         return items;
     }
     private List<MultiItemData.MultiItem> marketUIAPIs() {
@@ -226,13 +230,9 @@ public class PageIniterEVM extends APIPageIniterBase{
                 "Get",
                 "collection 1","collection 2",null,null,null,null));
         items.add(new MultiItemData.MultiItem(
-                DemoAPI.GET_NFT_INFO_SOLANA,"Get NFT info.","Get details in market of a NFT.",
+                DemoAPI.GET_NFT_INFO,"Get NFT info.","Get details in market of a NFT.",
                 "Get",
-                "mint address",null,null,null,null,null));
-        items.add(new MultiItemData.MultiItem(
-                DemoAPI.WALLET_NFT_INFO_MULCHAIN,"Get NFT info.","Get details in market of a NFT.",
-                "Get",
-                "mint address",null,null,null,null,null));
+                "contract","token_id",null,null,null,null));
         items.add(new MultiItemData.MultiItem(
                 DemoAPI.GET_NFT_EVENTS_SOLANA,"Get NFT events.","Get events of NFTs in market.",
                 "Get",

@@ -4,10 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.mirror.sdk.chain.MWEVMWrapper;
-import com.mirror.sdk.chain.MWSolanaWrapper;
 import com.mirror.sdk.constant.MirrorChains;
 import com.mirror.sdk.constant.MirrorEnv;
-import com.mirror.sdk.constant.MirrorSafeOptType;
 import com.mirror.sdk.listener.auth.FetchUserListener;
 import com.mirror.sdk.listener.auth.LoginListener;
 import com.mirror.sdk.listener.market.MintNFTListener;
@@ -19,14 +17,10 @@ import com.mirror.sdk.listener.metadata.GetNFTRealPriceListener;
 import com.mirror.sdk.listener.universal.BoolListener;
 import com.mirror.sdk.listener.universal.MirrorCallback;
 import com.mirror.sdk.listener.wallet.TransferSOLListener;
-import com.mirror.sdk.particle.MirrorSafeAPI;
 import com.mirror.sdk.request.ReqEVMFetchNFTsToken;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.List;
 
 public class MWEVM {
@@ -149,12 +143,12 @@ public class MWEVM {
 
     //Wallet
     //transfer-token
-    final public static void transferSPLToken(String nonce, String gasPrice, String gasLimit, String to, int amount, String contract, MirrorCallback mirrorCallback){
-        MWEVMWrapper.transferSPLToken(nonce, gasPrice, gasLimit, to, amount, contract, mirrorCallback);
+    final public static void transferToken(String nonce, String gasPrice, String gasLimit, String to, int amount, String contract, MirrorCallback mirrorCallback){
+        MWEVMWrapper.transferToken(nonce, gasPrice, gasLimit, to, amount, contract, mirrorCallback);
     }
 
     //transfer-eth
-    final public static void transferETH(String nonce, String gasPrice, String gasLimit, String to, int amount, TransferSOLListener listener){
+    final public static void transferETH(String nonce, String gasPrice, String gasLimit, String to, int amount, MirrorCallback listener){
         MWEVMWrapper.transferETH(nonce, gasPrice, gasLimit, to, amount, listener);
     }
 

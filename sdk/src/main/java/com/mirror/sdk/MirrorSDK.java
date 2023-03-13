@@ -1004,6 +1004,15 @@ public class MirrorSDK {
             }
         });
     }
+    public void getTransactionsByWalletOnEVM(String walletAddress, HashMap<String,String> map, MirrorCallback listener){
+        String url = getGetMirrorUrl(MirrorService.Wallet)+ walletAddress + "/" + MirrorUrl.URL_GET_WALLET_TRANSACTIONS;
+        checkParamsAndGet(url, map, new MirrorCallback() {
+            @Override
+            public void callback(String result) {
+                listener.callback(result);
+            }
+        });
+    }
 
     public void getTransactionBySignatureOnSolana(String signature, MirrorCallback listener){
         String url = getGetMirrorUrl(MirrorService.Wallet) + MirrorUrl.URL_GET_WALLET_TRANSACTIONS + "/"+signature;
@@ -1072,7 +1081,7 @@ public class MirrorSDK {
     }
 
     public void getCollectionFilterInfo(String collectionAddress, GetCollectionFilterInfoListener listener){
-        String url = getGetMirrorUrl(MirrorService.MetadataCollection) + URL_GET_COLLECTION_FILTER_INFO + "?collection=" + collectionAddress;
+        String url = getGetMirrorUrl(MirrorService.MetadataCollection) + URL_GET_COLLECTION_FILTER_INFO;
         Map<String,String> urlParams = new HashMap<>();
         urlParams.put("collection",collectionAddress);
         checkParamsAndGet(url, urlParams, new MirrorCallback() {

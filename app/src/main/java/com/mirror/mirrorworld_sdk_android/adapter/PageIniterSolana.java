@@ -210,7 +210,7 @@ public class PageIniterSolana extends APIPageIniterBase{
                         "TRANSACTIONS_SIG","signature",null,
                         null,null,null,null));
         items.add(
-                new MultiItemData.MultiItem(DemoAPI.TRANSFER_SPL_TOKEN,"Transfer SPL Token","Transfer SPL Token to another wallet.",
+                new MultiItemData.MultiItem(DemoAPI.TRANSFER_TOKEN,"Transfer SPL Token","Transfer SPL Token to another wallet.",
                         "TRANSFER","toPublicKey","amount",
                         "token_mint","decimals",null,null));
         items.add(
@@ -243,11 +243,7 @@ public class PageIniterSolana extends APIPageIniterBase{
                 "Get",
                 "collection 1","collection 2",null,null,null,null));
         items.add(new MultiItemData.MultiItem(
-                DemoAPI.GET_NFT_INFO_SOLANA,"Get NFT info.","Get details in market of a NFT.",
-                "Get",
-                "mint address",null,null,null,null,null));
-        items.add(new MultiItemData.MultiItem(
-                DemoAPI.WALLET_NFT_INFO_MULCHAIN,"Get NFT info.","Get details in market of a NFT.",
+                DemoAPI.GET_NFT_INFO,"Get NFT info.","Get details in market of a NFT.",
                 "Get",
                 "mint address",null,null,null,null,null));
         items.add(new MultiItemData.MultiItem(

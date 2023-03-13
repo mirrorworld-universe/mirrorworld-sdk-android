@@ -20,6 +20,7 @@ import com.mirror.sdk.listener.wallet.TransferSOLListener;
 import com.mirror.sdk.particle.MirrorSafeAPI;
 import com.mirror.sdk.request.ApproveReqUpdateNFTProperties;
 import com.mirror.sdk.request.ReqEVMFetchNFTsToken;
+import com.mirror.sdk.request.ReqEVMFetchNFTsTokenTotal;
 import com.mirror.sdk.response.CommonResponse;
 import com.mirror.sdk.response.market.MintResponse;
 import com.mirror.sdk.utils.MirrorGsonUtils;
@@ -45,7 +46,7 @@ public class MWEVMWrapper extends MWBaseWrapper{
 
     //Wallet
     //transfer-token
-    final public static void transferSPLToken(String nonce, String gasPrice, String gasLimit, String to, int amount, String contract, MirrorCallback mirrorCallback){
+    final public static void transferToken(String nonce, String gasPrice, String gasLimit, String to, int amount, String contract, MirrorCallback mirrorCallback){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("nonce", nonce);
@@ -67,25 +68,19 @@ public class MWEVMWrapper extends MWBaseWrapper{
     }
 
     //transfer-eth
-    final public static void transferETH(String nonce, String gasPrice, String gasLimit, String to, int amount, TransferSOLListener listener){
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("nonce", nonce);
-            jsonObject.put("gasPrice", gasPrice);
-            jsonObject.put("gasLimit", gasLimit);
-            jsonObject.put("to", to);
-            jsonObject.put("amount", amount);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        String data = jsonObject.toString();
-        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.TransferSol, "TransferSol", 0, jsonObject, new MirrorCallback() {
-            @Override
-            public void callback(String nothing) {
-                MirrorSDK.getInstance().transferSOL(data, listener);
-            }
-        });
+    final public static void transferETH(String nonce, String gasPrice, String gasLimit, String to, int amount, MirrorCallback listener){
+//        JSONObject jsonObject = new JSONObject();
+//        try {
+//            jsonObject.put("nonce", nonce);
+//            jsonObject.put("gasPrice", gasPrice);
+//            jsonObject.put("gasLimit", gasLimit);
+//            jsonObject.put("to", to);
+//            jsonObject.put("amount", amount);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        String data = jsonObject.toString();
+        MirrorSDK.getInstance().TransferETH(nonce,gasPrice,gasLimit,to,amount, listener);
     }
 
     final public static void getTokens(MirrorCallback listener){
@@ -99,13 +94,14 @@ public class MWEVMWrapper extends MWBaseWrapper{
     final public static void getTransactionsOfLoggedUser(int limit, String before, MirrorCallback walletTransactionListener){
         HashMap<String,String> map = new HashMap<String,String>();
         if(limit != 0) map.put("limit", String.valueOf(limit));
+        map.put("before", before);
         MirrorSDK.getInstance().transactions(map, walletTransactionListener);
     }
 
     final public static void getTransactionsByWallet(String walletAddress, int limit, MirrorCallback callback){
         HashMap<String,String> map = new HashMap<String,String>();
         if(limit != 0) map.put("limit", String.valueOf(limit));
-        MirrorSDK.getInstance().getTransactionsByWalletOnSolana(walletAddress,map,callback);
+        MirrorSDK.getInstance().getTransactionsByWalletOnEVM(walletAddress,map,callback);
     }
 
     final public static void getTransactionBySignature(String signature, MirrorCallback listener){
@@ -243,12 +239,7 @@ public class MWEVMWrapper extends MWBaseWrapper{
     }
     final public static void fetchNFTsByOwnerAddresses(String owner, int limit, MirrorCallback fetchByOwnerListener){
         JSONObject jsonObject = new JSONObject();
-//        JSONArray jsonArray = new JSONArray();
-//        for (String tag : owners) {
-//            jsonArray.put(tag);
-//        }
         try {
-//            jsonObject.put("owners", jsonArray);
             jsonObject.put("owner_address", owner);
             if(limit != 0) jsonObject.put("limit", limit);
         } catch (JSONException e) {
@@ -269,8 +260,10 @@ public class MWEVMWrapper extends MWBaseWrapper{
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String data = jsonObject.toString();
-        MirrorSDK.getInstance().fetchNFTsByMintAddresses(data, fetchByMintAddressListener);
+        ReqEVMFetchNFTsTokenTotal total = new ReqEVMFetchNFTsTokenTotal();
+        total.tokens = tokens;
+        String str = MirrorGsonUtils.getInstance().toJson(total);
+        MirrorSDK.getInstance().fetchNFTsByMintAddresses(str, fetchByMintAddressListener);
     }
 
     final public static void fetchNFTsByCreatorAddresses(List<String> creators, int limit, int offset, MirrorCallback listener){
