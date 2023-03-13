@@ -81,41 +81,41 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             MWSolana.startLogin(new MirrorCallback() {
                 @Override
                 public void callback(String result) {
-                    //todo: Show result
-                    holder.mResultView.setText(result);
+                    runInUIThread(holder,result);
                 }
             },mContext);
         }else if(apiId == DemoAPI.IS_LOGGED){
             MWSolana.isLoggedIn(new BoolListener() {
                 @Override
                 public void onBool(boolean boolValue) {
-                    holder.mResultView.setText("Current user login state:"+boolValue);
+                    String r = "Current user login state:"+boolValue;
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.GUEST_LOGIN){
             MWSolana.guestLogin(new LoginListener() {
                 @Override
                 public void onLoginSuccess() {
-                    holder.mResultView.setText("Guest login success!");
+                    runInUIThread(holder,"Guest login success!");
                 }
 
                 @Override
                 public void onLoginFail() {
-                    holder.mResultView.setText("Guest login failed!");
+                    runInUIThread(holder,"Guest login failed!");
                 }
             });
         }else if(apiId == DemoAPI.LOGOUT){
             MWSolana.logout(new BoolListener() {
                 @Override
                 public void onBool(boolean boolValue) {
-                    holder.mResultView.setText("Logout result:"+boolValue);
+                    runInUIThread(holder,"Logout result:"+boolValue);
                 }
             });
         }else if(apiId == DemoAPI.OPEN_WALLET){
             MWSolana.openWallet(new MirrorCallback() {
                 @Override
                 public void callback(String result) {
-                    Log.d("MirrorSDK","Wallet logout callback runs!");
+                    runInUIThread(holder,"Wallet logout callback runs!");
                 }
             });
         }else if(apiId == DemoAPI.OPEN_MARKET){
@@ -148,19 +148,20 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             MWSolana.loginWithEmail(email,passWord,new MirrorCallback() {
                 @Override
                 public void callback(String s) {
-                    holder.mResultView.setText(s);
+                    runInUIThread(holder,s);
                 }
             });
         }else if(apiId == DemoAPI.FETCH_USER){
             MWSolana.fetchUser(new FetchUserListener() {
                 @Override
                 public void onUserFetched(UserResponse userResponse) {
-                    holder.mResultView.setText(userResponse.email+" eth_address "+userResponse.wallet.eth_address+" solona_address "+userResponse.wallet.sol_address);
+                    String r = userResponse.email+" eth_address "+userResponse.wallet.eth_address+" solona_address "+userResponse.wallet.sol_address;
+                    runInUIThread(holder,r);
                 }
 
                 @Override
                 public void onFetchFailed(long code, String message) {
-                    holder.mResultView.setText(message);
+                    runInUIThread(holder,message);
                 }
             });
         }else if(apiId == DemoAPI.QUERY_USER){
@@ -172,13 +173,13 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             MWSolana.queryUser(email,new FetchUserListener() {
                 @Override
                 public void onUserFetched(UserResponse userResponse) {
-                    holder.mResultView.setText(userResponse.email+" sol_address "+userResponse.sol_address);
+                    String r = userResponse.email+" sol_address "+userResponse.sol_address;
+                    runInUIThread(holder,r);
                 }
 
                 @Override
                 public void onFetchFailed(long code, String message) {
-                    holder.mResultView.setText(message);
-
+                    runInUIThread(holder,message);
                 }
             });
         }else if(apiId == DemoAPI.CREATE_VERIFIED_COLLECTION){
@@ -193,12 +194,12 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             MWSolana.createVerifiedCollection(name, symbol, detailsUrl, MirrorConfirmation.Default, new CreateTopCollectionListener() {
                 @Override
                 public void onCreateSuccess(MintResponse mintResponse) {
-                    holder.mResultView.setText("Creating result is:"+ MirrorGsonUtils.getInstance().toJson(mintResponse));
+                    runInUIThread(holder,"Creating result is:"+ MirrorGsonUtils.getInstance().toJson(mintResponse));
                 }
 
                 @Override
                 public void onCreateFailed(long code, String message) {
-                    holder.mResultView.setText(message);
+                    runInUIThread(holder,message);
                 }
             });
         }else if(apiId == DemoAPI.MINT_NFT){
@@ -214,12 +215,12 @@ public class ClickHandlerSolana extends ClickHandlerBase{
                 @Override
                 public void onMintSuccess(MintResponse userResponse) {
                     MirrorSDK.getInstance().logFlow("Mint nft result:"+MirrorGsonUtils.getInstance().toJson(userResponse));
-                    holder.mResultView.setText("Mint NFT result is:"+MirrorGsonUtils.getInstance().toJson(userResponse));
+                    runInUIThread(holder,"Mint NFT result is:"+MirrorGsonUtils.getInstance().toJson(userResponse));
                 }
 
                 @Override
                 public void onMintFailed(long code, String message) {
-                    holder.mResultView.setText(message);
+                    runInUIThread(holder,message);
                 }
             });
         }else if(apiId == DemoAPI.UPDATE_NFT){
@@ -238,12 +239,12 @@ public class ClickHandlerSolana extends ClickHandlerBase{
                 @Override
                 public void onMintSuccess(MintResponse userResponse) {
                     MirrorSDK.getInstance().logFlow("Update NFT result:"+MirrorGsonUtils.getInstance().toJson(userResponse));
-                    holder.mResultView.setText("Update NFT result is:"+MirrorGsonUtils.getInstance().toJson(userResponse));
+                    runInUIThread(holder,"Update NFT result is:"+MirrorGsonUtils.getInstance().toJson(userResponse));
                 }
 
                 @Override
                 public void onMintFailed(long code, String message) {
-                    holder.mResultView.setText(message);
+                    runInUIThread(holder,message);
                 }
             });
         }else if(apiId == DemoAPI.CHECK_STATUS_OFMINTING){
@@ -262,12 +263,12 @@ public class ClickHandlerSolana extends ClickHandlerBase{
 
                 @Override
                 public void onSuccess(CheckStatusOfMintingResponse response) {
-                    holder.mResultView.setText("result is:" + MirrorGsonUtils.getInstance().toJson(response));
+                    runInUIThread(holder,MirrorGsonUtils.getInstance().toJson(response));
                 }
 
                 @Override
                 public void onCheckFailed(long code, String message) {
-                    holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("CHECK_STATUS_OFMINTING",code,message));
+                    runInUIThread(holder,MirrorStringUtils.GetFailedNotice("CHECK_STATUS_OFMINTING",code,message));
                 }
             });
         }else if(apiId == DemoAPI.LIST_NFT){
@@ -288,12 +289,14 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             MWSolana.listNFT(mint_address, price, MirrorConfirmation.Default, new ListNFTListener() {
                 @Override
                 public void onListSuccess(ListingResponse listingResponse) {
-                    holder.mResultView.setText("ListNFT success! price is:"+listingResponse.price);
+                    String result = "ListNFT success! price is:"+listingResponse.price;
+                    runInUIThread(holder,result);
                 }
 
                 @Override
                 public void onListFailed(long code, String message) {
-                    holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("ListNFT",code,message));
+                    String result = MirrorStringUtils.GetFailedNotice("ListNFT",code,message);
+                    runInUIThread(holder,result);
                 }
             });
         }else if(apiId == DemoAPI.UPDATE_NFT_LISTING){
@@ -313,12 +316,14 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             MWSolana.updateNFTListing(mint_address, price,MirrorConfirmation.Default, new UpdateListListener() {
                 @Override
                 public void onUpdateSuccess(ListingResponse listingResponse) {
-                    holder.mResultView.setText("UpdateNFTListing success! New price:"+listingResponse.price);
+                    String result = "UpdateNFTListing success! New price:"+listingResponse.price;
+                    runInUIThread(holder,result);
                 }
 
                 @Override
                 public void onUpdateFailed(long code, String message) {
-                    holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("UpdateNFTListing",code,message));
+                    String result = MirrorStringUtils.GetFailedNotice("UpdateNFTListing",code,message);
+                    runInUIThread(holder,result);
                 }
             });
         }else if(apiId == DemoAPI.CANCEL_NFT_LISTING){
@@ -337,12 +342,14 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             MWSolana.cancelNFTListing(mint_address, price,MirrorConfirmation.Default, new CancelListListener() {
                 @Override
                 public void onCancelSuccess(ListingResponse listingResponse) {
-                    holder.mResultView.setText("CancelNFTListing success! Mint address is "+listingResponse.mint_address);
+                    String result = "CancelNFTListing success! Mint address is "+listingResponse.mint_address;
+                    runInUIThread(holder,result);
                 }
 
                 @Override
                 public void onCancelFailed(long code, String message) {
-                    holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("CancelNFTListing",code,message));
+                    String result = MirrorStringUtils.GetFailedNotice("CancelNFTListing",code,message);
+                    runInUIThread(holder,result);
                 }
             });
         }else if(apiId == DemoAPI.FETCH_NFT_BY_OWNER_ADDRESSES){
@@ -366,12 +373,12 @@ public class ClickHandlerSolana extends ClickHandlerBase{
                 public void onFetchSuccess(MultipleNFTsResponse multipleNFTsResponse) {
                     int count = multipleNFTsResponse.nfts.size();
                     String countStr = "You have " + count + " NFTs";
-                    holder.mResultView.setText(countStr);
+                    runInUIThread(holder,countStr);
                 }
 
                 @Override
                 public void onFetchFailed(long code, String message) {
-                    holder.mResultView.setText(message);
+                    runInUIThread(holder,message);
                 }
             });
         }else if(apiId == DemoAPI.FETCH_NFT_BY_CREATOR){
@@ -395,12 +402,12 @@ public class ClickHandlerSolana extends ClickHandlerBase{
                 public void onFetchSuccess(MultipleNFTsResponse multipleNFTsResponse) {
                     int count = multipleNFTsResponse.nfts.size();
                     String countStr = "You have " + count + " NFTs";
-                    holder.mResultView.setText(countStr);
+                    runInUIThread(holder,countStr);
                 }
 
                 @Override
                 public void onFetchFailed(long code, String message) {
-                    holder.mResultView.setText(message);
+                    runInUIThread(holder,message);
                 }
             });
         }else if(apiId == DemoAPI.FETCH_NFT_BY_MINT_ADDRESSES){
@@ -414,12 +421,12 @@ public class ClickHandlerSolana extends ClickHandlerBase{
                 @Override
                 public void onFetchSuccess(MultipleNFTsResponse multipleNFTsResponse) {
                     String notice = "Fetched " + multipleNFTsResponse.nfts.size() + " NFTs";
-                    holder.mResultView.setText(notice);
+                    runInUIThread(holder,notice);
                 }
 
                 @Override
                 public void onFetchFailed(long code, String message) {
-                    holder.mResultView.setText(message);
+                    runInUIThread(holder,message);
                 }
             });
         }else if(apiId == DemoAPI.FETCH_NFT_BY_UPDATE_AUTHORITIES){
@@ -441,12 +448,14 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             MWSolana.fetchNFTsByUpdateAuthorities(update_address, limit, offset, new FetchNFTsListener() {
                 @Override
                 public void onFetchSuccess(MultipleNFTsResponse multipleNFTsResponse) {
-                    holder.mResultView.setText("FetchNFTsByUpdateAuthorities success!nft count is:"+multipleNFTsResponse.nfts.size());
+                    String result = "FetchNFTsByUpdateAuthorities success!nft count is:"+multipleNFTsResponse.nfts.size();
+                    runInUIThread(holder,result);
                 }
 
                 @Override
                 public void onFetchFailed(long code, String message) {
-                    holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("FetchNFTsByUpdateAuthorities",code,message));
+                    String result = MirrorStringUtils.GetFailedNotice("FetchNFTsByUpdateAuthorities",code,message);
+                    runInUIThread(holder,result);
                 }
             });
         }else if(apiId == DemoAPI.FETCH_SINGLE_NFT_DETAILS){
@@ -458,12 +467,14 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             MWSolana.getNFTDetails(mint_address, new FetchSingleNFTListener() {
                 @Override
                 public void onFetchSuccess(SingleNFTResponse nftObject) {
-                    holder.mResultView.setText("NFT details is:"+MirrorGsonUtils.getInstance().toJson(nftObject));
+                    String result = "NFT details is:"+MirrorGsonUtils.getInstance().toJson(nftObject);
+                    holder.mResultView.setText(result);
                 }
 
                 @Override
                 public void onFetchFailed(long code, String message) {
-
+                    String result = MirrorStringUtils.GetFailedNotice("FetchNFTByUpdateAuthorities",code,message);
+                    runInUIThread(holder,result);
                 }
             });
         }else if(apiId == DemoAPI.FETCH_NFT_MARKETPLACE_ACTIVITY){
@@ -475,12 +486,13 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             MWSolana.fetchNFTMarketplaceActivity(mint_address, new FetchSingleNFTActivityListener() {
                 @Override
                 public void onFetchSuccess(ActivityOfSingleNftResponse activityOfSingleNftResponse) {
-                    holder.mResultView.setText(activityOfSingleNftResponse.mintAddress);
+                    String result = activityOfSingleNftResponse.mintAddress;
+                    runInUIThread(holder,result);
                 }
 
                 @Override
                 public void onFetchFailed(long code, String message) {
-                    holder.mResultView.setText(message);
+                    runInUIThread(holder,message);
                 }
             });
         }else if(apiId == DemoAPI.TRANSFER_NFT_TO_ANOTHER_SOLANA_WALLET){
@@ -493,12 +505,12 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             MWSolana.transferNFT(mint_address, to_wallet_address, new TransferNFTListener() {
                 @Override
                 public void onTransferSuccess(ListingResponse listingResponse) {
-                    holder.mResultView.setText(listingResponse.mint_address);
+                    runInUIThread(holder,listingResponse.mint_address);
                 }
 
                 @Override
                 public void onTransferFailed(long code, String message) {
-                    holder.mResultView.setText(message);
+                    runInUIThread(holder,message);
                 }
             });
         }else if(apiId == DemoAPI.TRANSFER_SPL_TOKEN){
@@ -522,7 +534,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             MWSolana.transferSPLToken(toPublicKey, amount, tokenMint, decimals, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
-                    holder.mResultView.setText(result);
+                    runInUIThread(holder,result);
                 }
             });
         }
@@ -541,24 +553,24 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             MWSolana.buyNFT(mint_address, price, new BuyNFTListener() {
                 @Override
                 public void onBuySuccess(ListingResponse listingResponse) {
-                    holder.mResultView.setText(listingResponse.mint_address);
+                    runInUIThread(holder,listingResponse.mint_address);
                 }
 
                 @Override
                 public void onBuyFailed(long code, String message) {
-                    holder.mResultView.setText(message);
+                    runInUIThread(holder,message);
                 }
             });
         }else if(apiId == DemoAPI.GET_WALLET_TOKEN){
             MWSolana.getTokens(new GetWalletTokenListener() {
                 @Override
                 public void onSuccess(GetWalletTokenResponse walletTokenResponse) {
-                    holder.mResultView.setText("Get wallet token success!");
+                    runInUIThread(holder,"Get wallet token success!");
                 }
 
                 @Override
                 public void onFailed(long code, String message) {
-                    holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("GetWalletToken",code,message));
+                    runInUIThread(holder,MirrorStringUtils.GetFailedNotice("GetWalletToken",code,message));
                 }
             });
         }else if(apiId == DemoAPI.GET_TOKENS_BY_WALLET){
@@ -570,12 +582,12 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             MWSolana.getTokensByWallet(walletAddress, new GetWalletTokenListener() {
                 @Override
                 public void onSuccess(GetWalletTokenResponse walletTokenResponse) {
-                    holder.mResultView.setText("Get wallet token success!");
+                    runInUIThread(holder,"Get wallet token success!");
                 }
 
                 @Override
                 public void onFailed(long code, String message) {
-                    holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("GetWalletToken",code,message));
+                    runInUIThread(holder,MirrorStringUtils.GetFailedNotice("GetWalletToken",code,message));
                 }
             });
         }else if(apiId == DemoAPI.WALLET_TRANSACTIONS){
@@ -593,12 +605,14 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             MWSolana.getTransactionsOfLoggedUser(limit, before, new GetWalletTransactionListener() {
                 @Override
                 public void onSuccess(GetWalletTransactionsResponse walletTransactionsResponse) {
-                    holder.mResultView.setText("GetTransactions success! count is "+walletTransactionsResponse.count);
+                    String result = "GetTransactions success! count is "+walletTransactionsResponse.count;
+                    runInUIThread(holder,result);
                 }
 
                 @Override
                 public void onFailed(long code, String message) {
-                    holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("Transactions",code,message));
+                    String result = MirrorStringUtils.GetFailedNotice("Transactions",code,message);
+                    runInUIThread(holder,result);
                 }
             });
         }else if(apiId == DemoAPI.WALLET_TRANSACTIONS_BY_WALLET){
@@ -615,8 +629,9 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             String walletAddress = getStringFromEditText(holder.mEt1);
             MWSolana.getTransactionsByWallet(walletAddress, limit, new MirrorCallback() {
                 @Override
-                public void callback(String result) {
-                    holder.mResultView.setText("GetTransactions success! result is "+result);
+                public void callback(String r) {
+                    String result = "GetTransactions success! result is "+r;
+                    runInUIThread(holder,result);
                 }
             });
         }else if(apiId == DemoAPI.WALLET_TRANSACTIONS_BY_SIGNATURE){
@@ -628,12 +643,14 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             MWSolana.getTransactionBySignature(sig, new GetOneWalletTransactionBySigListener() {
                 @Override
                 public void onSuccess(TransactionsDTO walletTransactions) {
-                    holder.mResultView.setText("GetTransactionBySignature success!" + MirrorGsonUtils.getInstance().toJson(walletTransactions));
+                    String result = "GetTransactionBySignature success!" + MirrorGsonUtils.getInstance().toJson(walletTransactions);
+                    runInUIThread(holder,result);
                 }
 
                 @Override
                 public void onFailed(long code, String message) {
-                    holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("GetTransactionBySignature",code,message));
+                    String result = MirrorStringUtils.GetFailedNotice("GetTransactionBySignature",code,message);
+                    runInUIThread(holder,result);
                 }
             });
         }else if(apiId == DemoAPI.CHECK_STATUS_TRANSACTION){
@@ -650,12 +667,14 @@ public class ClickHandlerSolana extends ClickHandlerBase{
 
                 @Override
                 public void onSuccess(CheckStatusOfMintingResponse response) {
-                    holder.mResultView.setText("checkStatusOfTransactions success!" + MirrorGsonUtils.getInstance().toJson(response));
+                    String result = "checkStatusOfTransactions success!" + MirrorGsonUtils.getInstance().toJson(response);
+                    runInUIThread(holder,result);
                 }
 
                 @Override
                 public void onCheckFailed(long code, String message) {
-                    holder.mResultView.setText("checkStatusOfTransactions failed!code:"+code+" message:"+message);
+                    String result = "checkStatusOfTransactions failed!code:"+code+" message:"+message;
+                    runInUIThread(holder,result);
                 }
             });
         }else if(apiId == DemoAPI.TRANSFER_SOL){
@@ -674,71 +693,17 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             MWSolana.transferSOL(public_key, amount, new TransferSOLListener() {
                 @Override
                 public void onTransferSuccess(TransferResponse transferResponse) {
-                    holder.mResultView.setText("transfer sol success!");
+                    String result = "transfer sol success!";
+                    runInUIThread(holder,result);
                 }
 
                 @Override
                 public void onTransferFailed(long code, String message) {
-                    holder.mResultView.setText("transfer sol failed!code:"+code+" message:"+message);
+                    String result = "transfer sol failed!code:"+code+" message:"+message;
+                    runInUIThread(holder,result);
                 }
             });
         }
-//        else if(apiId == DemoAPI.WALLET_GET_TRANSACTION_OF_TRANSFER_SOL){
-//            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
-//                showToast("Please input!");
-//                return;
-//            }
-//            String public_key = String.valueOf(holder.mEt1.getText());
-//            String amountStr = String.valueOf(holder.mEt2.getText());
-//            float amount = 0;
-//            try{
-//                amount = Integer.valueOf(amountStr);
-//            }catch (NumberFormatException e){
-//
-//            }
-//            MirrorWorld.getTransactionOfTransferSOL(public_key, amount, new GetWalletTransactionListener() {
-//                @Override
-//                public void onSuccess(GetWalletTransactionsResponse walletTransactionsResponse) {
-//                    holder.mResultView.setText("getTransactionOfTransferSOL success!" + MirrorGsonUtils.getInstance().toJson(walletTransactionsResponse));
-//                }
-//
-//                @Override
-//                public void onFailed(long code, String message) {
-//                    holder.mResultView.setText("transfer sol failed!code:"+code+" message:"+message);
-//                }
-//            });
-//        }else if(apiId == DemoAPI.WALLET_GET_TRANSACTION_OF_TRANSFER_TOKEN){
-//            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3) || !checkEt(holder.mEt4)){
-//                showToast("Please input!");
-//                return;
-//            }
-//            String public_key = String.valueOf(holder.mEt1.getText());
-//            String amountStr = String.valueOf(holder.mEt2.getText());
-//            float amount = 0;
-//            try{
-//                amount = Integer.valueOf(amountStr);
-//            }catch (NumberFormatException e){
-//
-//            }
-//            String tokenMint = getStringFromEditText(holder.mEt3);
-//            int decimals = 0;
-//            try{
-//                decimals = Integer.valueOf(getStringFromEditText(holder.mEt4));
-//            }catch (NumberFormatException e){
-//
-//            }
-//            MirrorWorld.getTransactionsOfTransferToken(public_key, amount,tokenMint,decimals, new GetWalletTransactionListener() {
-//                @Override
-//                public void onSuccess(GetWalletTransactionsResponse walletTransactionsResponse) {
-//                    holder.mResultView.setText("getTransactionOfTransferSOL success!" + MirrorGsonUtils.getInstance().toJson(walletTransactionsResponse));
-//                }
-//
-//                @Override
-//                public void onFailed(long code, String message) {
-//                    holder.mResultView.setText("transfer sol failed!code:"+code+" message:"+message);
-//                }
-//            });
-//        }
         else if(apiId == DemoAPI.GET_COLLECTION_FILTER_INFO){
             if(!checkEt(holder.mEt1)){
                 showToast("Please input!");
@@ -747,13 +712,15 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             String collection = String.valueOf(holder.mEt1.getText());
             MWSolana.getCollectionFilterInfo(collection, new GetCollectionFilterInfoListener() {
                 @Override
-                public void onSuccess(GetCollectionFilterInfoRes result) {
-                    holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
+                public void onSuccess(GetCollectionFilterInfoRes r) {
+                    String result = "Visiting success:"+MirrorGsonUtils.getInstance().toJson(r);
+                    runInUIThread(holder,result);
                 }
 
                 @Override
                 public void onFail(long code, String message) {
-                    holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
+                    String result = "Visit Failed! code:"+code+" message:"+message;
+                    runInUIThread(holder,result);
                 }
             });
         }else if(apiId == DemoAPI.GET_NFT_INFO_SOLANA){
@@ -765,7 +732,8 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             MWSolana.getNFTInfo(mint_address, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
-                    holder.mResultView.setText("Visiting result:"+MirrorGsonUtils.getInstance().toJson(result));
+                    String r = "Visiting result:"+MirrorGsonUtils.getInstance().toJson(result);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.GET_COLLECTION_INFO){
@@ -779,12 +747,14 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             MWSolana.getCollectionInfo(collections, new GetCollectionInfoListener() {
                 @Override
                 public void onSuccess(List<GetCollectionInfoRes> result) {
-                    holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
+                    String r = "Visiting success:"+MirrorGsonUtils.getInstance().toJson(result);
+                    runInUIThread(holder,r);
                 }
 
                 @Override
                 public void onFail(long code, String message) {
-                    holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
+                    String r = "Visit Failed! code:"+code+" message:"+message;
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.METADATA_GET_COLLECTION_SUMMARY){
@@ -800,12 +770,14 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             MWSolana.getCollectionSummary(collections, new GetCollectionSummaryListener() {
                 @Override
                 public void onSuccess(List<GetCollectionSummaryRes> res) {
-                    holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(res));
+                    String r = "Visiting success:"+MirrorGsonUtils.getInstance().toJson(res);
+                    runInUIThread(holder,r);
                 }
 
                 @Override
                 public void onFailed(long code, String message) {
-                    holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
+                    String r = "Visit Failed! code:"+code+" message:"+message;
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.GET_NFT_EVENTS_SOLANA){
@@ -823,12 +795,14 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             MWSolana.getNFTEvents(mint_address,page,page_size, new GetNFTEventsListener() {
                 @Override
                 public void onSuccess(GetNFTEventsRes result) {
-                    holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
+                    String r = "Visiting success:"+MirrorGsonUtils.getInstance().toJson(result);
+                    runInUIThread(holder,r);
                 }
 
                 @Override
                 public void onFail(long code, String message) {
-                    holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
+                    String r = "Visit Failed! code:"+code+" message:"+message;
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.SEARCH_NFTS){
@@ -843,12 +817,14 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             MWSolana.searchNFTs(collections,searchString, new SOLSearchNFTsListener() {
                 @Override
                 public void onSuccess(List<MirrorMarketSearchNFTObj> result) {
-                    holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
+                    String r = "Visiting success:"+MirrorGsonUtils.getInstance().toJson(result);
+                    runInUIThread(holder,r);
                 }
 
                 @Override
                 public void onFail(long code, String message) {
-                    holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
+                    String r = "Visit Failed! code:"+code+" message:"+message;
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.RECOMMEND_SEARCH_NFT){
@@ -862,12 +838,14 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             MWSolana.recommendSearchNFT(collections, new SOLSearchNFTsListener() {
                 @Override
                 public void onSuccess(List<MirrorMarketSearchNFTObj> result) {
-                    holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
+                    String r = "Visiting success:"+MirrorGsonUtils.getInstance().toJson(result);
+                    runInUIThread(holder,r);
                 }
 
                 @Override
                 public void onFail(long code, String message) {
-                    holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
+                    String r = "Visit Failed! code:"+code+" message:"+message;
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.GET_NFTS_SOLANA){
@@ -893,12 +871,14 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             MWSolana.getNFTsByUnabridgedParams(collection,page,page_size,order_by,desc,sale,null, new GetNFTsListener() {
                 @Override
                 public void onSuccess(GetNFTsRes result) {
-                    holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
+                    String r = "Visiting success:"+MirrorGsonUtils.getInstance().toJson(result);
+                    runInUIThread(holder,r);
                 }
 
                 @Override
                 public void onFail(long code, String message) {
-                    holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
+                    String r = "Visit Failed! code:"+code+" message:"+message;
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.GET_NFT_REAL_PRICE){
@@ -911,12 +891,14 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             MWSolana.getNFTRealPrice(price,fee, new GetNFTRealPriceListener() {
                 @Override
                 public void onSuccess(GetNFTRealPriceRes result) {
-                    holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
+                    String r = "Visiting success:"+MirrorGsonUtils.getInstance().toJson(result);
+                    runInUIThread(holder,r);
                 }
 
                 @Override
                 public void onFail(long code, String message) {
-                    holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
+                    String r = "Visit Failed! code:"+code+" message:"+message;
+                    runInUIThread(holder,r);
                 }
             });
         }

@@ -34,4 +34,13 @@ public class ClickHandlerBase {
     String getStringFromEditText(EditText editText){
         return String.valueOf(editText.getText());
     }
+
+    void runInUIThread(MultiParaItemRecyclerViewAdapter.ViewHolder holder, String showStr){
+        mContext.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                holder.mResultView.setText(showStr);
+            }
+        });
+    }
 }

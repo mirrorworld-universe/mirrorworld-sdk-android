@@ -528,6 +528,7 @@ public class MWSolanaWrapper extends MWBaseWrapper{
         });
     }
 
+    //Asset/Auction
     final public static void transferNFT(String mint_address, String to_wallet_address, TransferNFTListener transferNFTListener){
         JSONObject jsonObject = new JSONObject();
         try {
@@ -582,7 +583,32 @@ public class MWSolanaWrapper extends MWBaseWrapper{
             }
         });
     }
-
+    final public static void buyNFT(String mint_address, Double price, BuyNFTListener buyNFTListener){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("mint_address", mint_address);
+            jsonObject.put("price", price);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.BuyNFT, "BuyNFT", 0, jsonObject, new MirrorCallback() {
+            @Override
+            public void callback(String nothing) {
+                MirrorSDK.getInstance().BuyNFT(data, new MirrorCallback() {
+                    @Override
+                    public void callback(String result) {
+                        CommonResponse<ListingResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<ListingResponse>>(){}.getType());
+                        if(response.code == MirrorResCode.SUCCESS){
+                            buyNFTListener.onBuySuccess(response.data);
+                        }else{
+                            buyNFTListener.onBuyFailed(response.code,response.message);
+                        }
+                    }
+                });
+            }
+        });
+    }
     final public static void cancelNFTListing(String mint_address, Double price,String confirmation, CancelListListener listener){
         JSONObject jsonObject = new JSONObject();
         try {
@@ -604,33 +630,6 @@ public class MWSolanaWrapper extends MWBaseWrapper{
                             listener.onCancelSuccess(response.data);
                         }else{
                             listener.onCancelFailed(response.code,response.message);
-                        }
-                    }
-                });
-            }
-        });
-    }
-
-    final public static void buyNFT(String mint_address, Double price, BuyNFTListener buyNFTListener){
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("mint_address", mint_address);
-            jsonObject.put("price", price);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        String data = jsonObject.toString();
-        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.BuyNFT, "BuyNFT", 0, jsonObject, new MirrorCallback() {
-            @Override
-            public void callback(String nothing) {
-                MirrorSDK.getInstance().BuyNFT(data, new MirrorCallback() {
-                    @Override
-                    public void callback(String result) {
-                        CommonResponse<ListingResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<ListingResponse>>(){}.getType());
-                        if(response.code == MirrorResCode.SUCCESS){
-                            buyNFTListener.onBuySuccess(response.data);
-                        }else{
-                            buyNFTListener.onBuyFailed(response.code,response.message);
                         }
                     }
                 });
