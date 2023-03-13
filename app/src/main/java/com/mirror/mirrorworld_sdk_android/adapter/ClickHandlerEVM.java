@@ -69,46 +69,53 @@ public class ClickHandlerEVM extends ClickHandlerBase{
 
     public void handleClick(DemoAPI apiId, MultiParaItemRecyclerViewAdapter.ViewHolder holder, View view){
         if(apiId == DemoAPI.GET_ENVIRONMENT){
-            holder.mResultView.setText("Environment is:" + MWEVM.getEnvironment());
+            String r = ("Environment is:" + MWEVM.getEnvironment());
+            runInUIThread(holder,r);
         }else if(apiId == DemoAPI.SET_JWT){
             if(!checkEt(holder.mEt1)){
                 showToast("Please input!");
                 return;
             }
             MirrorSDK.getInstance().SetAccessToken(String.valueOf(holder.mEt1.getText()));
-            holder.mResultView.setText("JWT has been set!");
+            String r = ("JWT has been set!");
+            runInUIThread(holder,r);
         }else if(apiId == DemoAPI.START_LOGIN){
             MWEVM.startLogin(new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     //todo: Show result
-                    holder.mResultView.setText(result);
+                    String r = (result);
+                    runInUIThread(holder,r);
                 }
             },mContext);
         }else if(apiId == DemoAPI.IS_LOGGED){
             MWEVM.isLoggedIn(new BoolListener() {
                 @Override
                 public void onBool(boolean boolValue) {
-                    holder.mResultView.setText("Current user login state:"+boolValue);
+                    String r = ("Current user login state:"+boolValue);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.GUEST_LOGIN){
             MWEVM.guestLogin(new LoginListener() {
                 @Override
                 public void onLoginSuccess() {
-                    holder.mResultView.setText("Guest login success!");
+                    String r = ("Guest login success!");
+                    runInUIThread(holder,r);
                 }
 
                 @Override
                 public void onLoginFail() {
-                    holder.mResultView.setText("Guest login failed!");
+                    String r = ("Guest login failed!");
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.LOGOUT){
             MWEVM.logout(new BoolListener() {
                 @Override
                 public void onBool(boolean boolValue) {
-                    holder.mResultView.setText("Logout result:"+boolValue);
+                    String r = ("Logout result:"+boolValue);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.OPEN_WALLET){
@@ -148,19 +155,22 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             MWEVM.loginWithEmail(email,passWord,new MirrorCallback() {
                 @Override
                 public void callback(String s) {
-                    holder.mResultView.setText(s);
+                    String r = (s);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.FETCH_USER){
             MWEVM.fetchUser(new FetchUserListener() {
                 @Override
                 public void onUserFetched(UserResponse userResponse) {
-                    holder.mResultView.setText(userResponse.email+" eth_address "+userResponse.wallet.eth_address+" solona_address "+userResponse.wallet.sol_address);
+                    String r = (userResponse.email+" eth_address "+userResponse.wallet.eth_address+" solona_address "+userResponse.wallet.sol_address);
+                    runInUIThread(holder,r);
                 }
 
                 @Override
                 public void onFetchFailed(long code, String message) {
-                    holder.mResultView.setText(message);
+                    String r = (message);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.QUERY_USER){
@@ -172,13 +182,14 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             MWEVM.queryUser(email,new FetchUserListener() {
                 @Override
                 public void onUserFetched(UserResponse userResponse) {
-                    holder.mResultView.setText(userResponse.email+" sol_address "+userResponse.sol_address);
+                    String r = (userResponse.email+" sol_address "+userResponse.sol_address);
+                    runInUIThread(holder,r);
                 }
 
                 @Override
                 public void onFetchFailed(long code, String message) {
-                    holder.mResultView.setText(message);
-
+                    String r = (message);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.CREATE_VERIFIED_COLLECTION){
@@ -192,7 +203,8 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             MWEVM.createVerifiedCollection(contract_type, detailsUrl, MirrorConfirmation.Default, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
-                    holder.mResultView.setText("result is:"+ result);
+                    String r = ("result is:"+ result);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.MINT_NFT){
@@ -209,12 +221,14 @@ public class ClickHandlerEVM extends ClickHandlerBase{
                 @Override
                 public void onMintSuccess(MintResponse userResponse) {
                     MirrorSDK.getInstance().logFlow("Mint nft result:"+MirrorGsonUtils.getInstance().toJson(userResponse));
-                    holder.mResultView.setText("Mint NFT result is:"+MirrorGsonUtils.getInstance().toJson(userResponse));
+                    String r = ("Mint NFT result is:"+MirrorGsonUtils.getInstance().toJson(userResponse));
+                    runInUIThread(holder,r);
                 }
 
                 @Override
                 public void onMintFailed(long code, String message) {
-                    holder.mResultView.setText(message);
+                    String r = (message);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.UPDATE_NFT){
@@ -233,12 +247,14 @@ public class ClickHandlerEVM extends ClickHandlerBase{
                 @Override
                 public void onMintSuccess(MintResponse userResponse) {
                     MirrorSDK.getInstance().logFlow("Update NFT result:"+MirrorGsonUtils.getInstance().toJson(userResponse));
-                    holder.mResultView.setText("Update NFT result is:"+MirrorGsonUtils.getInstance().toJson(userResponse));
+                    String r = ("Update NFT result is:"+MirrorGsonUtils.getInstance().toJson(userResponse));
+                    runInUIThread(holder,r);
                 }
 
                 @Override
                 public void onMintFailed(long code, String message) {
-                    holder.mResultView.setText(message);
+                    String r = (message);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.LIST_NFT){
@@ -260,7 +276,8 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             MWEVM.listNFT(mint_address, "test_id", price, marketplace_address, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
-                    holder.mResultView.setText("result is:"+result);
+                    String r = ("result is:"+result);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.UPDATE_NFT_LISTING){
@@ -280,12 +297,14 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             MWEVM.updateNFTListing(mint_address, price,MirrorConfirmation.Default, new UpdateListListener() {
                 @Override
                 public void onUpdateSuccess(ListingResponse listingResponse) {
-                    holder.mResultView.setText("UpdateNFTListing success! New price:"+listingResponse.price);
+                    String r = ("UpdateNFTListing success! New price:"+listingResponse.price);
+                    runInUIThread(holder,r);
                 }
 
                 @Override
                 public void onUpdateFailed(long code, String message) {
-                    holder.mResultView.setText(MirrorStringUtils.GetFailedNotice("UpdateNFTListing",code,message));
+                    String r = (MirrorStringUtils.GetFailedNotice("UpdateNFTListing",code,message));
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.CANCEL_NFT_LISTING){
@@ -299,7 +318,8 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             MWEVM.cancelNFTListing(mint_address, token_id, marketplace_address, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
-                    holder.mResultView.setText("result is "+result);
+                    String r = ("result is "+result);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.FETCH_NFT_BY_OWNER_ADDRESSES){
@@ -319,7 +339,8 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             MWEVM.fetchNFTsByOwnerAddresses(owners, limit, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
-                    holder.mResultView.setText("result is:\n"+result);
+                    String r = ("result is:\n"+result);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.FETCH_NFT_BY_CREATOR){
@@ -341,7 +362,8 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             MWEVM.fetchNFTsByCreatorAddresses(owners, limit, offset, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
-                    holder.mResultView.setText("result is:"+result);
+                    String r = ("result is:"+result);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.FETCH_NFT_BY_MINT_ADDRESSES){
@@ -354,7 +376,8 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             MWEVM.fetchNFTsByMintAddresses(mint_address, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
-                    holder.mResultView.setText("result is:\n" + result);
+                    String r = ("result is:\n" + result);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.FETCH_NFT_BY_UPDATE_AUTHORITIES){
@@ -376,7 +399,8 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             MWEVM.fetchNFTsByUpdateAuthorities(update_address, limit, offset, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
-                    holder.mResultView.setText("result is:"+result);
+                    String r = ("result is:"+result);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.FETCH_SINGLE_NFT_DETAILS){
@@ -388,7 +412,8 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             MWEVM.getNFTInfo(mint_address, "temp_id", new MirrorCallback() {
                 @Override
                 public void callback(String result) {
-                    holder.mResultView.setText("NFT details is:"+result);
+                    String r = ("NFT details is:"+result);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.FETCH_NFT_MARKETPLACE_ACTIVITY){
@@ -400,7 +425,8 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             MWEVM.fetchNFTMarketplaceActivity(mint_address, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
-                    holder.mResultView.setText("result is:"+result);
+                    String r = ("result is:"+result);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.TRANSFER_NFT_TO_ANOTHER_SOLANA_WALLET){
@@ -414,7 +440,8 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             MWEVM.transferNFT(collection_address, token_id, to_wallet_address, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
-                    holder.mResultView.setText("result is:"+result);
+                    String r = ("result is:"+result);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.TRANSFER_SPL_TOKEN){
@@ -438,7 +465,8 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             MWEVM.transferSPLToken(nonce, gasPrice, gasLimit, to, decimals,contract, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
-                    holder.mResultView.setText(result);
+                    String r = (result);
+                    runInUIThread(holder,r);
                 }
             });
         }
@@ -460,14 +488,16 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             MWEVM.buyNFT(collection_address, token_id_str, price, marketplace_address, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
-                    holder.mResultView.setText("result is:"+result);
+                    String r = ("result is:"+result);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.GET_WALLET_TOKEN){
             MWEVM.getTokens(new MirrorCallback() {
                 @Override
                 public void callback(String result) {
-                    holder.mResultView.setText("Get wallet token result:\n"+result);
+                    String r = ("Get wallet token result:\n"+result);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.GET_TOKENS_BY_WALLET){
@@ -479,7 +509,8 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             MWEVM.getTokensByWallet(walletAddress, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
-                    holder.mResultView.setText("Get wallet token result:\n"+result);
+                    String r = ("Get wallet token result:\n"+result);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.WALLET_TRANSACTIONS){
@@ -497,7 +528,8 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             MWEVM.getTransactionsOfLoggedUser(limit, before, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
-                    holder.mResultView.setText("GetTransactions result is:\n"+result);
+                    String r = ("GetTransactions result is:\n"+result);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.WALLET_TRANSACTIONS_BY_WALLET){
@@ -515,7 +547,8 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             MWEVM.getTransactionsByWallet(walletAddress, limit, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
-                    holder.mResultView.setText("GetTransactions success! result is "+result);
+                    String r = ("GetTransactions success! result is "+result);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.WALLET_TRANSACTIONS_BY_SIGNATURE){
@@ -527,7 +560,8 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             MWEVM.getTransactionBySignature(sig, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
-                    holder.mResultView.setText("GetTransactionBySignature result:\n" + result);
+                    String r = ("GetTransactionBySignature result:\n" + result);
+                    runInUIThread(holder,r);
                 }
             });
         }
@@ -540,12 +574,14 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             MWEVM.getCollectionFilterInfo(collection, new GetCollectionFilterInfoListener() {
                 @Override
                 public void onSuccess(GetCollectionFilterInfoRes result) {
-                    holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
+                    String r = ("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
+                    runInUIThread(holder,r);
                 }
 
                 @Override
                 public void onFail(long code, String message) {
-                    holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
+                    String r = ("Visit Failed! code:"+code+" message:"+message);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.GET_COLLECTION_INFO){
@@ -559,12 +595,14 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             MWEVM.getCollectionInfo(collections, new GetCollectionInfoListener() {
                 @Override
                 public void onSuccess(List<GetCollectionInfoRes> result) {
-                    holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
+                    String r = ("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
+                    runInUIThread(holder,r);
                 }
 
                 @Override
                 public void onFail(long code, String message) {
-                    holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
+                    String r = ("Visit Failed! code:"+code+" message:"+message);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.METADATA_GET_COLLECTION_SUMMARY){
@@ -580,12 +618,14 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             MWEVM.getCollectionSummary(collections, new GetCollectionSummaryListener() {
                 @Override
                 public void onSuccess(List<GetCollectionSummaryRes> res) {
-                    holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(res));
+                    String r = ("Visiting success:"+MirrorGsonUtils.getInstance().toJson(res));
+                    runInUIThread(holder,r);
                 }
 
                 @Override
                 public void onFailed(long code, String message) {
-                    holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
+                    String r = ("Visit Failed! code:"+code+" message:"+message);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.GET_NFT_EVENTS_SOLANA){
@@ -603,7 +643,8 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             MWEVM.getNFTEvents(mint_address, page, page_size, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
-                    holder.mResultView.setText("Visiting result:\n"+result);
+                    String r = ("Visiting result:\n"+result);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.SEARCH_NFTS){
@@ -618,7 +659,8 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             MWEVM.searchNFTs(collections, searchString, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
-                    holder.mResultView.setText("Visiting result:\n"+result);
+                    String r = ("Visiting result:\n"+result);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.RECOMMEND_SEARCH_NFT){
@@ -632,7 +674,8 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             MWEVM.recommendSearchNFT(collections, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
-                    holder.mResultView.setText("Visiting result:\n"+result);
+                    String r = ("Visiting result:\n"+result);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.GET_NFTS_SOLANA){
@@ -658,7 +701,8 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             MWEVM.getNFTsByUnabridgedParams(collection, page, page_size, order_by, desc, sale, null, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
-                    holder.mResultView.setText("Visiting result:\n"+result);
+                    String r = ("Visiting result:\n"+result);
+                    runInUIThread(holder,r);
                 }
             });
         }else if(apiId == DemoAPI.GET_NFT_REAL_PRICE){
@@ -671,12 +715,14 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             MWEVM.getNFTRealPrice(price,fee, new GetNFTRealPriceListener() {
                 @Override
                 public void onSuccess(GetNFTRealPriceRes result) {
-                    holder.mResultView.setText("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
+                    String r = ("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
+                    runInUIThread(holder,r);
                 }
 
                 @Override
                 public void onFail(long code, String message) {
-                    holder.mResultView.setText("Visit Failed! code:"+code+" message:"+message);
+                    String r = ("Visit Failed! code:"+code+" message:"+message);
+                    runInUIThread(holder,r);
                 }
             });
         }
