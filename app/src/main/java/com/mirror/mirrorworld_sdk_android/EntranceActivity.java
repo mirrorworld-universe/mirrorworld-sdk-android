@@ -114,13 +114,13 @@ public class EntranceActivity extends AppCompatActivity {
                     MWSolana.initSDK(activity,APIKey,env);
                     intent.putExtra("chain", MirrorChains.Solana.getNumber());
                 }else if(mChain == MirrorChains.Ethereum){
-                    MWEVM.initSDK(activity,APIKey,env);
+                    MWEVM.initSDK(activity,APIKey,env,mChain);
                     intent.putExtra("chain",MirrorChains.Ethereum.getNumber());
                 }else if(mChain == MirrorChains.Polygon){
-                    MWEVM.initSDK(activity,APIKey,env);
+                    MWEVM.initSDK(activity,APIKey,env,mChain);
                     intent.putExtra("chain",MirrorChains.Polygon.getNumber());
                 }else if(mChain == MirrorChains.BNB){
-                    MWEVM.initSDK(activity,APIKey,env);
+                    MWEVM.initSDK(activity,APIKey,env,mChain);
                     intent.putExtra("chain",MirrorChains.BNB.getNumber());
                 }else {
                     Log.e("MirrorSDK","Unknwon mChain");

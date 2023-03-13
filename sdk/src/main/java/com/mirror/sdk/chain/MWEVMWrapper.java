@@ -32,12 +32,12 @@ import java.util.List;
 
 public class MWEVMWrapper extends MWBaseWrapper{
     //SDK
-    public final static void initSDK(Context activityContext,String apiKey, MirrorEnv env){
+    public final static void initSDK(Context activityContext,String apiKey, MirrorEnv env, MirrorChains tarChain){
         if(apiKey == ""){
             MirrorSDK.logWarn("Please input API key");
             return;
         }
-        MirrorChains chain = MirrorChains.Ethereum;
+        MirrorChains chain = tarChain;
         MirrorSDK.getInstance().InitSDK(activityContext,env,chain);
         MirrorSDK.getInstance().SetApiKey(apiKey);
     }

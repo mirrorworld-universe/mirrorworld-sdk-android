@@ -33,8 +33,8 @@ public class MWEVM {
      * Type: SDK
      * Function: Init SDK
      */
-    public final static void initSDK(Context activityContext, String APIKey, MirrorEnv env){
-        MWEVMWrapper.initSDK(activityContext, APIKey, env);
+    public final static void initSDK(Context activityContext, String APIKey, MirrorEnv env, MirrorChains tarChain){
+        MWEVMWrapper.initSDK(activityContext, APIKey, env, tarChain);
     }
 
     /**
