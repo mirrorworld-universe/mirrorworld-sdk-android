@@ -247,11 +247,7 @@ public class PageIniterSolana extends APIPageIniterBase{
                 "Get",
                 "mint address",null,null,null,null,null));
         items.add(new MultiItemData.MultiItem(
-                DemoAPI.GET_NFT_EVENTS_SOLANA,"Get NFT events.","Get events of NFTs in market.",
-                "Get",
-                "mint address","page","page size",null,null,null));
-        items.add(new MultiItemData.MultiItem(
-                DemoAPI.GET_NFT_EVENTS_MULCHAIN,"Get NFT events.","Get events of NFTs in market.",
+                DemoAPI.GET_NFT_EVENTS,"Get NFT events.","Get events of NFTs in market.",
                 "Get",
                 "mint address","page","page size",null,null,null));
         items.add(new MultiItemData.MultiItem(

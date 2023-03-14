@@ -26,7 +26,8 @@ public class MirrorUrl {
     public static final String URL_UPDATE_NFT_PROPERTIES = "update";
     public static final String URL_MINT_TOP_LEVEL_COLLECTION = "collection";
     //Asset search
-    public static final String URL_FETCH_MULTIPLE_NFT = "owners";
+    public static final String URL_FETCH_MULTIPLE_NFT_SOLANA = "owners";
+    public static final String URL_FETCH_MULTIPLE_NFT_EVM = "owner";
     public static final String URL_QUERY_NFT_DETAIL = "nft";
     public static final String URL_FETCH_ACTIVITY = "activity/";
     public static final String URL_LIST_NFT_ON_THE_MARKETPLACE = "list";

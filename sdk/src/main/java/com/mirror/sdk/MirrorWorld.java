@@ -15,10 +15,8 @@ import com.mirror.sdk.listener.confirmation.CheckStatusOfMintingResponse;
 import com.mirror.sdk.listener.market.BuyNFTListener;
 import com.mirror.sdk.listener.market.CancelListListener;
 import com.mirror.sdk.listener.market.CreateTopCollectionListener;
-import com.mirror.sdk.listener.market.FetchByOwnerListener;
 import com.mirror.sdk.listener.market.FetchNFTsListener;
 import com.mirror.sdk.listener.market.FetchSingleNFTActivityListener;
-import com.mirror.sdk.listener.market.FetchSingleNFTListener;
 import com.mirror.sdk.listener.market.ListNFTListener;
 import com.mirror.sdk.listener.market.MintNFTListener;
 import com.mirror.sdk.listener.market.TransferNFTListener;
@@ -26,7 +24,6 @@ import com.mirror.sdk.listener.market.UpdateListListener;
 import com.mirror.sdk.listener.metadata.GetCollectionFilterInfoListener;
 import com.mirror.sdk.listener.metadata.GetCollectionInfoListener;
 import com.mirror.sdk.listener.metadata.GetCollectionSummaryListener;
-import com.mirror.sdk.listener.metadata.GetNFTEventsListener;
 import com.mirror.sdk.listener.metadata.GetNFTRealPriceListener;
 import com.mirror.sdk.listener.metadata.GetNFTsListener;
 import com.mirror.sdk.listener.metadata.SOLSearchNFTsListener;
@@ -660,7 +657,7 @@ public class MirrorWorld {
         MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.TransferNFT, "TransferNFT", 0, jsonObject, new MirrorCallback() {
             @Override
             public void callback(String nothing) {
-                MirrorSDK.getInstance().TransferNFTToAnotherSolanaWallet(data, new MirrorCallback() {
+                MirrorSDK.getInstance().TransferNFTToAnotherWallet(data, new MirrorCallback() {
                     @Override
                     public void callback(String result) {
                         CommonResponse<ListingResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<ListingResponse>>(){}.getType());
@@ -807,41 +804,6 @@ public class MirrorWorld {
 
     /**
      * Type: Marketplace
-     * Function: Fetch NFTs By Owner Addresses
-     * @param owners
-     * @param fetchByOwnerListener
-     */
-    final public static void fetchNFTsByOwnerAddresses(List<String> owners, int limit, int offset, FetchByOwnerListener fetchByOwnerListener){
-        JSONObject jsonObject = new JSONObject();
-        JSONArray jsonArray = new JSONArray();
-        for (String tag : owners) {
-            jsonArray.put(tag);
-        }
-        try {
-            jsonObject.put("owners", jsonArray);
-            if(limit != 0) jsonObject.put("limit", limit);
-            if(offset != 0) jsonObject.put("offset", offset);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        String data = jsonObject.toString();
-
-        MirrorSDK.getInstance().fetchNFTsByOwnerAddresses(data, new MirrorCallback() {
-            @Override
-            public void callback(String result) {
-                CommonResponse<MultipleNFTsResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<MultipleNFTsResponse>>(){}.getType());
-                if(response.code == MirrorResCode.SUCCESS){
-                    fetchByOwnerListener.onFetchSuccess(response.data);
-                }else{
-                    fetchByOwnerListener.onFetchFailed(response.code,response.message);
-                }
-
-            }
-        });
-    }
-
-    /**
-     * Type: Marketplace
      * Function: Fetch NFT's activity
      * @param mint_address
      * @param fetchSingleNFTActivityListener
@@ -912,19 +874,6 @@ public class MirrorWorld {
         MirrorSDK.getInstance().getCollectionsSummary(data, listener);
     }
 
-    /**
-     * Type: Metadata
-     * Function: Get NFT info
-     * @param mintAddress
-     * @param listener
-     */
-    final public static void getNFTInfoOnSolana(String mintAddress, MirrorCallback listener){
-        MirrorSDK.getInstance().GetNFTInfoOnSolana(mintAddress, listener);
-    }
-
-    final public static void getNFTInfoOnMultiChain(String mintAddress, String tokenID, MirrorCallback listener){
-        MirrorSDK.getInstance().GetNFTInfoOnEVM(mintAddress, tokenID, listener);
-    }
 
     /**
      * Type: Metadata
@@ -951,26 +900,6 @@ public class MirrorWorld {
         });
     }
 
-    /**
-     * Type: Metadata
-     * Function: Get NFT events with a NFT mint address.
-     * @param mint_address
-     * @param page
-     * @param page_size
-     * @param listener
-     */
-    final public static void getNFTEventsOnSolana(String mint_address, int page, int page_size, GetNFTEventsListener listener){
-        MirrorSDK.getInstance().GetNFTEventsOnSolana(mint_address, page, page_size, listener);
-    }
-
-    final public static void getNFTEventsOnMultiChain(String contract, int page, int page_size, GetNFTEventsListener listener){
-        MirrorSDK.getInstance().GetNFTEventsOnEVM(contract, page, page_size, new MirrorCallback() {
-            @Override
-            public void callback(String result) {
-                MirrorSDK.logWarn(result);
-            }
-        });
-    }
 
     /**
      * Type: Metadata

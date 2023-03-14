@@ -195,7 +195,7 @@ public class PageIniterEVM extends APIPageIniterBase{
                 "wallet address",null,null,null,null,null));
         items.add(
                 new MultiItemData.MultiItem(DemoAPI.WALLET_TRANSACTIONS,"Get wallet transactions.","Get wallet transactions.",
-                        "GetTransactions","limit","before",
+                        "GetTransactions","limit",null,
                         null,null,null,null));
         items.add(
                 new MultiItemData.MultiItem(DemoAPI.WALLET_TRANSACTIONS_BY_WALLET,"Get wallet transactions by wallet.","Get wallet transactions by wallet address.",
@@ -234,13 +234,9 @@ public class PageIniterEVM extends APIPageIniterBase{
                 "Get",
                 "contract","token_id",null,null,null,null));
         items.add(new MultiItemData.MultiItem(
-                DemoAPI.GET_NFT_EVENTS_SOLANA,"Get NFT events.","Get events of NFTs in market.",
+                DemoAPI.GET_NFT_EVENTS,"Get NFT events.","Get events of NFTs in market.",
                 "Get",
-                "mint address","page","page size",null,null,null));
-        items.add(new MultiItemData.MultiItem(
-                DemoAPI.GET_NFT_EVENTS_MULCHAIN,"Get NFT events.","Get events of NFTs in market.",
-                "Get",
-                "mint address","page","page size",null,null,null));
+                "contract","token_id","page","page size",null,null));
         items.add(new MultiItemData.MultiItem(
                 DemoAPI.SEARCH_NFTS,"Search NFTs.","Get details of NFTs in market place.",
                 "Search",

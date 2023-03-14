@@ -9,6 +9,7 @@ import com.mirror.sdk.constant.MirrorConfirmation;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.constant.MirrorResCode;
 import com.mirror.sdk.constant.MirrorSafeOptType;
+import com.mirror.sdk.constant.MirrorUrl;
 import com.mirror.sdk.listener.confirmation.CheckStatusOfMintingListener;
 import com.mirror.sdk.listener.confirmation.CheckStatusOfMintingResponse;
 import com.mirror.sdk.listener.market.BuyNFTListener;
@@ -341,7 +342,7 @@ public class MWSolanaWrapper extends MWBaseWrapper{
         }
         String data = jsonObject.toString();
 
-        MirrorSDK.getInstance().fetchNFTsByOwnerAddresses(data, new MirrorCallback() {
+        MirrorSDK.getInstance().fetchNFTsByOwnerAddresses(data, MirrorUrl.URL_FETCH_MULTIPLE_NFT_SOLANA, new MirrorCallback() {
             @Override
             public void callback(String result) {
                 CommonResponse<MultipleNFTsResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<MultipleNFTsResponse>>(){}.getType());
@@ -529,11 +530,12 @@ public class MWSolanaWrapper extends MWBaseWrapper{
     }
 
     //Asset/Auction
-    final public static void transferNFT(String mint_address, String to_wallet_address, TransferNFTListener transferNFTListener){
+    final public static void transferNFT(String mint_address, String to_wallet_address,String confirmation, TransferNFTListener transferNFTListener){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("mint_address", mint_address);
             jsonObject.put("to_wallet_address", to_wallet_address);
+            jsonObject.put("confirmation", confirmation);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -541,7 +543,7 @@ public class MWSolanaWrapper extends MWBaseWrapper{
         MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.TransferNFT, "TransferNFT", 0, jsonObject, new MirrorCallback() {
             @Override
             public void callback(String nothing) {
-                MirrorSDK.getInstance().TransferNFTToAnotherSolanaWallet(data, new MirrorCallback() {
+                MirrorSDK.getInstance().TransferNFTToAnotherWallet(data, new MirrorCallback() {
                     @Override
                     public void callback(String result) {
                         CommonResponse<ListingResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<ListingResponse>>(){}.getType());

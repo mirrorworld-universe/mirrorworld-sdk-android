@@ -500,7 +500,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             }
             String mint_address = String.valueOf(holder.mEt1.getText());
             String to_wallet_address = String.valueOf(holder.mEt2.getText());
-            MWSolana.transferNFT(mint_address, to_wallet_address, new TransferNFTListener() {
+            MWSolana.transferNFT(mint_address, to_wallet_address,MirrorConfirmation.Default, new TransferNFTListener() {
                 @Override
                 public void onTransferSuccess(ListingResponse listingResponse) {
                     runInUIThread(holder,listingResponse.mint_address);
@@ -778,7 +778,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
                     runInUIThread(holder,r);
                 }
             });
-        }else if(apiId == DemoAPI.GET_NFT_EVENTS_SOLANA){
+        }else if(apiId == DemoAPI.GET_NFT_EVENTS){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3)){
                 showToast("Please input!");
                 return;

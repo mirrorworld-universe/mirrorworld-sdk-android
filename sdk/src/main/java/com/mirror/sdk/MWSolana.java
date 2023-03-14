@@ -283,8 +283,8 @@ public class MWSolana {
         MWSolanaWrapper.checkStatusOfTransactions(signatures, listener);
     }
 
-    final public static void transferNFT(String mint_address, String to_wallet_address, TransferNFTListener transferNFTListener){
-        MWSolanaWrapper.transferNFT(mint_address, to_wallet_address, transferNFTListener);
+    final public static void transferNFT(String mint_address, String to_wallet_address,String confirmation, TransferNFTListener transferNFTListener){
+        MWSolanaWrapper.transferNFT(mint_address, to_wallet_address,confirmation, transferNFTListener);
     }
 
     final public static void updateNFTListing(String mint_address, Double price,String confirmation, UpdateListListener listener){

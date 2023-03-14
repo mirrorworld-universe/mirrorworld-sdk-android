@@ -368,20 +368,6 @@ public class ClickHandlerEVM extends ClickHandlerBase{
                     runInUIThread(holder,r);
                 }
             });
-        }else if(apiId == DemoAPI.FETCH_SINGLE_NFT_DETAILS){
-            if(!checkEt(holder.mEt1)||!checkEt(holder.mEt2)){
-                showToast("Please input!");
-                return;
-            }
-            String token_address =String.valueOf(holder.mEt1.getText());
-            String token_id =String.valueOf(holder.mEt2.getText());
-            MWEVM.getNFTInfo(token_address, token_id, new MirrorCallback() {
-                @Override
-                public void callback(String result) {
-                    String r = ("NFT details is:"+result);
-                    runInUIThread(holder,r);
-                }
-            });
         }else if(apiId == DemoAPI.FETCH_NFT_MARKETPLACE_ACTIVITY){
             if(!checkEt(holder.mEt1)){
                 showToast("Please input!");
@@ -471,7 +457,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             String marketplace_address = String.valueOf(holder.mEt4.getText());
             float price = 0.0f;
             try{
-                price =  Float.valueOf(String.valueOf(priceStr));
+                price = Float.valueOf(priceStr);
             }catch (NumberFormatException E){
             }
 
@@ -504,7 +490,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
                 }
             });
         }else if(apiId == DemoAPI.WALLET_TRANSACTIONS){
-            if(!checkEt(holder.mEt2)){
+            if(!checkEt(holder.mEt1)){
                 showToast("Please input!");
                 return;
             }
@@ -514,8 +500,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
-            String before = String.valueOf(holder.mEt2.getText());
-            MWEVM.getTransactionsOfLoggedUser(limit, before, new MirrorCallback() {
+            MWEVM.getTransactionsOfLoggedUser(limit, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("GetTransactions result is:\n"+result);
@@ -618,19 +603,21 @@ public class ClickHandlerEVM extends ClickHandlerBase{
                     runInUIThread(holder,r);
                 }
             });
-        }else if(apiId == DemoAPI.GET_NFT_EVENTS_SOLANA){
-            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3)){
+        }else if(apiId == DemoAPI.GET_NFT_EVENTS){
+            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3) || !checkEt(holder.mEt4)){
                 showToast("Please input!");
                 return;
             }
             int page = 0;
             int page_size = 0;
-            String mint_address = String.valueOf(holder.mEt1.getText());
-            String pageStr = String.valueOf(holder.mEt2.getText());
-            String pageSizeStr = String.valueOf(holder.mEt3.getText());
+            String contract = String.valueOf(holder.mEt1.getText());
+            String token_id = String.valueOf(holder.mEt2.getText());
+            String pageStr = String.valueOf(holder.mEt3.getText());
+            String pageSizeStr = String.valueOf(holder.mEt4.getText());
+
             page = Integer.valueOf(pageStr);
             page_size = Integer.valueOf(pageSizeStr);
-            MWEVM.getNFTEvents(mint_address, page, page_size, new MirrorCallback() {
+            MWEVM.getNFTEvents(contract,token_id, page, page_size, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("Visiting result:\n"+result);

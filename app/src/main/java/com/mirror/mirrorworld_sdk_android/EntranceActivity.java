@@ -21,6 +21,9 @@ import com.mirror.sdk.MWSolana;
 import com.mirror.sdk.constant.MirrorChains;
 import com.mirror.sdk.constant.MirrorEnv;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +34,23 @@ public class EntranceActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+//        String valueStr = "0.1";
+//        float valueFloat = 0.1f;
+//        double valueDouble = 0.1;
+//        Log.d("MirrorSDK", "float String is:"+valueFloat);
+//        Log.d("MirrorSDK", "double string is:"+valueDouble);
+//        Log.d("MirrorSDK", "float is:"+Float.valueOf(valueStr));
+//        Log.d("MirrorSDK", "double is:"+Double.valueOf(valueStr));
+//
+//        JSONObject jsonObject = new JSONObject();
+//        try {
+//            jsonObject.put("price", ""+valueFloat);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        String data = jsonObject.toString();
+//        Log.d("MirrorSDK", "data is:"+data);
+
         super.onCreate(savedInstanceState);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);

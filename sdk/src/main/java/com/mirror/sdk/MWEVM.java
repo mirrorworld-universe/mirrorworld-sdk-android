@@ -160,8 +160,8 @@ public class MWEVM {
         MWEVMWrapper.getTokensByWallet(walletAddress, walletTokenListener);
     }
 
-    final public static void getTransactionsOfLoggedUser(int limit, String before, MirrorCallback walletTransactionListener){
-        MWEVMWrapper.getTransactionsOfLoggedUser(limit, before, walletTransactionListener);
+    final public static void getTransactionsOfLoggedUser(int limit, MirrorCallback walletTransactionListener){
+        MWEVMWrapper.getTransactionsOfLoggedUser(limit, walletTransactionListener);
     }
 
     final public static void getTransactionsByWallet(String walletAddress, int limit, MirrorCallback callback){
@@ -197,8 +197,12 @@ public class MWEVM {
         MWEVMWrapper.getNFTsByUnabridgedParams(collection, page, page_size, order_by, desc, sale, filter, listener);
     }
 
-    final public static void getNFTEvents(String mint_address, int page, int page_size, MirrorCallback listener){
-        MWEVMWrapper.getNFTEvents(mint_address, page, page_size, listener);
+    /**
+     * Type: Metadata
+     * Function: Get NFT events with a NFT mint address.
+     */
+    final public static void getNFTEvents(String contract,String tokenID, int page, int page_size, MirrorCallback listener){
+        MWEVMWrapper.getNFTEvents(contract,tokenID, page, page_size, listener);
     }
 
     final public static void searchNFTs(List<String> collections, String searchStr, MirrorCallback listener){
@@ -240,8 +244,8 @@ public class MWEVM {
     }
 
     //Asset/Auction
-    final public static void transferNFT(String token_id,String collection_address, String to_wallet_address, MirrorCallback transferNFTListener){
-        MWEVMWrapper.transferNFT(token_id, collection_address, to_wallet_address, transferNFTListener);
+    final public static void transferNFT(String collection_address, String token_id,String to_wallet_address, MirrorCallback transferNFTListener){
+        MWEVMWrapper.transferNFT(collection_address, token_id, to_wallet_address, transferNFTListener);
     }
 
     final public static void listNFT(String collection_address, String token_id, float price, String marketplace_address, MirrorCallback listener){

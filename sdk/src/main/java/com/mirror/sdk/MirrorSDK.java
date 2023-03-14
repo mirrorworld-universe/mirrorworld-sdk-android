@@ -19,7 +19,6 @@ import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
@@ -742,13 +741,13 @@ public class MirrorSDK {
         checkParamsAndPost(url,data,getHandlerCallback(createTopCollectionListener));
     }
 
-    public void TransferNFTToAnotherSolanaWallet(String data, MirrorCallback transferNFTListener){
+    public void TransferNFTToAnotherWallet(String data, MirrorCallback transferNFTListener){
         String url = getMirrorUrl(MirrorService.AssetAuction,MirrorUrl.URL_TRANSFER_NFT_TO_ANOTHER_SOLANA_WALLET);//GetAPIRoot() + MirrorUrl.URL_TRANSFER_NFT_TO_ANOTHER_SOLANA_WALLET;
         checkParamsAndPost(url,data,getHandlerCallback(transferNFTListener));
     }
 
-    public void fetchNFTsByOwnerAddresses(String data, MirrorCallback fetchByOwnerListener){
-        String url = getMirrorUrl(MirrorService.AssetNFT,MirrorUrl.URL_FETCH_MULTIPLE_NFT);//GetAPIRoot() + MirrorUrl.URL_FETCH_MULTIPLE_NFT;
+    public void fetchNFTsByOwnerAddresses(String data,String path, MirrorCallback fetchByOwnerListener){
+        String url = getMirrorUrl(MirrorService.AssetNFT,path);
         checkParamsAndPost(url,data,getHandlerCallback(fetchByOwnerListener));
     }
 
@@ -1126,12 +1125,16 @@ public class MirrorSDK {
             }
         });
     }
-    public void GetNFTInfoOnEVM(String contractAddress, String tokenID, MirrorCallback listener){
+    /**
+     * Type: Asset/NFT
+     * Function: Get NFT info
+     */
+    public void GetNFTInfoOnEVM(String token_address, String tokenID, MirrorCallback listener){
         if(!mChain.equals(MirrorChains.Ethereum)){
             logWarn("This API support only EVM chain.");
             return;
         }
-        String url = getGetMirrorUrl(MirrorService.Metadata) + URL_GET_NFT_INFO + "/" + contractAddress + "/" + tokenID;
+        String url = getGetMirrorUrl(MirrorService.AssetNFT) + token_address + "/" + tokenID;
         checkParamsAndGet(url, null, new MirrorCallback() {
             @Override
             public void callback(String result) {
@@ -1185,15 +1188,12 @@ public class MirrorSDK {
         });
     }
 
-    public void GetNFTEventsOnEVM(String contract, int page, int page_size, MirrorCallback listener){
-        if(mChain.equals(MirrorChains.Solana)){
-            logWarn("Please use solana API instead.");
-            return;
-        }
+    public void GetNFTEventsOnEVM(String contract,String tokenID, int page, int page_size, MirrorCallback listener){
         String url = getGetMirrorUrl(MirrorService.MetadataNFT) + URL_GET_NFT_EVENTS;
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("contract", contract);
+            jsonObject.put("token_id", tokenID);
             jsonObject.put("page", page);
             jsonObject.put("page_size", page_size);
         } catch (JSONException e) {
