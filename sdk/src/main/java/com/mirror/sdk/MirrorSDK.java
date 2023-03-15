@@ -393,7 +393,7 @@ public class MirrorSDK {
             @Override
             public void OnChecked() {
                 String urlPre = getAuthRoot() + apiKey;
-                openUrl(urlPre);
+                openUrl(urlPre,returnActivity);
                 cbStringLogin = loginCb;
             }
 
@@ -411,7 +411,7 @@ public class MirrorSDK {
             @Override
             public void OnChecked() {
                 String urlPre = getAuthRoot() + apiKey;
-                openUrl(urlPre);
+                openUrl(urlPre,returnActivity);
                 cbLogin = loginCb;
             }
 
@@ -440,7 +440,8 @@ public class MirrorSDK {
 //        });
     }
 
-    public void openUrl(String url){
+    public void openUrl(String url,Activity returnActivity){
+        this.returnActivity = returnActivity;
         String finalUrlPre = "";
         if(url.contains("?")){
             finalUrlPre = url + "&useSchemeRedirect=";
@@ -470,7 +471,7 @@ public class MirrorSDK {
             openInnerUrlOnUIThread(finalUrlPre);
         }else {
             logFlow("Try to open url with custom tab:" + finalUrlPre);
-            openWebPageWithCustomTab(finalUrlPre);
+            openWebPageWithCustomTab(finalUrlPre,returnActivity);
 //            launchTab(mActivity, Uri.parse("mwsdk://userinfo?data=userInfoJsonString&access_token=accesstokentest&refresh_token=refreshtokentest"));
         }
     }
@@ -487,8 +488,9 @@ public class MirrorSDK {
         CustomTabsClient.bindCustomTabsService(context, "com.android.chrome", connection);
     }
 
-    private void openWebPageWithCustomTab(String url){
-        final Context activity = mActivity;
+    private void openWebPageWithCustomTab(String url,Activity returnActivity){
+        this.returnActivity = returnActivity;
+        final Activity activity = this.returnActivity;
         sdkSimpleCheck(new OnCheckSDKUseable() {
             @Override
             public void OnChecked() {
@@ -801,17 +803,19 @@ public class MirrorSDK {
         checkParamsAndPost(url,data,getHandlerCallback(buyNFTListener));
     }
 
-    public void openApprovePage(String url){
+    public void openApprovePage(String url,Activity returnActivity){
+        this.returnActivity = returnActivity;
         url += "?key=" + accessToken;
-        openUrl(url);
+        openUrl(url,returnActivity);
     }
 
-    public void openMarket(String rootUrl){
-        checkSDKInited(new OnCheckSDKUseable() {
+    public void openMarket(String rootUrl,Activity returnActivity){
+        this.returnActivity = returnActivity;
+        sdkSimpleCheck(new OnCheckSDKUseable() {
             @Override
             public void OnChecked() {
                 String urlPre = rootUrl + "?auth=" + accessToken ;
-                openUrl(urlPre);
+                openUrl(urlPre,returnActivity);
             }
 
             @Override
@@ -851,43 +855,23 @@ public class MirrorSDK {
      * @param walletUrl if is "" ,will use default url
      * @param loginCb
      */
-    public void OpenWallet(String walletUrl, MirrorCallback loginCb){
-        doOpenWallet(walletUrl);
+    public void OpenWallet(Activity returnActivity, String walletUrl, MirrorCallback loginCb){
+        doOpenWallet(walletUrl,returnActivity);
         cbWalletLogout = loginCb;
 
         logFlow("Set open wallet callback" + cbWalletLogout);
     }
     //Wallet
-    private void doOpenWallet(String walletUrl){
+    private void doOpenWallet(String walletUrl,Activity returnActivity){
+        this.returnActivity = returnActivity;
         String finalUrlPre = walletUrl;
         if(finalUrlPre == ""){
             finalUrlPre = getAuthRoot() + "jwt?key=" + accessToken;
         }
 
-        openUrl(finalUrlPre);
+        openUrl(finalUrlPre,returnActivity);
         loginPageMode = MirrorLoginPageMode.KeepIfLoginDone;
     }
-
-//    public void GetWallet(MirrorCallback mirrorCallback){
-////        if(mWalletAddress.equals("")){
-////            mWalletAddress = getSavedString(mActivity,localKeyWalletAddress);
-////        }
-//        String url = GetSSORoot() + MirrorUrl.URL_ME;
-//        checkParamsAndGet(url, null, new MirrorCallback() {
-//            @Override
-//            public void callback(String result) {
-//                String address = "";
-//                try {
-//                    JSONObject obj = new JSONObject(result);
-//                    address = obj.getJSONObject("data").getJSONObject("user").getJSONObject("wallet").getString("sol_address");
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//                mirrorCallback.callback(address);
-//            }
-//        });
-//        return;
-//    }
 
     public void transferSOL(String data, TransferSOLListener transferSOLListener){
         String url = getMirrorUrl(MirrorService.Wallet,MirrorUrl.URL_TRANSFER_SQL);
@@ -1037,23 +1021,11 @@ public class MirrorSDK {
         checkParamsAndPost(url,data,getHandlerCallback(listener));
     }
 
-    public void TransferETH(String nonce, String gasPrice, String gasLimit, String to,int amount, MirrorCallback mirrorCallback){
+    public void TransferETH(String data,MirrorCallback mirrorCallback){
         if(!mChain.equals(MirrorChains.Ethereum)){
             logWarn("This API support only EVM chain.");
             return;
         }
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("nonce", nonce);
-            jsonObject.put("gasPrice", gasPrice);
-            jsonObject.put("gasLimit", gasLimit);
-            jsonObject.put("to", to);
-            jsonObject.put("amount", amount);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        String data = jsonObject.toString();
-
         String url = getMirrorUrl(MirrorService.Wallet,MirrorUrl.URL_GET_WALLET_TRANSFER_ETH);
         checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
     }
@@ -1129,7 +1101,7 @@ public class MirrorSDK {
      * Type: Asset/NFT
      * Function: Get NFT info
      */
-    public void GetNFTInfoOnEVM(String token_address, String tokenID, MirrorCallback listener){
+    public void GetNFTInfoOnEVM(String token_address, int tokenID, MirrorCallback listener){
         if(!mChain.equals(MirrorChains.Ethereum)){
             logWarn("This API support only EVM chain.");
             return;
@@ -1188,7 +1160,7 @@ public class MirrorSDK {
         });
     }
 
-    public void GetNFTEventsOnEVM(String contract,String tokenID, int page, int page_size, MirrorCallback listener){
+    public void GetNFTEventsOnEVM(String contract,int tokenID, int page, int page_size, MirrorCallback listener){
         String url = getGetMirrorUrl(MirrorService.MetadataNFT) + URL_GET_NFT_EVENTS;
         JSONObject jsonObject = new JSONObject();
         try {

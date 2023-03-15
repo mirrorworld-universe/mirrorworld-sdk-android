@@ -3,7 +3,6 @@ package com.mirror.sdk.constant;
 import android.util.Log;
 
 import com.mirror.sdk.MirrorSDK;
-import com.mirror.sdk.MirrorWorld;
 
 public class MirrorUrl {
 
@@ -73,7 +72,7 @@ public class MirrorUrl {
             MirrorSDK.logError("SDK not inited!");
             return MirrorEnv.MainNet;
         }
-        MirrorEnv env = MirrorWorld.getEnvironment();
+        MirrorEnv env = MirrorSDK.getInstance().getEnv();
         return env;
     }
 

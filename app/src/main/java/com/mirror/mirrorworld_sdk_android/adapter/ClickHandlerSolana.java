@@ -22,7 +22,6 @@ import com.mirror.sdk.listener.market.FetchSingleNFTListener;
 import com.mirror.sdk.listener.market.ListNFTListener;
 import com.mirror.sdk.listener.market.MintNFTListener;
 import com.mirror.sdk.listener.market.TransferNFTListener;
-import com.mirror.sdk.listener.market.UpdateListListener;
 import com.mirror.sdk.listener.metadata.GetCollectionFilterInfoListener;
 import com.mirror.sdk.listener.metadata.GetCollectionInfoListener;
 import com.mirror.sdk.listener.metadata.GetCollectionSummaryListener;
@@ -65,7 +64,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
         super(context);
     }
 
-    public void handleClick(DemoAPI apiId, MultiParaItemRecyclerViewAdapter.ViewHolder holder, View view){
+    public void handleClick(Activity returnActivity, DemoAPI apiId, MultiParaItemRecyclerViewAdapter.ViewHolder holder, View view){
         if(apiId == DemoAPI.GET_ENVIRONMENT){
             holder.mResultView.setText("Environment is:" + MWSolana.getEnvironment());
         }else if(apiId == DemoAPI.SET_JWT){
@@ -81,7 +80,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
                 public void callback(String result) {
                     runInUIThread(holder,result);
                 }
-            },mContext);
+            }, mActivity);
         }else if(apiId == DemoAPI.IS_LOGGED){
             MWSolana.isLoggedIn(new BoolListener() {
                 @Override
@@ -110,7 +109,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
                 }
             });
         }else if(apiId == DemoAPI.OPEN_WALLET){
-            MWSolana.openWallet(new MirrorCallback() {
+            MWSolana.openWallet(mActivity,new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     runInUIThread(holder,"Wallet logout callback runs!");
@@ -134,7 +133,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             }
 
             //Call API:openMarket
-            MWSolana.openMarket(marketRoot);
+            MWSolana.openMarket(marketRoot,mActivity);
         }else if(apiId == DemoAPI.LOGIN_With_EMAIL){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
                 showToast("Please input!");
@@ -189,7 +188,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             String symbol = String.valueOf(holder.mEt2.getText());
             String detailsUrl = String.valueOf(holder.mEt3.getText());
 
-            MWSolana.createVerifiedCollection(name, symbol, detailsUrl, MirrorConfirmation.Default, new CreateTopCollectionListener() {
+            MWSolana.createVerifiedCollection(mActivity, name, symbol, detailsUrl, MirrorConfirmation.Default, new CreateTopCollectionListener() {
                 @Override
                 public void onCreateSuccess(MintResponse mintResponse) {
                     runInUIThread(holder,"Creating result is:"+ MirrorGsonUtils.getInstance().toJson(mintResponse));
@@ -209,7 +208,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             String collection_mint = String.valueOf(holder.mEt1.getText());
             String detailUrl = String.valueOf(holder.mEt2.getText());
 
-            MWSolana.mintNFT(collection_mint, detailUrl,MirrorConfirmation.Default, new MintNFTListener() {
+            MWSolana.mintNFT(mActivity, collection_mint, detailUrl,MirrorConfirmation.Default, new MintNFTListener() {
                 @Override
                 public void onMintSuccess(MintResponse userResponse) {
                     MirrorSDK.getInstance().logFlow("Mint nft result:"+MirrorGsonUtils.getInstance().toJson(userResponse));
@@ -233,7 +232,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             String NFTJsonUrl = String.valueOf(holder.mEt5.getText());
             int seller_fee_basis_points = Integer.parseInt(String.valueOf(holder.mEt6.getText()));
 
-            MWSolana.updateNFTProperties(mintAddress, name, symbol, updateAuthority,NFTJsonUrl,seller_fee_basis_points, new MintNFTListener() {
+            MWSolana.updateNFTProperties(mActivity, mintAddress, name, symbol, updateAuthority,NFTJsonUrl,seller_fee_basis_points, new MintNFTListener() {
                 @Override
                 public void onMintSuccess(MintResponse userResponse) {
                     MirrorSDK.getInstance().logFlow("Update NFT result:"+MirrorGsonUtils.getInstance().toJson(userResponse));
@@ -284,7 +283,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             }catch (NumberFormatException e){
 
             }
-            MWSolana.listNFT(mint_address, price, MirrorConfirmation.Default, new ListNFTListener() {
+            MWSolana.listNFT(mActivity, mint_address, price, MirrorConfirmation.Default, new ListNFTListener() {
                 @Override
                 public void onListSuccess(ListingResponse listingResponse) {
                     String result = "ListNFT success! price is:"+listingResponse.price;
@@ -294,33 +293,6 @@ public class ClickHandlerSolana extends ClickHandlerBase{
                 @Override
                 public void onListFailed(long code, String message) {
                     String result = MirrorStringUtils.GetFailedNotice("ListNFT",code,message);
-                    runInUIThread(holder,result);
-                }
-            });
-        }else if(apiId == DemoAPI.UPDATE_NFT_LISTING){
-            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
-                showToast("Please input!");
-                return;
-            }
-            String mint_address = String.valueOf(holder.mEt1.getText());
-            String priceStr = String.valueOf(holder.mEt2.getText());
-            Double price = 0.0;
-
-            try{
-                price = Double.valueOf(priceStr);
-            }catch (NumberFormatException e){
-
-            }
-            MWSolana.updateNFTListing(mint_address, price,MirrorConfirmation.Default, new UpdateListListener() {
-                @Override
-                public void onUpdateSuccess(ListingResponse listingResponse) {
-                    String result = "UpdateNFTListing success! New price:"+listingResponse.price;
-                    runInUIThread(holder,result);
-                }
-
-                @Override
-                public void onUpdateFailed(long code, String message) {
-                    String result = MirrorStringUtils.GetFailedNotice("UpdateNFTListing",code,message);
                     runInUIThread(holder,result);
                 }
             });
@@ -337,7 +309,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             }catch (NumberFormatException e){
 
             }
-            MWSolana.cancelNFTListing(mint_address, price,MirrorConfirmation.Default, new CancelListListener() {
+            MWSolana.cancelNFTListing(mActivity, mint_address, price,MirrorConfirmation.Default, new CancelListListener() {
                 @Override
                 public void onCancelSuccess(ListingResponse listingResponse) {
                     String result = "CancelNFTListing success! Mint address is "+listingResponse.mint_address;
@@ -500,7 +472,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             }
             String mint_address = String.valueOf(holder.mEt1.getText());
             String to_wallet_address = String.valueOf(holder.mEt2.getText());
-            MWSolana.transferNFT(mint_address, to_wallet_address,MirrorConfirmation.Default, new TransferNFTListener() {
+            MWSolana.transferNFT(mActivity, mint_address, to_wallet_address,MirrorConfirmation.Default, new TransferNFTListener() {
                 @Override
                 public void onTransferSuccess(ListingResponse listingResponse) {
                     runInUIThread(holder,listingResponse.mint_address);
@@ -529,7 +501,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             }catch (NumberFormatException E){
             }
 
-            MWSolana.transferSPLToken(toPublicKey, amount, tokenMint, decimals, new MirrorCallback() {
+            MWSolana.transferSPLToken(mActivity, toPublicKey, amount, tokenMint, decimals, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     runInUIThread(holder,result);
@@ -548,7 +520,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             }catch (NumberFormatException E){
             }
 
-            MWSolana.buyNFT(mint_address, price, new BuyNFTListener() {
+            MWSolana.buyNFT(mActivity, mint_address, price, new BuyNFTListener() {
                 @Override
                 public void onBuySuccess(ListingResponse listingResponse) {
                     runInUIThread(holder,listingResponse.mint_address);
@@ -688,7 +660,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             }catch (NumberFormatException e){
 
             }
-            MWSolana.transferSOL(public_key, amount, new TransferSOLListener() {
+            MWSolana.transferSOL(mActivity, public_key, amount, new TransferSOLListener() {
                 @Override
                 public void onTransferSuccess(TransferResponse transferResponse) {
                     String result = "transfer sol success!";
@@ -721,7 +693,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
                     runInUIThread(holder,result);
                 }
             });
-        }else if(apiId == DemoAPI.GET_NFT_INFO){
+        }else if(apiId == DemoAPI.METADATA_GET_NFT_INFO){
             if(!checkEt(holder.mEt1)){
                 showToast("Please input!");
                 return;
@@ -846,7 +818,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
                     runInUIThread(holder,r);
                 }
             });
-        }else if(apiId == DemoAPI.GET_NFTS_SOLANA){
+        }else if(apiId == DemoAPI.METADATA_GET_NFTS_BY_PARAMS){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3)
                     || !checkEt(holder.mEt4) || !checkEt(holder.mEt5) || !checkEt(holder.mEt6)){
                 showToast("Please input!");

@@ -1,5 +1,6 @@
 package com.mirror.sdk.chain;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.google.gson.reflect.TypeToken;
@@ -10,6 +11,7 @@ import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.constant.MirrorResCode;
 import com.mirror.sdk.constant.MirrorSafeOptType;
 import com.mirror.sdk.constant.MirrorUrl;
+import com.mirror.sdk.listener.market.FetchSingleNFTListener;
 import com.mirror.sdk.listener.market.MintNFTListener;
 import com.mirror.sdk.listener.market.UpdateListListener;
 import com.mirror.sdk.listener.metadata.GetCollectionFilterInfoListener;
@@ -46,7 +48,7 @@ public class MWEVMWrapper extends MWBaseWrapper{
 
     //Wallet
     //transfer-token
-    final public static void transferToken(String nonce, String gasPrice, String gasLimit, String to, int amount, String contract, MirrorCallback mirrorCallback){
+    final public static void transferToken(Activity returnActivity, String nonce, String gasPrice, String gasLimit, String to, int amount, String contract, MirrorCallback mirrorCallback){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("nonce", nonce);
@@ -59,7 +61,7 @@ public class MWEVMWrapper extends MWBaseWrapper{
             e.printStackTrace();
         }
         String data = jsonObject.toString();
-        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.TransferSPLToken, "TransferSPLToken", 0, jsonObject, new MirrorCallback() {
+        MirrorSafeAPI.getSecurityToken(returnActivity, MirrorSafeOptType.TransferERC20Token, "TransferToken", 0, jsonObject, new MirrorCallback() {
             @Override
             public void callback(String nothing) {
                 MirrorSDK.getInstance().transferToken(data, mirrorCallback);
@@ -68,19 +70,25 @@ public class MWEVMWrapper extends MWBaseWrapper{
     }
 
     //transfer-eth
-    final public static void transferETH(String nonce, String gasPrice, String gasLimit, String to, int amount, MirrorCallback listener){
-//        JSONObject jsonObject = new JSONObject();
-//        try {
-//            jsonObject.put("nonce", nonce);
-//            jsonObject.put("gasPrice", gasPrice);
-//            jsonObject.put("gasLimit", gasLimit);
-//            jsonObject.put("to", to);
-//            jsonObject.put("amount", amount);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        String data = jsonObject.toString();
-        MirrorSDK.getInstance().TransferETH(nonce,gasPrice,gasLimit,to,amount, listener);
+    final public static void transferETH(Activity returnActivity, String nonce, String gasPrice, String gasLimit, String to, int amount, MirrorCallback listener){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("nonce", nonce);
+            jsonObject.put("gasPrice", gasPrice);
+            jsonObject.put("gasLimit", gasLimit);
+            jsonObject.put("to", to);
+            jsonObject.put("amount", amount);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+
+        MirrorSafeAPI.getSecurityToken(returnActivity, MirrorSafeOptType.TransferETH, "transfer ETH", 0, jsonObject, new MirrorCallback() {
+            @Override
+            public void callback(String nothing) {
+                MirrorSDK.getInstance().TransferETH(data, listener);
+            }
+        });
     }
 
     final public static void getTokens(MirrorCallback listener){
@@ -112,7 +120,7 @@ public class MWEVMWrapper extends MWBaseWrapper{
         MirrorSDK.getInstance().GetNFTRealPrice(price, fee, listener);
     }
 
-    final public static void getNFTInfo(String mintAddress,String tokenID, MirrorCallback listener){
+    final public static void getNFTInfo(String mintAddress,int tokenID, MirrorCallback listener){
         MirrorSDK.getInstance().GetNFTInfoOnEVM(mintAddress,tokenID, listener);
     }
 
@@ -154,7 +162,7 @@ public class MWEVMWrapper extends MWBaseWrapper{
         MirrorSDK.getInstance().getNFTsByUnabridgedParamsOnEVM(collection, page, page_size, order_by, desc, sale, filter, listener);
     }
 
-    final public static void getNFTEvents(String contract,String tokenID, int page, int page_size, MirrorCallback listener){
+    final public static void getNFTEvents(String contract,int tokenID, int page, int page_size, MirrorCallback listener){
         MirrorSDK.getInstance().GetNFTEventsOnEVM(contract,tokenID, page, page_size, listener);
     }
 
@@ -189,7 +197,7 @@ public class MWEVMWrapper extends MWBaseWrapper{
         MirrorSDK.getInstance().RecommendSearchNFT(data, listener);
     }
     //Asset/Mint
-    final public static void mintNFT(String collection_address,String token_id, String confirmation,String to_wallet_address, MintNFTListener mintNFTListener){
+    final public static void mintNFT(Activity returnActivity, String collection_address,int token_id, String confirmation,String to_wallet_address, MintNFTListener mintNFTListener){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("collection_address", collection_address);
@@ -200,7 +208,7 @@ public class MWEVMWrapper extends MWBaseWrapper{
             e.printStackTrace();
         }
         String data = jsonObject.toString();
-        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.MintNFT, "mint nft", 0, jsonObject, new MirrorCallback() {
+        MirrorSafeAPI.getSecurityToken(returnActivity, MirrorSafeOptType.MintNFT, "mint nft", 0, jsonObject, new MirrorCallback() {
             @Override
             public void callback(String nothing) {
                 MirrorSDK.getInstance().mintNFT(data, new MirrorCallback() {
@@ -219,7 +227,7 @@ public class MWEVMWrapper extends MWBaseWrapper{
     }
 
     //Asset/NFT
-    final public static void updateNFTProperties(String mintAddress, String name, String symbol, String updateAuthority, String NFTJsonUrl,int seller_fee_basis_points, MintNFTListener mintNFTListener){
+    final public static void updateNFTProperties(Activity returnActivity, String mintAddress, String name, String symbol, String updateAuthority, String NFTJsonUrl,int seller_fee_basis_points, MintNFTListener mintNFTListener){
         ApproveReqUpdateNFTProperties req = new ApproveReqUpdateNFTProperties();
         req.mint_address = mintAddress;
         req.name = name;
@@ -229,7 +237,7 @@ public class MWEVMWrapper extends MWBaseWrapper{
         req.confirmation = MirrorConfirmation.Confirmed;
 
         JSONObject params = MirrorGsonUtils.getInstance().toJsonObj(req);
-        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.UpdateNFT, "Update NFT", 0, params, new MirrorCallback() {
+        MirrorSafeAPI.getSecurityToken(returnActivity, MirrorSafeOptType.UpdateNFT, "Update NFT", 0, params, new MirrorCallback() {
             @Override
             public void callback(String nothing) {
                 MirrorSDK.getInstance().updateNFTProperties(mintAddress, name, symbol, updateAuthority, NFTJsonUrl, seller_fee_basis_points, MirrorConfirmation.Confirmed, mintNFTListener);
@@ -307,7 +315,7 @@ public class MWEVMWrapper extends MWBaseWrapper{
         MirrorSDK.getInstance().fetchNFTMarketplaceActivity(mint_address, fetchSingleNFTActivityListener);
     }
 
-    final public static void createVerifiedCollection(String contract_type, String detailUrl,String confirmation, MirrorCallback createTopCollectionListener){
+    final public static void createVerifiedCollection(Activity returnActivity, String contract_type, String detailUrl,String confirmation, MirrorCallback createTopCollectionListener){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("contract_type", contract_type);
@@ -317,7 +325,7 @@ public class MWEVMWrapper extends MWBaseWrapper{
             e.printStackTrace();
         }
         String data = jsonObject.toString();
-        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.CreateCollection, "CreateCollection", 0, jsonObject, new MirrorCallback() {
+        MirrorSafeAPI.getSecurityToken(returnActivity, MirrorSafeOptType.CreateCollection, "CreateCollection", 0, jsonObject, new MirrorCallback() {
             @Override
             public void callback(String nothing) {
                 MirrorSDK.getInstance().CreateVerifiedCollection(data, createTopCollectionListener);
@@ -325,7 +333,7 @@ public class MWEVMWrapper extends MWBaseWrapper{
         });
     }
 
-    final public static void transferNFT(String collection_address, String token_id,String to_wallet_address, MirrorCallback transferNFTListener){
+    final public static void transferNFT(Activity returnActivity, String collection_address, int token_id,String to_wallet_address, MirrorCallback transferNFTListener){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("collection_address", collection_address);
@@ -335,7 +343,7 @@ public class MWEVMWrapper extends MWBaseWrapper{
             e.printStackTrace();
         }
         String data = jsonObject.toString();
-        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.TransferNFT, "TransferNFT", 0, jsonObject, new MirrorCallback() {
+        MirrorSafeAPI.getSecurityToken(returnActivity, MirrorSafeOptType.TransferNFT, "TransferNFT", 0, jsonObject, new MirrorCallback() {
             @Override
             public void callback(String nothing) {
                 MirrorSDK.getInstance().TransferNFTToAnotherWallet(data, transferNFTListener);
@@ -343,29 +351,26 @@ public class MWEVMWrapper extends MWBaseWrapper{
         });
     }
 
-    final public static void listNFT(String collection_address, String token_id, float price, String marketplace_address, MirrorCallback listener){
+    final public static void listNFT(Activity returnActivity, String collection_address, int token_id, float price, String marketplace_address, MirrorCallback listener){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("collection_address", collection_address);
             jsonObject.put("token_id", token_id);
-            jsonObject.put("price",price);
+            jsonObject.put("price",""+price);
             jsonObject.put("marketplace_address",marketplace_address);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         String data = jsonObject.toString();
-        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.ListNFT, "ListNFT", 0, jsonObject, new MirrorCallback() {
+        MirrorSafeAPI.getSecurityToken(returnActivity, MirrorSafeOptType.ListNFT, "ListNFT", 0, jsonObject, new MirrorCallback() {
             @Override
             public void callback(String nothing) {
                 MirrorSDK.getInstance().ListNFT(data, listener);
             }
         });
     }
-    final public static void updateNFTListing(String mint_address, Double price,String confirmation, UpdateListListener listener){
-        MirrorSDK.getInstance().UpdateNFTListing(mint_address, price, confirmation, listener);
-    }
 
-    final public static void cancelNFTListing(String collection_address, String token_id,String marketplace_address, MirrorCallback listener){
+    final public static void cancelNFTListing(Activity returnActivity, String collection_address, int token_id,String marketplace_address, MirrorCallback listener){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("collection_address", collection_address);
@@ -375,7 +380,7 @@ public class MWEVMWrapper extends MWBaseWrapper{
             e.printStackTrace();
         }
         String data = jsonObject.toString();
-        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.CancelListing, "CancelListing", 0, jsonObject, new MirrorCallback() {
+        MirrorSafeAPI.getSecurityToken(returnActivity, MirrorSafeOptType.CancelListing, "CancelListing", 0, jsonObject, new MirrorCallback() {
             @Override
             public void callback(String nothing) {
                 MirrorSDK.getInstance().CancelNFTListing(data, listener);
@@ -383,7 +388,7 @@ public class MWEVMWrapper extends MWBaseWrapper{
         });
     }
 
-    final public static void buyNFT(String collection_address, String token_id,float price,String marketplace_address, MirrorCallback buyNFTListener){
+    final public static void buyNFT(Activity returnActivity, String collection_address, int token_id,float price,String marketplace_address, MirrorCallback buyNFTListener){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("collection_address", collection_address);
@@ -394,11 +399,15 @@ public class MWEVMWrapper extends MWBaseWrapper{
             e.printStackTrace();
         }
         String data = jsonObject.toString();
-        MirrorSafeAPI.getSecurityToken(MirrorSafeOptType.BuyNFT, "BuyNFT", 0, jsonObject, new MirrorCallback() {
+        MirrorSafeAPI.getSecurityToken(returnActivity, MirrorSafeOptType.BuyNFT, "BuyNFT", 0, jsonObject, new MirrorCallback() {
             @Override
             public void callback(String nothing) {
                 MirrorSDK.getInstance().BuyNFT(data, buyNFTListener);
             }
         });
+    }
+
+    final public static void getNFTDetails(String contract,String tokenID, MirrorCallback fetchSingleNFT){
+        MirrorSDK.getInstance().GetNFTDetailsOnEVM(contract, tokenID, fetchSingleNFT);
     }
 }

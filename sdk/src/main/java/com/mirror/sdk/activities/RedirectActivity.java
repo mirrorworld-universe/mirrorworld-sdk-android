@@ -12,7 +12,6 @@ import android.util.Log;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.mirror.sdk.MirrorSDK;
-import com.mirror.sdk.MirrorWorld;
 import com.mirror.sdk.constant.MirrorConstant;
 import com.mirror.sdk.response.CommonResponse;
 import com.mirror.sdk.response.action.ApproveResponse;

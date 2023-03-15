@@ -26,7 +26,6 @@ public class PageIniterEVM extends APIPageIniterBase{
         titles.add("Asset:other");
         titles.add("Wallet");
         titles.add("Metadata");
-        titles.add("Confirmation");
 
         for (int i = 0; i < titles.size(); i++) {
             mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(i)));
@@ -39,14 +38,12 @@ public class PageIniterEVM extends APIPageIniterBase{
         MultiParaItemFragment MarketOther = new MultiParaItemFragment(marketOtherApis(),chain);
         MultiParaItemFragment Wallet = new MultiParaItemFragment(walletApis(),chain);
         MultiParaItemFragment marketUI = new MultiParaItemFragment(marketUIAPIs(),chain);
-        MultiParaItemFragment confirmation = new MultiParaItemFragment(confirmationAPIs(),chain);
 
         fragments.add(Auth);
         fragments.add(MarketMint);
         fragments.add(MarketOther);
         fragments.add(Wallet);
         fragments.add(marketUI);
-        fragments.add(confirmation);
 
         FragmentAdapter mFragmentAdapteradapter =
                 new FragmentAdapter(mActivity.getSupportFragmentManager(), fragments, titles);
@@ -133,11 +130,6 @@ public class PageIniterEVM extends APIPageIniterBase{
                 new MultiItemData.MultiItem(DemoAPI.LIST_NFT,"List NFT on the marketplace","List NFT on the marketplace by use mint address",
                         "LIST_NFT","collection_address","token_id",
                         "price","marketplace_address",null,null));
-        items.add(
-
-                new MultiItemData.MultiItem(DemoAPI.UPDATE_NFT_LISTING,"Update Listing of NFT on the marketplace","Update Listing of NFT on the marketplace",
-                        "UPDATE_NFT_LISTING","mint_address","price",
-                        null,null,null,null));
         items.add(
                 new MultiItemData.MultiItem(DemoAPI.CANCEL_NFT_LISTING,"Cancel listing of NFT on the marketplace","Cancel listing of NFT on the marketplace",
                         "CANCEL_NFT_LISTING","collection_address","token_id",
@@ -230,7 +222,7 @@ public class PageIniterEVM extends APIPageIniterBase{
                 "Get",
                 "collection 1","collection 2",null,null,null,null));
         items.add(new MultiItemData.MultiItem(
-                DemoAPI.GET_NFT_INFO,"Get NFT info.","Get details in market of a NFT.",
+                DemoAPI.METADATA_GET_NFT_INFO,"Get NFT info.","Get details in market of a NFT.",
                 "Get",
                 "contract","token_id",null,null,null,null));
         items.add(new MultiItemData.MultiItem(
@@ -250,25 +242,9 @@ public class PageIniterEVM extends APIPageIniterBase{
                 "Get",
                 "price","price fee",null,null,null,null));
         items.add(new MultiItemData.MultiItem(
-                DemoAPI.GET_NFTS_SOLANA,"Get NFTs.","Get details of NFTs in market place.",
+                DemoAPI.METADATA_GET_NFTS_BY_PARAMS,"Get NFTs.","Get details of NFTs in market place.",
                 "Get",
                 "collection address 1","page","page size","order by","desc","sale"));
-        items.add(new MultiItemData.MultiItem(
-                DemoAPI.GET_NFTS_MULCHAIN,"Get NFTs.","Get details of NFTs in market place.",
-                "Get",
-                "collection address 1","page","page size","order by","desc","sale"));
-        return items;
-    }
-    private List<MultiItemData.MultiItem> confirmationAPIs() {
-        List<MultiItemData.MultiItem> items = new ArrayList<>();
-        items.add(
-                new MultiItemData.MultiItem(DemoAPI.CHECK_STATUS_OFMINTING,"Check status of minting","Minting is not finish immediately, check its status use this API",
-                        "Check","mint address 1","mint address 2",
-                        null,null,null,null));
-        items.add(
-                new MultiItemData.MultiItem(DemoAPI.CHECK_STATUS_TRANSACTION,"Get status of transaction by signature","Check status of transaction by sinature",
-                        "Check","signature 1","signature 2",
-                        null,null,null,null));
         return items;
     }
 }

@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.mirror.sdk.chain.MWEVMWrapper;
+import com.mirror.sdk.chain.MWSolanaWrapper;
 import com.mirror.sdk.constant.MirrorChains;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.listener.auth.FetchUserListener;
 import com.mirror.sdk.listener.auth.LoginListener;
+import com.mirror.sdk.listener.market.FetchSingleNFTListener;
 import com.mirror.sdk.listener.market.MintNFTListener;
 import com.mirror.sdk.listener.market.UpdateListListener;
 import com.mirror.sdk.listener.metadata.GetCollectionFilterInfoListener;
@@ -89,28 +91,28 @@ public class MWEVM {
      * Type: SDK
      * Function: Open user's wallet page.
      */
-    final public static void openWallet(MirrorCallback callback){
-        MWEVMWrapper.openWallet("",callback);
+    final public static void openWallet(Activity returnActivity, MirrorCallback callback){
+        MWEVMWrapper.openWallet(returnActivity,"",callback);
     }
 
-    final public static void openWallet(String walletUrl,MirrorCallback callback){
-        MWEVMWrapper.openWallet(walletUrl,callback);
+    final public static void openWallet(Activity returnActivity, String walletUrl,MirrorCallback callback){
+        MWEVMWrapper.openWallet(returnActivity, walletUrl,callback);
     }
 
     /**
      * Type: SDK
      * Function: Open market of this app.
      */
-    final public static void openMarket(String marketUrl){
-        MWEVMWrapper.openMarket(marketUrl);
+    final public static void openMarket(String marketUrl,Activity returnActivity){
+        MWEVMWrapper.openMarket(marketUrl,returnActivity);
     }
 
     /**
      * Type: SDK
      * Function: Open any url
      */
-    final public static void openUrl(String url){
-        MWEVMWrapper.openUrl(url);
+    final public static void openUrl(String url,Activity returnActivity){
+        MWEVMWrapper.openUrl(url,returnActivity);
     }
 
     /**
@@ -143,13 +145,13 @@ public class MWEVM {
 
     //Wallet
     //transfer-token
-    final public static void transferToken(String nonce, String gasPrice, String gasLimit, String to, int amount, String contract, MirrorCallback mirrorCallback){
-        MWEVMWrapper.transferToken(nonce, gasPrice, gasLimit, to, amount, contract, mirrorCallback);
+    final public static void transferToken(Activity returnActivity, String nonce, String gasPrice, String gasLimit, String to, int amount, String contract, MirrorCallback mirrorCallback){
+        MWEVMWrapper.transferToken(returnActivity, nonce, gasPrice, gasLimit, to, amount, contract, mirrorCallback);
     }
 
     //transfer-eth
-    final public static void transferETH(String nonce, String gasPrice, String gasLimit, String to, int amount, MirrorCallback listener){
-        MWEVMWrapper.transferETH(nonce, gasPrice, gasLimit, to, amount, listener);
+    final public static void transferETH(Activity returnActivity, String nonce, String gasPrice, String gasLimit, String to, int amount, MirrorCallback listener){
+        MWEVMWrapper.transferETH(returnActivity, nonce, gasPrice, gasLimit, to, amount, listener);
     }
 
     final public static void getTokens(MirrorCallback listener){
@@ -189,7 +191,7 @@ public class MWEVM {
         MWEVMWrapper.getCollectionSummary(collections, listener);
     }
 
-    final public static void getNFTInfo(String contractAddress, String tokenID , MirrorCallback listener){
+    final public static void getNFTInfo(String contractAddress, int tokenID , MirrorCallback listener){
         MWEVMWrapper.getNFTInfo(contractAddress, tokenID, listener);
     }
 
@@ -201,7 +203,7 @@ public class MWEVM {
      * Type: Metadata
      * Function: Get NFT events with a NFT mint address.
      */
-    final public static void getNFTEvents(String contract,String tokenID, int page, int page_size, MirrorCallback listener){
+    final public static void getNFTEvents(String contract,int tokenID, int page, int page_size, MirrorCallback listener){
         MWEVMWrapper.getNFTEvents(contract,tokenID, page, page_size, listener);
     }
 
@@ -214,8 +216,8 @@ public class MWEVM {
     }
 
     //Asset/mint
-    final public static void mintNFT(String collection_address,String token_id, String confirmation,String to_wallet_address, MintNFTListener mintNFTListener) {
-        MWEVMWrapper.mintNFT(collection_address, token_id, confirmation, to_wallet_address, mintNFTListener);
+    final public static void mintNFT(Activity returnActivity, String collection_address,int token_id, String confirmation,String to_wallet_address, MintNFTListener mintNFTListener) {
+        MWEVMWrapper.mintNFT(returnActivity, collection_address, token_id, confirmation, to_wallet_address, mintNFTListener);
     }
 
     //Asset/NFT
@@ -239,27 +241,30 @@ public class MWEVM {
         MWEVMWrapper.fetchNFTMarketplaceActivity(mint_address, fetchSingleNFTActivityListener);
     }
 
-    final public static void createVerifiedCollection(String contract_type, String detailUrl,String confirmation, MirrorCallback createTopCollectionListener){
-        MWEVMWrapper.createVerifiedCollection(contract_type, detailUrl, confirmation, createTopCollectionListener);
+    final public static void createVerifiedCollection(Activity returnActivity, String contract_type, String detailUrl,String confirmation, MirrorCallback createTopCollectionListener){
+        MWEVMWrapper.createVerifiedCollection(returnActivity, contract_type, detailUrl, confirmation, createTopCollectionListener);
     }
 
     //Asset/Auction
-    final public static void transferNFT(String collection_address, String token_id,String to_wallet_address, MirrorCallback transferNFTListener){
-        MWEVMWrapper.transferNFT(collection_address, token_id, to_wallet_address, transferNFTListener);
+    final public static void transferNFT(Activity returnActivity, String collection_address, int token_id,String to_wallet_address, MirrorCallback transferNFTListener){
+        MWEVMWrapper.transferNFT(returnActivity, collection_address, token_id, to_wallet_address, transferNFTListener);
     }
 
-    final public static void listNFT(String collection_address, String token_id, float price, String marketplace_address, MirrorCallback listener){
-        MWEVMWrapper.listNFT(collection_address, token_id, price, marketplace_address, listener);
+    final public static void listNFT(Activity returnActivity, String collection_address, int token_id, float price, String marketplace_address, MirrorCallback listener){
+        MWEVMWrapper.listNFT(returnActivity, collection_address, token_id, price, marketplace_address, listener);
     }
 
-    final public static void updateNFTListing(String mint_address, Double price,String confirmation, UpdateListListener listener){
-        MirrorSDK.getInstance().UpdateNFTListing(mint_address, price, confirmation, listener);
+    final public static void cancelNFTListing(Activity returnActivity, String collection_address, int token_id,String marketplace_address, MirrorCallback listener){
+        MWEVMWrapper.cancelNFTListing(returnActivity, collection_address, token_id, marketplace_address, listener);
     }
 
-    final public static void cancelNFTListing(String collection_address, String token_id,String marketplace_address, MirrorCallback listener){
-        MWEVMWrapper.cancelNFTListing(collection_address, token_id, marketplace_address, listener);
+    final public static void buyNFT(Activity returnActivity, String collection_address, int token_id,float price,String marketplace_address, MirrorCallback buyNFTListener){
+        MWEVMWrapper.buyNFT(returnActivity, collection_address, token_id, price, marketplace_address, buyNFTListener);
     }
 
-    final public static void buyNFT(String collection_address, String token_id,float price,String marketplace_address, MirrorCallback buyNFTListener){
-        MWEVMWrapper.buyNFT(collection_address, token_id, price, marketplace_address, buyNFTListener);
-    }}
+    //Asset/NFT
+    final public static void getNFTDetails(String contract,String tokenID, MirrorCallback fetchSingleNFT){
+        MWEVMWrapper.getNFTDetails(contract,tokenID, fetchSingleNFT);
+    }
+}
+

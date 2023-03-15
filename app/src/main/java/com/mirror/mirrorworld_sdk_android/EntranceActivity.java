@@ -10,6 +10,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -34,22 +35,15 @@ public class EntranceActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        String valueStr = "0.1";
-//        float valueFloat = 0.1f;
-//        double valueDouble = 0.1;
-//        Log.d("MirrorSDK", "float String is:"+valueFloat);
-//        Log.d("MirrorSDK", "double string is:"+valueDouble);
-//        Log.d("MirrorSDK", "float is:"+Float.valueOf(valueStr));
-//        Log.d("MirrorSDK", "double is:"+Double.valueOf(valueStr));
-//
-//        JSONObject jsonObject = new JSONObject();
-//        try {
-//            jsonObject.put("price", ""+valueFloat);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        String data = jsonObject.toString();
-//        Log.d("MirrorSDK", "data is:"+data);
+        String integerStr = "29";
+        int integer = 0;
+        try {
+            integer = Integer.parseInt(integerStr);
+        }catch (Exception e){
+            Log.d("MirrorSDK",integerStr + " is not a integer.");
+        }
+
+
 
         super.onCreate(savedInstanceState);
 
@@ -116,10 +110,20 @@ public class EntranceActivity extends AppCompatActivity {
         });
 
         Context activity = this;
+        Activity activity1 = this;
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String APIKey = editText.getText().toString();
+                if(APIKey.isEmpty()){
+                    activity1.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(activity1,"Please input apikey!",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    return;
+                }
                 MirrorEnv env = MirrorEnv.DevNet;
                 if(mEnv == MirrorEnv.MainNet){
                     env = MirrorEnv.MainNet;

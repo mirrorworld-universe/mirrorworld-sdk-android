@@ -4,9 +4,9 @@ import java.util.List;
 
 public class ReqEVMFetchNFTsToken extends BaseRequest{
     public String token_address;
-    public String token_id;
+    public int token_id;
 
-    public ReqEVMFetchNFTsToken(String tokenAddress,String tokenID){
+    public ReqEVMFetchNFTsToken(String tokenAddress,int tokenID){
         token_address = tokenAddress;
         token_id = tokenID;
     }

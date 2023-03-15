@@ -138,11 +138,6 @@ public class PageIniterSolana extends APIPageIniterBase{
                         "LIST_NFT","mint_address","price",
                         null,null,null,null));
         items.add(
-
-                new MultiItemData.MultiItem(DemoAPI.UPDATE_NFT_LISTING,"Update Listing of NFT on the marketplace","Update Listing of NFT on the marketplace",
-                        "UPDATE_NFT_LISTING","mint_address","price",
-                        null,null,null,null));
-        items.add(
                 new MultiItemData.MultiItem(DemoAPI.CANCEL_NFT_LISTING,"Cancel listing of NFT on the marketplace","Cancel listing of NFT on the marketplace",
                         "CANCEL_NFT_LISTING","mint_address","price",
                         null,null,null,null));
@@ -243,7 +238,7 @@ public class PageIniterSolana extends APIPageIniterBase{
                 "Get",
                 "collection 1","collection 2",null,null,null,null));
         items.add(new MultiItemData.MultiItem(
-                DemoAPI.GET_NFT_INFO,"Get NFT info.","Get details in market of a NFT.",
+                DemoAPI.METADATA_GET_NFT_INFO,"Get NFT info.","Get details in market of a NFT.",
                 "Get",
                 "mint address",null,null,null,null,null));
         items.add(new MultiItemData.MultiItem(
@@ -263,11 +258,7 @@ public class PageIniterSolana extends APIPageIniterBase{
                 "Get",
                 "price","price fee",null,null,null,null));
         items.add(new MultiItemData.MultiItem(
-                DemoAPI.GET_NFTS_SOLANA,"Get NFTs.","Get details of NFTs in market place.",
-                "Get",
-                "collection address 1","page","page size","order by","desc","sale"));
-        items.add(new MultiItemData.MultiItem(
-                DemoAPI.GET_NFTS_MULCHAIN,"Get NFTs.","Get details of NFTs in market place.",
+                DemoAPI.METADATA_GET_NFTS_BY_PARAMS,"Get NFTs.","Get details of NFTs in market place.",
                 "Get",
                 "collection address 1","page","page size","order by","desc","sale"));
         return items;

@@ -17,61 +17,10 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.mirror.mirrorworld_sdk_android.DemoAPI;
 import com.mirror.mirrorworld_sdk_android.R;
 import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
-import com.mirror.sdk.MWSolana;
-import com.mirror.sdk.MirrorWorld;
 import com.mirror.sdk.constant.MirrorChains;
-import com.mirror.sdk.constant.MirrorEnv;
-import com.mirror.sdk.listener.auth.LoginListener;
-import com.mirror.sdk.listener.confirmation.CheckStatusOfMintingListener;
-import com.mirror.sdk.listener.confirmation.CheckStatusOfMintingResponse;
-import com.mirror.sdk.listener.metadata.GetCollectionFilterInfoListener;
-import com.mirror.sdk.listener.metadata.GetCollectionInfoListener;
-import com.mirror.sdk.listener.metadata.GetCollectionSummaryListener;
-import com.mirror.sdk.listener.metadata.GetNFTEventsListener;
-import com.mirror.sdk.listener.metadata.GetNFTRealPriceListener;
-import com.mirror.sdk.listener.metadata.GetNFTsListener;
-import com.mirror.sdk.listener.metadata.SOLSearchNFTsListener;
-import com.mirror.sdk.listener.universal.BoolListener;
-import com.mirror.sdk.listener.universal.MirrorCallback;
 import com.mirror.sdk.MirrorSDK;
-import com.mirror.sdk.listener.auth.FetchUserListener;
-import com.mirror.sdk.listener.market.BuyNFTListener;
-import com.mirror.sdk.listener.market.CancelListListener;
-import com.mirror.sdk.listener.market.CreateTopCollectionListener;
-import com.mirror.sdk.listener.market.FetchNFTsListener;
-import com.mirror.sdk.listener.market.FetchByOwnerListener;
-import com.mirror.sdk.listener.market.FetchSingleNFTActivityListener;
-import com.mirror.sdk.listener.market.FetchSingleNFTListener;
-import com.mirror.sdk.listener.market.ListNFTListener;
-import com.mirror.sdk.listener.market.MintNFTListener;
-import com.mirror.sdk.listener.market.TransferNFTListener;
-import com.mirror.sdk.listener.market.UpdateListListener;
-import com.mirror.sdk.listener.wallet.GetOneWalletTransactionBySigListener;
-import com.mirror.sdk.listener.wallet.GetWalletTokenListener;
-import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
-import com.mirror.sdk.listener.wallet.TransactionsDTO;
-import com.mirror.sdk.listener.wallet.TransferSOLListener;
-import com.mirror.sdk.response.auth.UserResponse;
-import com.mirror.sdk.response.market.ActivityOfSingleNftResponse;
-import com.mirror.sdk.response.market.ListingResponse;
-import com.mirror.sdk.response.market.MintResponse;
-import com.mirror.sdk.response.market.MultipleNFTsResponse;
-import com.mirror.sdk.response.market.SingleNFTResponse;
-import com.mirror.sdk.response.metadata.GetCollectionFilterInfoRes;
-import com.mirror.sdk.response.metadata.GetCollectionInfoRes;
-import com.mirror.sdk.response.metadata.GetCollectionSummaryRes;
-import com.mirror.sdk.response.metadata.GetNFTEventsRes;
-import com.mirror.sdk.response.metadata.GetNFTRealPriceRes;
-import com.mirror.sdk.response.metadata.GetNFTsRes;
-import com.mirror.sdk.response.metadata.MirrorMarketSearchNFTObj;
-import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
-import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
-import com.mirror.sdk.response.wallet.TransferResponse;
-import com.mirror.sdk.utils.MirrorGsonUtils;
-import com.mirror.sdk.utils.MirrorStringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,7 +34,7 @@ import java.util.List;
 public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<MultiParaItemRecyclerViewAdapter.ViewHolder>{
 
     private List<MultiItemData.MultiItem> mValues;
-    private Activity mContext;
+    private Activity mActivity;
     private MirrorChains mChain;
     private ClickHandlerBase mClickHandler;
 
@@ -96,15 +45,15 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
         this.mValues.clear();
         this.mValues.addAll(items);
         this.mChain = chain;
-        mContext = context;
+        mActivity = context;
         if(mChain == MirrorChains.Solana){
-            mClickHandler = new ClickHandlerSolana(mContext);
+            mClickHandler = new ClickHandlerSolana(mActivity);
         }else if(mChain == MirrorChains.Ethereum){
-            mClickHandler = new ClickHandlerEVM(mContext);
+            mClickHandler = new ClickHandlerEVM(mActivity);
         }else if(mChain == MirrorChains.Polygon){
-            mClickHandler = new ClickHandlerEVM(mContext);
+            mClickHandler = new ClickHandlerEVM(mActivity);
         }else if(mChain == MirrorChains.BNB){
-            mClickHandler = new ClickHandlerEVM(mContext);
+            mClickHandler = new ClickHandlerEVM(mActivity);
         }else {
             MirrorSDK.logWarn("Unknow chain!");
         }
@@ -179,7 +128,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
         holder.mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mClickHandler.handleClick(mValues.get(position).id,holder,view);
+                mClickHandler.handleClick(mActivity,mValues.get(position).id,holder,view);
             }
         });
     }
@@ -247,7 +196,7 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
     }
 
     private void showToast(String content){
-        Toast.makeText(mContext,content,Toast.LENGTH_LONG).show();
+        Toast.makeText(mActivity,content,Toast.LENGTH_LONG).show();
     }
 
     private boolean checkEt(EditText et1){

@@ -71,28 +71,28 @@ public class MWBaseWrapper {
      * Type: SDK
      * Function: Open user's wallet page.
      */
-    final public static void openWallet(MirrorCallback callback){
-        MirrorSDK.getInstance().OpenWallet("",callback);
+    final public static void openWallet(Activity returnActivity, MirrorCallback callback){
+        MirrorSDK.getInstance().OpenWallet(returnActivity,"",callback);
     }
 
-    final public static void openWallet(String walletUrl,MirrorCallback callback){
-        MirrorSDK.getInstance().OpenWallet(walletUrl,callback);
+    final public static void openWallet(Activity returnActivity, String walletUrl,MirrorCallback callback){
+        MirrorSDK.getInstance().OpenWallet(returnActivity,walletUrl,callback);
     }
 
     /**
      * Type: SDK
      * Function: Open market of this app.
      */
-    final public static void openMarket(String marketUrl){
-        MirrorSDK.getInstance().openMarket(marketUrl);
+    final public static void openMarket(String marketUrl,Activity returnActivity){
+        MirrorSDK.getInstance().openMarket(marketUrl,returnActivity);
     }
 
     /**
      * Type: SDK
      * Function: Open any url
      */
-    final public static void openUrl(String url){
-        MirrorSDK.getInstance().openUrl(url);
+    final public static void openUrl(String url,Activity returnActivity){
+        MirrorSDK.getInstance().openUrl(url,returnActivity);
     }
 
     /**
