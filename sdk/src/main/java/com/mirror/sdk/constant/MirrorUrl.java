@@ -45,7 +45,7 @@ public class MirrorUrl {
     public static final String URL_GET_TRANSFER_TOKEN_TRANSACTION = "transaction/transfer-token";
 
     //Confirmation
-    public static final String URL_CHECK_STATUS_OF_TRANSACTION = "transaction-status";
+    public static final String URL_CHECK_STATUS_OF_TRANSACTION = "transactions-status";
     public static final String URL_CHECK_STATUS_OF_MINTING = "mints-status";
 
     // new apis
@@ -193,11 +193,11 @@ public class MirrorUrl {
     private static final String getNetworkString(MirrorChains chain, MirrorEnv env){
         if(chain == MirrorChains.Solana){
             if(env.equals(MirrorEnv.StagingMainNet)){
-                return "mainnet";
+                return "mainnet-beta";
             }else if(env.equals(MirrorEnv.StagingDevNet)){
                 return "devnet";
             }else if(env.equals(MirrorEnv.MainNet)){
-                return "mainnet";
+                return "mainnet-beta";
             }else if(env.equals(MirrorEnv.DevNet)){
                 return "devnet";
             }else {

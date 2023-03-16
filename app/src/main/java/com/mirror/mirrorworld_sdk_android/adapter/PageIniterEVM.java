@@ -3,7 +3,7 @@ package com.mirror.mirrorworld_sdk_android.adapter;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import com.mirror.mirrorworld_sdk_android.DemoAPI;
+import com.mirror.mirrorworld_sdk_android.enums.DemoAPI;
 import com.mirror.mirrorworld_sdk_android.FragmentAdapter;
 import com.mirror.mirrorworld_sdk_android.MultiParaItemFragment;
 import com.mirror.mirrorworld_sdk_android.data.MultiItemData;

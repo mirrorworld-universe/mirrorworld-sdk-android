@@ -158,7 +158,7 @@ public class MWEVMWrapper extends MWBaseWrapper{
         MirrorSDK.getInstance().getCollectionsSummary(data, listener);
     }
 
-    final public static void getNFTsByUnabridgedParams(String collection, int page, int page_size, String order_by, boolean desc, double sale, List<JSONObject> filter, MirrorCallback listener){
+    final public static void getNFTsByUnabridgedParams(String collection, int page, int page_size, String order_by, boolean desc, int sale, List<JSONObject> filter, MirrorCallback listener){
         MirrorSDK.getInstance().getNFTsByUnabridgedParamsOnEVM(collection, page, page_size, order_by, desc, sale, filter, listener);
     }
 

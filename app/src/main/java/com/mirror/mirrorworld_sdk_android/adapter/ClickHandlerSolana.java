@@ -2,8 +2,10 @@ package com.mirror.mirrorworld_sdk_android.adapter;
 
 import android.app.Activity;
 import android.view.View;
+import android.widget.Toast;
 
-import com.mirror.mirrorworld_sdk_android.DemoAPI;
+import com.mirror.mirrorworld_sdk_android.enums.DemoAPI;
+import com.mirror.sdk.MWEVM;
 import com.mirror.sdk.MWSolana;
 import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.constant.MirrorConfirmation;
@@ -132,6 +134,10 @@ public class ClickHandlerSolana extends ClickHandlerBase{
                 marketRoot = "https://jump-devnet.mirrorworld.fun";
             }
 
+            if(marketRoot.isEmpty()){
+                showToast("Threre is no marketplace in this environment!");
+                return;
+            }
             //Call API:openMarket
             MWSolana.openMarket(marketRoot,mActivity);
         }else if(apiId == DemoAPI.LOGIN_With_EMAIL){
@@ -245,7 +251,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
                 }
             });
         }else if(apiId == DemoAPI.CHECK_STATUS_OFMINTING){
-            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
+            if(!checkEt(holder.mEt1) && !checkEt(holder.mEt2)){
                 showToast("Please input all params!");
                 return;
             }
@@ -276,13 +282,11 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             String mint_address = String.valueOf(holder.mEt1.getText());
             String priceStr = String.valueOf(holder.mEt2.getText());
 
-            Double price = 0.0;
-
-            try{
-                price = Double.valueOf(priceStr);
-            }catch (NumberFormatException e){
-
+            if(!isDouble(priceStr)){
+                showToast("price must be a double!");
+                return;
             }
+            double price = getDouble(priceStr);
             MWSolana.listNFT(mActivity, mint_address, price, MirrorConfirmation.Default, new ListNFTListener() {
                 @Override
                 public void onListSuccess(ListingResponse listingResponse) {
@@ -297,19 +301,21 @@ public class ClickHandlerSolana extends ClickHandlerBase{
                 }
             });
         }else if(apiId == DemoAPI.CANCEL_NFT_LISTING){
-            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
+            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3)){
                 showToast("Please input!");
                 return;
             }
             String mint_address = String.valueOf(holder.mEt1.getText());
             String priceStr = String.valueOf(holder.mEt2.getText());
-            Double price = 0.0;
-            try{
-                price = Double.valueOf(priceStr);
-            }catch (NumberFormatException e){
+            String auctionHouse = String.valueOf(holder.mEt3.getText());
 
+            if(!isDouble(priceStr)){
+                showToast("price must be a double!");
+                return;
             }
-            MWSolana.cancelNFTListing(mActivity, mint_address, price,MirrorConfirmation.Default, new CancelListListener() {
+            double price = getDouble(priceStr);
+
+            MWSolana.cancelNFTListing(mActivity, mint_address, price, auctionHouse, new CancelListListener() {
                 @Override
                 public void onCancelSuccess(ListingResponse listingResponse) {
                     String result = "CancelNFTListing success! Mint address is "+listingResponse.mint_address;
@@ -352,6 +358,10 @@ public class ClickHandlerSolana extends ClickHandlerBase{
                 }
             });
         }else if(apiId == DemoAPI.FETCH_NFT_BY_CREATOR){
+            if(MWEVM.getEnvironment() != MirrorEnv.MainNet && MWEVM.getEnvironment() != MirrorEnv.StagingMainNet){
+                Toast.makeText(mActivity,"FetchNFTsByCreatorAddresses API can only run on MAINNET.",Toast.LENGTH_SHORT).show();
+                return;
+            }
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3)){
                 showToast("Please input!");
                 return;
@@ -509,18 +519,20 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             });
         }
         else if(apiId == DemoAPI.BUY_NFT){
-            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
+            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3)){
                 showToast("Please input!");
                 return;
             }
             String mint_address = String.valueOf(holder.mEt1.getText());
-            Double price = 0.0;
-            try{
-                price =  Double.valueOf(String.valueOf(holder.mEt2.getText()));
-            }catch (NumberFormatException E){
+            String doubleStr = String.valueOf(holder.mEt2.getText());
+            String auctionHouse = String.valueOf(holder.mEt3.getText());
+            if(!isDouble(doubleStr)){
+                showToast("price must be a double!");
+                return;
             }
+            double price = getDouble(doubleStr);
 
-            MWSolana.buyNFT(mActivity, mint_address, price, new BuyNFTListener() {
+            MWSolana.buyNFT(mActivity, mint_address, price, auctionHouse, new BuyNFTListener() {
                 @Override
                 public void onBuySuccess(ListingResponse listingResponse) {
                     runInUIThread(holder,listingResponse.mint_address);
@@ -586,18 +598,19 @@ public class ClickHandlerSolana extends ClickHandlerBase{
                 }
             });
         }else if(apiId == DemoAPI.WALLET_TRANSACTIONS_BY_WALLET){
-            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
+            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3)){
                 showToast("Please input!");
                 return;
             }
-            int limit = 0;
-            try{
-                limit = Integer.valueOf(String.valueOf(holder.mEt2.getText()));
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
             String walletAddress = getStringFromEditText(holder.mEt1);
-            MWSolana.getTransactionsByWallet(walletAddress, limit, new MirrorCallback() {
+            String limitStr = String.valueOf(holder.mEt2.getText());
+            String nextBeforeStr = getStringFromEditText(holder.mEt3);
+            if(!isInteger(limitStr)){
+                showToast("token_id must be an integer!");
+                return;
+            }
+            int limit = getInteger(limitStr);
+            MWSolana.getTransactionsByWallet(walletAddress, limit, nextBeforeStr, new MirrorCallback() {
                 @Override
                 public void callback(String r) {
                     String result = "GetTransactions success! result is "+r;
@@ -624,7 +637,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
                 }
             });
         }else if(apiId == DemoAPI.CHECK_STATUS_TRANSACTION){
-            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
+            if(!checkEt(holder.mEt1) && !checkEt(holder.mEt2)){
                 showToast("Please input!");
                 return;
             }
@@ -654,12 +667,12 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             }
             String public_key = String.valueOf(holder.mEt1.getText());
             String amountStr = String.valueOf(holder.mEt2.getText());
-            float amount = 0;
-            try{
-                amount = Integer.valueOf(amountStr);
-            }catch (NumberFormatException e){
-
+            if(!isInteger(amountStr)){
+                showToast("token_id must be an float!");
+                return;
             }
+            int amount = getInteger(amountStr);
+
             MWSolana.transferSOL(mActivity, public_key, amount, new TransferSOLListener() {
                 @Override
                 public void onTransferSuccess(TransferResponse transferResponse) {
@@ -728,15 +741,15 @@ public class ClickHandlerSolana extends ClickHandlerBase{
                 }
             });
         }else if(apiId == DemoAPI.METADATA_GET_COLLECTION_SUMMARY){
-            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
+            if(!checkEt(holder.mEt1) && !checkEt(holder.mEt2)){
                 showToast("Please input!");
                 return;
             }
             String collection = String.valueOf(holder.mEt1.getText());
             String collection2 = String.valueOf(holder.mEt2.getText());
             List<String> collections = new ArrayList<>();
-            collections.add(collection);
-            collections.add(collection2);
+            if(!collection.isEmpty()) collections.add(collection);
+            if(!collection2.isEmpty()) collections.add(collection2);
             MWSolana.getCollectionSummary(collections, new GetCollectionSummaryListener() {
                 @Override
                 public void onSuccess(List<GetCollectionSummaryRes> res) {
@@ -829,12 +842,16 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             int page_size = 10;
             String order_by = String.valueOf(holder.mEt4.getText());
             boolean desc = false;
-            Double sale = Double.valueOf(1);
+            String saleStr = String.valueOf(holder.mEt6.getText());
+            if(!isInteger(saleStr)){
+                showToast("price must be a double!");
+                return;
+            }
+            int sale = getInteger(saleStr);
             try{
                 page = Integer.valueOf(String.valueOf(holder.mEt2.getText()));
                 page_size = Integer.valueOf(String.valueOf(holder.mEt3.getText()));
                 desc = Boolean.valueOf(String.valueOf(holder.mEt5.getText()));
-                sale = Double.valueOf(String.valueOf(holder.mEt6.getText()));
             }catch(Exception e){
 
             }

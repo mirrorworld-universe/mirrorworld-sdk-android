@@ -184,7 +184,7 @@ public class MWSolana {
         MWSolanaWrapper.transferSPLToken(returnActivity, toPublickey, amount, token_mint, decimals, mirrorCallback);
     }
 
-    final public static void transferSOL(Activity returnActivity, String toPublicKey, float amount, TransferSOLListener listener){
+    final public static void transferSOL(Activity returnActivity, String toPublicKey, int amount, TransferSOLListener listener){
         MWSolanaWrapper.transferSOL(returnActivity, toPublicKey, amount, listener);
     }
 
@@ -200,8 +200,8 @@ public class MWSolana {
         MWSolanaWrapper.getTransactionsOfLoggedUser(limit, before, walletTransactionListener);
     }
 
-    final public static void getTransactionsByWallet(String walletAddress, int limit, MirrorCallback callback){
-        MWSolanaWrapper.getTransactionsByWallet(walletAddress, limit, callback);
+    final public static void getTransactionsByWallet(String walletAddress, int limit, String nextBeforeStr, MirrorCallback callback){
+        MWSolanaWrapper.getTransactionsByWallet(walletAddress, limit, nextBeforeStr, callback);
     }
 
     final public static void getTransactionBySignature(String signature, GetOneWalletTransactionBySigListener listener){
@@ -229,7 +229,9 @@ public class MWSolana {
         MWSolanaWrapper.getNFTInfo(mintAddress, listener);
     }
 
-    final public static void getNFTsByUnabridgedParams(String collection, int page, int page_size, String order_by, boolean desc, double sale, List<JSONObject> filter, GetNFTsListener listener){
+    //sale include three status:
+    // 0：all 1: for sale 2: not for sale
+    final public static void getNFTsByUnabridgedParams(String collection, int page, int page_size, String order_by, boolean desc, int sale, List<JSONObject> filter, GetNFTsListener listener){
         MWSolanaWrapper.getNFTsByUnabridgedParams(collection, page, page_size, order_by, desc, sale, filter, listener);
     }
 
@@ -298,15 +300,15 @@ public class MWSolana {
         MWSolanaWrapper.listNFT(returnActivity, mint_address, price, confirmation, listener);
     }
 
-    final public static void cancelNFTListing(Activity returnActivity, String mint_address, Double price,String confirmation, CancelListListener listener){
-        MWSolanaWrapper.cancelNFTListing(returnActivity, mint_address, price, confirmation, listener);
+    final public static void cancelNFTListing(Activity returnActivity, String mint_address, Double price,String auction_house, CancelListListener listener){
+        MWSolanaWrapper.cancelNFTListing(returnActivity, mint_address, price, auction_house, listener);
     }
 
     final public static void getNFTDetails(String mint_address, FetchSingleNFTListener fetchSingleNFT){
         MWSolanaWrapper.getNFTDetails(mint_address, fetchSingleNFT);
     }
 
-    final public static void buyNFT(Activity returnActivity, String mint_address, Double price, BuyNFTListener buyNFTListener){
-        MWSolanaWrapper.buyNFT(returnActivity, mint_address, price, buyNFTListener);
+    final public static void buyNFT(Activity returnActivity, String mint_address, Double price,String auctionHouse, BuyNFTListener buyNFTListener){
+        MWSolanaWrapper.buyNFT(returnActivity, mint_address, price,auctionHouse, buyNFTListener);
     }
 }

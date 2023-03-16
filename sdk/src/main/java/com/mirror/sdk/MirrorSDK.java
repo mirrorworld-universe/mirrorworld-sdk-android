@@ -86,6 +86,7 @@ import com.mirror.sdk.response.wallet.TransferResponse;
 import com.mirror.sdk.ui.MainWebView;
 import com.mirror.sdk.ui.MirrorDialog;
 import com.mirror.sdk.utils.MirrorGsonUtils;
+import com.mirror.sdk.utils.MirrorStringUtils;
 import com.mirror.sdk.utils.MirrorWebviewUtils;
 
 import org.json.JSONArray;
@@ -645,14 +646,18 @@ public class MirrorSDK {
             @Override
             public void callback(String result) {
                 logFlow("FetchUser result"+result);
-                CommonResponse<UserResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<UserResponse>>(){}.getType());
-                if(response.code == MirrorResCode.SUCCESS){
-                    fetchUserListener.onUserFetched(response.data);
-                }else{
-                    fetchUserListener.onFetchFailed(response.code,response.message);
+                if(!result.isEmpty()){
+                    CommonResponse<UserResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<UserResponse>>(){}.getType());
+                    if(response.code == MirrorResCode.SUCCESS){
+                        fetchUserListener.onUserFetched(response.data);
+                    }else{
+                        fetchUserListener.onFetchFailed(response.code,response.message);
+                    }
+                }else {
+                    fetchUserListener.onFetchFailed(MirrorResCode.NO_RESPONSE,"Server response null, please try again.");
                 }
             }
-        });
+        },null);
     }
 
     public void QueryUser(String userEmail, FetchUserListener fetchUserListener){
@@ -673,7 +678,7 @@ public class MirrorSDK {
                     fetchUserListener.onFetchFailed(response.code,response.message);
                 }
             }
-        });
+        },null);
     }
 
     public void GetNFTDetailsOnSolana(String mint_address, FetchSingleNFTListener fetchSingleNFT){
@@ -688,11 +693,11 @@ public class MirrorSDK {
                     fetchSingleNFT.onFetchFailed(response.code,response.message);
                 }
             }
-        });
+        },null);
     }
     public void GetNFTDetailsOnEVM(String contract,String token_id, MirrorCallback fetchSingleNFT){
         String url = getGetMirrorUrl(MirrorService.AssetNFT) + contract + "/" + token_id;
-        checkParamsAndGet(url, null, fetchSingleNFT);
+        checkParamsAndGet(url, null, fetchSingleNFT,null);
     }
     public void mintNFT(String data, MirrorCallback mintNFTListener){
         String url = getMirrorUrl(MirrorService.AssetMint,MirrorUrl.URL_MINT_NFT_COLLECTION);//GetAPIRoot() + MirrorUrl.URL_MINT_NFT_COLLECTION;
@@ -707,14 +712,14 @@ public class MirrorSDK {
             jsonObject.put("symbol", symbol);
             jsonObject.put("update_authority", updateAuthority);
             jsonObject.put("url", NFTJsonUrl);
-            jsonObject.put("seller_fee_basis_points", seller_fee_basis_points);
+            jsonObject.put("seller_fee_basis_points", MirrorStringUtils.handleInt(seller_fee_basis_points));
             jsonObject.put("confirmation", confirmation);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         String data = jsonObject.toString();
 
-        String url = getMirrorUrl(MirrorService.AssetNFT,MirrorUrl.URL_UPDATE_NFT_PROPERTIES);//GetAPIRoot() + MirrorUrl.URL_UPDATE_NFT_PROPERTIES;
+        String url = getMirrorUrl(MirrorService.AssetMint,MirrorUrl.URL_UPDATE_NFT_PROPERTIES);//GetAPIRoot() + MirrorUrl.URL_UPDATE_NFT_PROPERTIES;
         checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
             @Override
             public void callback(String result) {
@@ -755,7 +760,7 @@ public class MirrorSDK {
 
     public void fetchNFTMarketplaceActivity(String mint_address, MirrorCallback fetchSingleNFTActivityListener){
         String url = getMirrorUrl(MirrorService.AssetNFT,MirrorUrl.URL_FETCH_ACTIVITY) + mint_address;//GetAPIRoot() + MirrorUrl.URL_FETCH_ACTIVITY + mint_address;
-        checkParamsAndGet(url, null, fetchSingleNFTActivityListener);
+        checkParamsAndGet(url, null, fetchSingleNFTActivityListener,null);
     }
 
     public void CancelNFTListing(String data, MirrorCallback listener){
@@ -767,7 +772,7 @@ public class MirrorSDK {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("mint_address", mint_address);
-            jsonObject.put("price", price);
+            jsonObject.put("price", MirrorStringUtils.doubleToString(price));
             jsonObject.put("confirmation",confirmation);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -859,18 +864,28 @@ public class MirrorSDK {
         doOpenWallet(walletUrl,returnActivity);
         cbWalletLogout = loginCb;
 
-        logFlow("Set open wallet callback" + cbWalletLogout);
+        logFlow("Set open wallet callback:" + cbWalletLogout);
     }
     //Wallet
     private void doOpenWallet(String walletUrl,Activity returnActivity){
         this.returnActivity = returnActivity;
-        String finalUrlPre = walletUrl;
-        if(finalUrlPre == ""){
-            finalUrlPre = getAuthRoot() + "jwt?key=" + accessToken;
-        }
+        checkSDKInited(new OnCheckSDKUseable() {
+            @Override
+            public void OnChecked() {
+                String finalUrlPre = walletUrl;
+                if(finalUrlPre == ""){
+                    finalUrlPre = getAuthRoot() + "jwt?key=" + accessToken;
+                }
 
-        openUrl(finalUrlPre,returnActivity);
-        loginPageMode = MirrorLoginPageMode.KeepIfLoginDone;
+                openUrl(finalUrlPre,returnActivity);
+                loginPageMode = MirrorLoginPageMode.KeepIfLoginDone;
+            }
+
+            @Override
+            public void OnUnUsable() {
+                logFlow("Please login first.");
+            }
+        });
     }
 
     public void transferSOL(String data, TransferSOLListener transferSOLListener){
@@ -892,7 +907,7 @@ public class MirrorSDK {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("to_publickey", toPublickey);
-            jsonObject.put("amount", amount);
+            jsonObject.put("amount", MirrorStringUtils.floatToString(amount));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -916,7 +931,7 @@ public class MirrorSDK {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("to_publickey", toPublickey);
-            jsonObject.put("amount", amount);
+            jsonObject.put("amount", MirrorStringUtils.floatToString(amount));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -941,9 +956,9 @@ public class MirrorSDK {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("to_publickey", toPublickey);
-            jsonObject.put("amount", amount);
+            jsonObject.put("amount", MirrorStringUtils.floatToString(amount));
             jsonObject.put("token_mint", tokenMint);
-            jsonObject.put("decimals", decimals);
+            jsonObject.put("decimals", MirrorStringUtils.handleInt(decimals));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -966,16 +981,16 @@ public class MirrorSDK {
 
     public void getWalletTokens(MirrorCallback walletTokenListener){
         String url = getGetMirrorUrl(MirrorService.Wallet) + MirrorUrl.URL_GET_WALLET_TOKEN;
-        checkParamsAndGet(url, null, walletTokenListener);
+        checkParamsAndGet(url, null, walletTokenListener,null);
     }
     public void GetWalletTokensByWallet(String walletAddress, MirrorCallback walletTokenListener){
         String url = getGetMirrorUrl(MirrorService.Wallet) + MirrorUrl.URL_GET_WALLET_TOKEN + "/" + walletAddress;
-        checkParamsAndGet(url, null, walletTokenListener);
+        checkParamsAndGet(url, null, walletTokenListener,null);
     }
 
     public void transactions(HashMap<String,String> map, MirrorCallback walletTransactionListener){
         String url = getGetMirrorUrl(MirrorService.Wallet) + MirrorUrl.URL_GET_WALLET_TRANSACTIONS;
-        checkParamsAndGet(url, map, walletTransactionListener);
+        checkParamsAndGet(url, map, walletTransactionListener,null);
     }
 
     public void getTransactionsByWalletOnSolana(String walletAddress, HashMap<String,String> map, MirrorCallback listener){
@@ -985,7 +1000,7 @@ public class MirrorSDK {
             public void callback(String result) {
                 listener.callback(result);
             }
-        });
+        },null);
     }
     public void getTransactionsByWalletOnEVM(String walletAddress, HashMap<String,String> map, MirrorCallback listener){
         String url = getGetMirrorUrl(MirrorService.Wallet)+ walletAddress + "/" + MirrorUrl.URL_GET_WALLET_TRANSACTIONS;
@@ -994,12 +1009,12 @@ public class MirrorSDK {
             public void callback(String result) {
                 listener.callback(result);
             }
-        });
+        },null);
     }
 
     public void getTransactionBySignatureOnSolana(String signature, MirrorCallback listener){
         String url = getGetMirrorUrl(MirrorService.Wallet) + MirrorUrl.URL_GET_WALLET_TRANSACTIONS + "/"+signature;
-        checkParamsAndGet(url, null, listener);
+        checkParamsAndGet(url, null, listener,null);
     }
 
     public void FetchNFTsByUpdateAuthorities(String data, MirrorCallback listener){
@@ -1034,9 +1049,9 @@ public class MirrorSDK {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("to_publickey", toPublickey);
-            jsonObject.put("amount", amount);
+            jsonObject.put("amount", MirrorStringUtils.floatToString(amount));
             jsonObject.put("token_mint", token_mint);
-            jsonObject.put("decimals", decimals);
+            jsonObject.put("decimals", MirrorStringUtils.handleInt(decimals));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1065,7 +1080,7 @@ public class MirrorSDK {
                     listener.onFail(response.code,response.message);
                 }
             }
-        });
+        },null);
     }
 
     public void getCollectionsSummary(String data, GetCollectionSummaryListener listener){
@@ -1095,7 +1110,7 @@ public class MirrorSDK {
             public void callback(String result) {
                 listener.callback(result);
             }
-        });
+        },null);
     }
     /**
      * Type: Asset/NFT
@@ -1112,7 +1127,7 @@ public class MirrorSDK {
             public void callback(String result) {
                 listener.callback(result);
             }
-        });
+        },null);
     }
 
     public void getCollectionInfo(String data, GetCollectionInfoListener listener){
@@ -1140,8 +1155,8 @@ public class MirrorSDK {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("mint_address", mint_address);
-            jsonObject.put("page", page);
-            jsonObject.put("page_size", page_size);
+            jsonObject.put("page", MirrorStringUtils.handleInt(page));
+            jsonObject.put("page_size", MirrorStringUtils.handleInt(page_size));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1165,9 +1180,9 @@ public class MirrorSDK {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("contract", contract);
-            jsonObject.put("token_id", tokenID);
-            jsonObject.put("page", page);
-            jsonObject.put("page_size", page_size);
+            jsonObject.put("token_id", MirrorStringUtils.handleInt(tokenID));
+            jsonObject.put("page", MirrorStringUtils.handleInt(page));
+            jsonObject.put("page_size", MirrorStringUtils.handleInt(page_size));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1190,7 +1205,7 @@ public class MirrorSDK {
         checkParamsAndPost(url, data, listener);
     }
 
-    public void getNFTsByUnabridgedParamsOnSolana(String collection, int page, int page_size, String order_by, boolean desc, double sale, List<JSONObject> filter, GetNFTsListener listener){
+    public void getNFTsByUnabridgedParamsOnSolana(String collection, int page, int page_size, String order_by, boolean desc, int sale, List<JSONObject> filter, GetNFTsListener listener){
         if(!mChain.equals(MirrorChains.Solana)){
             logWarn("This API support only SOLANA chain.");
             return;
@@ -1200,15 +1215,15 @@ public class MirrorSDK {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("collection", collection);
-            jsonObject.put("page", page);
-            jsonObject.put("page_size", page_size);
+            jsonObject.put("page", MirrorStringUtils.handleInt(page));
+            jsonObject.put("page_size", MirrorStringUtils.handleInt(page_size));
 
             JSONObject order = new JSONObject();
             order.put("order_by",order_by);
             order.put("desc",desc);
             jsonObject.put("order", order);
 
-            jsonObject.put("sale", sale);
+            jsonObject.put("sale", MirrorStringUtils.handleInt(sale));
 
             JSONArray filters = new JSONArray();
             if(filter != null){
@@ -1235,7 +1250,7 @@ public class MirrorSDK {
         });
     }
 
-    public void getNFTsByUnabridgedParamsOnEVM(String contract, int page, int page_size, String order_by, boolean desc, double sale, List<JSONObject> filter, MirrorCallback listener){
+    public void getNFTsByUnabridgedParamsOnEVM(String contract, int page, int page_size, String order_by, boolean desc, int sale, List<JSONObject> filter, MirrorCallback listener){
         if(mChain.equals(MirrorChains.Solana)){
             logWarn("Please use solana API intead.");
             return;
@@ -1245,15 +1260,15 @@ public class MirrorSDK {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("contract", contract);
-            jsonObject.put("page", page);
-            jsonObject.put("page_size", page_size);
+            jsonObject.put("page", MirrorStringUtils.handleInt(page));
+            jsonObject.put("page_size", MirrorStringUtils.handleInt(page_size));
 
             JSONObject order = new JSONObject();
             order.put("order_by",order_by);
             order.put("desc",desc);
             jsonObject.put("order", order);
 
-            jsonObject.put("sale", sale);
+            jsonObject.put("sale", MirrorStringUtils.handleInt(sale));
 
             JSONArray filters = new JSONArray();
             if(filter != null){
@@ -1275,7 +1290,7 @@ public class MirrorSDK {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("price", price);
-            jsonObject.put("fee", fee);
+            jsonObject.put("fee", MirrorStringUtils.handleInt(fee));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1432,7 +1447,9 @@ public class MirrorSDK {
         logFlow("ready to get access token,now refreshToken is:"+refreshToken);
         if(refreshToken.equals("")){
             logFlow("No refresh token,jump to login page...");
-            if(autoLogin) autoOpenLogin(mirrorCallback);
+            if(autoLogin) {
+                autoOpenLogin(mirrorCallback);
+            }
             else {
                 failCallback.callback();
             }
@@ -1653,7 +1670,7 @@ public class MirrorSDK {
         };
     }
 
-    private void checkParamsAndGet(String url,  Map<String,String> params, MirrorCallback mirrorCallback){
+    private void checkParamsAndGet(String url,  Map<String,String> params, MirrorCallback mirrorCallback,MSimpleCallback failCallback){
         if(apiKey.equals("")){
             if(mActivity == null){
                 logFlow("Must init sdk first!");
@@ -1663,6 +1680,9 @@ public class MirrorSDK {
         }
         if(apiKey.equals("")){
             logFlow("Must set app id first!");
+            if(failCallback != null){
+                failCallback.callback();
+            }
             return;
         }
 
@@ -1677,7 +1697,10 @@ public class MirrorSDK {
             }, new MSimpleCallback() {
                 @Override
                 public void callback() {
-                    logFlow("SDK has not been inited!");
+                    logFlow("Auto get access token failed, please login again.");
+                    if(failCallback != null){
+                        failCallback.callback();
+                    }
                 }
             }, false);
         }else{

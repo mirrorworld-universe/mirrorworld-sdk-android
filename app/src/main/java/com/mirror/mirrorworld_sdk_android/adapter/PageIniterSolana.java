@@ -3,7 +3,7 @@ package com.mirror.mirrorworld_sdk_android.adapter;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import com.mirror.mirrorworld_sdk_android.DemoAPI;
+import com.mirror.mirrorworld_sdk_android.enums.DemoAPI;
 import com.mirror.mirrorworld_sdk_android.FragmentAdapter;
 import com.mirror.mirrorworld_sdk_android.MultiParaItemFragment;
 import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
@@ -140,7 +140,7 @@ public class PageIniterSolana extends APIPageIniterBase{
         items.add(
                 new MultiItemData.MultiItem(DemoAPI.CANCEL_NFT_LISTING,"Cancel listing of NFT on the marketplace","Cancel listing of NFT on the marketplace",
                         "CANCEL_NFT_LISTING","mint_address","price",
-                        null,null,null,null));
+                        "auction house",null,null,null));
         return items;
     }
     private List<MultiItemData.MultiItem> marketOtherApis() {
@@ -179,7 +179,7 @@ public class PageIniterSolana extends APIPageIniterBase{
         items.add(
                 new MultiItemData.MultiItem(DemoAPI.BUY_NFT,"Buy NFT on the marketplace","Buy NFT on the marketplace",
                         "Buy_NFT","mint_address","price",
-                        null,null,null,null));
+                        "auction_house",null,null,null));
         return items;
     }
     private List<MultiItemData.MultiItem> walletApis() {
@@ -198,8 +198,8 @@ public class PageIniterSolana extends APIPageIniterBase{
                         null,null,null,null));
         items.add(
                 new MultiItemData.MultiItem(DemoAPI.WALLET_TRANSACTIONS_BY_WALLET,"Get wallet transactions by wallet.","Get wallet transactions by wallet address.",
-                        "GetTransactions","limit","before",
-                        null,null,null,null));
+                        "GetTransactions","wallet_address","limit",
+                        "before",null,null,null));
         items.add(
                 new MultiItemData.MultiItem(DemoAPI.WALLET_TRANSACTIONS_BY_SIGNATURE,"Get wallet transaction by signature","Get wallet transaction by signature",
                         "TRANSACTIONS_SIG","signature",null,

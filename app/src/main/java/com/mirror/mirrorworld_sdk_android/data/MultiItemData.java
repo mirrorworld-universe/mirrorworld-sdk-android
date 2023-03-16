@@ -1,7 +1,6 @@
 package com.mirror.mirrorworld_sdk_android.data;
 
-import com.mirror.mirrorworld_sdk_android.DemoAPI;
-import com.mirror.sdk.listener.universal.MSimpleCallback;
+import com.mirror.mirrorworld_sdk_android.enums.DemoAPI;
 
 import java.util.List;
 

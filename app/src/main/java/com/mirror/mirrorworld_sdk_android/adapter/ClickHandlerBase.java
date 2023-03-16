@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.mirror.mirrorworld_sdk_android.DemoAPI;
+import com.mirror.mirrorworld_sdk_android.enums.DemoAPI;
 
 public abstract class ClickHandlerBase {
     Activity mActivity;
@@ -26,6 +26,48 @@ public abstract class ClickHandlerBase {
             return false;
         }
         return true;
+    }
+    boolean isFloat(String integerStr){
+        float integer = 0;
+        try {
+            integer = Float.parseFloat(integerStr);
+        }catch (Exception e){
+            Log.d("MirrorSDK",integerStr + " is not a float.");
+            return false;
+        }
+        return true;
+    }
+
+    float getFloat(String integerStr){
+        float integer = 0;
+        try {
+            integer = Float.parseFloat(integerStr);
+        }catch (Exception e){
+            Log.d("MirrorSDK",integerStr + " is not a float.");
+            return -1.0f;
+        }
+        return integer;
+    }
+    boolean isDouble(String integerStr){
+        double integer = 0;
+        try {
+            integer = Double.parseDouble(integerStr);
+        }catch (Exception e){
+            Log.d("MirrorSDK",integerStr + " is not a double.");
+            return false;
+        }
+        return true;
+    }
+
+    double getDouble(String integerStr){
+        double integer = 0;
+        try {
+            integer = Double.parseDouble(integerStr);
+        }catch (Exception e){
+            Log.d("MirrorSDK",integerStr + " is not a double.");
+            return -1.0;
+        }
+        return integer;
     }
 
     int getInteger(String integerStr){

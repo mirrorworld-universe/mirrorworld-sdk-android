@@ -195,7 +195,9 @@ public class MWEVM {
         MWEVMWrapper.getNFTInfo(contractAddress, tokenID, listener);
     }
 
-    final public static void getNFTsByUnabridgedParams(String collection, int page, int page_size, String order_by, boolean desc, double sale, List<JSONObject> filter, MirrorCallback listener){
+    //sale include three status:
+    // 0：all 1: for sale 2: not for sale
+    final public static void getNFTsByUnabridgedParams(String collection, int page, int page_size, String order_by, boolean desc, int sale, List<JSONObject> filter, MirrorCallback listener){
         MWEVMWrapper.getNFTsByUnabridgedParams(collection, page, page_size, order_by, desc, sale, filter, listener);
     }
 

@@ -48,6 +48,7 @@ import com.mirror.sdk.response.metadata.MirrorMarketSearchNFTObj;
 import com.mirror.sdk.response.wallet.GetWalletTokenResponse;
 import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
 import com.mirror.sdk.utils.MirrorGsonUtils;
+import com.mirror.sdk.utils.MirrorStringUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -83,7 +84,7 @@ public class MWSolanaWrapper extends MWBaseWrapper{
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("to_publickey", toPublickey);
-            jsonObject.put("amount", amount);
+            jsonObject.put("amount", MirrorStringUtils.floatToString(amount));
             jsonObject.put("token_mint", token_mint);
             jsonObject.put("decimals", decimals);
         } catch (JSONException e) {
@@ -98,11 +99,11 @@ public class MWSolanaWrapper extends MWBaseWrapper{
         });
     }
 
-    final public static void transferSOL(Activity returnActivity, String toPublicKey, float amount, TransferSOLListener listener){
+    final public static void transferSOL(Activity returnActivity, String toPublicKey, int amount, TransferSOLListener listener){
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("toPublicKey", toPublicKey);
-            jsonObject.put("amount", amount);
+            jsonObject.put("to_publickey", toPublicKey);
+            jsonObject.put("amount", MirrorStringUtils.handleInt(amount));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -161,9 +162,10 @@ public class MWSolanaWrapper extends MWBaseWrapper{
         });
     }
 
-    final public static void getTransactionsByWallet(String walletAddress, int limit, MirrorCallback callback){
+    final public static void getTransactionsByWallet(String walletAddress, int limit, String nextBeforeStr, MirrorCallback callback){
         HashMap<String,String> map = new HashMap<String,String>();
         if(limit != 0) map.put("limit", String.valueOf(limit));
+        map.put("next_before", nextBeforeStr);
         MirrorSDK.getInstance().getTransactionsByWalletOnSolana(walletAddress,map,callback);
     }
 
@@ -222,7 +224,7 @@ public class MWSolanaWrapper extends MWBaseWrapper{
         MirrorSDK.getInstance().GetNFTInfoOnSolana(mintAddress, listener);
     }
 
-    final public static void getNFTsByUnabridgedParams(String collection, int page, int page_size, String order_by, boolean desc, double sale, List<JSONObject> filter, GetNFTsListener listener){
+    final public static void getNFTsByUnabridgedParams(String collection, int page, int page_size, String order_by, boolean desc, int sale, List<JSONObject> filter, GetNFTsListener listener){
         MirrorSDK.getInstance().getNFTsByUnabridgedParamsOnSolana(collection, page, page_size, order_by, desc, sale, filter, listener);
     }
 
@@ -563,7 +565,7 @@ public class MWSolanaWrapper extends MWBaseWrapper{
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("mint_address", mint_address);
-            jsonObject.put("price", price);
+            jsonObject.put("price", MirrorStringUtils.doubleToString(price));
             jsonObject.put("confirmation",confirmation);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -586,11 +588,12 @@ public class MWSolanaWrapper extends MWBaseWrapper{
             }
         });
     }
-    final public static void buyNFT(Activity returnActivity, String mint_address, Double price, BuyNFTListener buyNFTListener){
+    final public static void buyNFT(Activity returnActivity, String mint_address, Double price,String auctionHouse, BuyNFTListener buyNFTListener){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("mint_address", mint_address);
-            jsonObject.put("price", price);
+            jsonObject.put("price",  MirrorStringUtils.doubleToString(price));
+            jsonObject.put("auction_house", auctionHouse);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -612,12 +615,12 @@ public class MWSolanaWrapper extends MWBaseWrapper{
             }
         });
     }
-    final public static void cancelNFTListing(Activity returnActivity, String mint_address, Double price,String confirmation, CancelListListener listener){
+    final public static void cancelNFTListing(Activity returnActivity, String mint_address, Double price,String auction_house, CancelListListener listener){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("mint_address", mint_address);
-            jsonObject.put("price", price);
-            jsonObject.put("confirmation",confirmation);
+            jsonObject.put("price",  MirrorStringUtils.doubleToString(price));
+            jsonObject.put("auction_house",auction_house);
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -5,7 +5,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.mirror.mirrorworld_sdk_android.DemoAPI;
+import com.mirror.mirrorworld_sdk_android.enums.DemoAPI;
 import com.mirror.sdk.MWEVM;
 import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.constant.MirrorConfirmation;
@@ -317,6 +317,11 @@ public class ClickHandlerEVM extends ClickHandlerBase{
                 }
             });
         }else if(apiId == DemoAPI.FETCH_NFT_BY_CREATOR){
+            if(MWEVM.getEnvironment() != MirrorEnv.MainNet && MWEVM.getEnvironment() != MirrorEnv.StagingMainNet){
+                Toast.makeText(mActivity,"FetchNFTsByCreatorAddresses API can only run on MAINNET.",Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3)){
                 showToast("Please input!");
                 return;
@@ -707,12 +712,16 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             int page_size = 10;
             String order_by = String.valueOf(holder.mEt4.getText());
             boolean desc = false;
-            Double sale = Double.valueOf(1);
+            String saleStr = String.valueOf(holder.mEt6.getText());
+            if(!isInteger(saleStr)){
+                showToast("price must be a double!");
+                return;
+            }
+            int sale = getInteger(saleStr);
             try{
                 page = Integer.valueOf(String.valueOf(holder.mEt2.getText()));
                 page_size = Integer.valueOf(String.valueOf(holder.mEt3.getText()));
                 desc = Boolean.valueOf(String.valueOf(holder.mEt5.getText()));
-                sale = Double.valueOf(String.valueOf(holder.mEt6.getText()));
             }catch(Exception e){
 
             }
