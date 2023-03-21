@@ -1,5 +1,6 @@
 package com.mirror.sdk.particle;
 
+import android.app.Activity;
 import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
@@ -18,12 +19,12 @@ import org.json.JSONObject;
 import java.math.BigDecimal;
 
 public class MirrorSafeAPI {
-    final public static void getSecurityToken(String type, String message, int value, JSONObject request, MirrorCallback callback){
+    final public static void getSecurityToken(Activity returnActivity, String type, String message, int value, JSONObject request, MirrorCallback callback){
         MirrorSDK.getInstance().safeFlowCb = callback;
         MirrorSDK.getInstance().sdkSimpleCheck(new OnCheckSDKUseable() {
             @Override
             public void OnChecked() {
-                requestActionAuthorization(type, message, value, request);
+                requestActionAuthorization(returnActivity, type, message, value, request);
             }
 
             @Override
@@ -105,39 +106,7 @@ public class MirrorSafeAPI {
         }
     }
 
-    final private static void requestActionAuthorization(String type, String message, int value, JSONObject requestPrams){
-//        JSONObject jsonObject = new JSONObject();
-//        try {
-//            jsonObject.put("mint_address", "1111");
-//            jsonObject.put("price", 1.2);
-//            jsonObject.put("decimals",4);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//
-//
-//        JSONObject aaa = new JSONObject();
-//        try {
-//            aaa.put("type", type);
-//            aaa.put("message", message);
-//            aaa.put("value", value);
-//            aaa.put("params",requestPrams);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//
-//        String baseStr = "{\"collection_mint\":\"DUuMbpmH3oiREntViXfGZhrLMbVcYBwGeBa4Wn9X8QfM\",\"name\":\"1\",\"symbol\":\"1\",\"url\":\"https:\\/\\/metadata-assets.mirrorworld.fun\\/mirror_jump\\/metadata\\/1.json\"}\n";
-//        try {
-//            JSONObject baseObj = new JSONObject(baseStr);
-//            handleValue(aaa,jsonObject);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        try {
-//            Log.d("MirrorSDK","adfasdf"+aaa.get("value"));
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
+    final private static void requestActionAuthorization(Activity returnActivity, String type, String message, int value, JSONObject requestPrams){
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("type", type);
@@ -151,14 +120,14 @@ public class MirrorSafeAPI {
         String data = jsonObject.toString();
         MirrorSDK.getInstance().logFlow("request auth data"+data);
 
-        String url = MirrorSDK.getInstance().getActionRoot() + MirrorUrl.URL_ACTION_REQUEST;
+        String url = MirrorUrl.getActionRoot() + MirrorUrl.URL_ACTION_REQUEST;
         MirrorSDK.getInstance().checkParamsAndPost(url,data,MirrorSDK.getInstance().getHandlerCallback(new MirrorCallback() {
             @Override
             public void callback(String result) {
                 MirrorSDK.getInstance().logFlow("requestActionAuthorization result:"+result);
                 CommonResponse<ActionDTO> response = MirrorGsonUtils.getInstance().fromJson(result,new TypeToken<CommonResponse<ActionDTO>>(){}.getType());
                 if(response.code == MirrorResCode.SUCCESS){
-                    openApprovePage(response.data.uuid);
+                    openApprovePage(response.data.uuid,returnActivity);
                 }else {
 //                    if(callback != null) callback("");
                 }
@@ -166,12 +135,13 @@ public class MirrorSafeAPI {
         }));
     }
 
-    final private static void openApprovePage(String actionUUID){
+    final private static void openApprovePage(String actionUUID, Activity returnActivity){
         if(actionUUID == ""){
             MirrorSDK.logError("uuid from server is null!");
             return;
         }
+
         String url = MirrorSDK.getInstance().getActionRootWithoutVersion() + MirrorUrl.URL_ACTION_APPROVE + actionUUID;
-        MirrorSDK.getInstance().openApprovePage(url);
+        MirrorSDK.getInstance().openApprovePage(url,returnActivity);
     }
 }

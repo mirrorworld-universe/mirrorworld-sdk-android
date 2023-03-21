@@ -12,7 +12,6 @@ import android.util.Log;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.mirror.sdk.MirrorSDK;
-import com.mirror.sdk.MirrorWorld;
 import com.mirror.sdk.constant.MirrorConstant;
 import com.mirror.sdk.response.CommonResponse;
 import com.mirror.sdk.response.action.ApproveResponse;
@@ -70,7 +69,7 @@ public class RedirectActivity extends Activity {
     private void handleWallet(Uri data){
         MirrorSDK.getInstance().walletLogout();
 
-        Intent intent = new Intent(this,MirrorSDK.getInstance().mActivity.getClass());
+        Intent intent = new Intent(this,MirrorSDK.getInstance().returnActivity.getClass());
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(intent);
 
@@ -93,7 +92,7 @@ public class RedirectActivity extends Activity {
 
         MirrorSDK.getInstance().setActionApprovalToken(response.authorization_token);
 
-        Intent intent = new Intent(this,MirrorSDK.getInstance().mActivity.getClass());
+        Intent intent = new Intent(this,MirrorSDK.getInstance().returnActivity.getClass());
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(intent);
 
@@ -130,7 +129,7 @@ public class RedirectActivity extends Activity {
         MirrorSDK.getInstance().SetRefreshToken(refreshTokenValue);
         MirrorSDK.getInstance().saveRefreshToken(refreshTokenValue);
 
-        Intent intent = new Intent(this,MirrorSDK.getInstance().mActivity.getClass());
+        Intent intent = new Intent(this,MirrorSDK.getInstance().returnActivity.getClass());
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(intent);
 

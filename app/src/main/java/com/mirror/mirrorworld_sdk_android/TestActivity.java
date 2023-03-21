@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.mirror.sdk.MirrorSDK;
+import com.mirror.sdk.constant.MirrorChains;
 import com.mirror.sdk.constant.MirrorEnv;
 
 public class TestActivity extends AppCompatActivity {
@@ -19,7 +20,7 @@ public class TestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
 
-        MirrorSDK.getInstance().InitSDK(this, MirrorEnv.StagingDevNet);
+        MirrorSDK.getInstance().InitSDK(this, MirrorEnv.StagingDevNet, MirrorChains.Solana);
 
         EditText et = findViewById(R.id.et);
         Button bt = findViewById(R.id.bt);

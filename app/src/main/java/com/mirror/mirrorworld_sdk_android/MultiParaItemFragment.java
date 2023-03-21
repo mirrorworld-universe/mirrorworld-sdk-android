@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mirror.mirrorworld_sdk_android.adapter.MultiParaItemRecyclerViewAdapter;
 import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
+import com.mirror.sdk.constant.MirrorChains;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,15 +24,10 @@ import java.util.List;
  * @description TODO
  */
 public class MultiParaItemFragment extends Fragment {
-
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    private int mColumnCount = 1;
-
-
     public List<MultiItemData.MultiItem> apiItems;
+    private MirrorChains mChain;
 
-
-    public MultiParaItemFragment(List<MultiItemData.MultiItem> items) {
+    public MultiParaItemFragment(List<MultiItemData.MultiItem> items,MirrorChains chain) {
 
         if(null == this.apiItems){
             this.apiItems = new ArrayList<MultiItemData.MultiItem>();
@@ -39,10 +35,8 @@ public class MultiParaItemFragment extends Fragment {
 
         this.apiItems.clear();
         this.apiItems.addAll(items);
-       // this.mColumnCount =columnCount;
+        this.mChain = chain;
     }
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,17 +49,9 @@ public class MultiParaItemFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_item_list2, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.api_list2);
 
-        MultiParaItemRecyclerViewAdapter adapter = new MultiParaItemRecyclerViewAdapter(apiItems);
-        adapter.SetContext(this.getActivity());
-
+        MultiParaItemRecyclerViewAdapter adapter = new MultiParaItemRecyclerViewAdapter(apiItems,mChain,this.getActivity());
         recyclerView.setAdapter(adapter);
 
         return view;
     }
-
-
-
-
-
-
 }
