@@ -1,8 +1,9 @@
-package com.mirror.sdk;
+package com.mirror.sdk.evm;
 
 import android.app.Activity;
 import android.content.Context;
 
+import com.mirror.sdk.MirrorSDK;
 import com.mirror.sdk.chain.MWEVMWrapper;
 import com.mirror.sdk.chain.MWSolanaWrapper;
 import com.mirror.sdk.constant.MirrorChains;
@@ -25,7 +26,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-public class MWEVM {
+public class MirrorWorld {
     /**
      * Type: SDK
      * Function: Init SDK

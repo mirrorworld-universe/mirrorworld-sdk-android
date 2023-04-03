@@ -1,4 +1,4 @@
-package com.mirror.sdk;
+package com.mirror.sdk.solana;
 
 import android.app.Activity;
 import android.content.Context;
@@ -58,7 +58,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.List;
 
-public class MWSolana {
+public class MirrorWorld {
 
     /**
      * Type: SDK
