@@ -205,6 +205,14 @@ public class PageIniterEVM extends APIPageIniterBase{
                 new MultiItemData.MultiItem(DemoAPI.TRANSFER_ETH,"Transfer ETH","Transfer ETH to another wallet.",
                         "TRANSFER","nonce","gasPrice",
                         "gasLimit","to","amount",null));
+        items.add(
+                new MultiItemData.MultiItem(DemoAPI.TRANSFER_BNB,"Transfer BNB","Transfer BNB to another wallet.",
+                        "TRANSFER","nonce","gasPrice",
+                        "gasLimit","to","amount",null));
+        items.add(
+                new MultiItemData.MultiItem(DemoAPI.TRANSFER_MATIC,"Transfer Matic","Transfer Matic to another wallet.",
+                        "TRANSFER","nonce","gasPrice",
+                        "gasLimit","to","amount",null));
         return items;
     }
     private List<MultiItemData.MultiItem> marketUIAPIs() {

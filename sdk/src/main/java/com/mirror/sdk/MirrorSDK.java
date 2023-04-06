@@ -1044,6 +1044,22 @@ public class MirrorSDK {
         String url = getMirrorUrl(MirrorService.Wallet,MirrorUrl.URL_GET_WALLET_TRANSFER_ETH);
         checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
     }
+    public void TransferBNB(String data,MirrorCallback mirrorCallback){
+        if(!mChain.equals(MirrorChains.Ethereum)){
+            logWarn("This API support only EVM chain.");
+            return;
+        }
+        String url = getMirrorUrl(MirrorService.Wallet,"transfer-bnb");
+        checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
+    }
+    public void TransferMatic(String data,MirrorCallback mirrorCallback){
+        if(!mChain.equals(MirrorChains.Ethereum)){
+            logWarn("This API support only EVM chain.");
+            return;
+        }
+        String url = getMirrorUrl(MirrorService.Wallet,"transfer-matic");
+        checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
+    }
 
     public void TransferToken(String toPublickey, float amount, String token_mint, int decimals, MirrorCallback mirrorCallback){
         JSONObject jsonObject = new JSONObject();

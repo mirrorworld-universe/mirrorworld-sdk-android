@@ -90,6 +90,48 @@ public class MWEVMWrapper extends MWBaseWrapper{
             }
         });
     }
+    //transfer-eth
+    final public static void transferBNB(Activity returnActivity, String nonce, String gasPrice, String gasLimit, String to, int amount, MirrorCallback listener){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("nonce", nonce);
+            jsonObject.put("gasPrice", gasPrice);
+            jsonObject.put("gasLimit", gasLimit);
+            jsonObject.put("to", to);
+            jsonObject.put("amount", amount);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+
+        MirrorSafeAPI.getSecurityToken(returnActivity, MirrorSafeOptType.TransferBNB, "transfer BNB", 0, jsonObject, new MirrorCallback() {
+            @Override
+            public void callback(String nothing) {
+                MirrorSDK.getInstance().TransferBNB(data, listener);
+            }
+        });
+    }
+    //transfer-eth
+    final public static void transferMatic(Activity returnActivity, String nonce, String gasPrice, String gasLimit, String to, int amount, MirrorCallback listener){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("nonce", nonce);
+            jsonObject.put("gasPrice", gasPrice);
+            jsonObject.put("gasLimit", gasLimit);
+            jsonObject.put("to", to);
+            jsonObject.put("amount", amount);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+
+        MirrorSafeAPI.getSecurityToken(returnActivity, MirrorSafeOptType.TransferMatic, "transfer Matic", 0, jsonObject, new MirrorCallback() {
+            @Override
+            public void callback(String nothing) {
+                MirrorSDK.getInstance().TransferMatic(data, listener);
+            }
+        });
+    }
 
     final public static void getTokens(MirrorCallback listener){
         MirrorSDK.getInstance().getWalletTokens(listener);
