@@ -1045,7 +1045,7 @@ public class MirrorSDK {
         checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
     }
     public void TransferBNB(String data,MirrorCallback mirrorCallback){
-        if(!mChain.equals(MirrorChains.Ethereum)){
+        if(!mChain.equals(MirrorChains.BNB)){
             logWarn("This API support only EVM chain.");
             return;
         }
@@ -1053,7 +1053,7 @@ public class MirrorSDK {
         checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
     }
     public void TransferMatic(String data,MirrorCallback mirrorCallback){
-        if(!mChain.equals(MirrorChains.Ethereum)){
+        if(!mChain.equals(MirrorChains.Polygon)){
             logWarn("This API support only EVM chain.");
             return;
         }
