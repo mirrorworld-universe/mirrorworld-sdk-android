@@ -237,7 +237,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             String NFTJsonUrl = String.valueOf(holder.mEt5.getText());
             int seller_fee_basis_points = Integer.parseInt(String.valueOf(holder.mEt6.getText()));
 
-            com.mirror.sdk.solana.MirrorWorld.updateNFTProperties(mActivity, mintAddress, name, symbol, updateAuthority,NFTJsonUrl,seller_fee_basis_points, new MintNFTListener() {
+            com.mirror.sdk.solana.MirrorWorld.updateNFT(mActivity, mintAddress, name, symbol, updateAuthority,NFTJsonUrl,seller_fee_basis_points, new MintNFTListener() {
                 @Override
                 public void onMintSuccess(MintResponse userResponse) {
                     MirrorSDK.getInstance().logFlow("Update NFT result:"+MirrorGsonUtils.getInstance().toJson(userResponse));
@@ -261,7 +261,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             if(!mintAddress1.isEmpty()) addresses.add(mintAddress1);
             if(!mintAddress2.isEmpty()) addresses.add(mintAddress2);
 
-            com.mirror.sdk.solana.MirrorWorld.checkStatusOfMinting(addresses,new CheckStatusOfMintingListener() {
+            com.mirror.sdk.solana.MirrorWorld.checkMintingStatus(addresses,new CheckStatusOfMintingListener() {
 
                 @Override
                 public void onSuccess(CheckStatusOfMintingResponse response) {
@@ -443,7 +443,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
                 return;
             }
             String mint_address =String.valueOf(holder.mEt1.getText());
-            com.mirror.sdk.solana.MirrorWorld.getNFTDetails(mint_address, new FetchSingleNFTListener() {
+            com.mirror.sdk.solana.MirrorWorld.queryNFT(mint_address, new FetchSingleNFTListener() {
                 @Override
                 public void onFetchSuccess(SingleNFTResponse nftObject) {
                     String result = "NFT details is:"+MirrorGsonUtils.getInstance().toJson(nftObject);
@@ -510,7 +510,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             }catch (NumberFormatException E){
             }
 
-            com.mirror.sdk.solana.MirrorWorld.transferSPLToken(mActivity, toPublicKey, amount, tokenMint, decimals, new MirrorCallback() {
+            com.mirror.sdk.solana.MirrorWorld.transferToken(mActivity, toPublicKey, amount, tokenMint, decimals, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     runInUIThread(holder,result);
@@ -583,7 +583,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
                 e.printStackTrace();
             }
             String before = String.valueOf(holder.mEt2.getText());
-            com.mirror.sdk.solana.MirrorWorld.getTransactionsOfLoggedUser(limit, before, new GetWalletTransactionListener() {
+            com.mirror.sdk.solana.MirrorWorld.getTransactions(limit, before, new GetWalletTransactionListener() {
                 @Override
                 public void onSuccess(GetWalletTransactionsResponse walletTransactionsResponse) {
                     String result = "GetTransactions success! count is "+walletTransactionsResponse.count;
@@ -645,7 +645,7 @@ public class ClickHandlerSolana extends ClickHandlerBase{
             List<String> signatures = new ArrayList<>();
             if(!sig1.isEmpty()) signatures.add(sig1);
             if(!sig2.isEmpty()) signatures.add(sig2);
-            com.mirror.sdk.solana.MirrorWorld.checkStatusOfTransactions(signatures, new CheckStatusOfMintingListener() {
+            com.mirror.sdk.solana.MirrorWorld.checkTransactionsStatus(signatures, new CheckStatusOfMintingListener() {
 
                 @Override
                 public void onSuccess(CheckStatusOfMintingResponse response) {

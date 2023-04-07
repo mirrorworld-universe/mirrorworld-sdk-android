@@ -172,7 +172,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             String contract_type = String.valueOf(holder.mEt1.getText());
             String detailsUrl = String.valueOf(holder.mEt2.getText());
 
-            MirrorWorld.createVerifiedCollection(mActivity,contract_type, detailsUrl, MirrorConfirmation.Default, new MirrorCallback() {
+            MirrorWorld.mintCollection(mActivity,contract_type, detailsUrl, MirrorConfirmation.Default, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("result is:"+ result);
@@ -246,7 +246,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             }
             String tokenAddress =String.valueOf(holder.mEt1.getText());
             String tokenID =String.valueOf(holder.mEt2.getText());
-            MirrorWorld.getNFTDetails(tokenAddress, tokenID, new MirrorCallback() {
+            MirrorWorld.queryNFT(tokenAddress, tokenID, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = "NFT details is:"+result;
@@ -309,7 +309,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             }catch (NumberFormatException E){
 
             }
-            MirrorWorld.fetchNFTsByOwnerAddresses(owner, limit, new MirrorCallback() {
+            MirrorWorld.searchNFTsByOwner(owner, limit, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("result is:\n"+result);
@@ -369,7 +369,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             List<ReqEVMFetchNFTsToken> tokens = new ArrayList<>();
             tokens.add(new ReqEVMFetchNFTsToken(token_address_1,tokenID1));
             tokens.add(new ReqEVMFetchNFTsToken(token_address_2,tokenID2));
-            MirrorWorld.fetchNFTsByMintAddresses(tokens, new MirrorCallback() {
+            MirrorWorld.searchNFTsByMintAddress(tokens, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("result is:\n" + result);
@@ -481,6 +481,54 @@ public class ClickHandlerEVM extends ClickHandlerBase{
                     runInUIThread(holder,r);
                 }
             });
+        }else if(apiId == DemoAPI.TRANSFER_BNB){
+            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3) || !checkEt(holder.mEt4) || !checkEt(holder.mEt5)){
+                showToast("Please input!");
+                return;
+            }
+            String nonce = String.valueOf(holder.mEt1.getText());
+            String gasPrice = String.valueOf(holder.mEt2.getText());
+            String gasLimit = String.valueOf(holder.mEt3.getText());
+            String to = String.valueOf(holder.mEt4.getText());
+            String amountStr = String.valueOf(holder.mEt5.getText());
+
+            int decimals = 0;
+            try{
+                decimals =  Integer.valueOf(amountStr);
+            }catch (NumberFormatException E){
+            }
+
+            MirrorWorld.transferBNB(mActivity, nonce, gasPrice, gasLimit, to, decimals, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    String r = (result);
+                    runInUIThread(holder,r);
+                }
+            });
+        }else if(apiId == DemoAPI.TRANSFER_MATIC){
+            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3) || !checkEt(holder.mEt4) || !checkEt(holder.mEt5)){
+                showToast("Please input!");
+                return;
+            }
+            String nonce = String.valueOf(holder.mEt1.getText());
+            String gasPrice = String.valueOf(holder.mEt2.getText());
+            String gasLimit = String.valueOf(holder.mEt3.getText());
+            String to = String.valueOf(holder.mEt4.getText());
+            String amountStr = String.valueOf(holder.mEt5.getText());
+
+            int decimals = 0;
+            try{
+                decimals =  Integer.valueOf(amountStr);
+            }catch (NumberFormatException E){
+            }
+
+            MirrorWorld.transferMatic(mActivity, nonce, gasPrice, gasLimit, to, decimals, new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    String r = (result);
+                    runInUIThread(holder,r);
+                }
+            });
         }
         else if(apiId == DemoAPI.BUY_NFT){
             if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2) || !checkEt(holder.mEt3) || !checkEt(holder.mEt4)){
@@ -541,7 +589,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
-            MirrorWorld.getTransactionsOfLoggedUser(limit, new MirrorCallback() {
+            MirrorWorld.getTransactions(limit, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("GetTransactions result is:\n"+result);

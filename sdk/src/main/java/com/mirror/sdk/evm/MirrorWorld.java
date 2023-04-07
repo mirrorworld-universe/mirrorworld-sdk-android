@@ -155,6 +155,14 @@ public class MirrorWorld {
         MWEVMWrapper.transferETH(returnActivity, nonce, gasPrice, gasLimit, to, amount, listener);
     }
 
+    final public static void transferBNB(Activity returnActivity, String nonce, String gasPrice, String gasLimit, String to, int amount, MirrorCallback listener){
+        MWEVMWrapper.transferBNB(returnActivity, nonce, gasPrice, gasLimit, to, amount, listener);
+    }
+
+    final public static void transferMatic(Activity returnActivity, String nonce, String gasPrice, String gasLimit, String to, int amount, MirrorCallback listener){
+        MWEVMWrapper.transferMatic(returnActivity, nonce, gasPrice, gasLimit, to, amount, listener);
+    }
+
     final public static void getTokens(MirrorCallback listener){
         MWEVMWrapper.getTokens(listener);
     }
@@ -163,7 +171,7 @@ public class MirrorWorld {
         MWEVMWrapper.getTokensByWallet(walletAddress, walletTokenListener);
     }
 
-    final public static void getTransactionsOfLoggedUser(int limit, MirrorCallback walletTransactionListener){
+    final public static void getTransactions(int limit, MirrorCallback walletTransactionListener){
         MWEVMWrapper.getTransactionsOfLoggedUser(limit, walletTransactionListener);
     }
 
@@ -224,11 +232,11 @@ public class MirrorWorld {
     }
 
     //Asset/NFT
-    final public static void fetchNFTsByOwnerAddresses(String owners, int limit, MirrorCallback fetchByOwnerListener){
+    final public static void searchNFTsByOwner(String owners, int limit, MirrorCallback fetchByOwnerListener){
         MWEVMWrapper.fetchNFTsByOwnerAddresses(owners, limit, fetchByOwnerListener);
     }
 
-    final public static void fetchNFTsByMintAddresses(List<ReqEVMFetchNFTsToken> tokens, MirrorCallback fetchByMintAddressListener){
+    final public static void searchNFTsByMintAddress(List<ReqEVMFetchNFTsToken> tokens, MirrorCallback fetchByMintAddressListener){
         MWEVMWrapper.fetchNFTsByMintAddresses(tokens, fetchByMintAddressListener);
     }
 
@@ -244,7 +252,7 @@ public class MirrorWorld {
         MWEVMWrapper.fetchNFTMarketplaceActivity(mint_address, fetchSingleNFTActivityListener);
     }
 
-    final public static void createVerifiedCollection(Activity returnActivity, String contract_type, String detailUrl,String confirmation, MirrorCallback createTopCollectionListener){
+    final public static void mintCollection(Activity returnActivity, String contract_type, String detailUrl, String confirmation, MirrorCallback createTopCollectionListener){
         MWEVMWrapper.createVerifiedCollection(returnActivity, contract_type, detailUrl, confirmation, createTopCollectionListener);
     }
 
@@ -266,7 +274,7 @@ public class MirrorWorld {
     }
 
     //Asset/NFT
-    final public static void getNFTDetails(String contract,String tokenID, MirrorCallback fetchSingleNFT){
+    final public static void queryNFT(String contract, String tokenID, MirrorCallback fetchSingleNFT){
         MWEVMWrapper.getNFTDetails(contract,tokenID, fetchSingleNFT);
     }
 }

@@ -889,6 +889,10 @@ public class MirrorSDK {
     }
 
     public void transferSOL(String data, TransferSOLListener transferSOLListener){
+        if(!mChain.equals(MirrorChains.Solana)){
+            logWarn("This API support only Solana chain.");
+            return;
+        }
         String url = getMirrorUrl(MirrorService.Wallet,MirrorUrl.URL_TRANSFER_SQL);
         checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
             @Override
@@ -903,81 +907,81 @@ public class MirrorSDK {
         }));
     }
 
-    public void TransferSOL(String toPublickey, float amount, TransferSOLListener transferSOLListener){
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("to_publickey", toPublickey);
-            jsonObject.put("amount", MirrorStringUtils.floatToString(amount));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        String data = jsonObject.toString();
-
-        String url = getMirrorUrl(MirrorService.Wallet,MirrorUrl.URL_TRANSFER_SQL);
-        checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
-            @Override
-            public void callback(String result) {
-                CommonResponse<TransferResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<TransferResponse>>(){}.getType());
-                if(response.code == MirrorResCode.SUCCESS){
-                    transferSOLListener.onTransferSuccess(response.data);
-                }else{
-                    transferSOLListener.onTransferFailed(response.code,response.message);
-                }
-            }
-        }));
-    }
-
-    public void getTransactionOfTransferSOL(String toPublickey,float amount,GetWalletTransactionListener listener){
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("to_publickey", toPublickey);
-            jsonObject.put("amount", MirrorStringUtils.floatToString(amount));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        String data = jsonObject.toString();
-
-        String url = getMirrorUrl(MirrorService.Wallet,MirrorUrl.URL_GET_TRANSFER_SOL_TRANSACTION);
-        checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
-            @Override
-            public void callback(String result) {
-                logFlow("getTransactionOfTransferSOL result:" + result);
-                CommonResponse<GetWalletTransactionsResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<GetWalletTransactionsResponse>>(){}.getType());
-                if(response.code == MirrorResCode.SUCCESS){
-                    listener.onSuccess(response.data);
-                }else{
-                    listener.onFailed(response.code,response.message);
-                }
-            }
-        }));
-    }
-
-    public void getTransactionOfTransferToken(String toPublickey,float amount,String tokenMint,int decimals,GetWalletTransactionListener listener){
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("to_publickey", toPublickey);
-            jsonObject.put("amount", MirrorStringUtils.floatToString(amount));
-            jsonObject.put("token_mint", tokenMint);
-            jsonObject.put("decimals", MirrorStringUtils.handleInt(decimals));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        String data = jsonObject.toString();
-
-        String url = getMirrorUrl(MirrorService.Wallet,MirrorUrl.URL_GET_TRANSFER_TOKEN_TRANSACTION);
-        checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
-            @Override
-            public void callback(String result) {
-                logFlow("getTransactionOfTransferToken result:" + result);
-                CommonResponse<GetWalletTransactionsResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<GetWalletTransactionsResponse>>(){}.getType());
-                if(response.code == MirrorResCode.SUCCESS){
-                    listener.onSuccess(response.data);
-                }else{
-                    listener.onFailed(response.code,response.message);
-                }
-            }
-        }));
-    }
+//    public void TransferSOL(String toPublickey, float amount, TransferSOLListener transferSOLListener){
+//        JSONObject jsonObject = new JSONObject();
+//        try {
+//            jsonObject.put("to_publickey", toPublickey);
+//            jsonObject.put("amount", MirrorStringUtils.floatToString(amount));
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        String data = jsonObject.toString();
+//
+//        String url = getMirrorUrl(MirrorService.Wallet,MirrorUrl.URL_TRANSFER_SQL);
+//        checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
+//            @Override
+//            public void callback(String result) {
+//                CommonResponse<TransferResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<TransferResponse>>(){}.getType());
+//                if(response.code == MirrorResCode.SUCCESS){
+//                    transferSOLListener.onTransferSuccess(response.data);
+//                }else{
+//                    transferSOLListener.onTransferFailed(response.code,response.message);
+//                }
+//            }
+//        }));
+//    }
+//
+//    public void getTransactionOfTransferSOL(String toPublickey,float amount,GetWalletTransactionListener listener){
+//        JSONObject jsonObject = new JSONObject();
+//        try {
+//            jsonObject.put("to_publickey", toPublickey);
+//            jsonObject.put("amount", MirrorStringUtils.floatToString(amount));
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        String data = jsonObject.toString();
+//
+//        String url = getMirrorUrl(MirrorService.Wallet,MirrorUrl.URL_GET_TRANSFER_SOL_TRANSACTION);
+//        checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
+//            @Override
+//            public void callback(String result) {
+//                logFlow("getTransactionOfTransferSOL result:" + result);
+//                CommonResponse<GetWalletTransactionsResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<GetWalletTransactionsResponse>>(){}.getType());
+//                if(response.code == MirrorResCode.SUCCESS){
+//                    listener.onSuccess(response.data);
+//                }else{
+//                    listener.onFailed(response.code,response.message);
+//                }
+//            }
+//        }));
+//    }
+//
+//    public void getTransactionOfTransferToken(String toPublickey,float amount,String tokenMint,int decimals,GetWalletTransactionListener listener){
+//        JSONObject jsonObject = new JSONObject();
+//        try {
+//            jsonObject.put("to_publickey", toPublickey);
+//            jsonObject.put("amount", MirrorStringUtils.floatToString(amount));
+//            jsonObject.put("token_mint", tokenMint);
+//            jsonObject.put("decimals", MirrorStringUtils.handleInt(decimals));
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        String data = jsonObject.toString();
+//
+//        String url = getMirrorUrl(MirrorService.Wallet,MirrorUrl.URL_GET_TRANSFER_TOKEN_TRANSACTION);
+//        checkParamsAndPost(url,data,getHandlerCallback(new MirrorCallback() {
+//            @Override
+//            public void callback(String result) {
+//                logFlow("getTransactionOfTransferToken result:" + result);
+//                CommonResponse<GetWalletTransactionsResponse> response = MirrorGsonUtils.getInstance().fromJson(result, new TypeToken<CommonResponse<GetWalletTransactionsResponse>>(){}.getType());
+//                if(response.code == MirrorResCode.SUCCESS){
+//                    listener.onSuccess(response.data);
+//                }else{
+//                    listener.onFailed(response.code,response.message);
+//                }
+//            }
+//        }));
+//    }
 
     public void getWalletTokens(MirrorCallback walletTokenListener){
         String url = getGetMirrorUrl(MirrorService.Wallet) + MirrorUrl.URL_GET_WALLET_TOKEN;
@@ -1042,6 +1046,22 @@ public class MirrorSDK {
             return;
         }
         String url = getMirrorUrl(MirrorService.Wallet,MirrorUrl.URL_GET_WALLET_TRANSFER_ETH);
+        checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
+    }
+    public void TransferBNB(String data,MirrorCallback mirrorCallback){
+        if(!mChain.equals(MirrorChains.BNB)){
+            logWarn("This API support only BNB chain.");
+            return;
+        }
+        String url = getMirrorUrl(MirrorService.Wallet,"transfer-bnb");
+        checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
+    }
+    public void TransferMatic(String data,MirrorCallback mirrorCallback){
+        if(!mChain.equals(MirrorChains.Polygon)){
+            logWarn("This API support only Polygon chain.");
+            return;
+        }
+        String url = getMirrorUrl(MirrorService.Wallet,"transfer-matic");
         checkParamsAndPost(url,data,getHandlerCallback(mirrorCallback));
     }
 

@@ -180,7 +180,7 @@ public class MirrorWorld {
     }
 
     //Wallet
-    final public static void transferSPLToken(Activity returnActivity, String toPublickey, float amount, String token_mint, int decimals, MirrorCallback mirrorCallback){
+    final public static void transferToken(Activity returnActivity, String toPublickey, float amount, String token_mint, int decimals, MirrorCallback mirrorCallback){
         MWSolanaWrapper.transferSPLToken(returnActivity, toPublickey, amount, token_mint, decimals, mirrorCallback);
     }
 
@@ -196,7 +196,7 @@ public class MirrorWorld {
         MWSolanaWrapper.getTokensByWallet(walletAddress, walletTokenListener);
     }
 
-    final public static void getTransactionsOfLoggedUser(int limit, String before, GetWalletTransactionListener walletTransactionListener){
+    final public static void getTransactions(int limit, String before, GetWalletTransactionListener walletTransactionListener){
         MWSolanaWrapper.getTransactionsOfLoggedUser(limit, before, walletTransactionListener);
     }
 
@@ -277,11 +277,11 @@ public class MirrorWorld {
     }
 
     //Confirmation
-    final public static void checkStatusOfMinting(List<String> mintAddresses, CheckStatusOfMintingListener listener){
+    final public static void checkMintingStatus(List<String> mintAddresses, CheckStatusOfMintingListener listener){
         MWSolanaWrapper.checkStatusOfMinting(mintAddresses, listener);
     }
 
-    final public static void checkStatusOfTransactions(List<String> signatures, CheckStatusOfMintingListener listener){
+    final public static void checkTransactionsStatus(List<String> signatures, CheckStatusOfMintingListener listener){
         MWSolanaWrapper.checkStatusOfTransactions(signatures, listener);
     }
 
@@ -293,7 +293,7 @@ public class MirrorWorld {
         MWSolanaWrapper.updateNFTListing(mint_address, price, confirmation, listener);
     }
 
-    final public static void updateNFTProperties(Activity returnActivity, String mintAddress, String name, String symbol, String updateAuthority, String NFTJsonUrl,int seller_fee_basis_points, MintNFTListener mintNFTListener){
+    final public static void updateNFT(Activity returnActivity, String mintAddress, String name, String symbol, String updateAuthority, String NFTJsonUrl, int seller_fee_basis_points, MintNFTListener mintNFTListener){
         MWSolanaWrapper.updateNFTProperties(returnActivity, mintAddress, name, symbol, updateAuthority, NFTJsonUrl, seller_fee_basis_points, mintNFTListener);
     }
     final public static void listNFT(Activity returnActivity, String mint_address, Double price, String confirmation, ListNFTListener listener){
@@ -304,7 +304,7 @@ public class MirrorWorld {
         MWSolanaWrapper.cancelNFTListing(returnActivity, mint_address, price, auction_house, listener);
     }
 
-    final public static void getNFTDetails(String mint_address, FetchSingleNFTListener fetchSingleNFT){
+    final public static void queryNFT(String mint_address, FetchSingleNFTListener fetchSingleNFT){
         MWSolanaWrapper.getNFTDetails(mint_address, fetchSingleNFT);
     }
 
