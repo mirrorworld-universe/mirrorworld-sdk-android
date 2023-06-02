@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.mirror.mirrorworld_sdk_android.adapter.EntranceChainSpinnerAdapter;
 import com.mirror.mirrorworld_sdk_android.adapter.EntranceEnvironmentSpinnerAdapter;
 import com.mirror.mirrorworld_sdk_android.data.SpinnerBean;
+import com.mirror.sdk.MirrorWorld;
 import com.mirror.sdk.constant.MirrorChains;
 import com.mirror.sdk.constant.MirrorEnv;
 
@@ -130,16 +131,16 @@ public class EntranceActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(activity, MainActivity.class);
                 if(mChain == MirrorChains.Solana){
-                    com.mirror.sdk.solana.MirrorWorld.initSDK(activity,APIKey,env);
+                    MirrorWorld.initSDK(activity,APIKey,env,mChain);
                     intent.putExtra("chain", MirrorChains.Solana.getNumber());
                 }else if(mChain == MirrorChains.Ethereum){
-                    com.mirror.sdk.evm.MirrorWorld.initSDK(activity,APIKey,env,mChain);
+                    MirrorWorld.initSDK(activity,APIKey,env,mChain);
                     intent.putExtra("chain",MirrorChains.Ethereum.getNumber());
                 }else if(mChain == MirrorChains.Polygon){
-                    com.mirror.sdk.evm.MirrorWorld.initSDK(activity,APIKey,env,mChain);
+                    MirrorWorld.initSDK(activity,APIKey,env,mChain);
                     intent.putExtra("chain",MirrorChains.Polygon.getNumber());
                 }else if(mChain == MirrorChains.BNB){
-                    com.mirror.sdk.evm.MirrorWorld.initSDK(activity,APIKey,env,mChain);
+                    MirrorWorld.initSDK(activity,APIKey,env,mChain);
                     intent.putExtra("chain",MirrorChains.BNB.getNumber());
                 }else {
                     Log.e("MirrorSDK","Unknwon mChain");

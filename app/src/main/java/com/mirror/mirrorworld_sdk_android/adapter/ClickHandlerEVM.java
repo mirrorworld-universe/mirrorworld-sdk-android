@@ -6,8 +6,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.mirror.mirrorworld_sdk_android.enums.DemoAPI;
-import com.mirror.sdk.evm.MirrorWorld;
 import com.mirror.sdk.MirrorSDK;
+import com.mirror.sdk.MirrorWorld;
 import com.mirror.sdk.constant.MirrorConfirmation;
 import com.mirror.sdk.constant.MirrorEnv;
 import com.mirror.sdk.listener.auth.FetchUserListener;
@@ -172,7 +172,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             String contract_type = String.valueOf(holder.mEt1.getText());
             String detailsUrl = String.valueOf(holder.mEt2.getText());
 
-            MirrorWorld.mintCollection(mActivity,contract_type, detailsUrl, MirrorConfirmation.Default, new MirrorCallback() {
+            MirrorWorld.Ethereum.Asset.mintCollection(mActivity,contract_type, detailsUrl, MirrorConfirmation.Default, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("result is:"+ result);
@@ -195,7 +195,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             }
             int tokenID = getInteger(token_id);
 
-            MirrorWorld.mintNFT(returnActivity,collection_address, tokenID, MirrorConfirmation.Default, to_wallet_address, new MintNFTListener() {
+            MirrorWorld.Ethereum.Asset.mintNFT(returnActivity,collection_address, tokenID, MirrorConfirmation.Default, to_wallet_address, new MintNFTListener() {
                 @Override
                 public void onMintSuccess(MintResponse userResponse) {
                     MirrorSDK.getInstance().logFlow("Mint nft result:"+MirrorGsonUtils.getInstance().toJson(userResponse));
@@ -232,7 +232,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             }catch (NumberFormatException e){
 
             }
-            MirrorWorld.listNFT(mActivity, mint_address, tokenID, price, marketplace_address, new MirrorCallback() {
+            MirrorWorld.Ethereum.Asset.listNFT(mActivity, mint_address, tokenID, price, marketplace_address, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("result is:"+result);
@@ -246,7 +246,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             }
             String tokenAddress =String.valueOf(holder.mEt1.getText());
             String tokenID =String.valueOf(holder.mEt2.getText());
-            MirrorWorld.queryNFT(tokenAddress, tokenID, new MirrorCallback() {
+            MirrorWorld.Ethereum.Asset.queryNFT(tokenAddress, tokenID, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = "NFT details is:"+result;
@@ -267,7 +267,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             }
             int tokenID = getInteger(token_id);
 
-            MirrorWorld.getNFTInfo(contract,tokenID, new MirrorCallback() {
+            MirrorWorld.Ethereum.Metadata.getNFTInfo(contract,tokenID, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = "Visiting result:"+MirrorGsonUtils.getInstance().toJson(result);
@@ -289,7 +289,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             }
             int tokenID = getInteger(token_id);
 
-            MirrorWorld.cancelNFTListing(mActivity, mint_address, tokenID, marketplace_address, new MirrorCallback() {
+            MirrorWorld.Ethereum.Asset.cancelNFTListing(mActivity, mint_address, tokenID, marketplace_address, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("result is "+result);
@@ -309,7 +309,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             }catch (NumberFormatException E){
 
             }
-            MirrorWorld.searchNFTsByOwner(owner, limit, new MirrorCallback() {
+            MirrorWorld.Ethereum.Asset.searchNFTsByOwner(owner, limit, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("result is:\n"+result);
@@ -337,7 +337,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             }catch (NumberFormatException E){
 
             }
-            MirrorWorld.fetchNFTsByCreatorAddresses(owners, limit, offset, new MirrorCallback() {
+            MirrorWorld.Ethereum.Asset.fetchNFTsByCreatorAddresses(owners, limit, offset, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("result is:"+result);
@@ -369,7 +369,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             List<ReqEVMFetchNFTsToken> tokens = new ArrayList<>();
             tokens.add(new ReqEVMFetchNFTsToken(token_address_1,tokenID1));
             tokens.add(new ReqEVMFetchNFTsToken(token_address_2,tokenID2));
-            MirrorWorld.searchNFTsByMintAddress(tokens, new MirrorCallback() {
+            MirrorWorld.Ethereum.Asset.searchNFTsByMintAddress(tokens, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("result is:\n" + result);
@@ -392,7 +392,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             }catch (NumberFormatException E){
 
             }
-            MirrorWorld.fetchNFTsByUpdateAuthorities(update_address, limit, offset, new MirrorCallback() {
+            MirrorWorld.Ethereum.Asset.fetchNFTsByUpdateAuthorities(update_address, limit, offset, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("result is:"+result);
@@ -405,7 +405,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
                 return;
             }
             String mint_address =String.valueOf(holder.mEt1.getText());
-            MirrorWorld.fetchNFTMarketplaceActivity(mint_address, new MirrorCallback() {
+            MirrorWorld.Ethereum.Asset.fetchNFTMarketplaceActivity(mint_address, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("result is:"+result);
@@ -425,7 +425,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
                 return;
             }
             int tokenID = getInteger(token_id);
-            MirrorWorld.transferNFT(mActivity, collection_address, tokenID, to_wallet_address, new MirrorCallback() {
+            MirrorWorld.Ethereum.Asset.transferNFT(mActivity, collection_address, tokenID, to_wallet_address, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("result is:"+result);
@@ -450,7 +450,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             }catch (NumberFormatException E){
             }
 
-            MirrorWorld.transferToken(returnActivity, nonce, gasPrice, gasLimit, to, decimals,contract, new MirrorCallback() {
+            MirrorWorld.Ethereum.Wallet.transferToken(returnActivity, nonce, gasPrice, gasLimit, to, decimals,contract, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = (result);
@@ -474,7 +474,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             }catch (NumberFormatException E){
             }
 
-            MirrorWorld.transferETH(mActivity, nonce, gasPrice, gasLimit, to, decimals, new MirrorCallback() {
+            MirrorWorld.Ethereum.Wallet.transferETH(mActivity, nonce, gasPrice, gasLimit, to, decimals, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = (result);
@@ -498,7 +498,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             }catch (NumberFormatException E){
             }
 
-            MirrorWorld.transferBNB(mActivity, nonce, gasPrice, gasLimit, to, decimals, new MirrorCallback() {
+            MirrorWorld.Ethereum.Wallet.transferBNB(mActivity, nonce, gasPrice, gasLimit, to, decimals, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = (result);
@@ -522,7 +522,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             }catch (NumberFormatException E){
             }
 
-            MirrorWorld.transferMatic(mActivity, nonce, gasPrice, gasLimit, to, decimals, new MirrorCallback() {
+            MirrorWorld.Ethereum.Wallet.transferMatic(mActivity, nonce, gasPrice, gasLimit, to, decimals, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = (result);
@@ -550,7 +550,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             }catch (NumberFormatException E){
             }
 
-            MirrorWorld.buyNFT(mActivity, collection_address, tokenID, price, marketplace_address, new MirrorCallback() {
+            MirrorWorld.Ethereum.Asset.buyNFT(mActivity, collection_address, tokenID, price, marketplace_address, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("result is:"+result);
@@ -558,7 +558,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
                 }
             });
         }else if(apiId == DemoAPI.GET_WALLET_TOKEN){
-            MirrorWorld.getTokens(new MirrorCallback() {
+            MirrorWorld.Ethereum.Wallet.getTokens(new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("Get wallet token result:\n"+result);
@@ -571,7 +571,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
                 return;
             }
             String walletAddress = getStringFromEditText(holder.mEt1);
-            MirrorWorld.getTokensByWallet(walletAddress, new MirrorCallback() {
+            MirrorWorld.Ethereum.Wallet.getTokensByWallet(walletAddress, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("Get wallet token result:\n"+result);
@@ -589,7 +589,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
-            MirrorWorld.getTransactions(limit, new MirrorCallback() {
+            MirrorWorld.Ethereum.Wallet.getTransactions(limit, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("GetTransactions result is:\n"+result);
@@ -608,7 +608,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
                 e.printStackTrace();
             }
             String walletAddress = getStringFromEditText(holder.mEt1);
-            MirrorWorld.getTransactionsByWallet(walletAddress, limit, new MirrorCallback() {
+            MirrorWorld.Ethereum.Wallet.getTransactionsByWallet(walletAddress, limit, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("GetTransactions success! result is "+result);
@@ -621,7 +621,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
                 return;
             }
             String sig = String.valueOf(holder.mEt1.getText());
-            MirrorWorld.getTransactionBySignature(sig, new MirrorCallback() {
+            MirrorWorld.Ethereum.Wallet.getTransactionBySignature(sig, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("GetTransactionBySignature result:\n" + result);
@@ -635,7 +635,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
                 return;
             }
             String collection = String.valueOf(holder.mEt1.getText());
-            MirrorWorld.getCollectionFilterInfo(collection, new GetCollectionFilterInfoListener() {
+            MirrorWorld.Ethereum.Metadata.getCollectionFilterInfo(collection, new GetCollectionFilterInfoListener() {
                 @Override
                 public void onSuccess(GetCollectionFilterInfoRes result) {
                     String r = ("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
@@ -656,7 +656,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             String collection = String.valueOf(holder.mEt1.getText());
             List<String> collections = new ArrayList<>();
             collections.add(collection);
-            MirrorWorld.getCollectionInfo(collections, new GetCollectionInfoListener() {
+            MirrorWorld.Ethereum.Metadata.getCollectionInfo(collections, new GetCollectionInfoListener() {
                 @Override
                 public void onSuccess(List<GetCollectionInfoRes> result) {
                     String r = ("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
@@ -679,7 +679,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             List<String> collections = new ArrayList<>();
             if(!collection.isEmpty()) collections.add(collection);
             if(!collection2.isEmpty()) collections.add(collection2);
-            MirrorWorld.getCollectionSummary(collections, new GetCollectionSummaryListener() {
+            MirrorWorld.Ethereum.Metadata.getCollectionSummary(collections, new GetCollectionSummaryListener() {
                 @Override
                 public void onSuccess(List<GetCollectionSummaryRes> res) {
                     String r = ("Visiting success:"+MirrorGsonUtils.getInstance().toJson(res));
@@ -711,7 +711,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
 
             page = Integer.valueOf(pageStr);
             page_size = Integer.valueOf(pageSizeStr);
-            MirrorWorld.getNFTEvents(contract,tokenID, page, page_size, new MirrorCallback() {
+            MirrorWorld.Ethereum.Metadata.getNFTEvents(contract,tokenID, page, page_size, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("Visiting result:\n"+result);
@@ -727,7 +727,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             String searchString = String.valueOf(holder.mEt2.getText());
             List<String> collections = new ArrayList<>();
             collections.add(collection);
-            MirrorWorld.searchNFTs(collections, searchString, new MirrorCallback() {
+            MirrorWorld.Ethereum.Metadata.searchNFTs(collections, searchString, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("Visiting result:\n"+result);
@@ -742,7 +742,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             String collection = String.valueOf(holder.mEt1.getText());
             List<String> collections = new ArrayList<>();
             collections.add(collection);
-            MirrorWorld.recommendSearchNFT(collections, new MirrorCallback() {
+            MirrorWorld.Ethereum.Metadata.recommendSearchNFT(collections, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("Visiting result:\n"+result);
@@ -773,7 +773,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             }catch(Exception e){
 
             }
-            MirrorWorld.getNFTsByUnabridgedParams(collection, page, page_size, order_by, desc, sale, null, new MirrorCallback() {
+            MirrorWorld.Ethereum.Metadata.getNFTsByUnabridgedParams(collection, page, page_size, order_by, desc, sale, null, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("Visiting result:\n"+result);
@@ -787,7 +787,7 @@ public class ClickHandlerEVM extends ClickHandlerBase{
             }
             int fee = Integer.parseInt(String.valueOf(holder.mEt2.getText()));
             String price = String.valueOf(holder.mEt1.getText());
-            MirrorWorld.getNFTRealPrice(price,fee, new GetNFTRealPriceListener() {
+            MirrorWorld.Ethereum.Metadata.getNFTRealPrice(price,fee, new GetNFTRealPriceListener() {
                 @Override
                 public void onSuccess(GetNFTRealPriceRes result) {
                     String r = ("Visiting success:"+MirrorGsonUtils.getInstance().toJson(result));
