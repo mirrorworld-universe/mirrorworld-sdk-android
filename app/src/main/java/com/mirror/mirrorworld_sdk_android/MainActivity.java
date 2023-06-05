@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.test.internal.util.LogUtil;
 import androidx.viewpager.widget.ViewPager;
 
 import android.app.Activity;
@@ -18,12 +19,14 @@ import android.view.WindowManager;
 import com.google.android.material.tabs.TabLayout;
 import com.mirror.mirrorworld_sdk_android.adapter.APIPageIniterBase;
 import com.mirror.mirrorworld_sdk_android.adapter.PageIniterEVM;
+import com.mirror.mirrorworld_sdk_android.adapter.PageIniterSUI;
 import com.mirror.mirrorworld_sdk_android.adapter.PageIniterSolana;
 import com.mirror.mirrorworld_sdk_android.data.MultiItemData;
 import com.mirror.sdk.constant.MirrorChains;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,6 +54,11 @@ public class MainActivity extends AppCompatActivity {
             mPageIniter = new PageIniterEVM(this,MirrorChains.Polygon);
         }else if(chain == MirrorChains.BNB.getNumber()){
             mPageIniter = new PageIniterEVM(this,MirrorChains.BNB);
+        }else if(chain == MirrorChains.SUI.getNumber()){
+            mPageIniter = new PageIniterSUI(this,MirrorChains.SUI);
+        }else {
+            Log.e("MirrorSDK","Unknwon chain to init page initer.");
+            return;
         }
         mPageIniter.initPage();
     }

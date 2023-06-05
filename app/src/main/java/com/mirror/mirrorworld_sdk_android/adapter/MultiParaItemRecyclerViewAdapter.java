@@ -54,6 +54,8 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             mClickHandler = new ClickHandlerEVM(mActivity);
         }else if(mChain == MirrorChains.BNB){
             mClickHandler = new ClickHandlerEVM(mActivity);
+        }else if(mChain == MirrorChains.SUI){
+            mClickHandler = new ClickHandlerSUI(mActivity);
         }else {
             MirrorSDK.logWarn("Unknow chain!");
         }
@@ -132,63 +134,6 @@ public class MultiParaItemRecyclerViewAdapter extends RecyclerView.Adapter<Multi
             }
         });
     }
-
-//    private void initAPIItemSpinner(ConstraintLayout layout,MultiItemData.MultiItem mItem){
-//        List<SpinnerBean> mData = new ArrayList<>();
-//        MultiItemData.MultiItemSpinnerData data = mItem.spinnerData;
-//        for(int i=0;i<data.items.size();i++){
-//            MultiItemData.MultiItemSpinnerItem item = data.items.get(i);
-//            mData.add(new SpinnerBean(item.number,item.ItemName));
-//        }
-//        mSelectedSpinnerItem = data.items.get(0);
-//        ItemSpinnerAdapter adapter = new ItemSpinnerAdapter(mData, mContext);//实例化适配器
-//
-//        AdapterView adapterView = layout.findViewById(R.id.item_spinner_spinner);
-//        adapterView.setAdapter(adapter);
-//
-//
-//        //给选择英雄的spinner添加监听
-//        adapterView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override //选中的时候执行的方法
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-////                Toast.makeText(mContext, mData.get(i).name, Toast.LENGTH_SHORT).show();
-//                mSelectedSpinnerItem = data.items.get(i);
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        });
-//    }
-//    private void initAPIItemSpinner2(ConstraintLayout layout,MultiItemData.MultiItem mItem){
-//        List<SpinnerBean> mData = new ArrayList<>();
-//        MultiItemData.MultiItemSpinnerData data = mItem.spinnerData2;
-//        for(int i=0;i<data.items.size();i++){
-//            MultiItemData.MultiItemSpinnerItem item = data.items.get(i);
-//            mData.add(new SpinnerBean(item.number,item.ItemName));
-//        }
-//        mSelectedSpinnerItem2 = data.items.get(0);
-//        ItemSpinnerAdapter adapter = new ItemSpinnerAdapter(mData, mContext);//实例化适配器
-//
-//        AdapterView adapterView = layout.findViewById(R.id.item_spinner2_spinner);
-//        adapterView.setAdapter(adapter);
-//
-//
-//        //给选择英雄的spinner添加监听
-//        adapterView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override //选中的时候执行的方法
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-////                Toast.makeText(mContext, mData.get(i).name, Toast.LENGTH_SHORT).show();
-//                mSelectedSpinnerItem2 = data.items.get(i);
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        });
-//    }
 
     @Override
     public int getItemCount() {

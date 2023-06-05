@@ -56,6 +56,7 @@ public class EntranceActivity extends AppCompatActivity {
         heroBeans.add(new SpinnerBean(2,"Ethereum"));
         heroBeans.add(new SpinnerBean(3,"Polygon"));
         heroBeans.add(new SpinnerBean(4,"BNB"));
+        heroBeans.add(new SpinnerBean(5,"SUI"));
 
         EntranceChainSpinnerAdapter adapterChain = new EntranceChainSpinnerAdapter(heroBeans, this);
         spinnerChain.setAdapter(adapterChain);
@@ -70,6 +71,8 @@ public class EntranceActivity extends AppCompatActivity {
                     mChain = MirrorChains.Polygon;
                 }else if(i == 3){
                     mChain = MirrorChains.BNB;
+                }else if(i == 4){
+                    mChain = MirrorChains.SUI;
                 }else {
                     Log.e("MirrorSDK","Unknown index");
                 }
@@ -142,6 +145,9 @@ public class EntranceActivity extends AppCompatActivity {
                 }else if(mChain == MirrorChains.BNB){
                     MirrorWorld.initSDK(activity,APIKey,env,mChain);
                     intent.putExtra("chain",MirrorChains.BNB.getNumber());
+                }else if(mChain == MirrorChains.SUI){
+                    MirrorWorld.initSDK(activity,APIKey,env,mChain);
+                    intent.putExtra("chain",MirrorChains.SUI.getNumber());
                 }else {
                     Log.e("MirrorSDK","Unknwon mChain");
                 }

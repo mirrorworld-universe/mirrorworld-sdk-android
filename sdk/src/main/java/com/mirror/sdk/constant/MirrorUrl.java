@@ -243,6 +243,19 @@ public class MirrorUrl {
                 MirrorSDK.logError("Unknown env:"+env+".Will use mainnet.");
                 return "bnb-testnet";
             }
+        }else if(chain == MirrorChains.SUI){
+            if(env.equals(MirrorEnv.StagingMainNet)){
+                return "mainnet";
+            }else if(env.equals(MirrorEnv.StagingDevNet)){
+                return "testnet";
+            }else if(env.equals(MirrorEnv.MainNet)){
+                return "mainnet";
+            }else if(env.equals(MirrorEnv.DevNet)){
+                return "testnet";
+            }else {
+                MirrorSDK.logError("Unknown env:"+env+".Will use mainnet.");
+                return "testnet";
+            }
         }
         else {
             Log.e("MirrorSDK","Unknwon chain"+chain);
