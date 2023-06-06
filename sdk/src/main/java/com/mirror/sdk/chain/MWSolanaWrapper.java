@@ -60,15 +60,15 @@ import java.util.List;
 public class MWSolanaWrapper extends MWBaseWrapper{
 
     //SDK
-    public final static void initSDK(Context activityContext, String apiKey, MirrorEnv env){
-        if(apiKey == ""){
-            MirrorSDK.logWarn("Please input API key");
-            return;
-        }
-        MirrorChains chain = MirrorChains.Solana;
-        MirrorSDK.getInstance().InitSDK(activityContext,env,chain);
-        MirrorSDK.getInstance().SetApiKey(apiKey);
-    }
+//    public final static void initSDK(Context activityContext, String apiKey, MirrorEnv env){
+//        if(apiKey == ""){
+//            MirrorSDK.logWarn("Please input API key");
+//            return;
+//        }
+//        MirrorChains chain = MirrorChains.Solana;
+//        MirrorSDK.getInstance().InitSDK(activityContext,env,chain);
+//        MirrorSDK.getInstance().SetApiKey(apiKey);
+//    }
 
     final public static void getNFTRealPrice(String price, int fee, GetNFTRealPriceListener listener){
         MirrorSDK.getInstance().GetNFTRealPrice(price, fee, listener);

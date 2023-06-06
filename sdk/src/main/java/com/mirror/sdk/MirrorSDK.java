@@ -1690,7 +1690,7 @@ public class MirrorSDK {
         };
     }
 
-    private void checkParamsAndGet(String url,  Map<String,String> params, MirrorCallback mirrorCallback,MSimpleCallback failCallback){
+    public void checkParamsAndGet(String url,  Map<String,String> params, MirrorCallback mirrorCallback,MSimpleCallback failCallback){
         if(apiKey.equals("")){
             if(mActivity == null){
                 logFlow("Must init sdk first!");
