@@ -67,12 +67,13 @@ public class MWSUIWrapper {
         MirrorSDK.getInstance().checkParamsAndGet(url, null, listener,null);
     }
 
-    final public static void mintCollection(String name, String symbol, String[] creators, MirrorCallback listener){
+    final public static void mintCollection(String name, String symbol, String description,String[] creators, MirrorCallback listener){
         String url = getGetMirrorUrl(MirrorService.AssetMint) + "collection";
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("name", name);
             jsonObject.put("symbol", symbol);
+            jsonObject.put("description", description);
             jsonObject.put("creators", creators);
         } catch (JSONException e) {
             e.printStackTrace();

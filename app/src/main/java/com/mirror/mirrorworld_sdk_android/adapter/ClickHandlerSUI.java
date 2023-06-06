@@ -193,7 +193,7 @@ public class ClickHandlerSUI extends ClickHandlerBase{
             String name = String.valueOf(holder.mEt1.getText());
             String symbol = String.valueOf(holder.mEt2.getText());
             String description = String.valueOf(holder.mEt3.getText());
-            MirrorWorld.SUI.Asset.mintCollection(name, symbol, null, new MirrorCallback() {
+            MirrorWorld.SUI.Asset.mintCollection(name, symbol, description,null, new MirrorCallback() {
                 @Override
                 public void callback(String result) {
                     String r = ("result is:"+ result);

@@ -13,8 +13,8 @@ public class MWSUIAsset {
         MWSUIWrapper.getNFTOnCollection(collectionAddress,mirrorCallback);
     }
 
-    final public void mintCollection(String name, String symbol, String[] creators, MirrorCallback mirrorCallback){
-        MWSUIWrapper.mintCollection(name,symbol,creators,mirrorCallback);
+    final public void mintCollection(String name, String symbol, String description, String[] creators, MirrorCallback mirrorCallback){
+        MWSUIWrapper.mintCollection(name,symbol,description,creators,mirrorCallback);
     }
 
     final public void mintNFT(String collection_address, String name, String description, String image_url, ReqMintNFTAttribute[] attributes, String to_wallet_address, MirrorCallback mirrorCallback){

@@ -63,20 +63,24 @@ You should now see CustomTab when you try to open our prepared web page.
 
 ## Usage
 ### Choose your chain
-Developers must use specified classes to call APIs on specified chains.  
-All API on all chains is same to call, but the instance's package is different.
-You may select which package you want to use when typing API:
-<img src="https://market-assets.mirrorworld.fun/docs/android-sdk-select-chain.png" width="100%" height="100%" />
+Developers must use specified classes to call APIs on specified chains.
+
+**There are two situations here:**
+If you want to call an API from the Auth or Client module, simply type in `"MirrorWorld."` and the IDE will suggest all the APIs you may need.
+However, if you want to call an API on a specific chain, you will need to select the chain you want to work on after typing in "MirrorWorld.", and then choose the API you want from that chain's API. For example, if I want to buy an NFT on the Solana chain, I would need to type in `MirrorWorld.Solana.Asset.buyNFT()`.
+
+*Each chain will include three functional modules: Asset, Wallet, and Metadata. If you are unsure where to find the specific API you want to call, you can refer to our [API documentation](https://mirrorworld.fun/docs/api-reference/android).*
+
 
 ### Initialization
 We can initialize Mirror World SDK with the following code:
 
 ```java
 Context context = this;
-String apiKey = "your-api-key";
-MirrorEnv env = MirrorEnv.DevNet;
+        String apiKey = "your-api-key";
+        MirrorEnv env = MirrorEnv.DevNet;
 
-MirrorWorld.initSDK(context,apiKey,env);
+        MirrorWorld.initSDK(context,apiKey,env);
 ```
 
 ### Guide user to login
@@ -85,16 +89,16 @@ If you want them to login for the first time or once again, use the following co
 
 ```java
 MirrorWorld.startLogin(new LoginListener() {
-    @Override
-    public void onLoginSuccess() {
+@Override
+public void onLoginSuccess() {
         Log.i("Mirror","User login success!");
-    }
+        }
 
-    @Override
-    public void onLoginFail() {
+@Override
+public void onLoginFail() {
         Log.i("Mirror","User login failed!");
-    }
-});
+        }
+        });
 ```
 
 But you may not want to let them login every time, so you can use CheckAuthenticated API to check if they have already logged in.
@@ -102,11 +106,11 @@ According the result, you can show them a login button or hide your login button
 
 ```java
 MirrorWorld.isLoggedIn(new BoolListener() {
-    @Override
-    public void onBool(boolean boolValue) {
+@Override
+public void onBool(boolean boolValue) {
         Log.i("Mirror","This user's login state is:" + boolean);
-    }
-});
+        }
+        });
 ```
 
 ## Full API Documentation
