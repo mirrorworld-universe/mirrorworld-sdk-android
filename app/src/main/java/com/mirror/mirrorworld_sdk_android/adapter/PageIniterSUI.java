@@ -136,6 +136,21 @@ public class PageIniterSUI extends APIPageIniterBase{
                 "This endpoint is used to mint a new NFT on the collection.",
                 "Get",
                 "collection_address","name","description","image_url","to_wallet_address",null));
+        items.add(new MultiItemData.MultiItem(
+                DemoAPI.SUI_QUERY_NFT,"Query NFT",
+                "This endpoint is used to get an NFT by nft_object_id.",
+                "Query",
+                "nft_object_id",null,null,null,null,null));
+        items.add(new MultiItemData.MultiItem(
+                DemoAPI.SUI_SEARCH_NFTS_BY_OWNER,"Search NFTs By Owner",
+                "This endpoint is used to search NFTs by owner address.",
+                "Search",
+                "owner_address",null,null,null,null,null));
+        items.add(new MultiItemData.MultiItem(
+                DemoAPI.SUI_SEARCH_NFTS,"Search NFTs",
+                "This endpoint is used to search NFTs by object ids.",
+                "Search",
+                "nft_object_id_1","nft_object_id_2",null,null,null,null));
 
         return items;
     }
