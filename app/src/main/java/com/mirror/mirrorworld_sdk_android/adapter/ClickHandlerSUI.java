@@ -217,6 +217,49 @@ public class ClickHandlerSUI extends ClickHandlerBase{
                     runInUIThread(holder,r);
                 }
             });
+        }else if(apiId == DemoAPI.SUI_QUERY_NFT){
+            if(!checkEt(holder.mEt1)){
+                showToast("Please input!");
+                return;
+            }
+            String collection_address = String.valueOf(holder.mEt1.getText());
+            MirrorWorld.SUI.Asset.queryNFT(collection_address,new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    String r = ("result is:"+ result);
+                    runInUIThread(holder,r);
+                }
+            });
+        }else if(apiId == DemoAPI.SUI_SEARCH_NFTS_BY_OWNER){
+            if(!checkEt(holder.mEt1)){
+                showToast("Please input!");
+                return;
+            }
+            String collection_address = String.valueOf(holder.mEt1.getText());
+            MirrorWorld.SUI.Asset.searchNFTsByOwner(collection_address,new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    String r = ("result is:"+ result);
+                    runInUIThread(holder,r);
+                }
+            });
+        }else if(apiId == DemoAPI.SUI_SEARCH_NFTS){
+            if(!checkEt(holder.mEt1) || !checkEt(holder.mEt2)){
+                showToast("Please input!");
+                return;
+            }
+            String collection_address1 = String.valueOf(holder.mEt1.getText());
+            String collection_address2 = String.valueOf(holder.mEt2.getText());
+            List<String> ids = new ArrayList<>();
+            if(collection_address1 != "") ids.add(collection_address1);
+            if(collection_address2 != "") ids.add(collection_address2);
+            MirrorWorld.SUI.Asset.searchNFTs(ids,new MirrorCallback() {
+                @Override
+                public void callback(String result) {
+                    String r = ("result is:"+ result);
+                    runInUIThread(holder,r);
+                }
+            });
         }else if(apiId == DemoAPI.SUI_GET_TRANSACTIONS){
             if(!checkEt(holder.mEt1)){
                 showToast("Please input!");

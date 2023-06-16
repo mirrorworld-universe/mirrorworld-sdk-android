@@ -13,10 +13,12 @@ import com.mirror.sdk.response.CommonResponse;
 import com.mirror.sdk.response.market.SingleNFTResponse;
 import com.mirror.sdk.utils.MirrorGsonUtils;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class MWSUIWrapper {
     final public static void getTransactionsOfLoggedUser(String digest, MirrorCallback walletTransactionListener){
@@ -92,6 +94,39 @@ public class MWSUIWrapper {
             jsonObject.put("image_url", image_url);
             jsonObject.put("attributes", attributes);
             jsonObject.put("to_wallet_address", to_wallet_address);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+        MirrorSDK.getInstance().checkParamsAndPost(url, data, listener);
+    }
+
+    final public static void queryNFT(String nft_object_id, MirrorCallback listener){
+        String url = getGetMirrorUrl(MirrorService.AssetNFT) + nft_object_id;
+        MirrorSDK.getInstance().checkParamsAndGet(url, null, listener,null);
+    }
+
+    final public static void searchNFTsByOwner(String owner_address, MirrorCallback listener){
+        String url = getGetMirrorUrl(MirrorService.AssetNFT) + "owner";
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("owner_address", owner_address);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = jsonObject.toString();
+        MirrorSDK.getInstance().checkParamsAndPost(url, data, listener);
+    }
+
+    final public static void searchNFTs(List<String> nft_object_ids, MirrorCallback listener){
+        String url = getGetMirrorUrl(MirrorService.AssetNFT) + "mints";
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        for (String tag : nft_object_ids) {
+            jsonArray.put(tag);
+        }
+        try {
+            jsonObject.put("nft_object_ids", jsonArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }
