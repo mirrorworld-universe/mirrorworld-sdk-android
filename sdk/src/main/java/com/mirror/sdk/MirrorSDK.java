@@ -19,6 +19,7 @@ import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
@@ -67,7 +68,6 @@ import com.mirror.sdk.listener.market.MintNFTListener;
 import com.mirror.sdk.listener.market.UpdateListListener;
 import com.mirror.sdk.listener.universal.BoolListener;
 import com.mirror.sdk.listener.universal.MirrorCallback;
-import com.mirror.sdk.listener.wallet.GetWalletTransactionListener;
 import com.mirror.sdk.listener.wallet.TransferSOLListener;
 import com.mirror.sdk.response.CommonResponse;
 import com.mirror.sdk.response.auth.LoginResponse;
@@ -81,7 +81,6 @@ import com.mirror.sdk.response.metadata.GetCollectionSummaryRes;
 import com.mirror.sdk.response.metadata.GetNFTEventsRes;
 import com.mirror.sdk.response.metadata.GetNFTRealPriceRes;
 import com.mirror.sdk.response.metadata.GetNFTsRes;
-import com.mirror.sdk.response.wallet.GetWalletTransactionsResponse;
 import com.mirror.sdk.response.wallet.TransferResponse;
 import com.mirror.sdk.ui.MainWebView;
 import com.mirror.sdk.ui.MirrorDialog;
@@ -468,8 +467,14 @@ public class MirrorSDK {
         }
 
         if(!MirrorWebviewUtils.isSupportCustomTab(mActivity)){
-            logFlow("try to open url with webview:"+url);
-            openInnerUrlOnUIThread(finalUrlPre);
+            logFlow("Try to open url with default browser:" + url);
+//            openInnerUrlOnUIThread(finalUrlPre);
+            Intent intent = new Intent();
+            intent.setAction("android.intent.action.VIEW");
+            Uri uri = Uri.parse(finalUrlPre);
+//            intent.setPackage("com.baidu.searchbox");
+            intent.setData(uri);
+            mActivity.startActivity(intent);
         }else {
             logFlow("Try to open url with custom tab:" + finalUrlPre);
             openWebPageWithCustomTab(finalUrlPre,returnActivity);
@@ -497,6 +502,7 @@ public class MirrorSDK {
             public void OnChecked() {
                 CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
                 CustomTabsIntent customTabsIntent = builder.build();
+
                 String packageName = MirrorWebviewUtils.getPackageNameToUse(activity);
                 customTabsIntent.intent.setPackage(packageName);
                 //27version need this
