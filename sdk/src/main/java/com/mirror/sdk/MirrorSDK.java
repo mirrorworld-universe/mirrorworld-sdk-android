@@ -392,7 +392,7 @@ public class MirrorSDK {
         sdkSimpleCheck(new OnCheckSDKUseable() {
             @Override
             public void OnChecked() {
-                String urlPre = getAuthRoot() + apiKey;
+                String urlPre = getLoginPageUrl();
                 openUrl(urlPre,returnActivity);
                 cbStringLogin = loginCb;
             }
@@ -410,7 +410,7 @@ public class MirrorSDK {
         sdkSimpleCheck(new OnCheckSDKUseable() {
             @Override
             public void OnChecked() {
-                String urlPre = getAuthRoot() + apiKey;
+                String urlPre = getLoginPageUrl();
                 openUrl(urlPre,returnActivity);
                 cbLogin = loginCb;
             }
@@ -560,6 +560,37 @@ public class MirrorSDK {
         }else {
             logFlow("Unknown env:"+env);
             return "https://auth-staging.mirrorworld.fun/";
+        }
+    }
+
+    private String getWalletUrl(){
+        if(env.equals(MirrorEnv.StagingMainNet)){
+            return "https://auth-next-staging.mirrorworld.fun/v1/assets/tokens";
+        }else if(env.equals(MirrorEnv.StagingDevNet)){
+            return "https://auth-next-staging.mirrorworld.fun/v1/assets/tokens";
+        }else if(env.equals(MirrorEnv.DevNet)){
+            return "https://auth-next.mirrorworld.fun/v1/assets/tokens";
+        }else if(env.equals(MirrorEnv.MainNet)){
+            return "https://auth-next.mirrorworld.fun/v1/assets/tokens";
+        }else {
+            logFlow("Unknown env:"+env);
+            return "https://auth-next.mirrorworld.fun/v1/assets/tokens";
+        }
+    }
+
+    private String getLoginPageUrl(){
+//        return  "https://auth.mirrorworld.fun/"+apiKey;
+        if(env.equals(MirrorEnv.StagingMainNet)){
+            return "https://auth-next-staging.mirrorworld.fun/v1/auth/login";
+        }else if(env.equals(MirrorEnv.StagingDevNet)){
+            return "https://auth-next-staging.mirrorworld.fun/v1/auth/login";
+        }else if(env.equals(MirrorEnv.DevNet)){
+            return "https://auth-next.mirrorworld.fun/v1/auth/login";
+        }else if(env.equals(MirrorEnv.MainNet)){
+            return "https://auth-next.mirrorworld.fun/v1/auth/login";
+        }else {
+            logFlow("Unknown env:"+env);
+            return "https://auth-next.mirrorworld.fun/v1/auth/login";
         }
     }
 
@@ -880,7 +911,8 @@ public class MirrorSDK {
             public void OnChecked() {
                 String finalUrlPre = walletUrl;
                 if(finalUrlPre == ""){
-                    finalUrlPre = getAuthRoot() + "jwt?key=" + accessToken;
+//                    finalUrlPre = getAuthRoot() + "jwt?key=" + accessToken;
+                    finalUrlPre = getWalletUrl();
                 }
 
                 openUrl(finalUrlPre,returnActivity);
