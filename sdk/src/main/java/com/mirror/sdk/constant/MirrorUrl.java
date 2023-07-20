@@ -15,7 +15,6 @@ public class MirrorUrl {
     public static final String URL_LOGOUT = "auth/logout";
     //Action Authorization
     public static final String URL_ACTION_REQUEST = "auth/actions/request";
-    public static final String URL_ACTION_APPROVE = "approve/";
 
     //market
     public static final String URL_FETCH_MULTIPLE_NFTDATA_BY_MINT_ADDRESS = "mints";

@@ -141,7 +141,7 @@ public class MirrorSafeAPI {
             return;
         }
 
-        String url = MirrorSDK.getInstance().getActionRootWithoutVersion() + MirrorUrl.URL_ACTION_APPROVE + actionUUID;
+        String url = "https://auth-next.mirrorworld.fun/v1/approve/" + actionUUID;
         MirrorSDK.getInstance().openApprovePage(url,returnActivity);
     }
 }
