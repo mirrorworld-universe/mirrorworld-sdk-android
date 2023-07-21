@@ -69,7 +69,7 @@ public class MirrorWebviewUtils {
     public static boolean isSupportCustomTab(Context activity){
         String nameToUse = MirrorWebviewUtils.getPackageNameToUse(activity);
 
-        MirrorSDK.getInstance().logFlow("Browser name to use:" + nameToUse);
+//        MirrorSDK.getInstance().logFlow("Browser name to use:" + nameToUse);
         ArrayList<ResolveInfo> infos = MirrorWebviewUtils.getCustomTabsPackages(activity);
         if(nameToUse == null){
             return false;
