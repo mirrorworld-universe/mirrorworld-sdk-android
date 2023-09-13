@@ -16,11 +16,15 @@ import static com.mirror.sdk.constant.MirrorUrl.getMirrorUrl;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Message;
@@ -46,6 +50,7 @@ import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.browser.customtabs.CustomTabsServiceConnection;
 
 import com.google.gson.reflect.TypeToken;
+import com.mirror.sdk.activities.RedirectActivity;
 import com.mirror.sdk.constant.MirrorChains;
 import com.mirror.sdk.constant.MirrorConstant;
 import com.mirror.sdk.constant.MirrorEnv;
@@ -107,6 +112,7 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class MirrorSDK {
     //user custom
@@ -440,6 +446,11 @@ public class MirrorSDK {
 //        });
     }
 
+    private String schemeName = null;
+    public void setSchemeName(String schemeName){
+        this.schemeName = schemeName;
+    }
+
     public void openUrl(String url,Activity returnActivity){
         this.returnActivity = returnActivity;
         String finalUrlPre = "";
@@ -452,6 +463,10 @@ public class MirrorSDK {
             finalUrlPre += "true";
         }else {
             finalUrlPre += "false";
+        }
+
+        if(schemeName != null){
+            finalUrlPre += "&scheme=" + schemeName;
         }
 
         if(apiKey.equals("")){

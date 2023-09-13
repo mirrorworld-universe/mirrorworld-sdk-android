@@ -118,6 +118,16 @@ public class MirrorWorld {
     }
 
     /**
+     * TYpe: SDK
+     * Function: Set RedirectActivity's scheme name to avoid that all scheme name are same.
+     * Notice: Remember to keep it is same with the scheme in AndroidManifest.xml
+     * @param schemeName
+     */
+    final public static void setSchemeName(String schemeName){
+        MWBaseWrapper.setSchemeName(schemeName);
+    }
+
+    /**
      * Type: SDK
      * Function: Fetch details of a user.
      * @param listener
