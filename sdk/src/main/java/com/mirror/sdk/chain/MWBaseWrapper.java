@@ -95,6 +95,10 @@ public class MWBaseWrapper {
         MirrorSDK.getInstance().openUrl(url,returnActivity);
     }
 
+    final public static void setSchemeName(String schemeName){
+        MirrorSDK.getInstance().setSchemeName(schemeName);
+    }
+
     /**
      * Type: SDK
      * Function: Fetch details of a user.
